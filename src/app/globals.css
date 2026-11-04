@@ -1,0 +1,415 @@
+@import "tailwindcss";
+
+/*
+ * Derive design tokens.
+ *
+ * Every colour, type size, radius and shadow used in the app is defined here,
+ * and Tailwind's default palette and scales are switched off, so a one-off
+ * value cannot slip in. Spacing stays on Tailwind's 4 px grid (--spacing).
+ *
+ * Contrast: every text token meets WCAG 2.2 AA (4.5:1) on every surface in
+ * both themes; figure colours meet 3:1 for graphical objects. The pairs are
+ * checked in src/lib/design/tokens.test.ts.
+ */
+
+:root {
+  color-scheme: light;
+
+  /* Surfaces: warm off-white paper. */
+  --paper: #f7f5ef;
+  --surface: #fcfbf8;
+  --inset: #efece4;
+
+  /* Ink. */
+  --ink: #1c1b18;
+  --ink-muted: #55514a;
+  --ink-faint: #6e6a61;
+
+  /* Rules and borders. */
+  --rule: #e2ddd2;
+  --rule-strong: #c9c2b4;
+
+  /* The one accent: deep indigo, for links, focus and vectors. */
+  --accent: #3b33a6;
+  --accent-strong: #2c2585;
+  --accent-soft: #e9e8f8;
+  --on-accent: #fcfbf8;
+
+  /* States, always paired with a word or icon. */
+  --correct: #1d6b3a;
+  --correct-soft: #e3f1e7;
+  --incorrect: #a3302b;
+  --incorrect-soft: #f8e5e3;
+  --hint: #0e6470;
+  --hint-soft: #e0f0f2;
+  --warning: #875200;
+  --warning-soft: #f6ecd9;
+
+  /* Figure grammar. */
+  --fig-vector: #3b33a6;
+  --fig-gradient: #b4460f;
+  --fig-mass: #7a68a6;
+  --fig-point: #6e6a61;
+  --fig-grid: #e2ddd2;
+  --fig-axis: #55514a;
+
+  /* Focus ring. */
+  --focus: #3b33a6;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --paper: #12161d;
+    --surface: #181d26;
+    --inset: #1f2530;
+    --ink: #e7e4dd;
+    --ink-muted: #b0aca3;
+    --ink-faint: #949088;
+    --rule: #2a313d;
+    --rule-strong: #3d4656;
+    --accent: #a9adf7;
+    --accent-strong: #c4c7fa;
+    --accent-soft: #262a4a;
+    --on-accent: #12161d;
+    --correct: #74c990;
+    --correct-soft: #16301f;
+    --incorrect: #f2938a;
+    --incorrect-soft: #3a1e1c;
+    --hint: #67c6d0;
+    --hint-soft: #14303a;
+    --warning: #e3b456;
+    --warning-soft: #352a14;
+    --fig-vector: #a9adf7;
+    --fig-gradient: #f0935a;
+    --fig-mass: #b3a3da;
+    --fig-point: #949088;
+    --fig-grid: #2a313d;
+    --fig-axis: #b0aca3;
+    --focus: #a9adf7;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #12161d;
+  --surface: #181d26;
+  --inset: #1f2530;
+  --ink: #e7e4dd;
+  --ink-muted: #b0aca3;
+  --ink-faint: #949088;
+  --rule: #2a313d;
+  --rule-strong: #3d4656;
+  --accent: #a9adf7;
+  --accent-strong: #c4c7fa;
+  --accent-soft: #262a4a;
+  --on-accent: #12161d;
+  --correct: #74c990;
+  --correct-soft: #16301f;
+  --incorrect: #f2938a;
+  --incorrect-soft: #3a1e1c;
+  --hint: #67c6d0;
+  --hint-soft: #14303a;
+  --warning: #e3b456;
+  --warning-soft: #352a14;
+  --fig-vector: #a9adf7;
+  --fig-gradient: #f0935a;
+  --fig-mass: #b3a3da;
+  --fig-point: #949088;
+  --fig-grid: #2a313d;
+  --fig-axis: #b0aca3;
+  --focus: #a9adf7;
+}
+
+@theme {
+  /* Switch off Tailwind's defaults so only Derive's tokens exist. */
+  --color-*: initial;
+  --text-*: initial;
+  --radius-*: initial;
+  --shadow-*: initial;
+  --font-*: initial;
+
+  --font-serif: "Source Serif 4 Variable", ui-serif, Georgia, "Times New Roman", serif;
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  /* A fixed type scale. Line heights sit on the 4 px grid. */
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1rem;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.25rem;
+  --text-base: 1rem;
+  --text-base--line-height: 1.5rem;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.75rem;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.75rem;
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: 2rem;
+  --text-3xl: 1.875rem;
+  --text-3xl--line-height: 2.25rem;
+  --text-4xl: 2.25rem;
+  --text-4xl--line-height: 2.75rem;
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 1px 2px rgb(20 18 12 / 0.06);
+  --shadow-md: 0 4px 12px rgb(20 18 12 / 0.08), 0 1px 2px rgb(20 18 12 / 0.06);
+  --shadow-lg: 0 12px 32px rgb(20 18 12 / 0.12), 0 2px 6px rgb(20 18 12 / 0.06);
+
+  /* Reading measure: 60 to 75 characters a line. */
+  --container-measure: 68ch;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-inset: var(--inset);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
+  --color-on-accent: var(--on-accent);
+  --color-correct: var(--correct);
+  --color-correct-soft: var(--correct-soft);
+  --color-incorrect: var(--incorrect);
+  --color-incorrect-soft: var(--incorrect-soft);
+  --color-hint: var(--hint);
+  --color-hint-soft: var(--hint-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-fig-vector: var(--fig-vector);
+  --color-fig-gradient: var(--fig-gradient);
+  --color-fig-mass: var(--fig-mass);
+  --color-fig-point: var(--fig-point);
+  --color-fig-grid: var(--fig-grid);
+  --color-fig-axis: var(--fig-axis);
+  --color-focus: var(--focus);
+  --color-transparent: transparent;
+  --color-current: currentColor;
+}
+
+@layer base {
+  html {
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 100%;
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scrollbar-gutter: stable;
+  }
+
+  body {
+    min-height: 100dvh;
+    font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
+  }
+
+  /* Code: ligatures off, so operators stay unambiguous. */
+  code,
+  kbd,
+  pre,
+  samp {
+    font-family: var(--font-mono);
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0, "calt" 0;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  ::selection {
+    background-color: var(--accent-soft);
+    color: var(--ink);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /*
+   * Reading text: Source Serif 4, 18 px on small screens and 20 px from
+   * 1024 px, line height 1.6, at a 68 character measure.
+   */
+  .prose-derive {
+    max-width: var(--container-measure);
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    line-height: 1.6;
+    font-optical-sizing: auto;
+    color: var(--ink);
+    hanging-punctuation: first;
+    font-variant-numeric: oldstyle-nums proportional-nums;
+  }
+
+  @media (min-width: 1024px) {
+    .prose-derive {
+      font-size: 1.25rem;
+    }
+  }
+
+  .prose-derive > * + * {
+    margin-top: 1em;
+  }
+
+  .prose-derive h2,
+  .prose-derive h3,
+  .prose-derive h4 {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    line-height: 1.25;
+    color: var(--ink);
+  }
+
+  .prose-derive h2 {
+    font-size: 1.5em;
+    margin-top: 2em;
+  }
+
+  .prose-derive h3 {
+    font-size: 1.2em;
+    margin-top: 1.6em;
+  }
+
+  .prose-derive h4 {
+    font-size: 1em;
+    margin-top: 1.4em;
+  }
+
+  .prose-derive a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+  }
+
+  .prose-derive a:hover {
+    color: var(--accent-strong);
+  }
+
+  .prose-derive strong {
+    font-weight: 600;
+  }
+
+  .prose-derive ul,
+  .prose-derive ol {
+    padding-left: 1.4em;
+  }
+
+  .prose-derive ul {
+    list-style: disc;
+  }
+
+  .prose-derive ol {
+    list-style: decimal;
+  }
+
+  .prose-derive li + li {
+    margin-top: 0.35em;
+  }
+
+  .prose-derive li::marker {
+    color: var(--ink-faint);
+  }
+
+  .prose-derive blockquote {
+    border-left: 2px solid var(--rule-strong);
+    padding-left: 1em;
+    color: var(--ink-muted);
+  }
+
+  .prose-derive code {
+    font-size: 0.85em;
+    background-color: var(--inset);
+    border-radius: var(--radius-sm);
+    padding: 0.1em 0.3em;
+  }
+
+  .prose-derive pre {
+    font-size: 0.8em;
+    line-height: 1.6;
+    background-color: var(--inset);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-md);
+    padding: 1em 1.2em;
+    overflow-x: auto;
+  }
+
+  .prose-derive pre code {
+    background: none;
+    padding: 0;
+    font-size: inherit;
+  }
+
+  .prose-derive hr {
+    border: 0;
+    border-top: 1px solid var(--rule);
+    margin: 2em 0;
+  }
+
+  .prose-derive table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-sans);
+    font-size: 0.8em;
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+
+  .prose-derive th,
+  .prose-derive td {
+    border-bottom: 1px solid var(--rule);
+    padding: 0.5em 0.75em 0.5em 0;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .prose-derive th {
+    font-weight: 600;
+    color: var(--ink-muted);
+  }
+
+  /* KaTeX sized to match the reading text. */
+  .prose-derive .katex {
+    font-size: 1.05em;
+  }
+
+  .prose-derive .katex-display {
+    margin: 1.2em 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0.2em 0;
+  }
+
+  /* Numbers in the interface line up. */
+  .tabular {
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+}

@@ -1,0 +1,36 @@
+# dependencies
+node_modules/
+
+# builds
+.next/
+out/
+build/
+*.tsbuildinfo
+next-env.d.ts
+
+# generated at install time
+public/pyodide/
+
+# tests
+test-results/
+playwright-report/
+blob-report/
+.cache/
+
+# environment
+.env
+.env.*
+!.env.example
+
+# python
+__pycache__/
+*.pyc
+.venv/
+
+# misc
+.DS_Store
+.vercel
+npm-debug.log*
+
+# local learner data (DERIVE_LOCAL_STORE=1)
+.derive-local/

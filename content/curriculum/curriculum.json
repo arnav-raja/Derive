@@ -1,0 +1,4192 @@
+{
+  "version": 1,
+  "note": "The starting graph from the plan. Each lesson's own lesson.yaml refines its links once it is written; scripts/check-graph.ts enforces the rules.",
+  "curricula": [
+    {
+      "code": "M",
+      "title": "Mathematics",
+      "courses": [
+        {
+          "code": "M1",
+          "title": "Foundations: numbers, functions and proof",
+          "lessons": [
+            "M1.1",
+            "M1.2",
+            "M1.3",
+            "M1.4",
+            "M1.5",
+            "M1.6",
+            "M1.7",
+            "M1.8",
+            "M1.9",
+            "M1.10",
+            "M1.11",
+            "M1.12"
+          ]
+        },
+        {
+          "code": "M2",
+          "title": "Linear algebra I: vectors, matrices and linear maps",
+          "lessons": [
+            "M2.1",
+            "M2.2",
+            "M2.3",
+            "M2.4",
+            "M2.5",
+            "M2.6",
+            "M2.7",
+            "M2.8",
+            "M2.9",
+            "M2.10",
+            "M2.11",
+            "M2.12"
+          ]
+        },
+        {
+          "code": "M3",
+          "title": "Calculus I: change and accumulation",
+          "lessons": [
+            "M3.1",
+            "M3.2",
+            "M3.3",
+            "M3.4",
+            "M3.5",
+            "M3.6",
+            "M3.7",
+            "M3.8",
+            "M3.9",
+            "M3.10",
+            "M3.11"
+          ]
+        },
+        {
+          "code": "M4",
+          "title": "Probability I: reasoning under uncertainty",
+          "lessons": [
+            "M4.1",
+            "M4.2",
+            "M4.3",
+            "M4.4",
+            "M4.5",
+            "M4.6",
+            "M4.7",
+            "M4.8",
+            "M4.9",
+            "M4.10",
+            "M4.11",
+            "M4.12"
+          ]
+        },
+        {
+          "code": "M5",
+          "title": "Multivariable and matrix calculus",
+          "lessons": [
+            "M5.1",
+            "M5.2",
+            "M5.3",
+            "M5.4",
+            "M5.5",
+            "M5.6",
+            "M5.7",
+            "M5.8",
+            "M5.9",
+            "M5.10"
+          ]
+        },
+        {
+          "code": "M6",
+          "title": "Linear algebra II: structure and decompositions",
+          "lessons": [
+            "M6.1",
+            "M6.2",
+            "M6.3",
+            "M6.4",
+            "M6.5",
+            "M6.6",
+            "M6.7",
+            "M6.8",
+            "M6.9",
+            "M6.10"
+          ]
+        },
+        {
+          "code": "M7",
+          "title": "Statistics and inference",
+          "lessons": [
+            "M7.1",
+            "M7.2",
+            "M7.3",
+            "M7.4",
+            "M7.5",
+            "M7.6",
+            "M7.7",
+            "M7.8",
+            "M7.9",
+            "M7.10"
+          ]
+        },
+        {
+          "code": "M8",
+          "title": "Information theory",
+          "lessons": [
+            "M8.1",
+            "M8.2",
+            "M8.3",
+            "M8.4",
+            "M8.5",
+            "M8.6",
+            "M8.7"
+          ]
+        },
+        {
+          "code": "M9",
+          "title": "Optimisation",
+          "lessons": [
+            "M9.1",
+            "M9.2",
+            "M9.3",
+            "M9.4",
+            "M9.5",
+            "M9.6",
+            "M9.7",
+            "M9.8",
+            "M9.9",
+            "M9.10"
+          ]
+        },
+        {
+          "code": "M10",
+          "title": "Numerical computing and floating point",
+          "lessons": [
+            "M10.1",
+            "M10.2",
+            "M10.3",
+            "M10.4",
+            "M10.5",
+            "M10.6",
+            "M10.7"
+          ]
+        },
+        {
+          "code": "M11",
+          "title": "High-dimensional probability and the maths of scale",
+          "lessons": [
+            "M11.1",
+            "M11.2",
+            "M11.3",
+            "M11.4",
+            "M11.5",
+            "M11.6",
+            "M11.7"
+          ]
+        },
+        {
+          "code": "M12",
+          "title": "Stochastic processes and sampling",
+          "lessons": [
+            "M12.1",
+            "M12.2",
+            "M12.3",
+            "M12.4",
+            "M12.5",
+            "M12.6",
+            "M12.7",
+            "M12.8"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "L",
+      "title": "Machine learning",
+      "courses": [
+        {
+          "code": "L1",
+          "title": "Learning from data",
+          "lessons": [
+            "L1.1",
+            "L1.2",
+            "L1.3",
+            "L1.4",
+            "L1.5",
+            "L1.6",
+            "L1.7",
+            "L1.8",
+            "L1.9",
+            "L1.10"
+          ]
+        },
+        {
+          "code": "L2",
+          "title": "Neural networks from scratch",
+          "lessons": [
+            "L2.1",
+            "L2.2",
+            "L2.3",
+            "L2.4",
+            "L2.5",
+            "L2.6",
+            "L2.7",
+            "L2.8",
+            "L2.9",
+            "L2.10",
+            "L2.11",
+            "L2.12"
+          ]
+        },
+        {
+          "code": "L3",
+          "title": "Sequence models and the Transformer",
+          "lessons": [
+            "L3.1",
+            "L3.2",
+            "L3.3",
+            "L3.4",
+            "L3.5",
+            "L3.6",
+            "L3.7",
+            "L3.8",
+            "L3.9",
+            "L3.10",
+            "L3.11",
+            "L3.12"
+          ]
+        },
+        {
+          "code": "L4",
+          "title": "Representation learning and generative models",
+          "lessons": [
+            "L4.1",
+            "L4.2",
+            "L4.3",
+            "L4.4",
+            "L4.5",
+            "L4.6",
+            "L4.7",
+            "L4.8"
+          ]
+        },
+        {
+          "code": "L5",
+          "title": "Large language models: pretraining and scaling",
+          "lessons": [
+            "L5.1",
+            "L5.2",
+            "L5.3",
+            "L5.4",
+            "L5.5",
+            "L5.6",
+            "L5.7",
+            "L5.8",
+            "L5.9",
+            "L5.10",
+            "L5.11"
+          ]
+        },
+        {
+          "code": "L6",
+          "title": "Reinforcement learning",
+          "lessons": [
+            "L6.1",
+            "L6.2",
+            "L6.3",
+            "L6.4",
+            "L6.5",
+            "L6.6",
+            "L6.7",
+            "L6.8",
+            "L6.9",
+            "L6.10"
+          ]
+        },
+        {
+          "code": "L7",
+          "title": "Post-training and alignment",
+          "lessons": [
+            "L7.1",
+            "L7.2",
+            "L7.3",
+            "L7.4",
+            "L7.5",
+            "L7.6",
+            "L7.7",
+            "L7.8",
+            "L7.9",
+            "L7.10"
+          ]
+        },
+        {
+          "code": "L8",
+          "title": "Interpretability and the science of deep learning",
+          "lessons": [
+            "L8.1",
+            "L8.2",
+            "L8.3",
+            "L8.4",
+            "L8.5",
+            "L8.6",
+            "L8.7",
+            "L8.8",
+            "L8.9"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "E",
+      "title": "ML engineering",
+      "courses": [
+        {
+          "code": "E1",
+          "title": "Programming from zero in Python",
+          "lessons": [
+            "E1.1",
+            "E1.2",
+            "E1.3",
+            "E1.4",
+            "E1.5",
+            "E1.6",
+            "E1.7",
+            "E1.8",
+            "E1.9",
+            "E1.10",
+            "E1.11",
+            "E1.12"
+          ]
+        },
+        {
+          "code": "E2",
+          "title": "Numerical Python and your own visualisations",
+          "lessons": [
+            "E2.1",
+            "E2.2",
+            "E2.3",
+            "E2.4",
+            "E2.5",
+            "E2.6",
+            "E2.7",
+            "E2.8",
+            "E2.9"
+          ]
+        },
+        {
+          "code": "E3",
+          "title": "Software engineering for ML research",
+          "lessons": [
+            "E3.1",
+            "E3.2",
+            "E3.3",
+            "E3.4",
+            "E3.5",
+            "E3.6",
+            "E3.7",
+            "E3.8"
+          ]
+        },
+        {
+          "code": "E4",
+          "title": "PyTorch from the inside",
+          "lessons": [
+            "E4.1",
+            "E4.2",
+            "E4.3",
+            "E4.4",
+            "E4.5",
+            "E4.6",
+            "E4.7",
+            "E4.8",
+            "E4.9",
+            "E4.10"
+          ]
+        },
+        {
+          "code": "E5",
+          "title": "GPUs and performance engineering",
+          "lessons": [
+            "E5.1",
+            "E5.2",
+            "E5.3",
+            "E5.4",
+            "E5.5",
+            "E5.6",
+            "E5.7",
+            "E5.8",
+            "E5.9",
+            "E5.10",
+            "E5.11"
+          ]
+        },
+        {
+          "code": "E6",
+          "title": "Distributed training",
+          "lessons": [
+            "E6.1",
+            "E6.2",
+            "E6.3",
+            "E6.4",
+            "E6.5",
+            "E6.6",
+            "E6.7",
+            "E6.8",
+            "E6.9",
+            "E6.10"
+          ]
+        },
+        {
+          "code": "E7",
+          "title": "Inference and serving",
+          "lessons": [
+            "E7.1",
+            "E7.2",
+            "E7.3",
+            "E7.4",
+            "E7.5",
+            "E7.6",
+            "E7.7",
+            "E7.8",
+            "E7.9"
+          ]
+        },
+        {
+          "code": "E8",
+          "title": "Data engineering at scale",
+          "lessons": [
+            "E8.1",
+            "E8.2",
+            "E8.3",
+            "E8.4",
+            "E8.5",
+            "E8.6",
+            "E8.7"
+          ]
+        },
+        {
+          "code": "E9",
+          "title": "Research engineering, evaluation and RL systems",
+          "lessons": [
+            "E9.1",
+            "E9.2",
+            "E9.3",
+            "E9.4",
+            "E9.5",
+            "E9.6",
+            "E9.7",
+            "E9.8"
+          ]
+        }
+      ]
+    }
+  ],
+  "lessons": {
+    "M1.1": {
+      "title": "Quantities, units and estimation",
+      "course": "M1",
+      "requires": [],
+      "buildsOn": [],
+      "leadsTo": [
+        "E5.3",
+        "L5.11"
+      ]
+    },
+    "M1.2": {
+      "title": "Algebra as a language: why the rules hold",
+      "course": "M1",
+      "requires": [
+        "M1.1"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E1.1"
+      ]
+    },
+    "M1.3": {
+      "title": "Functions: mappings, composition and inverses",
+      "course": "M1",
+      "requires": [
+        "M1.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E1.3",
+        "M3.4"
+      ]
+    },
+    "M1.4": {
+      "title": "Linear and quadratic functions, and rates of change",
+      "course": "M1",
+      "requires": [
+        "M1.3"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M2.4",
+        "M3.1"
+      ]
+    },
+    "M1.5": {
+      "title": "Exponentials and logarithms",
+      "course": "M1",
+      "requires": [
+        "M1.3"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M3.5",
+        "M8.1",
+        "M10.3",
+        "M11.6"
+      ]
+    },
+    "M1.6": {
+      "title": "Sums, products and series",
+      "course": "M1",
+      "requires": [
+        "M1.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E1.2",
+        "M3.8",
+        "M4.5"
+      ]
+    },
+    "M1.7": {
+      "title": "Logic, sets and quantifiers",
+      "course": "M1",
+      "requires": [
+        "M1.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M1.8",
+        "M4.1"
+      ]
+    },
+    "M1.8": {
+      "title": "Proof I: direct proof, contrapositive and contradiction",
+      "course": "M1",
+      "requires": [
+        "M1.7"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M3.2",
+        "M7.5"
+      ]
+    },
+    "M1.9": {
+      "title": "Proof II: induction and recursion",
+      "course": "M1",
+      "requires": [
+        "M1.6",
+        "M1.8"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E1.5"
+      ]
+    },
+    "M1.10": {
+      "title": "Counting: permutations, combinations and the binomial theorem",
+      "course": "M1",
+      "requires": [
+        "M1.9"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M4.1",
+        "M4.4"
+      ]
+    },
+    "M1.11": {
+      "title": "Angles, trigonometry and rotation",
+      "course": "M1",
+      "requires": [
+        "M1.4"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M1.12",
+        "M2.3"
+      ]
+    },
+    "M1.12": {
+      "title": "Complex numbers and Euler's formula",
+      "course": "M1",
+      "requires": [
+        "M1.5",
+        "M1.11"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M6.1",
+        "L3.8"
+      ]
+    },
+    "M2.1": {
+      "title": "Vectors as arrows, lists and data points",
+      "course": "M2",
+      "requires": [
+        "M1.4"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M2.2",
+        "L3.3"
+      ]
+    },
+    "M2.2": {
+      "title": "Linear combinations, span and basis",
+      "course": "M2",
+      "requires": [
+        "M2.1"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M2.9"
+      ]
+    },
+    "M2.3": {
+      "title": "Dot product, length, angle and cosine similarity",
+      "course": "M2",
+      "requires": [
+        "M2.1",
+        "M1.11"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L1.9",
+        "L3.6"
+      ]
+    },
+    "M2.4": {
+      "title": "Matrices as linear maps",
+      "course": "M2",
+      "requires": [
+        "M2.2",
+        "M1.4"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M6.1",
+        "L2.2"
+      ]
+    },
+    "M2.5": {
+      "title": "Matrix multiplication as composition, and its cost",
+      "course": "M2",
+      "requires": [
+        "M2.4",
+        "M1.3"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E5.3",
+        "E6.5"
+      ]
+    },
+    "M2.6": {
+      "title": "Linear systems and Gaussian elimination",
+      "course": "M2",
+      "requires": [
+        "M2.4"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M2.7",
+        "M6.10"
+      ]
+    },
+    "M2.7": {
+      "title": "Inverses, rank, column space and null space",
+      "course": "M2",
+      "requires": [
+        "M2.6"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M2.11",
+        "L7.2"
+      ]
+    },
+    "M2.8": {
+      "title": "Determinant as signed volume",
+      "course": "M2",
+      "requires": [
+        "M2.4"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M5.10"
+      ]
+    },
+    "M2.9": {
+      "title": "Subspaces, dimension and change of basis",
+      "course": "M2",
+      "requires": [
+        "M2.2",
+        "M2.7"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M6.2"
+      ]
+    },
+    "M2.10": {
+      "title": "Orthogonality and projections",
+      "course": "M2",
+      "requires": [
+        "M2.3",
+        "M2.9"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M2.11",
+        "M6.9"
+      ]
+    },
+    "M2.11": {
+      "title": "Least squares: the best wrong answer",
+      "course": "M2",
+      "requires": [
+        "M2.7",
+        "M2.10"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L1.2"
+      ]
+    },
+    "M2.12": {
+      "title": "Tensors, shapes and einsum",
+      "course": "M2",
+      "requires": [
+        "M2.5"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E2.4",
+        "L3.7"
+      ]
+    },
+    "M3.1": {
+      "title": "Rates of change and the derivative",
+      "course": "M3",
+      "requires": [
+        "M1.4"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M3.2",
+        "M5.2"
+      ]
+    },
+    "M3.2": {
+      "title": "Limits and continuity, rigorously enough",
+      "course": "M3",
+      "requires": [
+        "M3.1",
+        "M1.8"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M9.3"
+      ]
+    },
+    "M3.3": {
+      "title": "Deriving the rules of differentiation",
+      "course": "M3",
+      "requires": [
+        "M3.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L2.3"
+      ]
+    },
+    "M3.4": {
+      "title": "The chain rule",
+      "course": "M3",
+      "requires": [
+        "M3.3",
+        "M1.3"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M5.5",
+        "L2.3"
+      ]
+    },
+    "M3.5": {
+      "title": "Exponentials, logarithms and why e is natural",
+      "course": "M3",
+      "requires": [
+        "M3.3",
+        "M1.5"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L1.5",
+        "M8.1"
+      ]
+    },
+    "M3.6": {
+      "title": "Optimisation in one variable, and gradient descent",
+      "course": "M3",
+      "requires": [
+        "M3.3"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L1.1",
+        "M9.3"
+      ]
+    },
+    "M3.7": {
+      "title": "Approximation: Taylor series and finite differences",
+      "course": "M3",
+      "requires": [
+        "M3.3"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M5.8",
+        "M10.2",
+        "L2.11"
+      ]
+    },
+    "M3.8": {
+      "title": "Integrals as accumulation",
+      "course": "M3",
+      "requires": [
+        "M3.1",
+        "M1.6"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M4.7"
+      ]
+    },
+    "M3.9": {
+      "title": "The fundamental theorem of calculus",
+      "course": "M3",
+      "requires": [
+        "M3.3",
+        "M3.8"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M4.7"
+      ]
+    },
+    "M3.10": {
+      "title": "Substitution and integration by parts, only what probability needs",
+      "course": "M3",
+      "requires": [
+        "M3.9"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M4.8"
+      ]
+    },
+    "M3.11": {
+      "title": "Improper integrals and the Gaussian integral",
+      "course": "M3",
+      "requires": [
+        "M3.10"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M4.8"
+      ]
+    },
+    "M4.1": {
+      "title": "Probability by simulation and by counting",
+      "course": "M4",
+      "requires": [
+        "M1.10",
+        "E1.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M4.10"
+      ]
+    },
+    "M4.2": {
+      "title": "Conditional probability and independence",
+      "course": "M4",
+      "requires": [
+        "M4.1"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M4.3",
+        "M12.1"
+      ]
+    },
+    "M4.3": {
+      "title": "Bayes' theorem",
+      "course": "M4",
+      "requires": [
+        "M4.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M7.3",
+        "L1.8"
+      ]
+    },
+    "M4.4": {
+      "title": "Discrete random variables: Bernoulli, binomial and categorical",
+      "course": "M4",
+      "requires": [
+        "M4.1",
+        "M1.10"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L1.5",
+        "L3.1"
+      ]
+    },
+    "M4.5": {
+      "title": "Expectation and its linearity",
+      "course": "M4",
+      "requires": [
+        "M4.4",
+        "M1.6"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M9.4",
+        "L6.1"
+      ]
+    },
+    "M4.6": {
+      "title": "Variance, covariance and correlation",
+      "course": "M4",
+      "requires": [
+        "M4.5"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L3.6",
+        "M11.4"
+      ]
+    },
+    "M4.7": {
+      "title": "Continuous random variables and densities",
+      "course": "M4",
+      "requires": [
+        "M4.4",
+        "M3.9"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M5.10"
+      ]
+    },
+    "M4.8": {
+      "title": "The Gaussian distribution",
+      "course": "M4",
+      "requires": [
+        "M4.7",
+        "M3.11"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M4.11",
+        "L4.5"
+      ]
+    },
+    "M4.9": {
+      "title": "Joint, marginal and conditional distributions; the multivariate Gaussian",
+      "course": "M4",
+      "requires": [
+        "M4.8",
+        "M2.5"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M6.4",
+        "L1.10"
+      ]
+    },
+    "M4.10": {
+      "title": "The law of large numbers and Monte Carlo",
+      "course": "M4",
+      "requires": [
+        "M4.6"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M7.4",
+        "L6.4"
+      ]
+    },
+    "M4.11": {
+      "title": "The central limit theorem",
+      "course": "M4",
+      "requires": [
+        "M4.8",
+        "M4.10"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M7.4"
+      ]
+    },
+    "M4.12": {
+      "title": "Sampling: inverse CDF and rejection sampling",
+      "course": "M4",
+      "requires": [
+        "M4.7",
+        "M4.10"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L3.11",
+        "E7.6"
+      ]
+    },
+    "M5.1": {
+      "title": "Functions of many variables, surfaces and level sets",
+      "course": "M5",
+      "requires": [
+        "M3.1",
+        "M2.1"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M9.1"
+      ]
+    },
+    "M5.2": {
+      "title": "Partial derivatives and the gradient",
+      "course": "M5",
+      "requires": [
+        "M5.1",
+        "M3.3"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L1.2",
+        "M9.3"
+      ]
+    },
+    "M5.3": {
+      "title": "Directional derivatives and linear approximation",
+      "course": "M5",
+      "requires": [
+        "M5.2",
+        "M3.7"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M9.3"
+      ]
+    },
+    "M5.4": {
+      "title": "Jacobians",
+      "course": "M5",
+      "requires": [
+        "M5.2",
+        "M2.4"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M5.5"
+      ]
+    },
+    "M5.5": {
+      "title": "The multivariable chain rule as Jacobian products",
+      "course": "M5",
+      "requires": [
+        "M5.4",
+        "M3.4"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L2.3"
+      ]
+    },
+    "M5.6": {
+      "title": "Computational graphs and automatic differentiation",
+      "course": "M5",
+      "requires": [
+        "M5.5",
+        "E1.7"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L2.4",
+        "E4.3"
+      ]
+    },
+    "M5.7": {
+      "title": "Matrix calculus with shape discipline",
+      "course": "M5",
+      "requires": [
+        "M5.6",
+        "M2.12"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L2.3",
+        "L3.9"
+      ]
+    },
+    "M5.8": {
+      "title": "The Hessian, curvature and saddle points",
+      "course": "M5",
+      "requires": [
+        "M5.2",
+        "M3.7"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M9.8",
+        "M9.10"
+      ]
+    },
+    "M5.9": {
+      "title": "Lagrange multipliers",
+      "course": "M5",
+      "requires": [
+        "M5.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M8.7",
+        "M9.9",
+        "L7.5"
+      ]
+    },
+    "M5.10": {
+      "title": "Multiple integrals and change of variables",
+      "course": "M5",
+      "requires": [
+        "M3.9",
+        "M2.8",
+        "M4.7"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M12.8"
+      ]
+    },
+    "M6.1": {
+      "title": "Eigenvalues and eigenvectors",
+      "course": "M6",
+      "requires": [
+        "M2.9",
+        "M1.12"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M12.1"
+      ]
+    },
+    "M6.2": {
+      "title": "Diagonalisation and matrix powers",
+      "course": "M6",
+      "requires": [
+        "M6.1"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L3.5",
+        "M12.2"
+      ]
+    },
+    "M6.3": {
+      "title": "Symmetric matrices and the spectral theorem",
+      "course": "M6",
+      "requires": [
+        "M6.2",
+        "M2.10"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M6.4"
+      ]
+    },
+    "M6.4": {
+      "title": "Positive definite matrices, quadratic forms and covariance",
+      "course": "M6",
+      "requires": [
+        "M6.3",
+        "M4.9"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M9.3"
+      ]
+    },
+    "M6.5": {
+      "title": "The singular value decomposition",
+      "course": "M6",
+      "requires": [
+        "M6.3"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M6.6",
+        "M6.7"
+      ]
+    },
+    "M6.6": {
+      "title": "Low-rank approximation",
+      "course": "M6",
+      "requires": [
+        "M6.5"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L7.2"
+      ]
+    },
+    "M6.7": {
+      "title": "Principal component analysis, derived three ways",
+      "course": "M6",
+      "requires": [
+        "M6.5",
+        "M4.6"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L4.1"
+      ]
+    },
+    "M6.8": {
+      "title": "Norms, condition numbers and sensitivity",
+      "course": "M6",
+      "requires": [
+        "M6.5"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M9.3",
+        "M10.7"
+      ]
+    },
+    "M6.9": {
+      "title": "Orthogonal matrices, QR and the polar decomposition",
+      "course": "M6",
+      "requires": [
+        "M2.10",
+        "M6.5"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M9.8"
+      ]
+    },
+    "M6.10": {
+      "title": "Computing decompositions: LU, Cholesky and power iteration",
+      "course": "M6",
+      "requires": [
+        "M2.6",
+        "M6.1"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L5.5"
+      ]
+    },
+    "M7.1": {
+      "title": "Estimators: bias, variance and mean squared error",
+      "course": "M7",
+      "requires": [
+        "M4.6"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L1.3"
+      ]
+    },
+    "M7.2": {
+      "title": "Maximum likelihood, and least squares revisited",
+      "course": "M7",
+      "requires": [
+        "M7.1",
+        "M5.2",
+        "M4.8",
+        "L1.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L1.6",
+        "L7.3"
+      ]
+    },
+    "M7.3": {
+      "title": "Bayesian inference and MAP, and ridge revisited as a prior",
+      "course": "M7",
+      "requires": [
+        "M7.2",
+        "M4.3",
+        "L1.4"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L4.2"
+      ]
+    },
+    "M7.4": {
+      "title": "Standard errors, confidence intervals and the bootstrap",
+      "course": "M7",
+      "requires": [
+        "M4.11",
+        "E2.5"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M7.7"
+      ]
+    },
+    "M7.5": {
+      "title": "Hypothesis tests, p-values and how not to fool yourself",
+      "course": "M7",
+      "requires": [
+        "M7.4"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E9.1",
+        "L8.1"
+      ]
+    },
+    "M7.6": {
+      "title": "Comparing models: paired tests and multiple comparisons",
+      "course": "M7",
+      "requires": [
+        "M7.5"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L5.8"
+      ]
+    },
+    "M7.7": {
+      "title": "Error bars for evaluations",
+      "course": "M7",
+      "requires": [
+        "M7.6"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E9.2",
+        "L7.10"
+      ]
+    },
+    "M7.8": {
+      "title": "Regression as a statistical model",
+      "course": "M7",
+      "requires": [
+        "M7.2",
+        "L1.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M11.6"
+      ]
+    },
+    "M7.9": {
+      "title": "Experimental design and statistical power",
+      "course": "M7",
+      "requires": [
+        "M7.5"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E8.6",
+        "E9.1"
+      ]
+    },
+    "M7.10": {
+      "title": "The score function and the log-derivative trick",
+      "course": "M7",
+      "requires": [
+        "M7.2",
+        "M5.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L6.6",
+        "M12.6"
+      ]
+    },
+    "M8.1": {
+      "title": "Surprise and entropy",
+      "course": "M8",
+      "requires": [
+        "M4.4",
+        "M1.5"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M8.2"
+      ]
+    },
+    "M8.2": {
+      "title": "Coding and compression",
+      "course": "M8",
+      "requires": [
+        "M8.1",
+        "E1.10"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L3.2",
+        "M8.6"
+      ]
+    },
+    "M8.3": {
+      "title": "Cross-entropy, and why it is the loss",
+      "course": "M8",
+      "requires": [
+        "M8.2",
+        "M7.2",
+        "L1.6"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L3.1"
+      ]
+    },
+    "M8.4": {
+      "title": "KL divergence, forward and reverse",
+      "course": "M8",
+      "requires": [
+        "M8.3"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L4.2",
+        "L5.9",
+        "L6.8"
+      ]
+    },
+    "M8.5": {
+      "title": "Mutual information",
+      "course": "M8",
+      "requires": [
+        "M8.4",
+        "M4.9"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L4.3"
+      ]
+    },
+    "M8.6": {
+      "title": "Perplexity, bits per byte and prediction as compression",
+      "course": "M8",
+      "requires": [
+        "M8.3"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L5.8"
+      ]
+    },
+    "M8.7": {
+      "title": "Maximum entropy, and the softmax derived",
+      "course": "M8",
+      "requires": [
+        "M8.1",
+        "M5.9",
+        "L1.6"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L7.5"
+      ]
+    },
+    "M9.1": {
+      "title": "Learning as optimisation: loss landscapes",
+      "course": "M9",
+      "requires": [
+        "M5.1",
+        "L1.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M9.10"
+      ]
+    },
+    "M9.2": {
+      "title": "Convex sets and functions",
+      "course": "M9",
+      "requires": [
+        "M9.1",
+        "M5.8"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M9.3"
+      ]
+    },
+    "M9.3": {
+      "title": "Gradient descent: convergence and conditioning",
+      "course": "M9",
+      "requires": [
+        "M9.2",
+        "M6.8",
+        "M3.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M9.5"
+      ]
+    },
+    "M9.4": {
+      "title": "Stochastic gradient descent and minibatch noise",
+      "course": "M9",
+      "requires": [
+        "M9.3",
+        "M4.10"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L2.5",
+        "M9.7"
+      ]
+    },
+    "M9.5": {
+      "title": "Momentum and acceleration",
+      "course": "M9",
+      "requires": [
+        "M9.4"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M9.6"
+      ]
+    },
+    "M9.6": {
+      "title": "Adaptive methods: AdaGrad, RMSProp, Adam and AdamW",
+      "course": "M9",
+      "requires": [
+        "M9.5"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L2.9",
+        "E6.1"
+      ]
+    },
+    "M9.7": {
+      "title": "Learning-rate schedules and batch size",
+      "course": "M9",
+      "requires": [
+        "M9.6"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L5.4",
+        "M11.5"
+      ]
+    },
+    "M9.8": {
+      "title": "Second-order and preconditioned methods, from Newton to Muon",
+      "course": "M9",
+      "requires": [
+        "M5.8",
+        "M6.9",
+        "M8.4"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L5.4"
+      ]
+    },
+    "M9.9": {
+      "title": "Constraints and duality: the KKT conditions",
+      "course": "M9",
+      "requires": [
+        "M5.9",
+        "M9.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L6.8"
+      ]
+    },
+    "M9.10": {
+      "title": "Non-convex training: saddles, edge of stability and loss spikes",
+      "course": "M9",
+      "requires": [
+        "M9.3",
+        "M5.8"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L5.5"
+      ]
+    },
+    "M10.1": {
+      "title": "How computers store numbers: integers and floating point",
+      "course": "M10",
+      "requires": [
+        "E2.1",
+        "M1.5"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M10.4"
+      ]
+    },
+    "M10.2": {
+      "title": "Rounding error, machine epsilon and cancellation",
+      "course": "M10",
+      "requires": [
+        "M10.1",
+        "M3.7"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M10.7"
+      ]
+    },
+    "M10.3": {
+      "title": "Overflow, underflow and the log-sum-exp trick",
+      "course": "M10",
+      "requires": [
+        "M10.2",
+        "L1.6"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E5.7",
+        "E5.8"
+      ]
+    },
+    "M10.4": {
+      "title": "Low-precision formats: fp16, bf16, fp8 and microscaling",
+      "course": "M10",
+      "requires": [
+        "M10.1"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E4.6",
+        "E5.10"
+      ]
+    },
+    "M10.5": {
+      "title": "Mixed-precision training numerics",
+      "course": "M10",
+      "requires": [
+        "M10.4",
+        "L2.5"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E4.6"
+      ]
+    },
+    "M10.6": {
+      "title": "Quantisation: scales, zero points and error",
+      "course": "M10",
+      "requires": [
+        "M10.4",
+        "M7.1"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E7.5"
+      ]
+    },
+    "M10.7": {
+      "title": "Stable algorithms and reproducibility",
+      "course": "M10",
+      "requires": [
+        "M10.2",
+        "M6.8"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E9.3",
+        "E9.7"
+      ]
+    },
+    "M11.1": {
+      "title": "The geometry of high dimensions",
+      "course": "M11",
+      "requires": [
+        "M4.6",
+        "M2.3",
+        "L1.9"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L3.6"
+      ]
+    },
+    "M11.2": {
+      "title": "Concentration inequalities",
+      "course": "M11",
+      "requires": [
+        "M4.10",
+        "M11.1"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L6.1"
+      ]
+    },
+    "M11.3": {
+      "title": "Random projections and the Johnson-Lindenstrauss lemma",
+      "course": "M11",
+      "requires": [
+        "M11.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L8.5"
+      ]
+    },
+    "M11.4": {
+      "title": "Initialisation as variance propagation",
+      "course": "M11",
+      "requires": [
+        "M4.6",
+        "L2.6"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M11.5"
+      ]
+    },
+    "M11.5": {
+      "title": "Width, parametrisation and hyperparameter transfer (muP)",
+      "course": "M11",
+      "requires": [
+        "M11.4",
+        "M9.7"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L5.4",
+        "E9.4"
+      ]
+    },
+    "M11.6": {
+      "title": "Power laws and scaling laws",
+      "course": "M11",
+      "requires": [
+        "M1.5",
+        "M7.8"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L5.2",
+        "X5"
+      ]
+    },
+    "M11.7": {
+      "title": "Generalisation: double descent and benign overfitting",
+      "course": "M11",
+      "requires": [
+        "L1.3",
+        "M6.5"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L8.8"
+      ]
+    },
+    "M12.1": {
+      "title": "Markov chains",
+      "course": "M12",
+      "requires": [
+        "M4.2",
+        "M6.1"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L6.2"
+      ]
+    },
+    "M12.2": {
+      "title": "Stationary distributions and mixing",
+      "course": "M12",
+      "requires": [
+        "M12.1",
+        "M6.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M12.3"
+      ]
+    },
+    "M12.3": {
+      "title": "Markov chain Monte Carlo",
+      "course": "M12",
+      "requires": [
+        "M12.2",
+        "M4.12"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M12.5"
+      ]
+    },
+    "M12.4": {
+      "title": "Brownian motion and stochastic differential equations",
+      "course": "M12",
+      "requires": [
+        "M12.1",
+        "M4.11"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L4.6"
+      ]
+    },
+    "M12.5": {
+      "title": "Langevin dynamics",
+      "course": "M12",
+      "requires": [
+        "M12.4",
+        "M5.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L4.6"
+      ]
+    },
+    "M12.6": {
+      "title": "The score of data, and denoising",
+      "course": "M12",
+      "requires": [
+        "M12.5",
+        "M7.10"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L4.5"
+      ]
+    },
+    "M12.7": {
+      "title": "ODE solvers and probability-flow ODEs",
+      "course": "M12",
+      "requires": [
+        "M12.4",
+        "M3.7"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L4.7"
+      ]
+    },
+    "M12.8": {
+      "title": "Normalising flows and the change of variables",
+      "course": "M12",
+      "requires": [
+        "M5.10",
+        "M12.7"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L4.7"
+      ]
+    },
+    "L1.1": {
+      "title": "What it means to learn: fitting by hand, then by rule",
+      "course": "L1",
+      "requires": [
+        "M3.6",
+        "E1.3"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L1.2"
+      ]
+    },
+    "L1.2": {
+      "title": "Linear regression three ways: projection, gradient and code",
+      "course": "L1",
+      "requires": [
+        "M2.11",
+        "M5.2",
+        "E2.4"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M7.2",
+        "M9.1"
+      ]
+    },
+    "L1.3": {
+      "title": "Features, overfitting and the bias-variance trade-off",
+      "course": "L1",
+      "requires": [
+        "L1.2",
+        "M7.1"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M11.7"
+      ]
+    },
+    "L1.4": {
+      "title": "Regularisation: ridge and lasso",
+      "course": "L1",
+      "requires": [
+        "L1.3"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M7.3",
+        "L8.6"
+      ]
+    },
+    "L1.5": {
+      "title": "Logistic regression and decision boundaries",
+      "course": "L1",
+      "requires": [
+        "L1.2",
+        "M4.4",
+        "M3.5"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L2.1",
+        "E8.4"
+      ]
+    },
+    "L1.6": {
+      "title": "Softmax regression and cross-entropy",
+      "course": "L1",
+      "requires": [
+        "L1.5",
+        "M7.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M8.3",
+        "M8.7",
+        "M10.3"
+      ]
+    },
+    "L1.7": {
+      "title": "Honest evaluation: train, validation, test and leakage",
+      "course": "L1",
+      "requires": [
+        "L1.3",
+        "E2.9"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L5.8",
+        "E8.7"
+      ]
+    },
+    "L1.8": {
+      "title": "Metrics and calibration",
+      "course": "L1",
+      "requires": [
+        "L1.7",
+        "M4.3"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M7.7",
+        "L7.10"
+      ]
+    },
+    "L1.9": {
+      "title": "Nearest neighbours and kernel smoothing, the ancestor of attention",
+      "course": "L1",
+      "requires": [
+        "M2.3",
+        "E2.4"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L3.6",
+        "M11.1"
+      ]
+    },
+    "L1.10": {
+      "title": "Clustering and mixtures: k-means and EM",
+      "course": "L1",
+      "requires": [
+        "M4.9",
+        "M7.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L4.2"
+      ]
+    },
+    "L2.1": {
+      "title": "Beyond linear models: XOR and the perceptron",
+      "course": "L2",
+      "requires": [
+        "L1.5"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L2.2"
+      ]
+    },
+    "L2.2": {
+      "title": "Multilayer perceptrons and what they can represent",
+      "course": "L2",
+      "requires": [
+        "L2.1",
+        "M2.4"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L2.3"
+      ]
+    },
+    "L2.3": {
+      "title": "Backpropagation derived by hand",
+      "course": "L2",
+      "requires": [
+        "L2.2",
+        "M5.5",
+        "M5.7"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L2.4",
+        "E4.3"
+      ]
+    },
+    "L2.4": {
+      "title": "Build an autograd engine from scratch",
+      "course": "L2",
+      "requires": [
+        "L2.3",
+        "M5.6",
+        "E1.7"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E4.3",
+        "X1"
+      ]
+    },
+    "L2.5": {
+      "title": "Training your network: minibatches, SGD and loss curves",
+      "course": "L2",
+      "requires": [
+        "L2.4",
+        "M9.4"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L2.11",
+        "M10.5"
+      ]
+    },
+    "L2.6": {
+      "title": "Initialisation and signal propagation",
+      "course": "L2",
+      "requires": [
+        "L2.5",
+        "M4.6"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M11.4"
+      ]
+    },
+    "L2.7": {
+      "title": "Normalisation: BatchNorm, LayerNorm and RMSNorm",
+      "course": "L2",
+      "requires": [
+        "L2.6"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L3.9",
+        "E5.7"
+      ]
+    },
+    "L2.8": {
+      "title": "Residual connections and depth",
+      "course": "L2",
+      "requires": [
+        "L2.7"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L3.9",
+        "L8.3"
+      ]
+    },
+    "L2.9": {
+      "title": "Optimisers in practice",
+      "course": "L2",
+      "requires": [
+        "L2.5",
+        "M9.6"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L5.4"
+      ]
+    },
+    "L2.10": {
+      "title": "Regularising deep networks: weight decay, dropout and augmentation",
+      "course": "L2",
+      "requires": [
+        "L2.5",
+        "L1.4"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M11.7"
+      ]
+    },
+    "L2.11": {
+      "title": "Debugging training: a systematic recipe",
+      "course": "L2",
+      "requires": [
+        "L2.9",
+        "M3.7"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L3.10",
+        "E9.3"
+      ]
+    },
+    "L2.12": {
+      "title": "Inductive bias: convolution and weight sharing",
+      "course": "L2",
+      "requires": [
+        "L2.8",
+        "M2.5"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L3.6",
+        "L4.4"
+      ]
+    },
+    "L3.1": {
+      "title": "Language modelling as next-token prediction",
+      "course": "L3",
+      "requires": [
+        "M4.4",
+        "M8.3",
+        "E1.12"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L3.4"
+      ]
+    },
+    "L3.2": {
+      "title": "Tokenisation: build a byte-pair encoder",
+      "course": "L3",
+      "requires": [
+        "E1.6",
+        "M8.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E8.5"
+      ]
+    },
+    "L3.3": {
+      "title": "Embeddings: tokens as vectors",
+      "course": "L3",
+      "requires": [
+        "M2.3",
+        "L2.5"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L3.6",
+        "L4.3"
+      ]
+    },
+    "L3.4": {
+      "title": "A neural language model",
+      "course": "L3",
+      "requires": [
+        "L3.1",
+        "L3.3"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L3.5"
+      ]
+    },
+    "L3.5": {
+      "title": "Recurrent networks and why they struggle",
+      "course": "L3",
+      "requires": [
+        "L3.4",
+        "M6.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L3.6"
+      ]
+    },
+    "L3.6": {
+      "title": "Attention from first principles",
+      "course": "L3",
+      "requires": [
+        "L1.9",
+        "L1.6",
+        "M2.3",
+        "M4.6",
+        "L3.3"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E5.8",
+        "E7.2",
+        "L8.4"
+      ]
+    },
+    "L3.7": {
+      "title": "Self-attention, multiple heads and causal masks",
+      "course": "L3",
+      "requires": [
+        "L3.6",
+        "M2.12"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E6.5",
+        "L8.4"
+      ]
+    },
+    "L3.8": {
+      "title": "Position: sinusoidal encodings and RoPE",
+      "course": "L3",
+      "requires": [
+        "L3.7",
+        "M1.12"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L5.7"
+      ]
+    },
+    "L3.9": {
+      "title": "The Transformer block, parameter counts and FLOPs",
+      "course": "L3",
+      "requires": [
+        "L3.8",
+        "L2.7",
+        "L2.8",
+        "M5.7"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L5.2",
+        "E5.11",
+        "E6.1"
+      ]
+    },
+    "L3.10": {
+      "title": "Build and train a GPT from scratch",
+      "course": "L3",
+      "requires": [
+        "L3.9",
+        "L2.11"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E4.9",
+        "X2"
+      ]
+    },
+    "L3.11": {
+      "title": "Sampling and decoding",
+      "course": "L3",
+      "requires": [
+        "L3.10",
+        "M4.12"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E7.6",
+        "L5.10"
+      ]
+    },
+    "L3.12": {
+      "title": "Modern variants: GQA, SwiGLU, mixture of experts and state-space models",
+      "course": "L3",
+      "requires": [
+        "L3.10"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L5.6",
+        "E7.2"
+      ]
+    },
+    "L4.1": {
+      "title": "Autoencoders and representations",
+      "course": "L4",
+      "requires": [
+        "L2.5",
+        "M6.7"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L8.6"
+      ]
+    },
+    "L4.2": {
+      "title": "Variational autoencoders and the ELBO",
+      "course": "L4",
+      "requires": [
+        "L4.1",
+        "M8.4",
+        "L1.10",
+        "M7.3"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L4.5"
+      ]
+    },
+    "L4.3": {
+      "title": "Contrastive learning: InfoNCE and CLIP",
+      "course": "L4",
+      "requires": [
+        "M8.5",
+        "L3.3"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L4.8"
+      ]
+    },
+    "L4.4": {
+      "title": "Vision transformers",
+      "course": "L4",
+      "requires": [
+        "L3.9",
+        "L2.12"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L4.8"
+      ]
+    },
+    "L4.5": {
+      "title": "Diffusion models I: noising and denoising",
+      "course": "L4",
+      "requires": [
+        "L4.2",
+        "M12.6",
+        "M4.8"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L4.6"
+      ]
+    },
+    "L4.6": {
+      "title": "Diffusion models II: scores, SDEs and samplers",
+      "course": "L4",
+      "requires": [
+        "L4.5",
+        "M12.4",
+        "M12.5"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L4.7"
+      ]
+    },
+    "L4.7": {
+      "title": "Flow matching and rectified flows",
+      "course": "L4",
+      "requires": [
+        "L4.6",
+        "M12.7",
+        "M12.8"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L4.8"
+      ]
+    },
+    "L4.8": {
+      "title": "Multimodal models: connecting encoders to language models",
+      "course": "L4",
+      "requires": [
+        "L4.3",
+        "L4.4",
+        "L3.10"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "X9"
+      ]
+    },
+    "L5.1": {
+      "title": "What pretraining learns: in-context learning and emergent behaviour",
+      "course": "L5",
+      "requires": [
+        "L3.10"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L5.10",
+        "L8.1"
+      ]
+    },
+    "L5.2": {
+      "title": "Scaling laws and compute-optimal training",
+      "course": "L5",
+      "requires": [
+        "M11.6",
+        "L3.9"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L5.11",
+        "X5"
+      ]
+    },
+    "L5.3": {
+      "title": "Pretraining data: sources, filtering, deduplication and mixtures",
+      "course": "L5",
+      "requires": [
+        "L1.7",
+        "L5.1"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E8.1"
+      ]
+    },
+    "L5.4": {
+      "title": "Training recipes: hyperparameters, schedules, batch size and muP",
+      "course": "L5",
+      "requires": [
+        "M9.7",
+        "M9.8",
+        "M11.5",
+        "L2.9"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E9.4"
+      ]
+    },
+    "L5.5": {
+      "title": "Instabilities: loss spikes, logit growth, z-loss and QK-norm",
+      "course": "L5",
+      "requires": [
+        "M9.10",
+        "M10.4",
+        "L3.9"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E9.3"
+      ]
+    },
+    "L5.6": {
+      "title": "Mixture-of-experts at scale",
+      "course": "L5",
+      "requires": [
+        "L3.12"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E6.8"
+      ]
+    },
+    "L5.7": {
+      "title": "Long context",
+      "course": "L5",
+      "requires": [
+        "L3.8",
+        "E5.8"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E6.7"
+      ]
+    },
+    "L5.8": {
+      "title": "Evaluating base models: perplexity, benchmarks and contamination",
+      "course": "L5",
+      "requires": [
+        "M8.6",
+        "M7.7",
+        "L1.7"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E8.7",
+        "E9.2"
+      ]
+    },
+    "L5.9": {
+      "title": "Distillation and small models",
+      "course": "L5",
+      "requires": [
+        "M8.4",
+        "L5.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L7.1"
+      ]
+    },
+    "L5.10": {
+      "title": "Reasoning and test-time compute",
+      "course": "L5",
+      "requires": [
+        "L5.1",
+        "L3.11"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L7.7"
+      ]
+    },
+    "L5.11": {
+      "title": "Planning a training run: compute, memory, time and cost",
+      "course": "L5",
+      "requires": [
+        "L5.2",
+        "E5.3",
+        "M1.1"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E6.1",
+        "X5"
+      ]
+    },
+    "L6.1": {
+      "title": "Bandits: exploration and exploitation",
+      "course": "L6",
+      "requires": [
+        "M4.5",
+        "M11.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L6.2"
+      ]
+    },
+    "L6.2": {
+      "title": "Markov decision processes",
+      "course": "L6",
+      "requires": [
+        "M12.1",
+        "L6.1"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L6.3"
+      ]
+    },
+    "L6.3": {
+      "title": "Bellman equations and dynamic programming",
+      "course": "L6",
+      "requires": [
+        "L6.2",
+        "M1.6",
+        "M6.8"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L6.4"
+      ]
+    },
+    "L6.4": {
+      "title": "Monte Carlo, temporal-difference learning and Q-learning",
+      "course": "L6",
+      "requires": [
+        "L6.3",
+        "M4.10"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L6.5"
+      ]
+    },
+    "L6.5": {
+      "title": "Deep Q-learning and its instabilities",
+      "course": "L6",
+      "requires": [
+        "L6.4",
+        "L2.11"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L6.8"
+      ]
+    },
+    "L6.6": {
+      "title": "Policy gradients, derived",
+      "course": "L6",
+      "requires": [
+        "L6.2",
+        "M7.10"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L6.7",
+        "L7.4"
+      ]
+    },
+    "L6.7": {
+      "title": "Variance reduction: baselines and advantages",
+      "course": "L6",
+      "requires": [
+        "L6.6",
+        "M4.6"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L7.6"
+      ]
+    },
+    "L6.8": {
+      "title": "Trust regions and PPO",
+      "course": "L6",
+      "requires": [
+        "L6.7",
+        "M8.4",
+        "M9.9"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L7.4"
+      ]
+    },
+    "L6.9": {
+      "title": "RL for language models: tokens as actions and KL-regularised rewards",
+      "course": "L6",
+      "requires": [
+        "L6.8",
+        "L3.11"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L7.4",
+        "L7.6"
+      ]
+    },
+    "L6.10": {
+      "title": "Reward hacking and Goodhart's law",
+      "course": "L6",
+      "requires": [
+        "L6.9"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L7.9",
+        "X6"
+      ]
+    },
+    "L7.1": {
+      "title": "From base model to assistant: supervised fine-tuning",
+      "course": "L7",
+      "requires": [
+        "L5.1",
+        "L5.9"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L7.2"
+      ]
+    },
+    "L7.2": {
+      "title": "LoRA and parameter-efficient fine-tuning",
+      "course": "L7",
+      "requires": [
+        "M6.6",
+        "M2.7",
+        "L7.1"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "X6"
+      ]
+    },
+    "L7.3": {
+      "title": "Preferences and reward models: the Bradley-Terry model",
+      "course": "L7",
+      "requires": [
+        "M7.2",
+        "L1.5"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L7.4"
+      ]
+    },
+    "L7.4": {
+      "title": "RLHF with PPO",
+      "course": "L7",
+      "requires": [
+        "L6.8",
+        "L6.9",
+        "L7.3"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L7.5"
+      ]
+    },
+    "L7.5": {
+      "title": "Direct preference optimisation, derived",
+      "course": "L7",
+      "requires": [
+        "L7.4",
+        "M5.9",
+        "M8.7"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L7.6"
+      ]
+    },
+    "L7.6": {
+      "title": "RL from verifiable rewards and group baselines",
+      "course": "L7",
+      "requires": [
+        "L6.7",
+        "L7.4"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E9.5",
+        "X6"
+      ]
+    },
+    "L7.7": {
+      "title": "Reasoning models and test-time scaling",
+      "course": "L7",
+      "requires": [
+        "L7.6",
+        "L5.10"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E9.6"
+      ]
+    },
+    "L7.8": {
+      "title": "AI feedback and constitutions",
+      "course": "L7",
+      "requires": [
+        "L7.3"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L7.10"
+      ]
+    },
+    "L7.9": {
+      "title": "Robustness: jailbreaks, refusals and red-teaming",
+      "course": "L7",
+      "requires": [
+        "L6.10",
+        "L7.8"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L7.10"
+      ]
+    },
+    "L7.10": {
+      "title": "Evaluating post-trained models, including model graders and their biases",
+      "course": "L7",
+      "requires": [
+        "M7.7",
+        "L1.8",
+        "L7.8"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E9.2"
+      ]
+    },
+    "L8.1": {
+      "title": "Looking inside models without fooling yourself",
+      "course": "L8",
+      "requires": [
+        "M7.5",
+        "L5.1"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L8.2"
+      ]
+    },
+    "L8.2": {
+      "title": "Probes and their pitfalls",
+      "course": "L8",
+      "requires": [
+        "L1.5",
+        "L8.1"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L8.6"
+      ]
+    },
+    "L8.3": {
+      "title": "The residual stream and the logit lens",
+      "course": "L8",
+      "requires": [
+        "L2.8",
+        "L3.9"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L8.4"
+      ]
+    },
+    "L8.4": {
+      "title": "Circuits: induction heads",
+      "course": "L8",
+      "requires": [
+        "L3.7",
+        "L8.3"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L8.7"
+      ]
+    },
+    "L8.5": {
+      "title": "Superposition",
+      "course": "L8",
+      "requires": [
+        "M11.3",
+        "L8.3"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L8.6"
+      ]
+    },
+    "L8.6": {
+      "title": "Sparse autoencoders and dictionary learning",
+      "course": "L8",
+      "requires": [
+        "L4.1",
+        "L1.4",
+        "L8.5"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "X8"
+      ]
+    },
+    "L8.7": {
+      "title": "Causal interventions: patching and ablations",
+      "course": "L8",
+      "requires": [
+        "E4.4",
+        "L8.4"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "X8"
+      ]
+    },
+    "L8.8": {
+      "title": "Training dynamics: grokking and double descent",
+      "course": "L8",
+      "requires": [
+        "M11.7",
+        "L2.5"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "X9"
+      ]
+    },
+    "L8.9": {
+      "title": "Reproducing a result and writing it up honestly",
+      "course": "L8",
+      "requires": [
+        "M7.7",
+        "E3.8",
+        "L8.7"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "X9"
+      ]
+    },
+    "E1.1": {
+      "title": "Programs as precise instructions: values, variables and expressions",
+      "course": "E1",
+      "requires": [
+        "M1.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E1.2"
+      ]
+    },
+    "E1.2": {
+      "title": "Control flow: conditions and loops",
+      "course": "E1",
+      "requires": [
+        "E1.1"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M4.1"
+      ]
+    },
+    "E1.3": {
+      "title": "Functions and abstraction",
+      "course": "E1",
+      "requires": [
+        "E1.2",
+        "M1.3"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L1.1"
+      ]
+    },
+    "E1.4": {
+      "title": "Data structures and the cost of operations",
+      "course": "E1",
+      "requires": [
+        "E1.3"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E1.10",
+        "E2.1"
+      ]
+    },
+    "E1.5": {
+      "title": "Recursion",
+      "course": "E1",
+      "requires": [
+        "E1.3"
+      ],
+      "buildsOn": [
+        "M1.9"
+      ],
+      "leadsTo": [
+        "E1.10"
+      ]
+    },
+    "E1.6": {
+      "title": "Text, files and strings",
+      "course": "E1",
+      "requires": [
+        "E1.4"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L3.2",
+        "E8.2"
+      ]
+    },
+    "E1.7": {
+      "title": "Classes and objects",
+      "course": "E1",
+      "requires": [
+        "E1.3"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M5.6",
+        "L2.4"
+      ]
+    },
+    "E1.8": {
+      "title": "Debugging as an experiment",
+      "course": "E1",
+      "requires": [
+        "E1.3"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E3.1",
+        "E9.3"
+      ]
+    },
+    "E1.9": {
+      "title": "Testing and property-based testing",
+      "course": "E1",
+      "requires": [
+        "E1.8"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E3.4"
+      ]
+    },
+    "E1.10": {
+      "title": "Algorithms: sorting, searching and hashing",
+      "course": "E1",
+      "requires": [
+        "E1.4",
+        "E1.5"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M8.2",
+        "E8.3"
+      ]
+    },
+    "E1.11": {
+      "title": "Iterators, generators and streaming data",
+      "course": "E1",
+      "requires": [
+        "E1.4"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E4.5",
+        "E8.1"
+      ]
+    },
+    "E1.12": {
+      "title": "Project: a tested text-statistics tool",
+      "course": "E1",
+      "requires": [
+        "E1.6",
+        "E1.9"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L3.1"
+      ]
+    },
+    "E2.1": {
+      "title": "NumPy arrays: shapes, dtypes and memory layout",
+      "course": "E2",
+      "requires": [
+        "E1.4",
+        "M2.1"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E4.2",
+        "M10.1"
+      ]
+    },
+    "E2.2": {
+      "title": "Vectorisation and broadcasting",
+      "course": "E2",
+      "requires": [
+        "E2.1"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E5.1"
+      ]
+    },
+    "E2.3": {
+      "title": "Indexing, views and copies",
+      "course": "E2",
+      "requires": [
+        "E2.1"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E4.2"
+      ]
+    },
+    "E2.4": {
+      "title": "Linear algebra and einsum in NumPy",
+      "course": "E2",
+      "requires": [
+        "E2.2",
+        "M2.12"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L1.2",
+        "L1.9"
+      ]
+    },
+    "E2.5": {
+      "title": "Random numbers and simulation",
+      "course": "E2",
+      "requires": [
+        "E2.2",
+        "M4.1"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "M7.4"
+      ]
+    },
+    "E2.6": {
+      "title": "Making honest charts",
+      "course": "E2",
+      "requires": [
+        "E2.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E3.6",
+        "E9.8"
+      ]
+    },
+    "E2.7": {
+      "title": "Making interactive and animated visualisations",
+      "course": "E2",
+      "requires": [
+        "E2.6"
+      ],
+      "buildsOn": [],
+      "leadsTo": []
+    },
+    "E2.8": {
+      "title": "Measuring performance: timing, profiling and memory",
+      "course": "E2",
+      "requires": [
+        "E2.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E5.4"
+      ]
+    },
+    "E2.9": {
+      "title": "Loading, cleaning and splitting data",
+      "course": "E2",
+      "requires": [
+        "E2.3",
+        "E1.6"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L1.7"
+      ]
+    },
+    "E3.1": {
+      "title": "The command line and Linux essentials",
+      "course": "E3",
+      "requires": [
+        "E1.8"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E3.2",
+        "E3.7"
+      ]
+    },
+    "E3.2": {
+      "title": "Git: history, branches and review",
+      "course": "E3",
+      "requires": [
+        "E3.1"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E3.5",
+        "E3.8"
+      ]
+    },
+    "E3.3": {
+      "title": "Environments, dependencies and containers",
+      "course": "E3",
+      "requires": [
+        "E3.1"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E3.4",
+        "E3.7"
+      ]
+    },
+    "E3.4": {
+      "title": "Project structure, configuration and reproducibility",
+      "course": "E3",
+      "requires": [
+        "E3.3",
+        "E1.9"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E4.9",
+        "E9.7"
+      ]
+    },
+    "E3.5": {
+      "title": "Reading large codebases",
+      "course": "E3",
+      "requires": [
+        "E3.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E4.9"
+      ]
+    },
+    "E3.6": {
+      "title": "Logging and experiment tracking",
+      "course": "E3",
+      "requires": [
+        "E3.4",
+        "E2.6"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E9.1"
+      ]
+    },
+    "E3.7": {
+      "title": "Remote machines: SSH, tmux and cloud GPUs",
+      "course": "E3",
+      "requires": [
+        "E3.1",
+        "E3.3"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E5.4",
+        "X2"
+      ]
+    },
+    "E3.8": {
+      "title": "Code review and clear technical writing",
+      "course": "E3",
+      "requires": [
+        "E3.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L8.9",
+        "E9.8"
+      ]
+    },
+    "E4.1": {
+      "title": "Tensors, devices and dtypes",
+      "course": "E4",
+      "requires": [
+        "E2.1",
+        "L2.4"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E4.2"
+      ]
+    },
+    "E4.2": {
+      "title": "Strides, views and contiguity",
+      "course": "E4",
+      "requires": [
+        "E4.1",
+        "E2.3"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E5.5"
+      ]
+    },
+    "E4.3": {
+      "title": "Autograd internals and custom functions, compared with your own engine",
+      "course": "E4",
+      "requires": [
+        "E4.2",
+        "L2.4",
+        "M5.6"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E4.6"
+      ]
+    },
+    "E4.4": {
+      "title": "Modules, parameters, state and hooks",
+      "course": "E4",
+      "requires": [
+        "E4.3",
+        "E1.7"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L8.7"
+      ]
+    },
+    "E4.5": {
+      "title": "Data pipelines: datasets, loaders and workers",
+      "course": "E4",
+      "requires": [
+        "E4.1",
+        "E1.11"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E8.5"
+      ]
+    },
+    "E4.6": {
+      "title": "Mixed precision in practice",
+      "course": "E4",
+      "requires": [
+        "E4.3",
+        "M10.5"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E5.10"
+      ]
+    },
+    "E4.7": {
+      "title": "Memory: activations and gradient checkpointing",
+      "course": "E4",
+      "requires": [
+        "E4.3"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E6.1",
+        "E6.4"
+      ]
+    },
+    "E4.8": {
+      "title": "torch.compile and kernel fusion",
+      "course": "E4",
+      "requires": [
+        "E4.6"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E5.7"
+      ]
+    },
+    "E4.9": {
+      "title": "A clean, resumable GPT training loop",
+      "course": "E4",
+      "requires": [
+        "E4.4",
+        "E4.7",
+        "L3.10",
+        "E3.4",
+        "E3.5"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E5.11",
+        "E6.3",
+        "X2"
+      ]
+    },
+    "E4.10": {
+      "title": "JAX for PyTorch users: grad, jit, vmap and sharding",
+      "course": "E4",
+      "requires": [
+        "E4.3"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E6.4"
+      ]
+    },
+    "E5.1": {
+      "title": "Why GPUs: the parallel execution model",
+      "course": "E5",
+      "requires": [
+        "E2.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E5.2"
+      ]
+    },
+    "E5.2": {
+      "title": "The memory hierarchy",
+      "course": "E5",
+      "requires": [
+        "E5.1",
+        "E1.4"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E5.3",
+        "E5.5"
+      ]
+    },
+    "E5.3": {
+      "title": "The roofline model and arithmetic intensity",
+      "course": "E5",
+      "requires": [
+        "E5.2",
+        "M2.5",
+        "M1.1"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E7.1",
+        "L5.11"
+      ]
+    },
+    "E5.4": {
+      "title": "Profiling GPU programs",
+      "course": "E5",
+      "requires": [
+        "E5.3",
+        "E2.8",
+        "E3.7"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E5.11"
+      ]
+    },
+    "E5.5": {
+      "title": "First kernels in Triton",
+      "course": "E5",
+      "requires": [
+        "E5.2",
+        "E4.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E5.6"
+      ]
+    },
+    "E5.6": {
+      "title": "Matrix multiplication kernels: tiling and tensor cores",
+      "course": "E5",
+      "requires": [
+        "E5.5",
+        "M2.5"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E5.7",
+        "E5.10"
+      ]
+    },
+    "E5.7": {
+      "title": "Fused softmax and normalisation kernels",
+      "course": "E5",
+      "requires": [
+        "E5.6",
+        "M10.3",
+        "L2.7"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E5.8"
+      ]
+    },
+    "E5.8": {
+      "title": "FlashAttention, derived and built",
+      "course": "E5",
+      "requires": [
+        "E5.7",
+        "L3.7"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "L5.7",
+        "E6.7",
+        "X3"
+      ]
+    },
+    "E5.9": {
+      "title": "Reading and writing CUDA",
+      "course": "E5",
+      "requires": [
+        "E5.6"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E6.2"
+      ]
+    },
+    "E5.10": {
+      "title": "Low-precision kernels: fp8 and int8",
+      "course": "E5",
+      "requires": [
+        "E5.6",
+        "M10.4",
+        "M10.6"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E7.5"
+      ]
+    },
+    "E5.11": {
+      "title": "Case study: speeding up a GPT training step and measuring MFU",
+      "course": "E5",
+      "requires": [
+        "E5.4",
+        "E4.9",
+        "L3.9"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E6.9"
+      ]
+    },
+    "E6.1": {
+      "title": "The arithmetic of large models: bytes, FLOPs and time",
+      "course": "E6",
+      "requires": [
+        "L3.9",
+        "M9.6",
+        "L5.11",
+        "E4.7"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E6.2"
+      ]
+    },
+    "E6.2": {
+      "title": "Collective communication and its cost",
+      "course": "E6",
+      "requires": [
+        "E6.1"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E6.3",
+        "E6.5"
+      ]
+    },
+    "E6.3": {
+      "title": "Data parallelism",
+      "course": "E6",
+      "requires": [
+        "E6.2",
+        "E4.9"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E6.4",
+        "E6.6"
+      ]
+    },
+    "E6.4": {
+      "title": "Sharded data parallelism: ZeRO and FSDP, built from collectives",
+      "course": "E6",
+      "requires": [
+        "E6.3",
+        "E4.7",
+        "E4.10"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E6.9"
+      ]
+    },
+    "E6.5": {
+      "title": "Tensor parallelism",
+      "course": "E6",
+      "requires": [
+        "E6.2",
+        "M2.5",
+        "L3.7"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E6.7",
+        "E6.9"
+      ]
+    },
+    "E6.6": {
+      "title": "Pipeline parallelism and schedules",
+      "course": "E6",
+      "requires": [
+        "E6.3"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E6.9"
+      ]
+    },
+    "E6.7": {
+      "title": "Sequence and context parallelism, and ring attention",
+      "course": "E6",
+      "requires": [
+        "E5.8",
+        "E6.5",
+        "L5.7"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E6.9"
+      ]
+    },
+    "E6.8": {
+      "title": "Expert parallelism and all-to-all communication",
+      "course": "E6",
+      "requires": [
+        "L5.6",
+        "E6.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E6.9"
+      ]
+    },
+    "E6.9": {
+      "title": "Choosing a parallel layout for a model and a cluster",
+      "course": "E6",
+      "requires": [
+        "E6.4",
+        "E6.5",
+        "E6.6",
+        "E6.7",
+        "E6.8"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "X4"
+      ]
+    },
+    "E6.10": {
+      "title": "Fault tolerance: checkpoints, stragglers and silent errors",
+      "course": "E6",
+      "requires": [
+        "E6.9",
+        "E3.4"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E9.3"
+      ]
+    },
+    "E7.1": {
+      "title": "Prefill and decode: why generation is memory-bound",
+      "course": "E7",
+      "requires": [
+        "E5.3",
+        "L3.11"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E7.2"
+      ]
+    },
+    "E7.2": {
+      "title": "The KV cache and its arithmetic",
+      "course": "E7",
+      "requires": [
+        "E7.1",
+        "L3.12"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E7.3",
+        "E7.4"
+      ]
+    },
+    "E7.3": {
+      "title": "Batching: static, dynamic and continuous",
+      "course": "E7",
+      "requires": [
+        "E7.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E7.7",
+        "E7.8"
+      ]
+    },
+    "E7.4": {
+      "title": "Paged attention and memory management",
+      "course": "E7",
+      "requires": [
+        "E7.2",
+        "E1.4"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E7.7"
+      ]
+    },
+    "E7.5": {
+      "title": "Quantisation for inference",
+      "course": "E7",
+      "requires": [
+        "M10.6",
+        "E5.10"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E7.8"
+      ]
+    },
+    "E7.6": {
+      "title": "Speculative decoding, and why it is exact",
+      "course": "E7",
+      "requires": [
+        "M4.12",
+        "L3.11"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E7.7"
+      ]
+    },
+    "E7.7": {
+      "title": "Build a mini inference server",
+      "course": "E7",
+      "requires": [
+        "E7.3",
+        "E7.4",
+        "E7.6"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "X7"
+      ]
+    },
+    "E7.8": {
+      "title": "The economics of serving: cost per token",
+      "course": "E7",
+      "requires": [
+        "E7.3",
+        "E7.5"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E9.5"
+      ]
+    },
+    "E7.9": {
+      "title": "Inference for RL and evaluation at scale",
+      "course": "E7",
+      "requires": [
+        "E7.7",
+        "L7.6"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E9.5"
+      ]
+    },
+    "E8.1": {
+      "title": "The life of a token: from crawl to training batch",
+      "course": "E8",
+      "requires": [
+        "L5.3",
+        "E1.11"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E8.2"
+      ]
+    },
+    "E8.2": {
+      "title": "Extraction, cleaning and language identification",
+      "course": "E8",
+      "requires": [
+        "E8.1",
+        "E1.6"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E8.4"
+      ]
+    },
+    "E8.3": {
+      "title": "Deduplication: hashing, MinHash and locality-sensitive hashing",
+      "course": "E8",
+      "requires": [
+        "E1.10",
+        "M4.5"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E8.7"
+      ]
+    },
+    "E8.4": {
+      "title": "Quality filtering with classifiers",
+      "course": "E8",
+      "requires": [
+        "L1.5",
+        "L1.8",
+        "E8.2"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E8.6"
+      ]
+    },
+    "E8.5": {
+      "title": "Tokenising at scale and efficient data formats",
+      "course": "E8",
+      "requires": [
+        "L3.2",
+        "E4.5"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E8.6"
+      ]
+    },
+    "E8.6": {
+      "title": "Data mixtures and ablations on small models",
+      "course": "E8",
+      "requires": [
+        "M7.9",
+        "L5.4",
+        "E8.4"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "X5"
+      ]
+    },
+    "E8.7": {
+      "title": "Decontamination and benchmark hygiene",
+      "course": "E8",
+      "requires": [
+        "E8.3",
+        "L5.8"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E9.2"
+      ]
+    },
+    "E9.1": {
+      "title": "Designing experiments: hypotheses, baselines and ablations",
+      "course": "E9",
+      "requires": [
+        "M7.9",
+        "E3.6"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "X9"
+      ]
+    },
+    "E9.2": {
+      "title": "Evaluation infrastructure",
+      "course": "E9",
+      "requires": [
+        "M7.7",
+        "L5.8",
+        "L7.10",
+        "E8.7"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "X9"
+      ]
+    },
+    "E9.3": {
+      "title": "Debugging at scale: loss spikes, NaNs and divergence",
+      "course": "E9",
+      "requires": [
+        "L5.5",
+        "M10.7",
+        "L2.11",
+        "E6.10"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "X9"
+      ]
+    },
+    "E9.4": {
+      "title": "Hyperparameter search on a budget",
+      "course": "E9",
+      "requires": [
+        "L5.4",
+        "M11.5"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "X9"
+      ]
+    },
+    "E9.5": {
+      "title": "RL systems: rollouts, learners and staleness",
+      "course": "E9",
+      "requires": [
+        "L7.6",
+        "E7.9"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "E9.6",
+        "X6"
+      ]
+    },
+    "E9.6": {
+      "title": "Environments and verifiers for agentic RL",
+      "course": "E9",
+      "requires": [
+        "E9.5",
+        "L7.7"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "X6"
+      ]
+    },
+    "E9.7": {
+      "title": "Reproducibility and determinism",
+      "course": "E9",
+      "requires": [
+        "M10.7",
+        "E3.4"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "X9"
+      ]
+    },
+    "E9.8": {
+      "title": "Writing up results with honest error bars",
+      "course": "E9",
+      "requires": [
+        "M7.7",
+        "E3.8",
+        "E2.6"
+      ],
+      "buildsOn": [],
+      "leadsTo": [
+        "X9"
+      ]
+    }
+  },
+  "capstones": [
+    {
+      "code": "X1",
+      "title": "A neural-network library from scratch",
+      "after": "L2, E2",
+      "description": "A neural-network library from scratch in NumPy, with your own visualisations",
+      "gpuBudget": "None",
+      "requires": [
+        "L2.4",
+        "L2.11",
+        "E2.7"
+      ],
+      "skills": [
+        1
+      ]
+    },
+    {
+      "code": "X2",
+      "title": "Train a small GPT",
+      "after": "L3, E4",
+      "description": "A small GPT trained on a corpus you choose, from tokeniser to sampling",
+      "gpuBudget": "About 2 hours on one L4, about $1.60",
+      "requires": [
+        "L3.10",
+        "E4.9",
+        "E3.7"
+      ],
+      "skills": [
+        3
+      ]
+    },
+    {
+      "code": "X3",
+      "title": "A FlashAttention kernel in Triton",
+      "after": "E5",
+      "description": "A FlashAttention forward kernel in Triton, verified and benchmarked",
+      "gpuBudget": "About 1 hour on one L4, about $0.80",
+      "requires": [
+        "E5.8",
+        "E5.4"
+      ],
+      "skills": [
+        4
+      ]
+    },
+    {
+      "code": "X4",
+      "title": "Parallelism built from collectives",
+      "after": "E6",
+      "description": "Sharded data parallelism and tensor parallelism built from collectives, verified on CPU, then measured on real GPUs",
+      "gpuBudget": "About 1 hour on 2 to 4 rented 24 GB cards, under $3",
+      "requires": [
+        "E6.9"
+      ],
+      "skills": [
+        2,
+        5
+      ]
+    },
+    {
+      "code": "X5",
+      "title": "A compute-optimal scaling study",
+      "after": "L5, E8",
+      "description": "A compute-optimal scaling study on 6 to 8 tiny models, with a fitted power law and a checked prediction",
+      "gpuBudget": "About 6 hours on one rented 24 GB card, under $3",
+      "requires": [
+        "L5.2",
+        "L5.11",
+        "E8.6",
+        "M11.6"
+      ],
+      "skills": [
+        2,
+        8
+      ]
+    },
+    {
+      "code": "X6",
+      "title": "RL from verifiable rewards",
+      "after": "L7, E9",
+      "description": "RL from verifiable rewards on a small open-weights model, with a reward-hacking analysis",
+      "gpuBudget": "About 4 hours on one 24 to 48 GB card, under $3",
+      "requires": [
+        "L7.6",
+        "L6.10",
+        "E9.5",
+        "E9.6"
+      ],
+      "skills": [
+        7
+      ]
+    },
+    {
+      "code": "X7",
+      "title": "A mini inference server",
+      "after": "E7",
+      "description": "A mini inference server with continuous batching, a paged KV cache and speculative decoding",
+      "gpuBudget": "About 2 hours on one L4, about $1.60",
+      "requires": [
+        "E7.7"
+      ],
+      "skills": [
+        6
+      ]
+    },
+    {
+      "code": "X8",
+      "title": "A sparse autoencoder study",
+      "after": "L8",
+      "description": "A sparse autoencoder on a small model's activations, written up as a short research note",
+      "gpuBudget": "About 3 hours, under $3",
+      "requires": [
+        "L8.6",
+        "L8.7"
+      ],
+      "skills": [
+        10
+      ]
+    },
+    {
+      "code": "X9",
+      "title": "A frontier-lab research project",
+      "after": "Everything",
+      "description": "A frontier-lab style research project: hypothesis, experiment, error bars, write-up and an oral examination with the tutor",
+      "gpuBudget": "Capped at $10",
+      "requires": [
+        "E9.1",
+        "E9.8",
+        "L8.9",
+        "X1",
+        "X2",
+        "X3",
+        "X4",
+        "X5",
+        "X6",
+        "X7",
+        "X8"
+      ],
+      "skills": [
+        8,
+        9
+      ]
+    }
+  ],
+  "skills": [
+    "Derive and implement backpropagation for any architecture.",
+    "Estimate the memory, compute, time and cost of a training run before starting it.",
+    "Train a Transformer from scratch and diagnose its instabilities.",
+    "Write fast GPU kernels and explain their speed with the roofline model.",
+    "Implement and choose between data, tensor, pipeline and expert parallelism.",
+    "Serve a model efficiently with KV caching, batching, quantisation and speculative decoding.",
+    "Implement post-training: fine-tuning, reward models, RLHF, DPO and RL from verifiable rewards.",
+    "Design evaluations and report results with honest error bars.",
+    "Read a new paper, reproduce its key result and explain it simply.",
+    "Use interpretability methods to test a hypothesis about a model."
+  ],
+  "stages": [
+    {
+      "stage": 1,
+      "title": "Foundations",
+      "courses": [
+        "M1",
+        "E1"
+      ],
+      "hours": 80
+    },
+    {
+      "stage": 2,
+      "title": "Core",
+      "courses": [
+        "M2",
+        "M3",
+        "M4",
+        "E2",
+        "E3"
+      ],
+      "hours": 175
+    },
+    {
+      "stage": 3,
+      "title": "Bridge",
+      "courses": [
+        "M5",
+        "M6",
+        "M7",
+        "M8",
+        "M10",
+        "L1"
+      ],
+      "hours": 185
+    },
+    {
+      "stage": 4,
+      "title": "Deep learning",
+      "courses": [
+        "M9",
+        "M11",
+        "L2",
+        "L3",
+        "E4",
+        "E5"
+      ],
+      "hours": 260
+    },
+    {
+      "stage": 5,
+      "title": "Frontier",
+      "courses": [
+        "M12",
+        "L4",
+        "L5",
+        "L6",
+        "L7",
+        "L8",
+        "E6",
+        "E7",
+        "E8",
+        "E9"
+      ],
+      "hours": 430
+    }
+  ]
+}
