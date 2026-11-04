@@ -19,9 +19,10 @@ Phase 0 (set-up) is being finished; phase 1 (the first slice of 12 lessons) foll
 
 ### Next
 
-1. First commit and push to `main`.
-2. Vercel project linked to `arnav-raja/derive`, region bom1, with the two public Supabase
-   variables; deploy and check `/api/health`.
+1. Done: first commit pushed to `main`.
+2. Vercel project `derive` (prj_HoUHCyl9wVHLNazctjzrEn6dRy0U) linked to `arnav-raja/derive`,
+   Node 24, region bom1, Standard Protection, with the two public Supabase variables. Next:
+   check the first production deployment and `/api/health`.
 3. Check whether Supabase requires email confirmation; if so, ask Arnav to switch it off.
 4. Ask Arnav for the Anthropic API key, pasted straight into Vercel.
 5. Phase 1: lesson engine, Pyodide worker and tests, SymPy checks, five figure components,
