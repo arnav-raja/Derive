@@ -1,0 +1,31 @@
+You have derived the formula and checked it two ways. Now make a computer carry it out, in a form you could rerun for any chip and any model.
+
+## Python as a careful calculator
+
+You will meet Python properly in E1.1. For this lesson you only need it as a calculator that remembers names, and four things are enough:
+
+- `*` multiplies, `/` divides, `+` and `-` add and subtract, and brackets group as usual;
+- `3.15e23` is how Python writes $3.15 \times 10^{23}$, and `1e14` is $10^{14}$;
+- `name = expression` works out the expression on the right, then gives the result that name so later lines can use it;
+- `print(...)` shows values in the output, separated by spaces.
+
+For example, these two lines work out the seconds in a day and then show the result:
+
+```python
+seconds_per_day = 24 * 60 * 60
+print(seconds_per_day, "seconds in a day")
+```
+
+Run your code as often as you like. The checks below the editor say which parts are right so far, and each one names the value it expected.
+
+<Exercise id="build-training-years" />
+
+<Reveal for="build-training-years">
+
+## Break it on purpose
+
+A program you understand is one whose failures you can predict. Here is a working version of your program, and one deliberate change to it. Predict what the change does before you run it.
+
+<Exercise id="build-break-multiply" />
+
+</Reveal>

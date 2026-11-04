@@ -1,0 +1,648 @@
+exercises:
+  # Puzzle ---------------------------------------------------------------------
+  - id: puzzle-one-chip
+    phase: puzzle
+    kind: predict
+    concept: M1.1/fermi-estimation
+    title: One chip, all of GPT-3
+    prompt: >-
+      How long would this one chip take to do all $3.15 \times 10^{23}$ FLOP of GPT-3's training?
+      Go with your instinct. This is a prediction, not a test.
+    answer:
+      type: choice
+      options:
+        - { id: day, label: About a day }
+        - { id: year, label: About a year }
+        - { id: century, label: About a century }
+        - { id: millennia, label: About ten thousand years }
+      correct: [century]
+    explanation: >-
+      Close to 100 years of non-stop work, which is longer than a human lifetime. In the Derive phase
+      you will reach this yourself in three lines.
+
+  # Recall ---------------------------------------------------------------------
+  - id: recall-seconds-hour
+    phase: recall
+    kind: recall
+    concept: M1.1/units-as-algebra
+    title: Seconds in an hour
+    prompt: How many seconds are there in one hour?
+    answer:
+      type: number
+      value: 3600
+      unit: s
+    explanation: There are 60 seconds in a minute and 60 minutes in an hour, so $60 \times 60 = 3600$.
+
+  - id: recall-speed
+    phase: recall
+    kind: recall
+    concept: M1.1/units-as-algebra
+    title: A steady train
+    prompt: >-
+      A train travels 150 km in 2 hours at a steady speed. How many kilometres does it cover in each
+      hour?
+    answer:
+      type: number
+      value: 75
+      unit: km/h
+    explanation: Speed is distance divided by time, $150 \text{ km} \div 2 \text{ h} = 75$ km/h.
+
+  - id: recall-powers-multiply
+    phase: recall
+    kind: recall
+    concept: M1.1/powers-of-ten
+    title: Multiplying powers of ten
+    prompt: What is $10^3 \times 10^4$?
+    answer:
+      type: choice
+      options:
+        - { id: add, label: '$10^{7}$' }
+        - { id: times, label: '$10^{12}$' }
+        - { id: hundred, label: '$100^{7}$' }
+        - { id: digits, label: '$10^{34}$' }
+      correct: [add]
+    explanation: Three tens times four tens is seven tens multiplied together, $10^{3+4} = 10^{7}$.
+
+  - id: recall-small-power
+    phase: recall
+    kind: recall
+    concept: M1.1/powers-of-ten
+    title: A small power of ten
+    prompt: Which of these equals 0.001?
+    answer:
+      type: choice
+      options:
+        - { id: negative-exponent, label: '$10^{-3}$' }
+        - { id: positive, label: '$10^{3}$' }
+        - { id: negative-number, label: '$-10^{3}$' }
+        - { id: root, label: '$10^{1/3}$' }
+      correct: [negative-exponent]
+    explanation: $10^{-3} = 1/10^{3} = 1/1000 = 0.001$. A negative exponent means "one divided by".
+
+  # Explore --------------------------------------------------------------------
+  - id: explore-linear
+    phase: explore
+    kind: predict
+    concept: M1.1/powers-of-ten
+    title: The ordinary scale
+    prompt: >-
+      Before you switch the figure to the ordinary scale: on that scale, how many of the seven spans
+      could you tell apart from zero?
+    answer:
+      type: choice
+      options:
+        - { id: all, label: All seven }
+        - { id: half, label: Three or four of them }
+        - { id: one, label: 'Only one: the age of the universe' }
+        - { id: none, label: None of them }
+      correct: [one]
+    explanation: >-
+      Only the age of the universe stands clear of zero. The next largest span, recorded history, is
+      less than a millionth of it, so it sits within a hair of zero along with everything else.
+
+  - id: explore-divide
+    phase: explore
+    kind: predict
+    concept: M1.1/powers-of-ten
+    title: Seconds on one chip
+    prompt: >-
+      The chip needs $3.15 \times 10^{23}$ FLOP divided by $10^{14}$ FLOP per second. Without a
+      calculator, how many seconds is that? You can type an answer such as 3.15e9 or 3.15 × 10^9.
+    answer:
+      type: number
+      value: 3.15e9
+      tolerance: { rel: 0.001 }
+      unit: s
+    explanation: >-
+      Dividing by $10^{14}$ subtracts 14 from the exponent: $3.15 \times 10^{23-14} = 3.15 \times
+      10^{9}$ seconds.
+    placement: true
+    review:
+      variants:
+        - prompt: What is $(4 \times 10^{8}) \times (5 \times 10^{3})$?
+          answer:
+            type: number
+            value: 2e12
+          explanation: >-
+            Multiply the leading numbers, $4 \times 5 = 20$, and add the exponents, $8 + 3 = 11$. That
+            gives $20 \times 10^{11}$, which is $2 \times 10^{12}$.
+        - prompt: What is $(6 \times 10^{5}) \div (2 \times 10^{-3})$?
+          answer:
+            type: number
+            value: 3e8
+          explanation: >-
+            Divide the leading numbers, $6 \div 2 = 3$, and subtract the exponents, $5 - (-3) = 8$:
+            $3 \times 10^{8}$. Dividing by a small number makes the result larger, as it should.
+        - prompt: >-
+            A year is about $3 \times 10^{7}$ seconds. About how many years is $6 \times 10^{10}$
+            seconds?
+          answer:
+            type: number
+            value: 2000
+            tolerance: { rel: 0.01 }
+            unit: years
+          explanation: $6 \times 10^{10} \div (3 \times 10^{7}) = 2 \times 10^{3}$, so about 2,000 years.
+
+  - id: explore-flip
+    phase: explore
+    kind: predict
+    concept: M1.1/dimensional-analysis
+    title: Multiplying instead
+    prompt: Suppose you had multiplied instead, $C \times R$. What unit would come out?
+    answer:
+      type: choice
+      options:
+        - { id: seconds, label: 's' }
+        - { id: flop-squared, label: '$\text{FLOP}^2/\text{s}$' }
+        - { id: flop, label: 'FLOP' }
+        - { id: none, label: No unit at all }
+      correct: [flop-squared]
+    explanation: >-
+      FLOP times FLOP per second is FLOP squared per second. No length of time has that unit, so a
+      formula that multiplies the two cannot give a time.
+
+  - id: explore-reading
+    phase: explore
+    kind: estimate
+    concept: M1.1/fermi-estimation
+    title: Reading GPT-3's training text
+    prompt: >-
+      Estimate how many years one person would need to read the 300 billion tokens GPT-3 learnt from,
+      reading for 8 hours every day. A token is about three-quarters of a word. You will need your
+      own guess for how many words a person reads in a minute. An estimate within a factor of 3
+      counts.
+    answer:
+      type: number
+      value: 5137
+      tolerance: { factor: 3 }
+      unit: years
+    explanation: >-
+      At 250 words a minute: $250 \times 60 \times 8 \times 365 \approx 4.4 \times 10^{7}$ words a year,
+      which is about $5.8 \times 10^{7}$ tokens. Then $3 \times 10^{11} \div (5.8 \times 10^{7})
+      \approx 5{,}100$ years.
+
+  - id: explore-factor
+    phase: explore
+    kind: predict
+    concept: M1.1/fermi-estimation
+    title: How errors carry through
+    prompt: >-
+      Suppose the true reading speed is half the speed you assumed, and every other number is right.
+      What happens to your answer for the number of years?
+    answer:
+      type: choice
+      options:
+        - { id: years, label: It is off by 2 years }
+        - { id: factor-two, label: It is off by a factor of 2 }
+        - { id: factor-four, label: It is off by a factor of 4 }
+        - { id: depends, label: It depends on the other numbers }
+      correct: [factor-two]
+    explanation: >-
+      Halving the speed doubles the time, whatever the other numbers are. An error in one input of a
+      chain of multiplications and divisions passes straight through as the same factor. That is why
+      estimates are judged by the factor they are off by, not the difference: 5,000 years against a
+      truth of 10,000 is off by a factor of 2, a good estimate, while 50 years would be off by a
+      factor of 100.
+
+  # Derive ---------------------------------------------------------------------
+  - id: derive-time-formula
+    phase: derive
+    kind: step
+    concept: M1.1/dimensional-analysis
+    covers: [M1.1/units-as-algebra]
+    title: The time, in years
+    prompt: >-
+      Write the training time $T$, in years, using $C$, $R$ and $Y$. Choose the arrangement whose
+      units come out in years. Type it as you would on a calculator, for example C*R or C/R.
+    answer:
+      type: expression
+      symbols:
+        - { name: C, positive: true }
+        - { name: R, positive: true }
+        - { name: Y, positive: true }
+      lhs: 'T ='
+      reference: C/(R*Y)
+      accept: ['C/R/Y', '(C/R)/Y', 'C*(1/R)*(1/Y)', 'C/(Y*R)']
+      reject: ['C*R/Y', 'C/R', 'C*R*Y', 'C*Y/R', 'R/(C*Y)']
+    explanation: >-
+      $C/R$ is in seconds, and dividing by $Y$, in seconds per year, leaves years: $T = C/(RY)$.
+    placement: true
+    review:
+      variants:
+        - prompt: A distance $d$ is in metres and a speed $v$ is in metres per second. Which of these could be a time?
+          answer:
+            type: choice
+            options:
+              - { id: ratio, label: '$d / v$' }
+              - { id: product, label: '$d \times v$' }
+              - { id: inverse, label: '$v / d$' }
+              - { id: sum, label: '$d + v$' }
+            correct: [ratio]
+          explanation: >-
+            Metres divided by metres per second leaves seconds. $d \times v$ has units m²/s, $v/d$ has
+            units 1/s, and $d + v$ adds quantities of different kinds, which cannot be done.
+        - prompt: >-
+            A chip's memory holds $M$ bytes, and the chip can read $B$ bytes per second. Write the time,
+            in seconds, to read the whole memory once.
+          answer:
+            type: expression
+            symbols:
+              - { name: M, positive: true }
+              - { name: B, positive: true }
+            lhs: 't ='
+            reference: M/B
+            reject: ['B/M', 'M*B']
+          explanation: Bytes divided by bytes per second leaves seconds, so $t = M/B$.
+        - prompt: >-
+            Energy is measured in kg·m²/s². Leaving aside any pure number in front, which could be the
+            energy of a mass $m$, in kilograms, moving at a speed $v$, in metres per second?
+          answer:
+            type: choice
+            options:
+              - { id: mv2, label: '$m v^2$' }
+              - { id: mv, label: '$m v$' }
+              - { id: m2v, label: '$m^2 v$' }
+              - { id: m-over-v2, label: '$m / v^2$' }
+            correct: [mv2]
+          explanation: >-
+            $m v^2$ has units kg × (m/s)², which is kg·m²/s², the unit of energy. The full formula is
+            $\tfrac{1}{2} m v^2$, and the $\tfrac{1}{2}$ is a pure number the units cannot see.
+
+  - id: derive-cancel-chain
+    phase: derive
+    kind: proof
+    concept: M1.1/units-as-algebra
+    covers: [M1.1/powers-of-ten]
+    title: The chain of rules
+    prompt: >-
+      Starting from the compute divided by the chip's speed, choose the rule that justifies each line.
+      Some rules are used more than once.
+    answer:
+      type: steps
+      rules:
+        - { id: reciprocal, name: Reciprocal, label: Dividing by a fraction is multiplying by its reciprocal. }
+        - { id: regroup, name: Regroup, label: The factors of a product can be reordered and grouped. }
+        - { id: cancel, name: Cancel, label: A unit divided by the same unit is 1. }
+        - { id: exponents, name: Exponents, label: 'Dividing powers of ten subtracts their exponents, $10^a \div 10^b = 10^{a-b}$.' }
+        - { id: convert, name: Convert, label: 'Multiplying by a conversion factor, which is equal to 1, changes the unit and not the quantity.' }
+        - { id: arithmetic, name: Arithmetic, label: Ordinary arithmetic on the leading numbers. }
+      start: '\dfrac{3.15 \times 10^{23}\ \text{FLOP}}{10^{14}\ \text{FLOP/s}}'
+      lines:
+        - math: '= 3.15 \times 10^{23}\ \text{FLOP} \times \dfrac{1\ \text{s}}{10^{14}\ \text{FLOP}}'
+          rule: reciprocal
+        - math: '= \dfrac{3.15 \times 10^{23}}{10^{14}} \times \dfrac{\text{FLOP}}{\text{FLOP}} \times \text{s}'
+          rule: regroup
+        - math: '= \dfrac{3.15 \times 10^{23}}{10^{14}}\ \text{s}'
+          rule: cancel
+        - math: '= 3.15 \times 10^{9}\ \text{s}'
+          rule: exponents
+        - math: '= 3.15 \times 10^{9}\ \text{s} \times \dfrac{1\ \text{year}}{3.156 \times 10^{7}\ \text{s}}'
+          rule: convert
+        - math: '= \dfrac{3.15 \times 10^{9}}{3.156 \times 10^{7}} \times \dfrac{\text{s}}{\text{s}} \times \text{year}'
+          rule: regroup
+        - math: '= \dfrac{3.15 \times 10^{9}}{3.156 \times 10^{7}}\ \text{year}'
+          rule: cancel
+        - math: '= \dfrac{3.15}{3.156} \times \dfrac{10^{9}}{10^{7}}\ \text{year}'
+          rule: regroup
+        - math: '= \dfrac{3.15}{3.156} \times 10^{2}\ \text{year}'
+          rule: exponents
+        - math: '\approx 1.0 \times 10^{2}\ \text{years}'
+          rule: arithmetic
+    explanation: >-
+      In order: reciprocal, regroup, cancel, exponents, convert, regroup, cancel, regroup, exponents
+      and arithmetic. The same few rules carry the numbers and the units together.
+
+  - id: derive-units-six
+    phase: derive
+    kind: predict
+    concept: M1.1/units-as-algebra
+    title: The unit of the 6
+    prompt: >-
+      In $C \approx 6ND$, $C$ is in FLOP, $N$ is a number of parameters and $D$ is a number of tokens.
+      For the units to match on both sides, what unit must the 6 carry?
+    answer:
+      type: choice
+      options:
+        - { id: pure, label: 'None: it is a pure number' }
+        - { id: per-parameter-per-token, label: FLOP per parameter per token }
+        - { id: per-second, label: FLOP per second }
+        - { id: parameters-per-token, label: Parameters per token }
+      correct: [per-parameter-per-token]
+    explanation: >-
+      The right side has units of (the 6's unit) × parameters × tokens, and that must equal FLOP, so
+      the 6 is really 6 FLOP per parameter per token. Numbers that look bare often carry a unit like
+      this, and writing it in is what lets the units check the formula.
+    placement: true
+    review:
+      variants:
+        - prompt: A car travels at 72 km/h. What is that in metres per second?
+          answer:
+            type: number
+            value: 20
+            unit: m/s
+          explanation: >-
+            Multiply by factors equal to one: $72 \tfrac{\text{km}}{\text{h}} \times \tfrac{1000
+            \text{ m}}{1 \text{ km}} \times \tfrac{1 \text{ h}}{3600 \text{ s}} = 20$ m/s.
+        - prompt: >-
+            A model has $7 \times 10^{9}$ parameters, and each is stored in 2 bytes. How many bytes do
+            the parameters take?
+          answer:
+            type: number
+            value: 1.4e10
+            unit: bytes
+          explanation: >-
+            Parameters times bytes per parameter gives bytes: $7 \times 10^{9} \times 2 = 1.4 \times
+            10^{10}$ bytes, about 14 GB.
+        - prompt: >-
+            A chip reads memory at $2 \times 10^{12}$ bytes per second. How many seconds does it take
+            to read $3.5 \times 10^{11}$ bytes?
+          answer:
+            type: number
+            value: 0.175
+            unit: s
+          explanation: >-
+            Bytes divided by bytes per second gives seconds: $3.5 \times 10^{11} \div (2 \times 10^{12})
+            = 0.175$ s.
+
+  - id: derive-pendulum-square
+    phase: derive
+    kind: step
+    concept: M1.1/dimensional-analysis
+    title: A pendulum, squared
+    prompt: >-
+      Find a combination of $L$ (in m) and $g$ (in m/s²) whose unit is seconds squared, s². Use each
+      letter once, with no number in front.
+    answer:
+      type: expression
+      symbols:
+        - { name: L, positive: true }
+        - { name: g, positive: true }
+        - { name: m, positive: true }
+      lhs: 'T^2 \propto'
+      reference: L/g
+      accept: ['L*g**(-1)', '1/g*L']
+      reject: ['g/L', 'L*g', 'L/g**2', 'L**2/g', 'L*m/g']
+    explanation: >-
+      Metres divided by metres per second squared: $\text{m} \div \tfrac{\text{m}}{\text{s}^2} =
+      \text{s}^2$. So $L/g$ has units of seconds squared.
+
+  - id: derive-pendulum-period
+    phase: derive
+    kind: step
+    concept: M1.1/dimensional-analysis
+    title: A pendulum's period
+    prompt: >-
+      Now turn your answer into a combination whose unit is seconds. Leave out any pure number in
+      front, such as 2 or π, because units cannot see those.
+    answer:
+      type: expression
+      symbols:
+        - { name: L, positive: true }
+        - { name: g, positive: true }
+        - { name: m, positive: true }
+      lhs: 'T \propto'
+      reference: sqrt(L/g)
+      accept: ['(L/g)**(1/2)', 'sqrt(L)/sqrt(g)', 'L**0.5/g**0.5']
+      reject: ['L/g', 'sqrt(g/L)', '(L/g)**2', '2*pi*sqrt(L/g)', 'sqrt(L*m/g)']
+    explanation: The square root of seconds squared is seconds, so $T \propto \sqrt{L/g}$.
+
+  - id: derive-geomean
+    phase: derive
+    kind: step
+    concept: M1.1/fermi-estimation
+    title: The middle between two bounds
+    prompt: >-
+      You are sure the answer is more than $L$ and less than $H$. Your guess $g$ should be the same
+      factor above $L$ as it is below $H$, which says $g / L = H / g$. Solve this for
+      $g$, taking the positive answer.
+    answer:
+      type: expression
+      symbols:
+        - { name: L, positive: true }
+        - { name: H, positive: true }
+      lhs: 'g ='
+      reference: sqrt(L*H)
+      accept: ['(L*H)**(1/2)', 'sqrt(L)*sqrt(H)', '(H*L)**0.5']
+      reject: ['(L+H)/2', 'L*H', 'sqrt(L+H)', 'H/L', 'sqrt(H/L)']
+    explanation: Multiply both sides by $gL$ to get $g^2 = LH$, so $g = \sqrt{LH}$.
+    review:
+      variants:
+        - prompt: >-
+            You are sure an answer is more than $10^{3}$ and less than $10^{7}$. Which single guess is
+            the same factor away from both bounds?
+          answer:
+            type: number
+            value: 1e5
+          explanation: Average the exponents, $(3 + 7)/2 = 5$, so $10^{5}$, a factor of 100 from each bound.
+        - prompt: >-
+            Your bounds are 2 and 2,000. Which guess sits nearest the middle when you count by factors?
+          answer:
+            type: choice
+            options:
+              - { id: sixty, label: About 60 }
+              - { id: thousand, label: 'About 1,000' }
+              - { id: two-hundred, label: About 200 }
+              - { id: twenty, label: About 20 }
+            correct: [sixty]
+          explanation: >-
+            $\sqrt{2 \times 2000} = \sqrt{4000} \approx 63$, a factor of about 32 from each bound. The
+            ordinary average, about 1,000, is a factor of 2 from the top and 500 from the bottom.
+        - prompt: >-
+            An estimate multiplies three factors, and each might be off by a factor of 2 in the same
+            direction. In that worst case, by what factor is the product off?
+          answer:
+            type: number
+            value: 8
+          explanation: >-
+            Factors multiply: $2 \times 2 \times 2 = 8$. When the errors point different ways they
+            partly cancel, which is why careful estimates usually do better than this worst case.
+
+  - id: derive-chips-month
+    phase: derive
+    kind: estimate
+    concept: M1.1/fermi-estimation
+    title: Chips for a month
+    prompt: >-
+      The lab did not wait a century. How many of the puzzle's chips, each sustaining $10^{14}$ FLOP
+      per second and all working together perfectly, would finish GPT-3's $3.15 \times 10^{23}$ FLOP
+      in 30 days? An answer within a factor of 2 counts.
+    answer:
+      type: number
+      value: 1215
+      tolerance: { factor: 2 }
+      unit: chips
+    explanation: >-
+      Thirty days is $30 \times 86{,}400 \approx 2.6 \times 10^{6}$ seconds, in which one chip does
+      about $2.6 \times 10^{20}$ FLOP. So you need $3.15 \times 10^{23} \div (2.6 \times 10^{20})
+      \approx 1{,}200$ chips. Real clusters lose time to communication and failures, so in practice it
+      takes more.
+
+  # Build ----------------------------------------------------------------------
+  - id: build-training-years
+    phase: build
+    kind: build
+    concept: M1.1/units-as-algebra
+    covers: [M1.1/powers-of-ten, M1.1/dimensional-analysis]
+    title: Training time in Python
+    prompt: >-
+      Replace each 0 so that `seconds_per_year`, `seconds` and `years` hold the right values. Build
+      each one from the names above it rather than typing a number you worked out elsewhere, so the
+      program would still be right for a different chip or model.
+    answer:
+      type: code
+      starter: |
+        # Python as a careful calculator.
+        # 3.15e23 means 3.15 × 10^23; 1e14 means 10^14.
+
+        flop = 3.15e23          # GPT-3's compute, in FLOP
+        flop_per_second = 1e14  # one chip, in FLOP per second
+
+        # Replace each 0 below.
+        seconds_per_year = 0    # 365.25 days, in seconds
+        seconds = 0             # training time, in seconds
+        years = 0               # the same time, in years
+
+        print(seconds, "seconds")
+        print(years, "years")
+      tests: |
+        def test_seconds_per_year():
+            """seconds_per_year is a year of 365.25 days: 31,557,600 seconds."""
+            assert close(seconds_per_year, 31557600), f"seconds_per_year is {seconds_per_year}, expected 31,557,600."
+
+        def test_seconds():
+            """seconds is the time on one chip: 3.15 × 10^9 seconds."""
+            assert close(seconds, 3.15e9), f"seconds is {seconds}, expected 3.15e9."
+
+        def test_years():
+            """years is the same time in years: about 99.8."""
+            assert close(years, 3.15e9 / 31557600), f"years is {years}, expected about 99.8."
+      reference: |
+        flop = 3.15e23
+        flop_per_second = 1e14
+
+        seconds_per_year = 365.25 * 24 * 60 * 60
+        seconds = flop / flop_per_second
+        years = seconds / seconds_per_year
+
+        print(seconds, "seconds")
+        print(years, "years")
+      wrong:
+        - code: |
+            flop = 3.15e23
+            flop_per_second = 1e14
+
+            seconds_per_year = 365.25 * 24 * 60 * 60
+            seconds = flop * flop_per_second
+            years = seconds / seconds_per_year
+
+            print(seconds, "seconds")
+            print(years, "years")
+          why: Multiplies the compute by the speed, which gives FLOP squared per second rather than seconds.
+        - code: |
+            flop = 3.15e23
+            flop_per_second = 1e14
+
+            seconds_per_year = 365.25 * 24 * 60
+            seconds = flop / flop_per_second
+            years = seconds / seconds_per_year
+
+            print(seconds, "seconds")
+            print(years, "years")
+          why: Leaves out one factor of 60, so the year is counted in minutes and the answer is 60 times too large.
+        - code: |
+            flop = 3.15e23
+            flop_per_second = 1e14
+
+            seconds_per_year = 365.25 * 24 * 60 * 60
+            seconds = flop / flop_per_second
+            years = seconds * seconds_per_year
+
+            print(seconds, "seconds")
+            print(years, "years")
+          why: Multiplies seconds by seconds per year, which gives seconds squared per year rather than years.
+    explanation: >-
+      Each line keeps its unit in its name: `seconds` is FLOP divided by FLOP per second, and `years`
+      is seconds divided by seconds per year. Naming quantities by their units is a habit worth
+      keeping in every program you write.
+
+  - id: build-break-multiply
+    phase: build
+    kind: breakit
+    concept: M1.1/dimensional-analysis
+    title: One operator changed
+    prompt: Predict what happens to `years` after the change, then run both versions to see.
+    answer:
+      type: breakit
+      code: |
+        flop = 3.15e23
+        flop_per_second = 1e14
+        seconds_per_year = 365.25 * 24 * 60 * 60
+
+        years = flop / flop_per_second / seconds_per_year
+        print(years, "years")
+      broken: |
+        flop = 3.15e23
+        flop_per_second = 1e14
+        seconds_per_year = 365.25 * 24 * 60 * 60
+
+        years = flop * flop_per_second / seconds_per_year
+        print(years, "years")
+      change: >-
+        In the line for `years`, the first `/` becomes `*`, so the program multiplies by the chip's
+        speed instead of dividing by it.
+      options:
+        - { id: huge, label: '`years` comes out near $10^{30}$, absurdly large', when: 'years > 1e29' }
+        - { id: tiny, label: '`years` comes out near $10^{-5}$, absurdly small', when: 'years < 1e-4' }
+        - { id: same, label: '`years` is unchanged', when: "math.isclose(years, base['years'], rel_tol=1e-9)" }
+        - { id: error, label: Python stops with an error, when: 'error is not None' }
+    explanation: >-
+      Multiplying by $10^{14}$ instead of dividing by it changes the answer by a factor of $10^{28}$,
+      to about $10^{30}$ years, far longer than the age of the universe. The units said so first: FLOP
+      times FLOP per second is not a time. Python does not track units, so the mistake runs without
+      complaint, which is why you keep track of them yourself.
+
+  # Explain --------------------------------------------------------------------
+  - id: explain-training-time
+    phase: explain
+    kind: explain
+    concept: M1.1/units-as-algebra
+    covers: [M1.1/powers-of-ten, M1.1/dimensional-analysis, M1.1/fermi-estimation]
+    title: Explain it to a friend
+    prompt: >-
+      A friend says: "If one chip does $10^{14}$ FLOP a second and training needs $3.15 \times
+      10^{23}$ FLOP, just multiply the two to get the time." Explain to them why that cannot be right,
+      how the units lead to the correct formula, and how to check "about a century" in your head. Then
+      say how far you would trust an answer like this, and which number you would most want to pin
+      down.
+    answer:
+      type: text
+      rubric:
+        - id: units
+          criterion: >-
+            Treats units like symbols that multiply, divide and cancel, and uses that to show that FLOP
+            times FLOP per second cannot be a time.
+        - id: formula
+          criterion: >-
+            Gets time = compute ÷ speed from the units, and turns seconds into years by dividing by the
+            number of seconds in a year.
+        - id: powers
+          criterion: >-
+            Does the arithmetic with powers of ten, for example $10^{23} \div 10^{14} = 10^{9}$, with a
+            year of about $3 \times 10^{7}$ seconds.
+        - id: trust
+          criterion: >-
+            Judges the answer by the factor it might be off by, and names the least certain input, such
+            as the speed the chip really sustains.
+      reference: >-
+        Units behave like letters in algebra, so you can multiply, divide and cancel them. Multiplying
+        FLOP by FLOP per second gives FLOP squared per second, which is not a length of time, so the
+        multiplication cannot be right whatever the numbers are. To get seconds, the FLOP must cancel:
+        divide the compute by the speed. FLOP divided by FLOP per second is FLOP times seconds per FLOP,
+        which is seconds. That gives $3.15 \times 10^{23} \div 10^{14}$, and dividing powers of ten
+        subtracts the exponents, so it is $3.15 \times 10^{9}$ seconds. A year is about $\pi \times
+        10^{7}$, roughly $3 \times 10^{7}$ seconds, and dividing by it leaves about $10^{2}$, so about
+        a century. I would trust this to within a factor of 2 or so. The compute formula is itself
+        approximate, and the shakiest number is the speed: a chip rarely sustains its quoted peak, and
+        if it ran at half the speed the answer would double.
+      minWords: 60
+      maxWords: 350

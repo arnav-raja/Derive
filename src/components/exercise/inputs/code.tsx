@@ -102,6 +102,23 @@ export function CodeInput({
   );
 }
 
+/** Lines of `broken` that differ from `code`: whatever lies between their common start and end. */
+export function changedLines(code: string, broken: string): Set<number> {
+  const a = code.trimEnd().split("\n");
+  const b = broken.trimEnd().split("\n");
+  let start = 0;
+  while (start < a.length && start < b.length && a[start] === b[start]) start += 1;
+  let endA = a.length - 1;
+  let endB = b.length - 1;
+  while (endA >= start && endB >= start && a[endA] === b[endB]) {
+    endA -= 1;
+    endB -= 1;
+  }
+  const changed = new Set<number>();
+  for (let i = start; i <= endB; i += 1) changed.add(i);
+  return changed;
+}
+
 export function BreakitInput({
   view,
   name,
@@ -117,17 +134,30 @@ export function BreakitInput({
   disabled: boolean;
   result: BreakitResult | null;
 }) {
+  const brokenLines = view.broken.trimEnd().split("\n");
+  const changed = changedLines(view.code, view.broken);
   return (
     <div className="flex flex-col gap-4">
-      <div className="grid gap-3 md:grid-cols-2">
+      <div className="flex flex-col gap-3">
         <div className="flex min-w-0 flex-col gap-1">
           <p className="text-xs font-semibold tracking-wide text-ink-muted uppercase">The working program</p>
           <pre className="overflow-auto rounded-md border border-rule bg-inset px-3 py-2 font-mono text-sm text-ink">{view.code.trimEnd()}</pre>
         </div>
         <div className="flex min-w-0 flex-col gap-1">
           <p className="text-xs font-semibold tracking-wide text-ink-muted uppercase">After the change</p>
-          <pre className="overflow-auto rounded-md border border-warning/50 bg-warning-soft px-3 py-2 font-mono text-sm text-ink">
-            {view.broken.trimEnd()}
+          <pre className="overflow-auto rounded-md border border-rule bg-inset py-2 font-mono text-sm text-ink">
+            {brokenLines.map((line, i) =>
+              changed.has(i) ? (
+                <span key={i} className="block border-l-4 border-warning bg-warning-soft pr-3 pl-2">
+                  {line || " "}
+                  <span className="ml-3 font-sans text-xs font-semibold text-warning select-none">changed</span>
+                </span>
+              ) : (
+                <span key={i} className="block px-3">
+                  {line || " "}
+                </span>
+              ),
+            )}
           </pre>
         </div>
       </div>

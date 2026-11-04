@@ -42,6 +42,24 @@ const STATE_WORDS: Record<PhaseState, string> = {
   locked: "Locked",
 };
 
+type ConceptEvidence = { producedAt?: string | null; explainedAt?: string | null; recalledAt?: string | null; masteredAt?: string | null };
+
+function joinAnd(items: string[]): string {
+  return items.length <= 1 ? (items[0] ?? "") : `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
+}
+
+/** What an idea has shown and what it still needs, right first: "produced; still to explain it and recall it in a review". */
+function conceptStatus(s: ConceptEvidence | undefined): string {
+  if (s?.masteredAt) return "mastered";
+  const done = [s?.producedAt ? "produced" : "", s?.explainedAt ? "explained" : "", s?.recalledAt ? "recalled" : ""].filter(Boolean);
+  const left = [
+    s?.producedAt ? "" : "produce it",
+    s?.explainedAt ? "" : "explain it",
+    s?.recalledAt ? "" : "recall it in a review",
+  ].filter(Boolean);
+  return `${done.length ? joinAnd(done) : "not yet shown"}; still to ${joinAnd(left)}`;
+}
+
 export default async function LessonPage({ params, searchParams }: Props) {
   const { code } = await params;
   const query = await searchParams;
@@ -85,18 +103,17 @@ export default async function LessonPage({ params, searchParams }: Props) {
           <Notice tone="correct" title="Lesson complete" role="status">
             <p>
               Every phase is done. An idea counts as mastered once you have produced it yourself, explained it simply and
-              recalled it in a later review, so the reviews over the next few days finish the job.
+              recalled it in a later review.{" "}
+              {taught.every((c) => ov.concepts.get(c.id)?.masteredAt || ov.concepts.get(c.id)?.explainedAt)
+                ? "The reviews over the next few days finish the job."
+                : "The list shows what each idea still needs."}
             </p>
             <ul className="mt-2 flex flex-col gap-1">
-              {taught.map((c) => {
-                const s = ov.concepts.get(c.id);
-                const parts = [s?.producedAt ? "produced" : null, s?.explainedAt ? "explained" : null, s?.recalledAt ? "recalled" : null].filter(Boolean);
-                return (
-                  <li key={c.id}>
-                    <span className="font-medium">{c.name}:</span> {s?.masteredAt ? "mastered" : parts.length ? `${parts.join(" and ")} so far` : "not yet shown"}
-                  </li>
-                );
-              })}
+              {taught.map((c) => (
+                <li key={c.id}>
+                  <span className="font-medium">{c.name}:</span> {conceptStatus(ov.concepts.get(c.id))}
+                </li>
+              ))}
             </ul>
           </Notice>
         ) : null}

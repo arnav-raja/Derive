@@ -26,7 +26,7 @@ import {
 } from "./mastery";
 import { gradeFor, newCard, reviewCard } from "./reviews";
 import { exerciseState, isHintAttempt, lessonProgress, type LessonProgress } from "./state";
-import { DEFAULT_TIME_ZONE, addDays, localDate, startOfLocalDay } from "./time";
+import { DEFAULT_TIME_ZONE, dueText, localDate, startOfLocalDay } from "./time";
 
 /*
  * The learning engine on the server: recording answers and hints, creating and
@@ -393,9 +393,5 @@ export async function overview(store: Store, now = new Date()): Promise<Overview
 
 /** Today's local date, and the date a card falls due on, for display. */
 export function dueLabel(card: ReviewCard, now: Date): string {
-  const today = localDate(now, TIME_ZONE);
-  const due = localDate(new Date(card.due), TIME_ZONE);
-  if (due <= today) return "today";
-  if (due === addDays(today, 1)) return "tomorrow";
-  return due;
+  return dueText(card.due, now, TIME_ZONE);
 }

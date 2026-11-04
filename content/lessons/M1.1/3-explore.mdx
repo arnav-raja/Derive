@@ -1,0 +1,149 @@
+The puzzle's answer, about a century, is roughly $3 \times 10^9$ seconds. Is that a lot of seconds? Seconds suit a heartbeat and suit a century badly. To see why, put several spans of time on one line.
+
+## Numbers too large to picture
+
+The line below grows by a factor of ten at each tick mark, so the marks read 1 second, 10 seconds, 100 seconds, and so on. Click a point to see its value.
+
+<ScaleLine
+  title="Spans of time, in seconds"
+  description="Spans of time from a heartbeat to the age of the universe, placed on a line where each tick mark is ten times the one before it."
+  unit="s"
+  items={[
+    { label: "A heartbeat", value: 1 },
+    { label: "An hour", value: 3600 },
+    { label: "A day", value: 86400 },
+    { label: "A lifetime of 80 years", value: 2524608000 },
+    { label: "GPT-3 on one chip", value: 3150000000 },
+    { label: "Recorded history", value: 157788000000 },
+    { label: "The age of the universe", value: 435494880000000000 }
+  ]}
+  predict={{ prompt: "Before the year appears: where on this line does one year fall? Set your guess, lock it in, then reveal.", label: "One year", value: 31557600 }}
+/>
+
+GPT-3 on one chip sits just past a whole human lifetime. The figure has a second view, an ordinary scale on which equal distances mean equal amounts of time, like a ruler.
+
+<Exercise id="explore-linear" />
+
+<Reveal for="explore-linear">
+
+Now switch the figure to the ordinary scale and look. Everything except the age of the universe is crushed against zero. Recorded history, five thousand years of it, sits less than a millionth of the way along.
+
+On the first view, every power of ten gets the same room. The distance between two points there shows how many *times* larger one is, not how much larger. A lifetime is about 80 times a year, and a year is about 365 times a day, so those gaps look similar in size. This is the natural way to look at quantities that range over many powers of ten, and most of the quantities in machine learning do.
+
+</Reveal>
+
+## Arithmetic with powers of ten
+
+In the recall phase, $10^3 \times 10^4 = 10^7$: multiplying powers of ten adds the exponents, because it counts how many tens are multiplied together. Division runs the other way.
+
+<Exercise id="explore-divide" />
+
+<Reveal for="explore-divide">
+
+Write $10^{23}$ as 23 tens multiplied together and $10^{14}$ as 14 tens. Dividing cancels 14 of the tens on top against the 14 underneath, and 9 are left:
+
+$$
+\frac{3.15 \times 10^{23}}{10^{14}} = 3.15 \times 10^{23-14} = 3.15 \times 10^{9}.
+$$
+
+Dividing powers of ten subtracts the exponents. The leading number, 3.15, comes along unchanged. A few digits times a power of ten keeps a number's size in plain sight: the exponent says roughly how big it is, and the leading digits say the rest.
+
+</Reveal>
+
+## Units that cancel
+
+The numbers divided, and so did the units: FLOP divided by FLOP per second left seconds. Here is that calculation as a tree. The leaves at the bottom are the quantities, each with its unit, and the box above them is the operation. Hover over or tab to a box to see what it holds.
+
+<ExpressionTree
+  title="The time on one chip, with its units"
+  description="A tree for C divided by R, where C is the compute in FLOP and R is the chip's speed in FLOP per second."
+  expr="C/R"
+  values={{ C: 3.15e23, R: 1e14 }}
+  units={{ C: "FLOP", R: "FLOP/s" }}
+  predict={{ prompt: "Before you look: what unit comes out at the top of the tree?", ask: "unit", options: ["FLOP", "s", "FLOP·s", "1/s"] }}
+/>
+
+The unit at the top came from treating FLOP and s exactly like symbols in algebra. Dividing by a fraction multiplies by its upside-down version, and then the FLOP cancel:
+
+$$
+\text{FLOP} \div \frac{\text{FLOP}}{\text{s}} = \text{FLOP} \times \frac{\text{s}}{\text{FLOP}} = \text{s}.
+$$
+
+<Exercise id="explore-flip" />
+
+<Reveal for="explore-flip">
+
+<ExpressionTree
+  title="The same quantities, multiplied"
+  description="A tree for C times R, which multiplies the compute in FLOP by the speed in FLOP per second."
+  expr="C*R"
+  values={{ C: 3.15e23, R: 1e14 }}
+  units={{ C: "FLOP", R: "FLOP/s" }}
+/>
+
+The number at the top, about $3 \times 10^{37}$, means nothing, and the unit says so before you even look at the number: FLOP squared per second cannot be a length of time. So the formula "time = compute × speed" is wrong, and you can tell without doing any arithmetic.
+
+Adding is stricter still. You can multiply any two units, even if the result is meaningless, but you can only add quantities of the same kind. Three hours plus twenty minutes is fine once both are in minutes. Three hours plus twenty kilograms is not a quantity at all. Here is an attempt to add seconds to seconds per year:
+
+<ExpressionTree
+  title="Adding quantities of different kinds"
+  description="A tree that tries to add C divided by R, in seconds, to Y, in seconds per year."
+  expr="C/R + Y"
+  values={{ C: 3.15e23, R: 1e14, Y: 31557600 }}
+  units={{ C: "FLOP", R: "FLOP/s", Y: "s/year" }}
+/>
+
+</Reveal>
+
+## Guessing well
+
+Not every quantity comes with its numbers handed to you. Enrico Fermi, a physicist, was known for answering questions such as "how many piano tuners are there in Chicago?" in his head, to within a small factor, by breaking them into pieces he could guess. Try one about GPT-3.
+
+<Exercise id="explore-reading" />
+
+<Reveal for="explore-reading">
+
+Here is one way to break it down, with every unit written in. Step through the boxes and watch each unit cancel against the next.
+
+<ExpressionTree
+  title="Years to read GPT-3's training text"
+  description="A tree that divides the 300 billion tokens by the tokens read in a year, built from words per minute, minutes per hour, hours per day, days per year and words per token."
+  expr="D/(w*m*h*d/k)"
+  values={{ D: 3e11, w: 250, m: 60, h: 8, d: 365, k: 0.75 }}
+  units={{ D: "token", w: "word/min", m: "min/h", h: "h/day", d: "day/year", k: "word/token" }}
+  stepwise
+/>
+
+With 250 words a minute it comes to about 5,000 years: GPT-3 learnt from more text than a person could read in sixty lifetimes of reading 8 hours a day. If your reading speed was different, your answer differs from this one by the same factor, which raises a question about what "a good estimate" means.
+
+<Exercise id="explore-factor" />
+
+</Reveal>
+
+## The names
+
+You have used four ideas in this phase. Here are their names.
+
+<Definition term="Units as algebra">
+
+A quantity is a number times a unit, such as $3.15 \times 10^9$ s. Units multiply, divide and cancel exactly as symbols do in algebra, so FLOP ÷ (FLOP/s) = s.
+
+</Definition>
+
+<Definition term="Powers of ten">
+
+Writing a number as a few digits times a power of ten, such as $3.15 \times 10^{23}$, is called *scientific notation*. The power of ten gives the number's *order of magnitude*, its size to the nearest factor of ten or so. Multiplying adds exponents and dividing subtracts them.
+
+</Definition>
+
+<Definition term="Dimensional analysis">
+
+Checking a formula by checking that its units come out right. If the units are wrong, the formula is wrong. In the Derive phase you will see that it can also find formulas.
+
+</Definition>
+
+<Definition term="Fermi estimation">
+
+Estimating a quantity by breaking it into factors you can guess or look up, and judging the answer by the factor it might be off by.
+
+</Definition>

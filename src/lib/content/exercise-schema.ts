@@ -146,8 +146,8 @@ export const textAnswer = z.object({
 
 export const stepsAnswer = z.object({
   type: z.literal("steps"),
-  /** The rules a step may cite. */
-  rules: z.array(z.object({ id: itemId, label: md })).min(2).max(10),
+  /** The rules a step may cite; `name` is a short name for the menu, beside the full label. */
+  rules: z.array(z.object({ id: itemId, name: z.string().min(1).max(32).optional(), label: md })).min(2).max(10),
   /** The starting expression, in TeX. */
   start: z.string().min(1),
   /** Each line follows from the one before; the cited rule is private. */

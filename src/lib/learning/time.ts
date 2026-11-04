@@ -60,6 +60,26 @@ export function longDate(instant: Date | string, timeZone = DEFAULT_TIME_ZONE): 
   }).format(new Date(instant));
 }
 
+/**
+ * When something falls due, as words: "today", "tomorrow" or "on Saturday, 7 November", with the
+ * year added when it is not this year.
+ */
+export function dueText(due: Date | string, now: Date, timeZone = DEFAULT_TIME_ZONE): string {
+  const today = localDate(now, timeZone);
+  const day = localDate(due, timeZone);
+  if (day <= today) return "today";
+  if (day === addDays(today, 1)) return "tomorrow";
+  const sameYear = day.slice(0, 4) === today.slice(0, 4);
+  const text = new Intl.DateTimeFormat("en-IN", {
+    timeZone,
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    ...(sameYear ? {} : { year: "numeric" as const }),
+  }).format(new Date(due));
+  return `on ${text}`;
+}
+
 function offsetMinutes(instant: Date, timeZone: string): number {
   const parts = new Intl.DateTimeFormat("en-US", {
     timeZone,

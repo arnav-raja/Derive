@@ -54,8 +54,8 @@ export type TextView = {
 
 export type StepsView = {
   type: "steps";
-  /** `text` is the label as plain text, for a <select>. */
-  rules: { id: string; label: ReactNode; text: string }[];
+  /** `text` is the short name, or else the label as plain text, for a <select>. */
+  rules: { id: string; name: string | null; label: ReactNode; text: string }[];
   start: ReactNode;
   lines: { math: ReactNode }[];
 };

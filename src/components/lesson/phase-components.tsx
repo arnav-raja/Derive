@@ -95,8 +95,12 @@ export function phaseComponents(ctx: PhaseContext): MDXComponents {
           Mixed check
         </h2>
         <p className="text-base text-ink-muted">
-          {items.length} questions, some from this lesson and some from earlier ones, in no particular order. Part of the work is
-          recognising which idea each one needs. <span className="tabular">{done}</span> of {items.length} answered.
+          {items.length} questions{" "}
+          {items.every((i) => i.cardId.startsWith(`${lesson.code}/`))
+            ? "on this lesson's ideas"
+            : "on this lesson's ideas and earlier ones"}
+          , in no particular order. Part of the work is recognising which idea each one needs.{" "}
+          <span className="tabular">{done}</span> of {items.length} answered.
         </p>
         {items.map((item) => {
           const ref = /^([MLE]\d{1,2}\.\d{1,2})\/([a-z0-9-]+)$/.exec(item.cardId);

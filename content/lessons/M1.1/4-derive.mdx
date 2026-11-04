@@ -1,0 +1,105 @@
+In Explore you saw units cancel like symbols. Now use that as a method. Write down what you know, each quantity with its unit, and let the units tell you how the quantities must combine.
+
+## The puzzle, derived from its units
+
+You have three quantities:
+
+- $\sym{C}{C}$, the compute, in FLOP;
+- $\sym{R}{R}$, the chip's speed, in FLOP per second;
+- $\sym{Y}{Y}$, the length of a year, in seconds per year.
+
+<Exercise id="derive-time-formula" />
+
+<Reveal for="derive-time-formula">
+
+Dividing $C$ by $R$ leaves seconds, and dividing seconds by seconds per year leaves years:
+
+$$
+T = \frac{C}{R\,Y}, \qquad \frac{\text{FLOP}}{\dfrac{\text{FLOP}}{\text{s}} \times \dfrac{\text{s}}{\text{year}}} = \text{year}.
+$$
+
+Try any other arrangement of the three and the units come out wrong. The units did not merely check the formula; they chose it.
+
+</Reveal>
+
+## Every step, justified
+
+Now put the numbers in and follow both the numbers and the units to the end. Each line below follows from the one before by exactly one rule. Your job is to say which.
+
+<Exercise id="derive-cancel-chain" />
+
+<Reveal for="derive-cancel-chain">
+
+Every rule in that chain is a rule of ordinary algebra. Nothing special was needed for units: FLOP and s behaved exactly like the letters $a$ and $b$ would. That is the whole content of "units as algebra", and it is why a calculation that keeps its units checks itself as it goes.
+
+</Reveal>
+
+## A second angle: in your head
+
+A result worth trusting should survive being reached another way. Here is the same answer from rough numbers, with no calculator. A useful fact: a year is very nearly $\pi \times 10^7$ seconds, so about $3 \times 10^7$.
+
+<Steps>
+  <Step why="round 3.15 to 3, then subtract exponents">$C \div R \approx 3 \times 10^{23} \div 10^{14} = 3 \times 10^{9}$ s</Step>
+  <Step why="a year is about π × 10^7 s">$1 \text{ year} \approx 3 \times 10^{7}$ s</Step>
+  <Step why="divide the leading numbers, subtract the exponents">$3 \times 10^{9} \div (3 \times 10^{7}) = 10^{2}$ years</Step>
+</Steps>
+
+About a century again, by a route you can carry in your head. When two routes agree, a slip in either one would have shown.
+
+Units sit even on numbers that look bare. Look again at the formula from the puzzle.
+
+<Exercise id="derive-units-six" />
+
+## Finding a formula you did not know
+
+So far the units have checked formulas, or chosen between a few. They can also find a formula from nothing.
+
+A pendulum is a weight on a string, swinging back and forth. How long does one swing take? Its period $T$, in seconds, could depend on three things: the string's length $L$ in metres, the strength of gravity $g$ in metres per second squared (m/s²), and the mass $m$ of the weight in kilograms. Only one way of combining them gives seconds. Find it in two steps.
+
+<Exercise id="derive-pendulum-square" />
+
+<Reveal for="derive-pendulum-square">
+
+<Exercise id="derive-pendulum-period" />
+
+</Reveal>
+
+<Reveal for="derive-pendulum-period">
+
+Two things fall out that are easy to miss.
+
+First, the mass cannot appear at all. Nothing else in the problem carries kilograms to cancel it, so a heavy weight and a light one on the same string swing with the same period. Experiments confirm it.
+
+Second, the units cannot give the whole answer. The full physics gives $T = 2\pi\sqrt{L/g}$ for small swings, and the $2\pi$ is a pure number with no unit, invisible to dimensional analysis. So dimensional analysis can rule a formula out, and can find how a quantity scales, but it cannot prove a formula right.
+
+</Reveal>
+
+## Estimates with honest bounds
+
+Fermi estimates often start from bounds. You may not know how many words a person reads a minute, but you are sure it is more than 100 and less than 1,000. Which single number should you then guess?
+
+<Exercise id="derive-geomean" />
+
+<Reveal for="derive-geomean">
+
+The guess $g = \sqrt{LH}$ is called the *geometric mean* of the bounds. It is the right middle when your uncertainty is about factors. Compare it with the ordinary average, $(L + H)/2$, for bounds of 100 and 1,000,000:
+
+<ScaleLine
+  title="Two middles between the same bounds"
+  description="A lower bound of 100 and an upper bound of 1,000,000, with the ordinary average of 500,050 and the geometric mean of 10,000 marked between them."
+  items={[
+    { label: "Lower bound", value: 100 },
+    { label: "Upper bound", value: 1000000 },
+    { label: "Ordinary average", value: 500050 },
+    { label: "Geometric mean", value: 10000 }
+  ]}
+  span={{ from: "Lower bound", to: "Upper bound" }}
+/>
+
+The ordinary average sits a factor of 2 below the upper bound and a factor of 5,000 above the lower one. The geometric mean sits a factor of 100 from each. With powers of ten it is quick to find: average the exponents. Between $10^2$ and $10^6$ the geometric mean is $10^4$.
+
+</Reveal>
+
+Now put the puzzle's formula to work on the question it left open.
+
+<Exercise id="derive-chips-month" />

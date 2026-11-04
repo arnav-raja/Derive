@@ -137,14 +137,25 @@ export function StepsInput({
   disabled: boolean;
 }) {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-3">
+      <div className="rounded-md border border-rule px-3 py-2">
+        <p className="text-sm text-ink-muted">The rules you can cite</p>
+        <ul className="mt-1 flex flex-col gap-1 text-sm">
+          {view.rules.map((r) => (
+            <li key={r.id}>
+              {r.name ? <span className="font-semibold text-ink">{r.name}: </span> : null}
+              {r.label}
+            </li>
+          ))}
+        </ul>
+      </div>
       <div className="overflow-x-auto rounded-md bg-inset px-3 py-2 text-base">{view.start}</div>
       <ol className="flex flex-col gap-2">
         {view.lines.map((line, i) => (
-          <li key={i} className="grid grid-cols-1 gap-2 rounded-md border border-rule px-3 py-2 sm:grid-cols-[1fr_16rem] sm:items-center">
-            <div className="overflow-x-auto text-base">
-              <span className="mr-2 text-sm text-ink-muted">Line {i + 1}</span>
-              {line.math}
+          <li key={i} className="flex flex-col gap-2 rounded-md border border-rule px-3 py-2">
+            <div className="flex items-baseline gap-2">
+              <span className="shrink-0 text-sm text-ink-muted">Line {i + 1}</span>
+              <div className="min-w-0 overflow-x-auto py-1 text-base">{line.math}</div>
             </div>
             <label className="flex flex-col gap-1 text-sm">
               <span className="sr-only">The rule that justifies line {i + 1}</span>
@@ -157,7 +168,7 @@ export function StepsInput({
                   onChange(next);
                 }}
                 disabled={disabled}
-                className={clsx(inputClasses, "h-10")}
+                className={clsx(inputClasses, "h-10 w-full max-w-lg")}
               >
                 <option value="">Choose the rule</option>
                 {view.rules.map((r) => (

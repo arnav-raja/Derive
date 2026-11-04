@@ -1,0 +1,174 @@
+misconceptions:
+  - id: units-are-labels
+    belief: Units are labels to write after the answer, and can be dropped while calculating.
+    why: >-
+      Units are part of the quantity. They multiply and divide with the numbers, and dropping them
+      throws away the one check that catches a wrong formula.
+    cue: The learner's working has bare numbers, or the final unit is added at the end by guesswork.
+  - id: multiply-the-big-numbers
+    belief: To get a time from compute and speed, multiply them, because both are large.
+    why: >-
+      FLOP times FLOP per second is FLOP squared per second, which is not a time. The FLOP has to
+      cancel, which only division does.
+    cue: An answer near $10^{37}$ seconds or $10^{30}$ years, or a formula with $C \times R$.
+  - id: exponent-arithmetic
+    belief: $10^a \times 10^b = 10^{ab}$, or $10^a \div 10^b = 10^{a \div b}$.
+    why: >-
+      A power of ten counts tens multiplied together. Multiplying puts the two counts side by side, so
+      the exponents add; dividing cancels one count against the other, so they subtract.
+    cue: Answers like $10^{12}$ for $10^3 \times 10^4$, or an exponent that is a fraction after a division.
+  - id: negative-exponent-negative-number
+    belief: $10^{-3}$ is a negative number.
+    why: A negative exponent means one divided by the power, so $10^{-3} = 1/1000$, small but positive.
+    cue: The learner chooses $-10^3$ for 0.001, or treats a negative exponent as making a quantity negative.
+  - id: arithmetic-mean-of-bounds
+    belief: The best single guess between two bounds is their ordinary average.
+    why: >-
+      When the uncertainty spans factors, the ordinary average sits close to the upper bound. The
+      geometric mean is the same factor from each bound.
+    cue: An answer of $(L+H)/2$, or a guess of about 1,000 between bounds of 2 and 2,000.
+  - id: exact-or-wrong
+    belief: An estimate is wrong unless it matches the careful answer.
+    why: >-
+      An estimate is judged by the factor it is off by. Within a factor of 2 or 3 is often all a
+      decision needs, and it can be had in a minute.
+    cue: The learner refuses to estimate without exact data, or treats a factor-of-2 estimate as a failure.
+  - id: units-prove-formulas
+    belief: If the units of a formula are right, the formula is right.
+    why: >-
+      Matching units is necessary but not sufficient. Pure numbers such as 2π or one half are
+      invisible to units, and a formula can have the right units and the wrong physics.
+    cue: The learner expects dimensional analysis to supply the $2\pi$ in the pendulum's period.
+
+exercises:
+  derive-time-formula:
+    rungs:
+      - Which unit do you want to end with, and which of the three quantities already carries FLOP?
+      - >-
+        In Explore, the tree for $C \div R$ came out in seconds. What did dividing by $R$ do to the
+        FLOP, and what would you need to do to seconds to reach years?
+      - >-
+        Leave years aside for a moment. Using only $C$ and $R$, which arrangement gives seconds? Once
+        you have seconds, ask what to do with something measured in seconds per year.
+      - >-
+        Look at where $Y$ sits in your expression. Write out the units of that part: do they leave
+        years, or seconds squared per year?
+      - >-
+        A parallel example with the same shape: a recipe needs 1,200 g of flour, a scoop holds 300 g,
+        and a bag holds 2 scoops. Then 1,200 g ÷ (300 g per scoop) = 4 scoops, and 4 scoops ÷ (2
+        scoops per bag) = 2 bags. So bags = flour ÷ (grams per scoop × scoops per bag).
+    notes: >-
+      The usual slips are multiplying by $R$ or by $Y$. Both still type-check as algebra, so the hint
+      should send the learner to the units of the final operation, never to the corrected expression.
+  derive-cancel-chain:
+    rungs:
+      - For each line, ask what changed from the line above it. The numbers, the units, or only how they are grouped?
+      - >-
+        In the recall phase, dividing powers of ten subtracted the exponents. Which lines change an
+        exponent and nothing else?
+      - Look only at the first line. Dividing by a fraction $\tfrac{a}{b}$ is the same as multiplying by what?
+      - >-
+        The lines where a unit disappears all use the same rule. Find those lines first, then sort out
+        the remaining ones.
+      - >-
+        A parallel chain: $\tfrac{6\ \text{m}}{2\ \text{m/s}} = 6\ \text{m} \times \tfrac{1\ \text{s}}{2\
+        \text{m}}$, then $= \tfrac{6}{2} \times \tfrac{\text{m}}{\text{m}} \times \text{s}$, then $=
+        \tfrac{6}{2}\ \text{s}$, then $= 3\ \text{s}$. Name the rule behind each move there, then look
+        for the same moves in your chain.
+    notes: >-
+      The checker reports how many lines cite the right rule. Learners most often mix up "regroup" and
+      "cancel"; a hint can point at a line where a unit vanishes without naming the rule.
+  derive-pendulum-square:
+    rungs:
+      - Which of the three quantities has seconds anywhere in its unit?
+      - >-
+        In the puzzle, dividing FLOP by FLOP per second cancelled the FLOP. Which unit here would you
+        want to cancel, and against which quantity?
+      - Write out the unit of $g$ in full. What do you get if you divide metres by it?
+      - The mass is a distraction for this step, since nothing else carries kilograms. Work with $L$ and $g$ only.
+      - >-
+        A parallel case: a speed $v$ in m/s and an acceleration $a$ in m/s². Their ratio $v/a$ has
+        units (m/s) ÷ (m/s²) = s. Here you want s² instead, from a length and an acceleration.
+    notes: An answer of $g/L$ has units 1/s², the reciprocal of what is wanted; point at the units, not the fix.
+  derive-pendulum-period:
+    rungs:
+      - You already have a combination in seconds squared. What operation turns s² into s?
+      - >-
+        Powers count repeated multiplication. If $x^2$ has units of s², what are the units of $x$
+        itself?
+      - Take a quantity of $16\ \text{s}^2$. Which operation turns it into $4\ \text{s}$?
+      - >-
+        Your answer needs one operation applied to the whole combination from the last step. Check
+        that it applies to all of it and not to one letter.
+      - >-
+        A parallel example: an area $A$ is in m². The side of a square with that area is found by one
+        operation on $A$, and its unit is metres. The same move works on any unit squared.
+    notes: >-
+      Learners who know $2\pi\sqrt{L/g}$ often type it; the checker rejects it because the prompt asks
+      for no number in front. Say so without supplying the expression.
+  derive-geomean:
+    rungs:
+      - The condition is $g/L = H/g$. What could you multiply both sides by to clear both fractions?
+      - >-
+        In Explore, estimates were judged by factors. Here "the same factor from each bound" is the
+        equation $g/L = H/g$, and you only need to rearrange it.
+      - Try numbers first. If $L = 1$ and $H = 100$, which $g$ makes $g/1 = 100/g$ true?
+      - Once the fractions are cleared you have $g^2$ on one side. What one step is left?
+      - >-
+        A parallel example: a rectangle has sides 4 and 9. The square with the same area has side $s$,
+        where $s^2 = 4 \times 9 = 36$, so $s = 6$. Notice that 6 is the same factor, 1.5, above 4 as it
+        is below 9.
+    notes: An answer of $(L+H)/2$ is the arithmetic-mean misconception; ask what factor it sits from each bound.
+  derive-chips-month:
+    rungs:
+      - How much work, in FLOP, does one chip do in 30 days?
+      - >-
+        In the Derive phase the units chose $T = C/(RY)$. Here the time is fixed and the number of
+        chips is unknown. Which unit must your answer have?
+      - If one chip needs 100 years, how many chips would finish in 1 year?
+      - Convert the 30 days into seconds before dividing. Mixing days and seconds is the usual slip.
+      - >-
+        A parallel example: a wall needs 600 bricks and one builder lays 20 bricks an hour. To finish in
+        5 hours you need 600 ÷ (20 × 5) = 6 builders.
+    notes: Answers near 1.2 or near 100,000 usually mean a missing or doubled conversion between days and seconds.
+  explore-reading:
+    rungs:
+      - What do you know for certain, and what do you have to guess? Start with how many words 300 billion tokens is.
+      - >-
+        In the puzzle you divided the total work by the work done per second. What is the total here,
+        and what is the reading done per year?
+      - Start smaller. How many words would you read in one hour at your guessed speed?
+      - >-
+        Check the units at each step: words per minute times minutes per hour gives words per hour.
+        Keep multiplying until you reach tokens per year.
+      - >-
+        A parallel example: a tap fills a 9,000-litre tank at 3 litres a minute, running 10 hours a day.
+        Litres per day: 3 × 60 × 10 = 1,800. Days: 9,000 ÷ 1,800 = 5.
+    notes: >-
+      Any reading speed from about 150 to 500 words a minute is honest. Answers off by about 60 usually
+      mean minutes and hours were mixed; off by about 365, days and years.
+  build-training-years:
+    rungs:
+      - Which of the three values can you work out from the calendar alone, without the chip or the model?
+      - >-
+        In the Derive phase you wrote the time in years from $C$, $R$ and $Y$. Which name in the code
+        plays each of those roles?
+      - >-
+        Work on one line at a time. Print `seconds_per_year` on its own and compare it with the value
+        its check expects.
+      - >-
+        Look at the failing check's name: the problem is on the line that sets that variable. Compare
+        that line's units with the units the name promises.
+      - >-
+        A parallel example: to find the hours to drive 300 km at 60 km/h, and then the days at 10 hours
+        of driving a day, write `hours = 300 / 60` and then `days = hours / 10`.
+    notes: >-
+      The diagnosis lists which tests failed. A failing seconds check with years passing is impossible
+      unless years was typed in by hand; ask the learner to build each name from the ones above it.
+
+novice:
+  - Why are you allowed to cancel FLOP against FLOP? They are not numbers.
+  - Why is three times ten to the seven seconds close enough for a year?
+  - If the units cannot find the 2π for the pendulum, how would anyone know the formula is right?
+  - Why not just type it all into a calculator?
+  - What does it mean for an estimate to be off by a factor of 2?

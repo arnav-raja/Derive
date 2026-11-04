@@ -109,9 +109,9 @@ export default async function TodayPage() {
               ) : null}
             </Panel>
           ) : (
-            <EmptyState title={firstUnwritten ? `${firstUnwritten.code} ${firstUnwritten.title} is being written` : "Nothing new is open"}>
+            <EmptyState title={firstUnwritten ? `Next: ${firstUnwritten.code} ${firstUnwritten.title}` : "Nothing new is open"}>
               {firstUnwritten
-                ? "A lesson opens here once it has passed every check: verified exercises, recomputed numbers, an independent review and the tutor's leak tests."
+                ? "This lesson is still being written. It opens here once it has passed every check: verified exercises, recomputed numbers, an independent review and the tutor's leak tests."
                 : "Every lesson that is open to you is under way or done. The next ones open as you master what they require."}
             </EmptyState>
           )}

@@ -9,6 +9,7 @@ import { answerPlacement } from "@/app/(app)/placement/actions";
 import { answerCheck, answerReview } from "@/app/(app)/review/actions";
 import { useTutor, type TutorEntry } from "@/components/tutor/tutor";
 import { Button } from "@/components/ui/button";
+import { Tex } from "@/components/ui/tex";
 import { inputClasses } from "@/components/ui/field";
 import { HintIcon } from "@/components/ui/icons";
 import { Notice } from "@/components/ui/notice";
@@ -135,6 +136,8 @@ export function ExerciseCard({ view }: { view: ExerciseView }) {
   const [grading, setGrading] = useState<Grading | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
+  // Set when the grader cannot mark a written answer, so the lesson can still go on.
+  const [graderDown, setGraderDown] = useState(false);
 
   useEffect(() => {
     startedAt.current = Date.now();
@@ -315,13 +318,16 @@ export function ExerciseCard({ view }: { view: ExerciseView }) {
         body: JSON.stringify({ lesson: target.lessonCode, exercise: target.exerciseId, body: text, durationMs: duration() }),
       });
       const body = (await res.json()) as ({ ok: true } & Grading) | { ok: false; error: string };
-      if (!body.ok) setError(body.error);
-      else {
+      if (!body.ok) {
+        setError(body.error);
+        if (res.status === 503 || res.status === 409 || res.status === 502) setGraderDown(true);
+      } else {
         setGrading(body);
         router.refresh();
       }
     } catch {
       setError("The grader could not be reached. Your text is kept here.");
+      setGraderDown(true);
     } finally {
       setBusy(null);
     }
@@ -343,7 +349,8 @@ export function ExerciseCard({ view }: { view: ExerciseView }) {
   const titleId = `${uid}-title`;
   const working_ = pending || busy !== null;
   const words = wordCount(text);
-  const canMoveOn = view.target.mode === "lesson" && !done && (view.state.attempts > 0 || view.state.hintsUsed > 0);
+  const canMoveOn =
+    view.target.mode === "lesson" && !done && (view.state.attempts > 0 || view.state.hintsUsed > 0 || graderDown);
 
   return (
     <section
@@ -399,7 +406,6 @@ export function ExerciseCard({ view }: { view: ExerciseView }) {
               autoComplete="off"
               spellCheck={false}
               className={clsx(inputClasses, "h-10 max-w-md flex-1 font-mono")}
-              placeholder="for example (log10(L) + log10(H))/2"
             />
           </div>
           <p className="text-xs text-ink-muted">
@@ -407,7 +413,11 @@ export function ExerciseCard({ view }: { view: ExerciseView }) {
             <code className="font-mono">**</code> for powers, <code className="font-mono">sqrt( )</code>, <code className="font-mono">log10( )</code>.
             {a.symbols.length ? ` Symbols: ${a.symbols.map((s) => s.name).join(", ")}.` : ""}
           </p>
-          {exprResult?.latex ? <p className="text-sm text-ink-muted">Read as: <span className="font-mono">{exprResult.latex}</span></p> : null}
+          {exprResult?.latex ? (
+            <p className="text-sm text-ink-muted">
+              Read as: <Tex tex={exprResult.latex} className="text-base text-ink" />
+            </p>
+          ) : null}
         </div>
       ) : null}
       {a.type === "code" ? (
@@ -535,7 +545,9 @@ export function ExerciseCard({ view }: { view: ExerciseView }) {
                 ? exprResult.message
                 : oneShot
                   ? null
-                  : "Not yet. Look again, or ask for a hint."))}
+                  : a.type === "code"
+                    ? "Read the message under the first failing test, change that line, and run the tests again."
+                    : "Look again, or ask for a hint."))}
         </Notice>
       ) : null}
 

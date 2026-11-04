@@ -18,6 +18,7 @@ import {
   type ChecksFile,
   type Exercise,
 } from "./exercise-schema";
+import { labelToText } from "./plain-tex";
 import type { LoadedLesson } from "./lesson";
 import { renderInline, renderMarkdown, renderMarkdownHtml } from "./markdown";
 
@@ -85,8 +86,9 @@ export function publicAnswer(answer: Answer, checks: ChecksFile, key: string): A
         type: "steps",
         rules: answer.rules.map((r) => ({
           id: r.id,
+          name: r.name ?? null,
           label: renderInline(r.label),
-          text: r.label.replace(/\$([^$]*)\$/g, "$1").replace(/[*_`]/g, ""),
+          text: r.name ?? labelToText(r.label),
         })),
         start: tex(answer.start),
         lines: answer.lines.map((l) => ({ math: tex(l.math) })),

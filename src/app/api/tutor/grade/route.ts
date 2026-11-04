@@ -41,10 +41,10 @@ export async function POST(request: Request) {
   }
 
   const client = modelClient();
-  if (!client) return json({ ok: false, error: "The grader is not connected yet. Your text is kept here." }, 503);
+  if (!client) return json({ ok: false, error: "The grader is not connected yet. Your text is kept here, so you can move on now and submit it later." }, 503);
   const budget = await tutorBudget(store);
   if (budget.exhausted) {
-    return json({ ok: false, error: "Today's tutor budget is spent, so grading waits until midnight. Your text is kept here." }, 409);
+    return json({ ok: false, error: "Today's tutor budget is spent, so grading waits until midnight. Your text is kept here, so you can move on now and submit it later." }, 409);
   }
 
   const grading = await gradeText(client, lesson, ex, body.body);

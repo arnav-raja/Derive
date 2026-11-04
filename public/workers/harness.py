@@ -439,6 +439,27 @@ def check_form(expr, form, names):
     return None
 
 
+def _different_message(payload, table, expr):
+    """Says when an answer is the right expression times a pure number, which units cannot see."""
+    import sympy
+
+    plain = "That is not equal to the expression this step needs."
+    ratios = []
+    for point, expected_text in zip(payload["points"], payload["values"]):
+        got = evaluate_at(expr, table, point)
+        expected = sympy.Float(expected_text, 30)
+        if got is None or expected == 0:
+            return plain
+        ratios.append(got / expected)
+    if len(ratios) < 2 or ratios[0] == 0:
+        return plain
+    first = ratios[0]
+    if all(abs(r - first) <= sympy.Float("1e-9") * abs(first) for r in ratios):
+        return ("That differs from what this step needs only by a constant factor. Check any pure"
+                " number in front, and any sign.")
+    return plain
+
+
 def check_expression(payload):
     import sympy
 
@@ -464,7 +485,7 @@ def check_expression(payload):
         expected = sympy.Float(expected_text, 30)
         if got is None or abs(got - expected) > sympy.Float("1e-9") * max(1, abs(expected)):
             return {"status": "different", "latex": sympy.latex(expr),
-                    "message": "That is not equal to the expression this step needs."}
+                    "message": _different_message(payload, table, expr)}
     shape = check_form(expr, payload.get("form") or {}, names)
     if shape:
         return {"status": "form", "latex": sympy.latex(expr), "message": shape}

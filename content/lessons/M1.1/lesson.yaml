@@ -1,0 +1,61 @@
+code: M1.1
+title: Quantities, units and estimation
+course: M1
+status: review
+summary: >-
+  How long would one chip take to train GPT-3? Units that multiply and cancel like symbols,
+  powers of ten for numbers too large to picture, a units check that catches a wrong formula
+  before any arithmetic, and estimates judged by the factor they are off by.
+sittings: 2
+minutes:
+  puzzle: 15
+  recall: 10
+  explore: 35
+  derive: 35
+  build: 40
+  explain: 25
+concepts:
+  taught:
+    - id: M1.1/units-as-algebra
+      name: Units as algebra
+      summary: >-
+        A quantity is a number times a unit, and units multiply, divide and cancel like symbols, so
+        converting a unit means multiplying by a factor equal to one.
+      usedBy: [M1.4, E5.3, E6.1]
+    - id: M1.1/powers-of-ten
+      name: Powers of ten
+      summary: >-
+        Writing a number as a few digits times a power of ten, so that multiplying adds exponents,
+        dividing subtracts them, and the size of the number is plain at a glance.
+      usedBy: [M1.2, M1.5, E1.1, E6.1]
+    - id: M1.1/dimensional-analysis
+      name: Dimensional analysis
+      summary: >-
+        Checking a formula, or finding one, by requiring both sides to have the same units. It rules
+        out wrong formulas, but it cannot supply pure numbers such as 2π.
+      usedBy: [E5.3, E6.1, M11.6]
+    - id: M1.1/fermi-estimation
+      name: Fermi estimation
+      summary: >-
+        Estimating a quantity by breaking it into factors you can guess, taking the geometric mean of
+        your bounds, and judging the result by the factor it might be off by.
+      usedBy: [E1.4, E6.1, L5.11]
+      skill: 2
+  used: []
+links:
+  requires: []
+  buildsOn: []
+  foreshadows:
+    - lesson: L5.11
+      bridge: >-
+        Planning a training run repeats this lesson's puzzle at full scale: compute from 6ND, divided by
+        what a whole cluster sustains, converted to days and then to money.
+    - lesson: E5.3
+      bridge: >-
+        The roofline model divides FLOP by bytes to get FLOP per byte, and that unit alone says whether
+        a program is held back by arithmetic or by memory.
+    - lesson: E6.1
+      bridge: >-
+        The arithmetic of large models is unit bookkeeping with powers of ten: bytes per parameter, FLOP
+        per token and seconds per step.
+skills: [2]

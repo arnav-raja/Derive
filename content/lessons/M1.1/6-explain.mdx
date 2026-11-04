@@ -1,0 +1,27 @@
+The test of understanding is explaining it simply to someone who was not there. Write for a friend who is clever but has never heard of a FLOP and has never seen units cancel.
+
+<Exercise id="explain-training-time" />
+
+## Where this leads
+
+The four ideas from this lesson return throughout Derive, most of all wherever a model meets real hardware.
+
+<Foreshadow lesson="L5.11">
+
+Planning a training run asks this lesson's puzzle at full scale. The compute comes from $6ND$, it is divided by what a whole cluster sustains rather than one chip, and the time is turned into days and then into money. The unit bookkeeping is exactly what you did here.
+
+</Foreshadow>
+
+<Foreshadow lesson="E5.3">
+
+The roofline model divides the FLOP a program does by the bytes it moves, giving FLOP per byte. That one unit says whether a program is held back by arithmetic or by memory, before you time anything.
+
+</Foreshadow>
+
+<Foreshadow lesson="E6.1">
+
+The arithmetic of large models is unit bookkeeping with powers of ten: bytes per parameter, FLOP per token, seconds per step and chips per job.
+
+</Foreshadow>
+
+<MixedCheck />

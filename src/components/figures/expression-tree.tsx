@@ -40,8 +40,17 @@ type TreeNode = {
 
 const OP_LABEL = { "+": "+", "-": "−", "*": "×", "/": "÷", "^": "power" } as const;
 const NONE: Record<string, never> = {};
-const NODE_W = 84;
-const LEVEL_H = 74;
+const NODE_W = 72;
+const LEVEL_H = 84;
+/** A wide tree is shrunk to fit its column, but never below this, so its text stays readable; past it, the figure scrolls. */
+const MIN_FIT = 0.75;
+
+const SUPERSCRIPT: Record<string, string> = { "-": "⁻", "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴", "5": "⁵", "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹" };
+
+/** "FLOP^2/s" as "FLOP²/s", for display. */
+function prettyUnit(text: string): string {
+  return text.replace(/\^(-?\d+)/g, (_, d: string) => [...d].map((c) => SUPERSCRIPT[c] ?? c).join(""));
+}
 
 function build(root: ExprNode, scope: Record<string, number>, units: Record<string, Unit> | null) {
   let nextId = 0;
@@ -134,11 +143,22 @@ export function ExpressionTree({
 
   const all = flatten(tree);
   const depth = Math.max(...all.map((n) => n.depth));
-  const spacing = Math.max(NODE_W + 8, width / Math.max(1, leaves));
-  const svgW = Math.max(width, leaves * spacing);
-  const svgH = (depth + 1) * LEVEL_H + 24;
+  // Each node shows its name, its value and its unit on three lines. Every node
+  // is as wide as the longest line any node will show, so nothing spills out.
+  const unitLine = (n: TreeNode) =>
+    n.unit?.ok && Object.keys(n.unit.unit).length ? prettyUnit(unitText(n.unit.unit)) : "";
+  const valueLine = (n: TreeNode) => (n.unit && !n.unit.ok ? "units clash" : formatValue(n.value, 3));
+  const nodeW = Math.max(
+    NODE_W,
+    ...all.map((n) => Math.max(n.label.length * 7.8, valueLine(n).length * 6.4, unitLine(n).length * 6.4) + 16),
+  );
+  const natural = Math.max(1, leaves) * (nodeW + 8);
+  const fit = width <= 0 || natural <= width ? 1 : Math.max(MIN_FIT, width / natural);
+  const spacing = Math.max(nodeW + 8, width / fit / Math.max(1, leaves));
+  const svgW = Math.max(width / fit, leaves * spacing);
+  const svgH = (depth + 1) * LEVEL_H + 16;
   const px = (n: TreeNode) => (n.x + 0.5) * spacing + (svgW - leaves * spacing) / 2;
-  const py = (n: TreeNode) => 28 + n.depth * LEVEL_H;
+  const py = (n: TreeNode) => 32 + n.depth * LEVEL_H;
   const highlight = hover !== null ? subtreeIds(all.find((n) => n.id === hover)!) : current ? subtreeIds(current) : null;
   const focus = hover !== null ? all.find((n) => n.id === hover) : current;
 
@@ -225,15 +245,23 @@ export function ExpressionTree({
       }
       picture={({ titleId, descId }) => (
         <div ref={ref} className="w-full overflow-x-auto">
-          <svg role="img" aria-labelledby={titleId} aria-describedby={descId} width={svgW} height={svgH} viewBox={`0 0 ${svgW} ${svgH}`} className="block font-sans">
+          <svg
+            role="img"
+            aria-labelledby={titleId}
+            aria-describedby={descId}
+            width={svgW * fit}
+            height={svgH * fit}
+            viewBox={`0 0 ${svgW} ${svgH}`}
+            className="block font-sans"
+          >
             {all.flatMap((n) =>
               n.children.map((c) => (
                 <line
                   key={`${n.id}-${c.id}`}
                   x1={px(n)}
-                  y1={py(n) + 18}
+                  y1={py(n) + 26}
                   x2={px(c)}
-                  y2={py(c) - 18}
+                  y2={py(c) - 24}
                   className={highlight?.has(c.id) && highlight.has(n.id) ? "stroke-accent" : "stroke-fig-grid"}
                   strokeWidth={highlight?.has(c.id) && highlight.has(n.id) ? 2 : 1.5}
                 />
@@ -248,22 +276,27 @@ export function ExpressionTree({
               return (
                 <g key={n.id} onPointerEnter={() => setHover(n.id)} onPointerLeave={() => setHover(null)} data-sym={sym}>
                   <rect
-                    x={px(n) - NODE_W / 2}
-                    y={py(n) - 18}
-                    width={NODE_W}
-                    height={leaf ? 36 : 40}
-                    rx={leaf ? 18 : 6}
+                    x={px(n) - nodeW / 2}
+                    y={py(n) - 24}
+                    width={nodeW}
+                    height={50}
+                    rx={leaf ? 22 : 6}
                     className={clsx(
                       bad && shown ? "fill-warning-soft stroke-warning" : lit ? "fill-accent-soft stroke-accent" : leaf ? "fill-inset stroke-rule-strong" : "fill-surface stroke-rule-strong",
                     )}
                     strokeWidth={lit || (bad && shown) ? 2 : 1}
                   />
-                  <text x={px(n)} y={py(n) - 3} textAnchor="middle" className={clsx("text-[13px]", leaf ? "fill-ink font-mono" : "fill-ink font-semibold")}>
+                  <text x={px(n)} y={py(n) - 7} textAnchor="middle" className={clsx("text-[13px]", leaf ? "fill-ink font-mono" : "fill-ink font-semibold")}>
                     {n.label}
                   </text>
-                  <text x={px(n)} y={py(n) + 12} textAnchor="middle" className={clsx("text-[11px]", bad && shown ? "fill-warning font-semibold" : "fill-ink-muted")}>
-                    {shown ? (bad ? "units clash" : `${formatValue(n.value, 3)}${n.unit?.ok && Object.keys(n.unit.unit).length ? ` ${unitText(n.unit.unit)}` : ""}`) : "?"}
+                  <text x={px(n)} y={py(n) + 8} textAnchor="middle" className={clsx("text-[11px]", bad && shown ? "fill-warning font-semibold" : "fill-ink-muted")}>
+                    {shown ? valueLine(n) : "?"}
                   </text>
+                  {shown && unitLine(n) ? (
+                    <text x={px(n)} y={py(n) + 21} textAnchor="middle" className="fill-ink-muted text-[11px]">
+                      {unitLine(n)}
+                    </text>
+                  ) : null}
                 </g>
               );
             })}

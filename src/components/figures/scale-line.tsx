@@ -16,7 +16,7 @@ import { FigureFrame, PredictPanel, RangeControl, useWidth, type PredictPhase } 
 
 export type ScaleItem = { label: string; value: number; sym?: string; note?: string };
 
-type Placed = ScaleItem & { x: number; row: number; hidden?: boolean; guess?: boolean };
+type Placed = ScaleItem & { x: number; row: number; labelX: number; hidden?: boolean; guess?: boolean };
 
 const ROW_HEIGHT = 18;
 const MARGIN = 28;
@@ -32,18 +32,22 @@ function exponentLabel(k: number) {
   );
 }
 
-/** Puts labels in rows above and below the line so none overlap. */
-function placeLabels(items: (ScaleItem & { x: number; hidden?: boolean; guess?: boolean })[]): Placed[] {
+/**
+ * Puts labels in rows above and below the line so none overlap, and keeps
+ * each label inside the figure: a label near an edge slides inwards.
+ */
+function placeLabels(items: (ScaleItem & { x: number; hidden?: boolean; guess?: boolean })[], width: number): Placed[] {
   const sorted = [...items].sort((a, b) => a.x - b.x);
   const rowsEnd: number[] = [];
   return sorted.map((it) => {
     const w = Math.min(220, it.label.length * 6.6 + 8);
-    const left = it.x - w / 2;
+    const labelX = Math.min(Math.max(it.x, w / 2 + 2), width - w / 2 - 2);
+    const left = labelX - w / 2;
     let row = 0;
     // Rows alternate above (even) and below (odd) the line.
     while (rowsEnd[row] !== undefined && rowsEnd[row]! > left) row++;
-    rowsEnd[row] = it.x + w / 2;
-    return { ...it, row };
+    rowsEnd[row] = labelX + w / 2;
+    return { ...it, row, labelX };
   });
 }
 
@@ -90,7 +94,7 @@ export function ScaleLine({
     if (predict && !linear) list.push({ label: "Your guess", value: 10 ** guess, x: 0, guess: true });
     return list;
   }, [items, predict, revealed, guess, linear]);
-  const placed = placeLabels(all.map((i) => ({ ...i, x: xOf(i.value) })));
+  const placed = placeLabels(all.map((i) => ({ ...i, x: xOf(i.value) })), inner + 2 * MARGIN);
   const rows = Math.max(1, ...placed.map((p) => p.row + 1));
   const above = Math.ceil(rows / 2);
   const below = Math.floor(rows / 2);
@@ -208,7 +212,7 @@ export function ScaleLine({
                     <circle cx={p.x} cy={axisY} r={active ? 6 : 4.5} className={clsx(active ? "fill-accent" : "fill-fig-vector", "stroke-surface")} strokeWidth={1.5} />
                   )}
                   <text
-                    x={Math.min(Math.max(p.x, MARGIN + 30), MARGIN + inner - 30)}
+                    x={p.labelX}
                     y={ly}
                     textAnchor="middle"
                     className={clsx("text-[12px]", active ? "fill-accent font-semibold" : p.guess ? "fill-fig-gradient font-semibold" : "fill-ink")}
