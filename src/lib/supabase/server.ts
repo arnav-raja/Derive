@@ -12,8 +12,10 @@ import type { Database } from "./database.types";
  * query runs under row-level security as that learner. Create one per request.
  */
 export async function createClient() {
-  const { url, key } = supabaseConfig();
+  // Reading cookies first marks the route as dynamic, so a build without the
+  // Supabase variables (as in CI) never tries to prerender a signed-in page.
   const cookieStore = await cookies();
+  const { url, key } = supabaseConfig();
 
   return createServerClient<Database>(url, key, {
     cookies: {

@@ -1,4 +1,5 @@
 import { anthropicKey, buildCommit, isLocalMode } from "@/lib/env";
+import { accountExists } from "@/lib/supabase/signup";
 
 export const dynamic = "force-dynamic";
 
@@ -29,6 +30,7 @@ export async function GET() {
         emailSignIn: body.external?.email ?? null,
         signupOpen: body.disable_signup === false,
         emailConfirmationRequired: body.mailer_autoconfirm === false,
+        accountExists: await accountExists(),
       };
     } catch (error) {
       auth = { configured: true, reachable: false, error: String(error).slice(0, 120) };

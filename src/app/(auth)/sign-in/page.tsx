@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { Wordmark } from "@/components/shell/wordmark";
 import { Notice } from "@/components/ui/notice";
+import { accountExists } from "@/lib/supabase/signup";
 
 import { SignInForm } from "./sign-in-form";
 
@@ -11,7 +12,10 @@ type Props = { searchParams: Promise<{ mode?: string; next?: string; link?: stri
 
 export default async function SignInPage({ searchParams }: Props) {
   const { mode, next, link } = await searchParams;
-  const creating = mode === "create";
+  // Derive has exactly one account. Once it exists, only sign-in is offered.
+  const exists = await accountExists();
+  const canCreate = exists !== true;
+  const creating = mode === "create" && canCreate;
 
   return (
     <main className="flex min-h-dvh flex-col items-center justify-center px-4 py-12">
@@ -32,10 +36,16 @@ export default async function SignInPage({ searchParams }: Props) {
               It has expired or was already used. Sign in with your email and password.
             </Notice>
           ) : null}
+          {mode === "create" && !canCreate ? (
+            <Notice tone="info" title="Your account is ready" className="mb-5">
+              Derive already has its account. Sign in with it.
+            </Notice>
+          ) : null}
           <SignInForm
             key={creating ? "create" : "sign-in"}
             mode={creating ? "create" : "sign-in"}
             next={next ?? null}
+            canCreate={canCreate}
           />
         </div>
 

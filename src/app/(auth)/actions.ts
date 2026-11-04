@@ -5,6 +5,7 @@ import { z } from "zod";
 
 import { isLocalMode } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
+import { accountExists } from "@/lib/supabase/signup";
 
 export type AuthFormState = {
   error?: string;
@@ -53,16 +54,16 @@ function describe(error: AuthErrorLike): string {
     case "weak_password":
       return "Choose a stronger password: at least 10 characters.";
     case "signup_disabled":
-      return "New accounts are closed.";
+      return "Derive is not open for new accounts.";
     case "over_request_rate_limit":
     case "over_email_send_rate_limit":
       return "Too many attempts. Wait a minute, then try again.";
     case "email_address_not_authorized":
       return "Supabase could not send a confirmation email to this address.";
   }
-  // The database refuses any address that is not on the invitation list.
+  // The database admits one account, for one address, and refuses the rest.
   if (/database error saving new user/i.test(message)) {
-    return "This email is not on Derive's invitation list.";
+    return "Derive is private, and this email cannot create an account on it.";
   }
   return "Something went wrong while signing in. Try again in a moment.";
 }
@@ -104,14 +105,17 @@ export async function createAccount(
   const email = String(formData.get("email") ?? "");
   const input = readCredentials(formData, newAccount);
   if (!input.ok) return { fieldErrors: input.fieldErrors, email };
+  if ((await accountExists()) === true) {
+    return { error: "Derive already has its account. Sign in instead.", email };
+  }
 
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signUp(input.data);
   if (error) return { error: describe(error), email };
 
   if (!data.session) {
-    // Invited addresses are confirmed by the database as the account is
-    // created, so signing in straight away normally succeeds.
+    // The database confirms the learner's address as the account is created,
+    // so signing in straight away normally succeeds.
     const signedIn = await supabase.auth.signInWithPassword(input.data);
     if (signedIn.error) {
       if (signedIn.error.code === "email_not_confirmed") {

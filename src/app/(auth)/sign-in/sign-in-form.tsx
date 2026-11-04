@@ -11,7 +11,9 @@ import { createAccount, signIn, type AuthFormState } from "../actions";
 
 type Mode = "sign-in" | "create";
 
-export function SignInForm({ mode, next }: { mode: Mode; next: string | null }) {
+type Props = { mode: Mode; next: string | null; canCreate: boolean };
+
+export function SignInForm({ mode, next, canCreate }: Props) {
   const action = mode === "create" ? createAccount : signIn;
   const [state, formAction, pending] = useActionState<AuthFormState, FormData>(action, null);
 
@@ -63,26 +65,28 @@ export function SignInForm({ mode, next }: { mode: Mode; next: string | null }) 
             : "Sign in"}
       </Button>
 
-      <p className="text-center text-sm text-ink-muted">
-        {mode === "create" ? (
-          <>
-            Already have an account?{" "}
-            <Link href="/sign-in" className="font-medium text-accent hover:text-accent-strong">
-              Sign in
-            </Link>
-          </>
-        ) : (
-          <>
-            First time here?{" "}
-            <Link
-              href="/sign-in?mode=create"
-              className="font-medium text-accent hover:text-accent-strong"
-            >
-              Create your account
-            </Link>
-          </>
-        )}
-      </p>
+      {canCreate ? (
+        <p className="text-center text-sm text-ink-muted">
+          {mode === "create" ? (
+            <>
+              Already have an account?{" "}
+              <Link href="/sign-in" className="font-medium text-accent hover:text-accent-strong">
+                Sign in
+              </Link>
+            </>
+          ) : (
+            <>
+              First time here?{" "}
+              <Link
+                href="/sign-in?mode=create"
+                className="font-medium text-accent hover:text-accent-strong"
+              >
+                Create your account
+              </Link>
+            </>
+          )}
+        </p>
+      ) : null}
     </form>
   );
 }

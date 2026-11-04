@@ -475,7 +475,7 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      signup_open: { Args: never; Returns: boolean };
     };
     Enums: {
       [_ in never]: never;
