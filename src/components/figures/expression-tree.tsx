@@ -1,0 +1,304 @@
+"use client";
+
+import { clsx } from "clsx";
+import { useId, useMemo, useState } from "react";
+
+import { Button } from "@/components/ui/button";
+import { inputClasses } from "@/components/ui/field";
+
+import {
+  evaluate,
+  exprText,
+  formatValue,
+  parseExpr,
+  parseLooseNumber,
+  parseUnit,
+  unitOf,
+  unitText,
+  type ExprNode,
+  type Unit,
+} from "./expr";
+import { FigureFrame, PredictPanel, useWidth, type PredictPhase } from "./shell";
+
+/*
+ * An expression drawn as the tree it really is: leaves are numbers and
+ * symbols, and each operation combines what is below it. Values and units are
+ * computed node by node, so a mismatch of units shows exactly where it starts.
+ */
+
+type TreeNode = {
+  id: number;
+  node: ExprNode;
+  label: string;
+  children: TreeNode[];
+  depth: number;
+  x: number;
+  text: string;
+  value: number;
+  unit: { ok: true; unit: Unit } | { ok: false; message: string } | null;
+};
+
+const OP_LABEL = { "+": "+", "-": "−", "*": "×", "/": "÷", "^": "power" } as const;
+const NONE: Record<string, never> = {};
+const NODE_W = 84;
+const LEVEL_H = 74;
+
+function build(root: ExprNode, scope: Record<string, number>, units: Record<string, Unit> | null) {
+  let nextId = 0;
+  let leaf = 0;
+  const order: TreeNode[] = [];
+  const walk = (node: ExprNode, depth: number): TreeNode => {
+    const kids: ExprNode[] =
+      node.kind === "bin" ? [node.left, node.right] : node.kind === "neg" ? [node.arg] : node.kind === "call" ? node.args : [];
+    const children = kids.map((k) => walk(k, depth + 1));
+    const x = children.length ? children.reduce((s, c) => s + c.x, 0) / children.length : leaf++;
+    let value = Number.NaN;
+    try {
+      value = evaluate(node, scope);
+    } catch {
+      value = Number.NaN;
+    }
+    const label =
+      node.kind === "num" ? node.text : node.kind === "var" ? node.name : node.kind === "const" ? (node.name === "pi" ? "π" : "e") : node.kind === "neg" ? "negate" : node.kind === "call" ? node.fn : OP_LABEL[node.op];
+    const t: TreeNode = {
+      id: nextId++,
+      node,
+      label,
+      children,
+      depth,
+      x,
+      text: exprText(node),
+      value,
+      unit: units ? unitOf(node, units, scope) : null,
+    };
+    order.push(t);
+    return t;
+  };
+  const tree = walk(root, 0);
+  return { tree, order, leaves: leaf };
+}
+
+function flatten(t: TreeNode, out: TreeNode[] = []): TreeNode[] {
+  out.push(t);
+  for (const c of t.children) flatten(c, out);
+  return out;
+}
+
+function subtreeIds(t: TreeNode, out = new Set<number>()): Set<number> {
+  out.add(t.id);
+  for (const c of t.children) subtreeIds(c, out);
+  return out;
+}
+
+export function ExpressionTree({
+  title,
+  description,
+  expr,
+  values = NONE,
+  units,
+  syms = NONE,
+  stepwise = false,
+  predict,
+}: {
+  title: string;
+  description: string;
+  /** In the figure language: 6*N*D, C/R/(3600*24*365). */
+  expr: string;
+  values?: Record<string, number>;
+  /** Units of the symbols, such as { C: "FLOP", R: "FLOP/s" }. */
+  units?: Record<string, string>;
+  /** Links a symbol to the same symbol elsewhere, if its data-sym differs from its name. */
+  syms?: Record<string, string>;
+  /** Reveal values one operation at a time. */
+  stepwise?: boolean;
+  /** Ask for the value (or the unit) at the top before showing it. */
+  predict?: { prompt: string; ask?: "value" | "unit"; options?: string[] };
+}) {
+  const inputId = useId();
+  const [ref, width] = useWidth<HTMLDivElement>();
+  const parsedUnits = useMemo(
+    () => (units ? Object.fromEntries(Object.entries(units).map(([k, v]) => [k, parseUnit(v)])) : null),
+    [units],
+  );
+  const { tree, order, leaves } = useMemo(() => build(parseExpr(expr), values, parsedUnits), [expr, values, parsedUnits]);
+  const ops = order.filter((n) => n.children.length > 0);
+  const [step, setStep] = useState(stepwise ? 0 : ops.length);
+  const [hover, setHover] = useState<number | null>(null);
+  const [phase, setPhase] = useState<PredictPhase>("asking");
+  const [answer, setAnswer] = useState("");
+
+  const concealed = predict && phase !== "revealed";
+  const shownOps = new Set(ops.slice(0, concealed ? 0 : step).map((n) => n.id));
+  const isShown = (n: TreeNode) => n.children.length === 0 || shownOps.has(n.id);
+  const current = !concealed && stepwise && step > 0 ? ops[step - 1] : undefined;
+
+  const all = flatten(tree);
+  const depth = Math.max(...all.map((n) => n.depth));
+  const spacing = Math.max(NODE_W + 8, width / Math.max(1, leaves));
+  const svgW = Math.max(width, leaves * spacing);
+  const svgH = (depth + 1) * LEVEL_H + 24;
+  const px = (n: TreeNode) => (n.x + 0.5) * spacing + (svgW - leaves * spacing) / 2;
+  const py = (n: TreeNode) => 28 + n.depth * LEVEL_H;
+  const highlight = hover !== null ? subtreeIds(all.find((n) => n.id === hover)!) : current ? subtreeIds(current) : null;
+  const focus = hover !== null ? all.find((n) => n.id === hover) : current;
+
+  const ask = predict?.ask ?? "value";
+  const guess = parseLooseNumber(answer);
+  const rootUnit = tree.unit?.ok ? unitText(tree.unit.unit) : null;
+
+  const describe = (n: TreeNode) => {
+    const u = n.unit ? (n.unit.ok ? `, unit ${unitText(n.unit.unit)}` : `. Units do not match: ${n.unit.message}`) : "";
+    return `${n.text} = ${isShown(n) ? formatValue(n.value) : "?"}${isShown(n) ? u : ""}`;
+  };
+
+  return (
+    <FigureFrame
+      title={title}
+      description={description}
+      predict={
+        predict ? (
+          <PredictPanel
+            prompt={predict.prompt}
+            phase={phase}
+            canLock={ask === "value" ? Number.isFinite(guess) : answer !== ""}
+            onLock={() => setPhase("locked")}
+            onReveal={() => {
+              setPhase("revealed");
+              setStep(stepwise ? 0 : ops.length);
+            }}
+            onReset={() => {
+              setPhase("asking");
+              setAnswer("");
+            }}
+            input={
+              ask === "value" ? (
+                <div className="flex flex-col gap-1">
+                  <label htmlFor={inputId} className="text-sm font-medium text-ink">
+                    Your prediction for {tree.text}
+                  </label>
+                  <input
+                    id={inputId}
+                    value={answer}
+                    onChange={(e) => phase === "asking" && setAnswer(e.target.value)}
+                    readOnly={phase !== "asking"}
+                    inputMode="decimal"
+                    autoComplete="off"
+                    placeholder="for example 3e23"
+                    className={clsx(inputClasses, "tabular h-9 max-w-xs font-mono")}
+                  />
+                </div>
+              ) : (
+                <fieldset className="flex flex-wrap gap-2">
+                  <legend className="mb-1 text-sm font-medium text-ink">The unit of {tree.text}</legend>
+                  {(predict.options ?? []).map((o) => (
+                    <label
+                      key={o}
+                      className={clsx(
+                        "cursor-pointer rounded-md border px-3 py-1 text-sm",
+                        answer === o ? "border-accent bg-surface text-accent-strong" : "border-rule bg-surface text-ink",
+                      )}
+                    >
+                      <input type="radio" name={inputId} value={o} checked={answer === o} disabled={phase !== "asking"} onChange={() => setAnswer(o)} className="sr-only" />
+                      {o}
+                    </label>
+                  ))}
+                </fieldset>
+              )
+            }
+            verdict={
+              ask === "value" ? (
+                <p>
+                  The value is <span className="tabular font-semibold">{formatValue(tree.value)}</span>. You predicted {formatValue(guess)}
+                  {Number.isFinite(guess) && tree.value !== 0
+                    ? `: off by a factor of ${formatValue(Math.max(guess / tree.value, tree.value / guess), 2)}.`
+                    : "."}
+                </p>
+              ) : (
+                <p>
+                  The unit is <span className="font-semibold">{rootUnit ?? "not defined, because the units do not combine"}</span>. You chose {answer}
+                  {rootUnit && answer.replace(/\s/g, "") === rootUnit.replace(/\s/g, "") ? ", which is right." : "."}
+                </p>
+              )
+            }
+          />
+        ) : null
+      }
+      picture={({ titleId, descId }) => (
+        <div ref={ref} className="w-full overflow-x-auto">
+          <svg role="img" aria-labelledby={titleId} aria-describedby={descId} width={svgW} height={svgH} viewBox={`0 0 ${svgW} ${svgH}`} className="block font-sans">
+            {all.flatMap((n) =>
+              n.children.map((c) => (
+                <line
+                  key={`${n.id}-${c.id}`}
+                  x1={px(n)}
+                  y1={py(n) + 18}
+                  x2={px(c)}
+                  y2={py(c) - 18}
+                  className={highlight?.has(c.id) && highlight.has(n.id) ? "stroke-accent" : "stroke-fig-grid"}
+                  strokeWidth={highlight?.has(c.id) && highlight.has(n.id) ? 2 : 1.5}
+                />
+              )),
+            )}
+            {all.map((n) => {
+              const leaf = n.children.length === 0;
+              const bad = n.unit && !n.unit.ok;
+              const shown = isShown(n);
+              const lit = highlight?.has(n.id);
+              const sym = n.node.kind === "var" ? (syms[n.node.name] ?? n.node.name) : undefined;
+              return (
+                <g key={n.id} onPointerEnter={() => setHover(n.id)} onPointerLeave={() => setHover(null)} data-sym={sym}>
+                  <rect
+                    x={px(n) - NODE_W / 2}
+                    y={py(n) - 18}
+                    width={NODE_W}
+                    height={leaf ? 36 : 40}
+                    rx={leaf ? 18 : 6}
+                    className={clsx(
+                      bad && shown ? "fill-warning-soft stroke-warning" : lit ? "fill-accent-soft stroke-accent" : leaf ? "fill-inset stroke-rule-strong" : "fill-surface stroke-rule-strong",
+                    )}
+                    strokeWidth={lit || (bad && shown) ? 2 : 1}
+                  />
+                  <text x={px(n)} y={py(n) - 3} textAnchor="middle" className={clsx("text-[13px]", leaf ? "fill-ink font-mono" : "fill-ink font-semibold")}>
+                    {n.label}
+                  </text>
+                  <text x={px(n)} y={py(n) + 12} textAnchor="middle" className={clsx("text-[11px]", bad && shown ? "fill-warning font-semibold" : "fill-ink-muted")}>
+                    {shown ? (bad ? "units clash" : `${formatValue(n.value, 3)}${n.unit?.ok && Object.keys(n.unit.unit).length ? ` ${unitText(n.unit.unit)}` : ""}`) : "?"}
+                  </text>
+                </g>
+              );
+            })}
+          </svg>
+        </div>
+      )}
+      controls={
+        <>
+          <p className="min-h-5 text-sm text-ink" aria-live="polite">
+            {focus ? describe(focus) : <span className="text-ink-muted">Point at a node to see what it computes.</span>}
+          </p>
+          {stepwise && !concealed ? (
+            <div className="flex flex-wrap items-center gap-2">
+              <Button size="sm" variant="secondary" onClick={() => setStep((s) => Math.max(0, s - 1))} disabled={step === 0}>
+                Back
+              </Button>
+              <Button size="sm" onClick={() => setStep((s) => Math.min(ops.length, s + 1))} disabled={step === ops.length}>
+                {step === 0 ? "Start evaluating" : "Next operation"}
+              </Button>
+              <p className="tabular text-sm text-ink-muted">
+                {step} of {ops.length} operations done
+              </p>
+            </div>
+          ) : null}
+        </>
+      }
+      table={{
+        columns: ["Step", "Expression", "Value", ...(units ? ["Unit"] : [])],
+        rows: ops.map((n, i) => [
+          i + 1,
+          n.text,
+          isShown(n) ? formatValue(n.value) : "after you predict",
+          ...(units ? [n.unit ? (n.unit.ok ? unitText(n.unit.unit) : `clash: ${n.unit.message}`) : ""] : []),
+        ]),
+      }}
+    />
+  );
+}

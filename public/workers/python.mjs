@@ -1,0 +1,100 @@
+// Derive's Python worker. Loads Pyodide from Derive's own address, then runs
+// the harness (harness.py) for code runs, tests, break-it outcomes, traces and
+// SymPy checks. Messages are { id, type, payload }; replies are
+// { id, ok, result } or { id, ok: false, error }, plus { type: "status" } events.
+
+let pyodide = null;
+let harness = null;
+let manifest = null;
+let starting = null;
+let sympyLoading = null;
+
+function status(state, detail) {
+  self.postMessage({ type: "status", state, detail });
+}
+
+async function start() {
+  if (harness) return;
+  starting ??= (async () => {
+    status("loading", "Starting Python");
+    manifest = await (await fetch("/pyodide/manifest.json", { cache: "no-cache" })).json();
+    const { loadPyodide } = await import(`${manifest.indexURL}pyodide.mjs`);
+    pyodide = await loadPyodide({
+      indexURL: manifest.indexURL,
+      stdout: () => {},
+      stderr: () => {},
+    });
+    const source = await (await fetch("/workers/harness.py", { cache: "no-cache" })).text();
+    pyodide.FS.mkdirTree("/home/pyodide/derive");
+    pyodide.FS.writeFile("/home/pyodide/derive/derive_harness.py", source);
+    pyodide.runPython(
+      "import sys\nsys.path.insert(0, '/home/pyodide/derive')\nimport derive_harness",
+    );
+    harness = pyodide.pyimport("derive_harness");
+    status("ready");
+  })();
+  try {
+    await starting;
+  } catch (error) {
+    starting = null;
+    status("error", String(error?.message ?? error));
+    throw error;
+  }
+}
+
+async function ensureSympy() {
+  sympyLoading ??= (async () => {
+    status("loading", "Loading SymPy");
+    const site = pyodide.runPython("import site\nsite.getsitepackages()[0]");
+    for (const name of ["mpmath", "sympy"]) {
+      const url = manifest.wheels[name];
+      if (!url) throw new Error(`The ${name} wheel is missing from the manifest.`);
+      const buffer = await (await fetch(url)).arrayBuffer();
+      pyodide.unpackArchive(new Uint8Array(buffer), "wheel", { extractDir: site });
+    }
+    pyodide.runPython("import sympy");
+    status("ready");
+  })();
+  try {
+    await sympyLoading;
+  } catch (error) {
+    sympyLoading = null;
+    throw error;
+  }
+}
+
+function call(name, payload) {
+  return JSON.parse(harness[name](JSON.stringify(payload)));
+}
+
+self.onmessage = async (event) => {
+  const { id, type, payload } = event.data ?? {};
+  try {
+    await start();
+    let result;
+    switch (type) {
+      case "warm":
+        if (payload?.sympy) await ensureSympy();
+        result = { ready: true };
+        break;
+      case "run":
+        result = call("run_json", payload);
+        break;
+      case "breakit":
+        result = call("breakit_json", payload);
+        break;
+      case "trace":
+        result = call("trace_json", payload);
+        break;
+      case "expression":
+        await ensureSympy();
+        result = call("check_expression_json", payload);
+        break;
+      default:
+        throw new Error(`Unknown request: ${type}`);
+    }
+    self.postMessage({ id, ok: true, result });
+  } catch (error) {
+    self.postMessage({ id, ok: false, error: String(error?.message ?? error) });
+  }
+};

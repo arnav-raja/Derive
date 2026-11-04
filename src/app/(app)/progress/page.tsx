@@ -3,13 +3,36 @@ import type { Metadata } from "next";
 import { Meter, Page, PageHeader, Panel, Section } from "@/components/ui/page";
 import { getStore } from "@/lib/auth";
 import { curriculum } from "@/lib/curriculum/data";
+import { overview } from "@/lib/learning/service";
 
 export const metadata: Metadata = { title: "Progress" };
 
+/** Every lesson a node depends on, following hard prerequisites all the way down. */
+function closure(start: string[], requires: (code: string) => string[]): Set<string> {
+  const seen = new Set<string>();
+  const stack = [...start];
+  while (stack.length) {
+    const code = stack.pop()!;
+    if (seen.has(code)) continue;
+    seen.add(code);
+    stack.push(...requires(code));
+  }
+  return seen;
+}
+
 export default async function ProgressPage() {
   const store = await getStore();
-  const concepts = await store.concepts();
+  const ov = await overview(store);
+  const concepts = [...ov.concepts.values()];
   const data = curriculum();
+  const requiresOf = (code: string) =>
+    data.lessons[code]?.requires ?? data.capstones.find((c) => c.code === code)?.requires ?? [];
+  const skillProgress = data.skills.map((_, i) => {
+    const capstones = data.capstones.filter((c) => c.skills.includes(i + 1));
+    const lessons = [...closure(capstones.map((c) => c.code), requiresOf)].filter((c) => data.lessons[c]);
+    const mastered = lessons.filter((c) => ov.status.get(c) === "mastered").length;
+    return { total: lessons.length, mastered };
+  });
   const mastered = concepts.filter((c) => c.masteredAt).length;
   const provisional = concepts.filter((c) => c.provisional && !c.masteredAt).length;
   const totalHours = data.stages.reduce((n, s) => n + s.hours, 0);
@@ -61,9 +84,11 @@ export default async function ProgressPage() {
                           .
                         </p>
                       </div>
-                      <span className="tabular shrink-0 text-xs text-ink-muted">0%</span>
+                      <span className="tabular shrink-0 text-xs text-ink-muted">
+                        {skillProgress[i]!.mastered} of {skillProgress[i]!.total} lessons
+                      </span>
                     </div>
-                    <Meter value={0} max={1} label={`Progress on skill ${i + 1}`} />
+                    <Meter value={skillProgress[i]!.mastered} max={Math.max(1, skillProgress[i]!.total)} label={`Lessons mastered towards skill ${i + 1}`} />
                   </Panel>
                 </li>
               );

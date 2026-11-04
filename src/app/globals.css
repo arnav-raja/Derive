@@ -412,4 +412,41 @@
   .tabular {
     font-variant-numeric: lining-nums tabular-nums;
   }
+
+  /*
+   * Linked symbols: the same data-sym in prose, equations and figures lights
+   * up together on hover or focus (see SymbolHighlighter).
+   */
+  .sym {
+    border-bottom: 1px dotted var(--rule-strong);
+    cursor: default;
+  }
+
+  [data-sym] {
+    transition:
+      background-color 120ms ease,
+      color 120ms ease;
+  }
+
+  [data-sym].sym-active:not(svg *) {
+    background-color: var(--accent-soft);
+    color: var(--accent-strong);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 0 0 2px var(--accent-soft);
+  }
+
+  svg text[data-sym].sym-active,
+  svg tspan[data-sym].sym-active {
+    fill: var(--accent-strong);
+    font-weight: 600;
+  }
+
+  svg [data-sym].sym-active:not(text):not(tspan):not(g) {
+    stroke: var(--accent-strong);
+    stroke-width: 3px;
+  }
+
+  svg g[data-sym].sym-active > :not(text) {
+    stroke: var(--accent-strong);
+  }
 }

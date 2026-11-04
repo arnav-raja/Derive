@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 
 import { Page, PageHeader } from "@/components/ui/page";
 import { getStore } from "@/lib/auth";
-import { writtenLessonCodes } from "@/lib/content/files";
 import { CURRICULUM_NAMES, curriculum, stageOfCourse } from "@/lib/curriculum/data";
-import { PHASES } from "@/lib/store/types";
+import { overview } from "@/lib/learning/service";
 
 import { MapView, type MapCourse, type LessonState } from "./map-view";
 
@@ -12,26 +11,14 @@ export const metadata: Metadata = { title: "Map" };
 
 export default async function MapPage() {
   const store = await getStore();
-  const progress = await store.progress();
-  const written = new Set(writtenLessonCodes());
+  const ov = await overview(store);
   const data = curriculum();
 
-  const completedPhases = new Map<string, number>();
-  const started = new Set<string>();
-  for (const p of progress) {
-    started.add(p.lessonCode);
-    if (p.status === "completed") {
-      completedPhases.set(p.lessonCode, (completedPhases.get(p.lessonCode) ?? 0) + 1);
-    }
-  }
-
   function state(code: string): LessonState {
-    if ((completedPhases.get(code) ?? 0) >= PHASES.length) return "completed";
-    if (started.has(code)) return "in-progress";
-    if (!written.has(code)) return "unwritten";
-    const requires = data.lessons[code]?.requires ?? [];
-    const open = requires.every((r) => (completedPhases.get(r) ?? 0) >= PHASES.length);
-    return open ? "available" : "locked";
+    const s = ov.status.get(code);
+    if (s === "drafting" || s === "unwritten" || s === undefined) return "unwritten";
+    if (s === "skipped") return "available";
+    return s;
   }
 
   const bands = data.curricula.map((cur) => ({
