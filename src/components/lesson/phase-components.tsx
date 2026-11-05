@@ -4,7 +4,7 @@ import type { MDXComponents } from "mdx/types";
 import type { ComponentProps, ReactNode } from "react";
 
 import { ExerciseCard } from "@/components/exercise/exercise-card";
-import { ExpressionTree, FunctionPlot, MappingDiagram, ProgramTrace, ScaleLine } from "@/components/figures";
+import { ExpressionTree, FunctionPlot, MappingDiagram, PartialSums, ProgramTrace, ScaleLine, Staircase } from "@/components/figures";
 import { LockIcon } from "@/components/ui/icons";
 import { loadLesson, type LoadedLesson } from "@/lib/content/lesson";
 import { exerciseView, variantView } from "@/lib/content/views";
@@ -85,6 +85,40 @@ export function phaseComponents(ctx: PhaseContext): MDXComponents {
     return <ScaleLine {...props} linearLocked={linearAfter ? !states.get(linearAfter)?.done : false} />;
   }
 
+  /** What a figure's locked part waits for, said with the exercise's title. */
+  function opensNote(id: string, what: string) {
+    const title = lesson.byId.get(id)?.title;
+    return `${what} opens once you have answered ${title ? `"${title}"` : "the question below"}.`;
+  }
+
+  /** A staircase whose turned copy waits for an exercise, so the copy cannot answer it. */
+  function StaircaseSlot({ turnedAfter, ...props }: ComponentProps<typeof Staircase> & { turnedAfter?: string }) {
+    if (turnedAfter && !lesson.byId.has(turnedAfter)) {
+      return <Problem>a staircase waits for {turnedAfter}, which does not exist.</Problem>;
+    }
+    return (
+      <Staircase
+        {...props}
+        turnedLocked={turnedAfter ? !states.get(turnedAfter)?.done : false}
+        lockedNote={turnedAfter ? opensNote(turnedAfter, "The second staircase") : undefined}
+      />
+    );
+  }
+
+  /** Partial sums whose marker of where the sum is heading waits for an exercise. */
+  function PartialSumsSlot({ limitAfter, ...props }: ComponentProps<typeof PartialSums> & { limitAfter?: string }) {
+    if (limitAfter && !lesson.byId.has(limitAfter)) {
+      return <Problem>a partial-sums figure waits for {limitAfter}, which does not exist.</Problem>;
+    }
+    return (
+      <PartialSums
+        {...props}
+        limitLocked={limitAfter ? !states.get(limitAfter)?.done : false}
+        lockedNote={limitAfter ? opensNote(limitAfter, "The marker") : undefined}
+      />
+    );
+  }
+
   function MixedCheck() {
     if (phase !== "explain") return <Problem>the mixed check belongs in the Explain phase.</Problem>;
     const items = ctx.check?.items ?? [];
@@ -148,5 +182,7 @@ export function phaseComponents(ctx: PhaseContext): MDXComponents {
     ExpressionTree,
     MappingDiagram,
     ProgramTrace,
+    Staircase: StaircaseSlot,
+    PartialSums: PartialSumsSlot,
   };
 }

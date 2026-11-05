@@ -25,6 +25,8 @@ export const MDX_COMPONENT_NAMES = [
   "ExpressionTree",
   "MappingDiagram",
   "ProgramTrace",
+  "Staircase",
+  "PartialSums",
 ] as const;
 
 export type MdxComponentName = (typeof MDX_COMPONENT_NAMES)[number];

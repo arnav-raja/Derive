@@ -115,10 +115,11 @@ async function checkLesson(code: string, errors: string[], warnings: string[]) {
         errors.push(`${file} re-teaches after ${m[2]}, which is not a recall question.`);
       }
     }
-    for (const m of source.matchAll(/\blinearAfter="([a-z0-9-]+)"/g)) {
+    // A figure part that waits for an exercise: the ordinary scale, the turned staircase, the limit marker.
+    for (const m of source.matchAll(/\b(?:linearAfter|turnedAfter|limitAfter)="([a-z0-9-]+)"/g)) {
       const ex = byId.get(m[1]!);
-      if (!ex) errors.push(`${file} has a scale line waiting for ${m[1]}, which does not exist.`);
-      else if (ex.phase !== phase) errors.push(`${file} has a scale line waiting for ${m[1]}, which is in another phase.`);
+      if (!ex) errors.push(`${file} has a figure waiting for ${m[1]}, which does not exist.`);
+      else if (ex.phase !== phase) errors.push(`${file} has a figure waiting for ${m[1]}, which is in another phase.`);
     }
     try {
       await compile(source, { remarkPlugins: [remarkGfm, remarkMath], outputFormat: "function-body" });

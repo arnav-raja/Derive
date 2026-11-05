@@ -36,9 +36,15 @@ lessons) is under way: five lessons written, seven to go.
   ahead of M1.12, negative rates and "loss" explained, ten rung 4s rewritten to locate without
   fixing, tests that guard the starter, and fresh variants. All 48 items pass and the changed
   parts were walked again.
-- M1.5 Exponentials and logarithms: written (25 exercises), walked end to end with no errors,
-  and pushed (f015327). The independent reviewer and the simulated learner were started on
-  5 November; their findings are not yet applied.
+- M1.5 Exponentials and logarithms: written, walked, and reviewed by both (findings in the
+  session scratchpad, summarised in the commit). All findings applied on 5 November: a fifth
+  recall question on when a function can be undone, a paragraph setting doubling against steady
+  change, the positive root chosen for fractional powers, the logarithm's domain stated among
+  the real numbers, the product rule named and the change of base given for any two bases,
+  build reordered so that underflow comes before the log score, tests that guard the starter and
+  check that `math.log10` is really used, SymPy's rules tested without `force=True`, rewritten
+  rungs, and new later uses (M1.12, L1.6, M7.2, M10.1), with M7.2 now requiring M1.5. All 51
+  items pass `check:exercises` and the lesson was walked again end to end.
 - Engine work from these lessons: the mapping diagram's `properties` switch and clearer
   verdicts, fraction and power-of-ten number input, `polynomial` and `completedSquare` answer
   forms, FunctionPlot chords with a rate readout, `equalScale`, and marks drawn whole at the
@@ -46,20 +52,21 @@ lessons) is under way: five lessons written, seven to go.
   From M1.5: one KaTeX version for every package (lesson maths had been wrapping mid-symbol),
   a run of declared one-letter symbols such as nL read as a product, exact whole numbers kept
   whole in answer lines, plot y labels clear of wide ticks, haloed point labels, superscripts
-  in figure labels, and log-axis ticks such as 10⁻³.
+  in figure labels, and log-axis ticks such as 10⁻³. From the M1.5 review: a lesson's
+  overview shows its concept summaries and link notes only once the lesson is finished, since
+  they answered questions the lesson asks, and renders their maths.
 
 ### Resume here
 
-1. M1.5: apply the independent reviewer's and the simulated learner's findings. If they were
-   lost in a pause, run them again: build the views with
-   `python3 -I scripts/learner-view.py . M1.5 <scratch dir>` (the key now carries the explain
-   rubric and reference), brief the reviewer as for M1.4, then rerun the checks and walk the
-   changed parts.
-2. Write M1.6 and E1.1 to E1.6 from `docs/phase-1-lessons.md`. Fix these descendant targets on
-   the way: M1.6 sigma-notation to M2.3, E1.5 to L2.4 and L6.3, E1.6 unicode-and-bytes to
-   M8.6. For each lesson: `npm run check:graph -- --fix`, `check:content`,
-   `check:exercises -- --write <code>`, a browser walk-through, then the reviewer and the
-   simulated learner.
+1. M1.6 Sums, products and series: write it from the outline in `docs/phase-1-lessons.md`.
+   Its two figures, `Staircase` and `PartialSums`, are written in `src/components/figures/`
+   and registered (`turnedAfter` and `limitAfter` hold their locked parts back). Then
+   `npm run check:graph -- --fix`, `check:content`, `check:exercises -- --write M1.6`, a
+   browser walk-through with figure screenshots in both themes and at phone width, the
+   reviewer and the simulated learner (views from
+   `python3 -I scripts/learner-view.py . M1.6 <scratch dir>`), and their findings applied.
+2. Write E1.1 to E1.6 from `docs/phase-1-lessons.md`, the same way. Fix these descendant
+   targets on the way: E1.5 not L2.4 or L6.3, E1.6 unicode-and-bytes not M8.6.
 3. Tests and CI: Playwright end-to-end tests (no config yet) with axe and screenshots in both
    themes; unit tests for the mixed check, placement and the review queue; add
    `check:exercises` to CI; update the commands table in CLAUDE.md.
