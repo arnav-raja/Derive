@@ -94,11 +94,15 @@ export function NumberInput({
             value={value}
             onChange={(e) => onChange(e.target.value)}
             disabled={disabled}
-            placeholder="for example 3e23 or 3 × 10^23"
+            aria-describedby={`${id}-forms`}
             className={clsx(inputClasses, "tabular h-10 max-w-xs font-mono")}
           />
           {view.unit ? <span className="text-base text-ink-muted">{view.unit}</span> : null}
         </div>
+        {/* Several shapes, so the help never hints at the size or form of this answer. */}
+        <p id={`${id}-forms`} className="text-sm text-ink-muted">
+          Whole numbers, decimals, fractions such as 3/8, and powers of ten such as 6.2e23 or 6.2 × 10^23 all work.
+        </p>
         {estimate && view.factor ? (
           <p className="text-sm text-ink-muted">An estimate within a factor of {view.factor} either way counts.</p>
         ) : null}

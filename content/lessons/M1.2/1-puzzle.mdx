@@ -1,4 +1,4 @@
-School algebra comes as a set of moves: swap the order of a sum, take out a common factor, move a term to the other side. This lesson asks why those moves are allowed. Here is a reason to care.
+School algebra comes as a set of moves: swap the order of a sum, take out a common factor, move a term to the other side. This lesson asks why those moves are allowed. Start with a question about a computer.
 
 A computer adds 0.1, 0.2 and 0.3 in two different groupings. First it adds 0.1 and 0.2, then adds 0.3 to the result. Then it starts again, adds 0.2 and 0.3 first, and adds 0.1 to that. Ordinary arithmetic says both come to 0.6.
 
@@ -14,10 +14,12 @@ The double equals sign `==` compares the two sides and answers `True` if they ar
 
 <Reveal for="puzzle-grouping">
 
-Python answers `False`. It shows the left side as 0.6000000000000001 and the right side as 0.6.
+Python answers `False`. Printed on their own, the left side is 0.6000000000000001 and the right side is 0.6.
 
-Nothing is broken. A computer keeps only about 16 significant figures of each number, and it rounds after every single operation. It cannot even store 0.1 exactly; a later lesson on how computers store numbers, M10.1, explains why. So the two groupings round different intermediate results, and the roundings land on neighbouring values.
+Nothing is broken. A computer keeps only about 16 significant figures of each number, that is, its first 16 digits counted from the first one that is not 0, and it rounds after every single operation. It cannot even store 0.1 exactly; a later lesson on how computers store numbers, M10.1, explains why. So the two groupings round different intermediate results, and the roundings land on neighbouring values.
 
-A rule you have used since school, that the grouping of a sum does not change it, fails for the computer's numbers. That raises the questions this lesson answers. What exactly are the rules of algebra? Why do they hold for ordinary numbers? Which of them survive rounding, and why? By the end of the Build phase you will break that rule yourself, on purpose, with a calculator that keeps only three figures, and you will find out whether rounding can break its neighbour, $a + b = b + a$, as well.
+A rule you have used since school, that the grouping of a sum does not change it, fails for the computer's numbers. This matters in AI. A GPU training a model adds millions of numbers at once, and the grouping it uses can change from one run to the next, so two runs of the same training can differ in their last digits.
+
+That raises the questions this lesson answers. What exactly are the rules of algebra? How do facts such as a negative times a negative follow from them? Which of them survive rounding, and why? In Explore you will break the grouping rule yourself, on purpose, with a calculator that keeps only three figures, and find out whether rounding can break its neighbour, $a + b = b + a$, as well. In Build you will break it again in Python.
 
 </Reveal>

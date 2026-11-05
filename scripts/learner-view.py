@@ -33,7 +33,7 @@ def letters_of(options, ids):
 
 
 def test_docstrings(tests):
-    """The UI shows each test's docstring, and its failure message when it fails, not the test code."""
+    """The UI lists each test's docstring, and its failure message when it fails; the code is behind Show the tests."""
     found = re.findall(r'def (test_\w+)\([^)]*\):\s*\n\s*"""(.*?)"""', tests, re.S)
     return "\n".join(f"   - {doc.strip()}" for _, doc in found) or "   (no described checks)"
 
@@ -47,7 +47,8 @@ def answer_shape(ans, kind=None):
         unit = f" The unit printed after the box is: {ans['unit']}." if ans.get("unit") else ""
         factor = (ans.get("tolerance") or {}).get("factor")
         est = f" Under the box: an estimate within a factor of {factor} either way counts." if kind == "estimate" and factor else ""
-        return f"Type a number in the box (its placeholder reads: for example 3e23 or 3 × 10^23).{unit}{est}"
+        return ("Type a number in the box. Under the box: Whole numbers, decimals, fractions such as 3/8, and "
+                f"powers of ten such as 6.2e23 or 6.2 × 10^23 all work.{unit}{est}")
     if t == "expression":
         syms = ", ".join(s["name"] for s in ans.get("symbols", []))
         lhs = f" The box follows: {ans['lhs']}" if ans.get("lhs") else ""
@@ -56,7 +57,9 @@ def answer_shape(ans, kind=None):
                 "shows how it reads your expression.")
     if t == "code":
         return ("Edit this starter program in the editor, run it, and submit when its checks pass:\n"
-                f"```python\n{ans['starter']}```\nThe checks, as the page describes them:\n{test_docstrings(ans['tests'])}")
+                f"```python\n{ans['starter']}```\nThe checks, as the page describes them:\n{test_docstrings(ans['tests'])}\n"
+                "A 'Show the tests' button under the editor shows the test code itself:\n"
+                f"```python\n{ans['tests']}```")
     if t == "breakit":
         return (f"Working program:\n```python\n{ans['code']}```\nAfter the change:\n```python\n{ans['broken']}```\n"
                 f"{ans['change']}\nPredict what happens:\n{lettered(ans['options'])}")

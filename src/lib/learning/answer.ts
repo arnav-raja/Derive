@@ -71,7 +71,7 @@ export function checkInput(answer: Answer, input: AnswerInput): CheckedAnswer | 
       if (answer.type !== "number") break;
       const value = parseNumber(input.input);
       if (!Number.isFinite(value)) {
-        return { error: "That is not a number Derive can read. Try forms like 3e23, 3 × 10^23 or 300000." };
+        return { error: "That is not a number Derive can read. Try forms like 3/8, 0.375, 6.2e23 or 6.2 × 10^23." };
       }
       const r = checkNumber(answer, value);
       const ratio = typeof r.detail?.ratio === "number" ? r.detail.ratio : undefined;

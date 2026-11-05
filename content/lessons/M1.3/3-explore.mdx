@@ -1,0 +1,181 @@
+The puzzle turned on one question: when can a rule be run backwards? To answer it, look first at what a rule is.
+
+## Rules drawn as arrows
+
+Here is a rule that takes a person and gives the month of their birthday, drawn as arrows from people to months.
+
+<MappingDiagram
+  title="Birthday months"
+  description="Four people, each with one arrow to the month of their birthday: Asha to March, Bilal to July, Chen to March and Divya to January."
+  from={["Asha", "Bilal", "Chen", "Divya"]}
+  to={["January", "March", "July"]}
+  arrows={[[0, 1], [1, 2], [2, 1], [3, 0]]}
+  fromLabel="People"
+  toLabel="Months"
+  properties={false}
+/>
+
+Each person has exactly one arrow leaving them, because each person has exactly one birthday. A rule that gives every input exactly one output is called a *function*. Nothing says the inputs must be numbers, or that the rule must be a formula: a list of arrows is enough.
+
+<Exercise id="explore-reverse-arrows" />
+
+<Reveal for="explore-reverse-arrows">
+
+Here is the rule turned round.
+
+<MappingDiagram
+  title="The arrows turned round"
+  description="Three months with arrows to people: January to Divya, March to both Asha and Chen, and July to Bilal. March has two arrows leaving it."
+  from={["January", "March", "July"]}
+  to={["Asha", "Bilal", "Chen", "Divya"]}
+  arrows={[[0, 3], [1, 0], [1, 2], [2, 1]]}
+  fromLabel="Months"
+  toLabel="People"
+  properties={false}
+/>
+
+March has two arrows leaving it, so the turned-round rule is not a function: told "March", it cannot say whose birthday you mean. The trouble began in the first rule, where Asha and Chen share an output. A function in which no two inputs share an output is called *one-to-one*, and only a one-to-one function can be turned round into a function.
+
+## Formulas are rules too
+
+A formula is also a rule. The function $f(x) = x^2$ takes a number and gives its square, so $f(5) = 25$. Here $f$ is the function's name, $x$ stands for its input, and $f(x)$, read "f of x", is its output.
+
+<Exercise id="explore-square-undo" />
+
+</Reveal>
+
+<Reveal for="explore-square-undo">
+
+On the graph, the two inputs sit at the same height.
+
+<FunctionPlot
+  title="The graph of y = x²"
+  description="A U-shaped curve through (0, 0). The points (−3, 9) and (3, 9) are marked: two inputs at the same height."
+  curves={[{ expr: "x^2", label: "y = x²" }]}
+  x={[-4, 4]}
+  y={[0, 16]}
+  marks={[{ x: -3, label: "(−3, 9)" }, { x: 3, label: "(3, 9)" }]}
+/>
+
+Both 3 and $-3$ square to 9, so squaring is not one-to-one, and no rule can recover the input from the output alone: the 9 does not remember the sign that went in. This is the decoder's trouble from the puzzle, in a single formula.
+
+## One rule after another
+
+Functions can be chained, so that the output of one becomes the input of the next.
+
+<Exercise id="explore-compose-order" />
+
+</Reveal>
+
+<Reveal for="explore-compose-order">
+
+$f(1) = 4$, and then $g(4) = 8$. The other order gives something else: $f\big(g(1)\big)$ works out $g(1) = 2$ first, and then $f(2) = 5$.
+
+<Exercise id="explore-compose-swap" />
+
+</Reveal>
+
+<Reveal for="explore-compose-swap">
+
+Here are both chains as trees, with $x = 1$.
+
+<ExpressionTree
+  title="g(f(x)) = 2 × (x + 3)"
+  description="The addition x + 3 sits below the multiplication by 2, so the 3 is doubled too: at x = 1, 1 + 3 = 4 and 2 × 4 = 8."
+  expr="2*(x + 3)"
+  values={{ x: 1 }}
+/>
+
+<ExpressionTree
+  title="f(g(x)) = 2 × x + 3"
+  description="The multiplication 2 × x sits below the addition, so the 3 is added after the doubling: at x = 1, 2 × 1 = 2 and 2 + 3 = 5."
+  expr="2*x + 3"
+  values={{ x: 1 }}
+/>
+
+In $g\big(f(x)\big) = 2(x + 3) = 2x + 6$ the doubling comes last, so it doubles the 3 as well, while $f\big(g(x)\big) = 2x + 3$ adds the 3 after the doubling. The first is always 3 more than the second, so they are equal for no $x$ at all. Feeding the output of one function into another is called *composition*, and, as with subtraction, the order matters.
+
+Everyday life has the same rule. You put on socks and then shoes, and the two cannot be done in the other order.
+
+## Undoing a chain
+
+Turning a temperature in Celsius into Fahrenheit is a chain of two steps.
+
+<Exercise id="explore-undo-order" />
+
+</Reveal>
+
+<Reveal for="explore-undo-order">
+
+Undo the last step first. Adding 32 came last, so take it off first, then divide by 1.8. For water boiling at 212 °F, $212 - 32 = 180$ and $180 \div 1.8 = 100$ °C. The other order fails: $212 \div 1.8 - 32 \approx 85.8$, not 100. It is socks and shoes again: to undress, the shoes come off first.
+
+## Back to the tokeniser
+
+The puzzle's decoder is a function from lists of ids to texts. Here it is on five short lists.
+
+<MappingDiagram
+  title="The decoder"
+  description="Five lists of ids, each with one arrow to the text it decodes to: [0] to a, [1] to b, [0, 1] to ab, [2] to ab, and [1, 0] to ba. Two arrows arrive at ab."
+  from={["[0]", "[1]", "[0, 1]", "[2]", "[1, 0]"]}
+  to={["a", "b", "ab", "ba"]}
+  arrows={[[0, 0], [1, 1], [2, 2], [3, 2], [4, 3]]}
+  fromLabel="Lists of ids"
+  toLabel="Texts"
+  properties={false}
+/>
+
+Every list decodes to exactly one text, so the decoder is a function. It is not one-to-one, because [0, 1] and [2] share the text `ab`, and that is why decoding cannot always be undone. The encoder runs the other way, from texts to lists.
+
+<Exercise id="explore-onto" />
+
+</Reveal>
+
+<Reveal for="explore-onto">
+
+If some text encoded to [0, 1], decoding [0, 1] would give that text back, so the text would have to be `ab`. But `ab` encodes to [2]. So no text at all encodes to [0, 1]: it is a perfectly good list of ids that the encoder never produces. A function that reaches every possible output is called *onto*, so the encoder is not onto. Here it is on the same texts.
+
+<MappingDiagram
+  title="The encoder"
+  description="Four texts, each with one arrow to its list of ids: a to [0], b to [1], ab to [2], and ba to [1, 0]. No arrow arrives at [0, 1]."
+  from={["a", "b", "ab", "ba"]}
+  to={["[0]", "[1]", "[0, 1]", "[2]", "[1, 0]"]}
+  arrows={[[0, 0], [1, 1], [2, 3], [3, 4]]}
+  fromLabel="Texts"
+  toLabel="Lists of ids"
+/>
+
+The encoder is one-to-one but not onto: no two texts share a list, but some lists are never reached. The decoder is the other way about: onto, since every text comes from some list, but not one-to-one. Each undoes the other in one direction only, and that was the whole puzzle.
+
+## The names
+
+<Definition term="Function">
+
+A rule that gives every input exactly one output. Its allowed inputs are its *domain*, its possible outputs are its *codomain*, and the outputs it actually produces are its *image*. The output of $f$ at the input $x$ is written $f(x)$.
+
+</Definition>
+
+<Definition term="One-to-one, or injective">
+
+No two inputs share an output: if $f(a) = f(b)$, then $a = b$. The birthday rule and squaring are not one-to-one; doubling and the encoder are.
+
+</Definition>
+
+<Definition term="Onto, or surjective">
+
+Every possible output is reached: for every $y$ in the codomain there is an input $x$ with $f(x) = y$. The decoder is onto; the encoder is not, because nothing reaches [0, 1].
+
+</Definition>
+
+<Definition term="Composition">
+
+Applying $f$ and then $g$ to the result gives a new function, written $g \circ f$ and read "g after f": $(g \circ f)(x) = g\big(f(x)\big)$. The function written nearest to $x$ acts first, and the order usually matters.
+
+</Definition>
+
+<Definition term="Inverse">
+
+A function $g$ undoes $f$ when $g\big(f(x)\big) = x$ for every input $x$. If $f$ also undoes $g$, so that $f\big(g(y)\big) = y$ for every possible output $y$, then $g$ is the inverse of $f$, written $f^{-1}$. The $-1$ is not a power: $f^{-1}(x)$ is not $1/f(x)$.
+
+</Definition>
+
+</Reveal>

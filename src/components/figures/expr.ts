@@ -452,7 +452,7 @@ export function spokenValue(v: number, digits = 3): string {
   return formatValue(v, digits);
 }
 
-/** Reads a typed number: 3e23, 3 × 10^23, 3*10**23, 3,15,000 or 0.25. */
+/** Reads a typed number: 3e23, 3 × 10^23, 3*10**23, 3,15,000, 0.25 or 1/4. */
 export function parseLooseNumber(text: string): number {
   const t = text.trim().replace(/[,\s]/g, "").replace(/−/g, "-");
   if (!t) return Number.NaN;
@@ -463,5 +463,7 @@ export function parseLooseNumber(text: string): number {
   }
   const bare = /^10(?:\^|\*\*)\{?([-+]?\d+)\}?$/.exec(t);
   if (bare) return Number(`1e${bare[1]}`);
+  const fraction = /^(-?\d+)\/(\d+)$/.exec(t);
+  if (fraction) return Number(fraction[2]) === 0 ? Number.NaN : Number(fraction[1]) / Number(fraction[2]);
   return /^-?(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?$/i.test(t) ? Number(t) : Number.NaN;
 }

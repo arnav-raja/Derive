@@ -89,6 +89,9 @@ describe("parseLooseNumber", () => {
   it("reads the ways a learner types a number", () => {
     expect(parseLooseNumber("3e23")).toBe(3e23);
     expect(parseLooseNumber("3 × 10^23")).toBe(3e23);
+    expect(parseLooseNumber("1/4")).toBe(0.25);
+    expect(parseLooseNumber("-3/4")).toBe(-0.75);
+    expect(parseLooseNumber("1/0")).toBeNaN();
     expect(parseLooseNumber("10^5")).toBe(1e5);
     expect(parseLooseNumber("31,557,600")).toBe(31557600);
     expect(parseLooseNumber("−2")).toBe(-2);

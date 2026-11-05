@@ -71,7 +71,7 @@ In the Recall phase you worked out $7 \times 98$. The quick way splits 98 as $10
   expr="7*100 - 7*2"
 />
 
-Multiplying out a bracket turns one multiplication into two and moves the subtraction to the top. This is the only rule that connects addition with multiplication, so almost every step that changes the shape of an expression uses it.
+Multiplying out a bracket turns one multiplication into two and moves the subtraction to the top. This is the only rule that connects addition with multiplication, so every step that turns a product into a sum, or a sum into a product, uses it.
 
 <Exercise id="explore-distribute" />
 
@@ -79,11 +79,13 @@ Multiplying out a bracket turns one multiplication into two and moves the subtra
 
 <Reveal for="explore-distribute">
 
-The 3 multiplies everything inside the bracket: $3(x + 4) = 3x + 3 \times 4 = 3x + 12$. Forgetting to multiply the 4 is the most common slip in all of algebra, and the tree shows why it is wrong: the 3 sits above the whole bracket, not only above the $x$.
+The 3 multiplies everything inside the bracket: $3(x + 4) = 3x + 3 \times 4 = 3x + 12$. Forgetting to multiply the 4 is one of the most common slips in algebra. The tree for $7 \times (100 - 2)$ shows why it is wrong: the number in front sits above the whole bracket, not only above its first term.
 
 ## A calculator that rounds
 
 Now the puzzle. A computer keeps about 16 significant figures and rounds after every operation. A calculator that keeps only three makes the same effect easy to see.
+
+Keeping three significant figures means keeping the first three digits, counted from the first digit that is not 0, and rounding away the rest: 2.718 becomes 2.72, 25.64 becomes 25.6 and 0.0012345 becomes 0.00123. In a whole number, zeros at the end only fill places, so 1,000 needs one significant figure and 2,500 needs two.
 
 <Exercise id="explore-round-first" />
 
@@ -111,7 +113,7 @@ And grouped the other way:
   stepwise
 />
 
-Computed exactly, both sums are 1.008. In the first grouping each 0.004 is added to 1 on its own, and each time the rounding throws it away. In the second, the two small amounts are added first, and 0.008 is large enough to survive: 1.008 rounds to 1.01. Associativity holds for exact numbers. A calculator that rounds breaks it, and that is all the puzzle was.
+Computed exactly, both sums are 1.008. In the first grouping each 0.004 is added to 1 on its own, and each time the rounding throws it away. In the second, the two small amounts are added first, and 0.008 is large enough to survive: 1.008 rounds to 1.01. The grouping rule holds for exact numbers. A calculator that rounds breaks it, and that is all the puzzle was.
 
 <Exercise id="explore-commute-round" />
 
@@ -119,11 +121,11 @@ Computed exactly, both sums are 1.008. In the first grouping each 0.004 is added
 
 <Reveal for="explore-commute-round">
 
-Never. The calculator rounds the exact result of each operation, and $a + b$ and $b + a$ have the same exact result, so they round to the same value. Commutativity survives rounding. Associativity does not, because the two groupings round different intermediate results.
+Never. The calculator rounds the exact result of each operation, and $a + b$ and $b + a$ have the same exact result, so they round to the same value. The order rule survives rounding. The grouping rule does not, because the two groupings round different intermediate results.
 
 ## The names
 
-Here are the names of the rules you have just found, with the two that make 0 and 1 special.
+Here are the names of the rules you have just found, with the rules for 0 and 1, and for negatives and reciprocals, which Derive needs.
 
 <Definition term="Expression tree">
 
@@ -145,7 +147,7 @@ The grouping of a chain does not matter: $(a + b) + c = a + (b + c)$ and $(ab)c 
 
 <Definition term="Distributivity">
 
-Multiplication spreads over addition: $a(b + c) = ab + ac$. It is the one rule that links the two operations.
+Multiplication spreads over addition: $a(b + c) = ab + ac$. It is the one rule that links the two operations. It covers subtraction too, because $b - c$ is $b + (-c)$, so $a(b - c) = ab - ac$.
 
 </Definition>
 
@@ -155,6 +157,6 @@ Adding 0 and multiplying by 1 change nothing: $a + 0 = a$ and $a \times 1 = a$. 
 
 </Definition>
 
-A number system that obeys all of these rules is called a *field*, and the rules are the *field axioms*. The ordinary numbers form a field. A computer's rounded numbers do not, quite, as the puzzle showed.
+A number system that obeys all of these rules, and in which 0 and 1 are different numbers, is called a *field*, and the rules are the *field axioms*. The ordinary numbers form a field. A computer's rounded numbers do not, quite, as the puzzle showed.
 
 </Reveal>

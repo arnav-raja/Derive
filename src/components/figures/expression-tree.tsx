@@ -226,7 +226,7 @@ export function ExpressionTree({
                     readOnly={phase !== "asking"}
                     inputMode="decimal"
                     autoComplete="off"
-                    placeholder={sigfigs ? "for example 2.50" : "for example 3e23"}
+                    placeholder={sigfigs ? "for example 2.50" : "a number"}
                     className={clsx(inputClasses, "tabular h-9 max-w-xs font-mono")}
                   />
                 </div>

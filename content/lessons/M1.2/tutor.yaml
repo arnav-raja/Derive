@@ -4,13 +4,17 @@ misconceptions:
     why: >-
       The order of operations and brackets fix the tree, and the tree decides the order. Only a chain
       of the same kind of operation, such as subtractions, is worked from the left.
-    cue: An answer of 14 for $3 + 4 \times 2$, or of 7 for $8 - 3 - 2$.
+    cue: An answer of 14 for $3 + 4 \times 2$.
   - id: brackets-are-decoration
     belief: Brackets only make an expression easier to read and can be dropped.
     why: >-
-      Brackets change the tree, and with it the value. They can be dropped only where associativity
-      says the grouping does not matter, which holds for chains of additions or of multiplications.
-    cue: The learner treats $(3 + 4) \times 2$ and $3 + 4 \times 2$ as the same, or drops the bracket in $8 - (3 - 2)$.
+      Brackets change the tree, and with it the value. They can be dropped only where the tree stays
+      the same without them: where the order of operations already puts that part lower, as in
+      $3 + (4 \times 2)$, or where associativity says the grouping does not matter, as in a chain of
+      additions or of multiplications.
+    cue: >-
+      The learner treats $(3 + 4) \times 2$ and $3 + 4 \times 2$ as the same, drops the bracket in
+      $8 - (3 - 2)$, or gives 7 for $8 - 3 - 2$, which groups it from the right.
   - id: rules-are-conventions
     belief: Results such as $(-1)(-1) = 1$ are conventions that someone chose.
     why: >-
@@ -80,11 +84,11 @@ exercises:
       - >-
         A parallel chain, for $4 + 4 \times 0$: it equals $4 \times 1 + 4 \times 0$, because $4 = 4
         \times 1$; then $4(1 + 0)$, by taking out the common factor; then $4 \times 1$, because adding
-        0 changes nothing; then 4. Name the rule behind each move there, then look for the same kinds
-        of move in your chain.
+        0 changes nothing; then 4. Match each move there to a rule in the list, then look for the same
+        kinds of move in your chain.
     notes: >-
-      The checker reports how many lines cite the right rule. The usual mix-up is between swap and
-      negative on lines 3 and 4; a hint can ask which of the two lines turns the bracket into a single
+      The checker reports how many lines cite the right rule. The usual mix-ups are between swapping a
+      sum and swapping a product on line 3, and between swap and negative on lines 3 and 4; a hint can ask which of the two lines turns the bracket into a single
       number, without naming the rule.
   derive-expand:
     rungs:
@@ -103,8 +107,9 @@ exercises:
         15$. Each term of the first bracket multiplies each term of the second, then like terms are
         collected.
     notes: >-
-      An answer of $a^2 + b^2$ is the square-of-sum misconception; ask the learner to test it at $a =
-      b = 1$. A "form" diagnosis means the value is right but a bracket remains.
+      An answer of $a^2 + b^2$ is the square-of-sum misconception; ask the learner to test it at
+      $a = 2$, $b = 3$, where the two give 25 and 13. A "form" diagnosis means the value is right but
+      a bracket remains.
   derive-power-of-power:
     rungs:
       - How many copies of $a^m$ are multiplied together in $(a^m)^n$, and how many copies of $a$ is each one?
@@ -153,34 +158,38 @@ exercises:
         line give for 3, 3 and 3?
       - >-
         The operators in that line are the right ones. What is wrong is which of them sits at the top
-        of the tree, and on paper brackets are how you change that.
+        of the tree.
       - >-
         A parallel example: four friends share a 300-rupee meal and a 60-rupee tip. `cost = 300 + 60 /
         4` gives 315, because only the tip is divided, while `cost = (300 + 60) / 4` gives 90 each.
     notes: >-
-      A learner who types the number 82.33 directly passes the average test; ask them to build it
-      from the three names, so it would still be right for other scores.
+      A learner who types the value, such as `247 / 3` or `82.33333333333333`, passes the average
+      test; ask them to build it from the three names, so it would still be right for other scores.
+      Typing a rounded value such as 82.33 fails, because the test compares to nine significant
+      figures.
   build-break-associativity:
     rungs:
       - >-
-        Run the starter as it is. Why does the left grouping lose both of the 0.004s, while the right
-        grouping keeps them?
+        Write the line for `right` first, the same way `left` is written but with $b + c$ inside. Then
+        run it with Explore's numbers. Why does the left grouping lose both of the 0.004s, while the
+        right grouping keeps them?
       - >-
         In Explore, the calculator kept three significant figures. Near 1, what is the smallest change
         it can show? What is the smallest change near 100?
       - >-
-        The gap with Explore's numbers is 0.01, one step of the calculator near 1. What would the gap
-        be if your largest number sat where the steps are bigger?
+        Try $a = 10$ with $b = c = 0.04$ first. What gap do you get, and how does it compare with the
+        gap of 0.01 near 1?
       - >-
-        To make the gap at least 1, your largest number must sit where the calculator's steps are 1
-        wide. Then each small number must be lost on its own but not when the two are added together.
+        Your numbers are fine for the calculator. The trouble is the size of $a$: near 1 a step is only
+        0.01, so no choice of $b$ and $c$ can open a gap of 1 there.
       - >-
         A parallel example with a two-figure calculator, which keeps only two significant figures:
-        with 10, 0.4 and 0.4, the left grouping gives 10 and the right gives 11, because 10.4 rounds
-        to 10 but 10.8 rounds to 11.
+        with 50, 0.3 and 0.3, the left grouping gives 50 and the right gives 51, because 50.3 rounds
+        to 50 but 50.6 rounds to 51.
     notes: >-
-      Two traps: near 1,000 the steps are 10 wide, so 0.4 and 0.8 are both lost; and Python rounds an
-      exact half to the even neighbour, so $b = c = 0.25$ gives 100.5, which rounds to 100, and the
+      A `right` that equals `left` usually repeats the left grouping; one with too many figures has
+      lost its rounding. Two traps: near 1,000 the steps are 10 wide, so 0.4 and 0.8 are both lost; and
+      Python rounds an exact half to the even neighbour, so $b = c = 0.25$ gives 100.5, which rounds to 100, and the
       groupings agree.
   build-sympy-check:
     rungs:
@@ -200,8 +209,9 @@ exercises:
         A parallel example: to compare $(x + 2)(x + 3)$ with $x^2 + 6$, write `expand((x + 2)*(x + 3) -
         (x**2 + 6))`. It prints `5*x`, so the two are not equivalent: they differ by $5x$.
     notes: >-
-      The tests accept either order of subtraction. A result of 24 for `trees` means the brackets
-      round $3x + 12$ were left out; an unexpanded result means `expand` was not used.
+      The tests accept either order of subtraction, and check the result at $x = 2$, 3 and 7. A
+      result of 24 for `trees` means the brackets round $3x + 12$ were left out; an unexpanded result
+      means `expand` was not used.
 
 novice:
   - If nobody proves the rules themselves, why should I believe them?

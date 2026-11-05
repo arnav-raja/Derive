@@ -1,0 +1,118 @@
+Explore found the ideas by trying examples. Now derive them: write chains and inverses as formulas, and prove exactly when an inverse can exist.
+
+## Composition as a formula
+
+In Explore you worked out $g\big(f(1)\big)$ one number at a time. Substitution does it for every input at once: wherever $g$ uses its input, put the whole of $f(x)$.
+
+<Exercise id="derive-compose-formula" />
+
+<Reveal for="derive-compose-formula">
+
+$g$ squares whatever it is given, and here it is given $x - 4$, so $g\big(f(x)\big) = (x - 4)^2$. The other order gives $f\big(g(x)\big) = x^2 - 4$. At $x = 0$ the first is 16 and the second is $-4$: two different functions, as Explore led you to expect.
+
+## Undoing a formula
+
+The rule $F = 1.8C + 32$ turns Celsius into Fahrenheit. Its inverse turns Fahrenheit back into Celsius. To find it, treat $F$ as known and solve for $C$, with steps that can be undone, as in M1.2.
+
+<Exercise id="derive-inverse-formula" />
+
+</Reveal>
+
+<Reveal for="derive-inverse-formula">
+
+<Steps>
+  <Step why="the rule">$F = 1.8C + 32$</Step>
+  <Step why="subtract 32 from both sides: the last step done is the first undone">$F - 32 = 1.8C$</Step>
+  <Step why="divide both sides by 1.8">$\dfrac{F - 32}{1.8} = C$</Step>
+</Steps>
+
+So $C = \dfrac{F - 32}{1.8}$. The bracket matters: all of $F - 32$ is divided, not just the 32. Check it on boiling water: $(212 - 32) \div 1.8 = 100$.
+
+## Why only one-to-one functions can be undone
+
+Explore suggested that a function can be undone only when no two inputs share an output. Now prove it. Suppose $f$ has an inverse, and two inputs give the same output.
+
+<Exercise id="derive-inverse-injective" />
+
+</Reveal>
+
+<Reveal for="derive-inverse-injective">
+
+So $a = b$: two inputs with the same output were the same input all along, which is exactly what one-to-one means. A function with an inverse must also be onto, because $f\big(f^{-1}(y)\big) = y$ says that every possible output $y$ is reached, from the input $f^{-1}(y)$.
+
+The converse holds too. If $f$ is one-to-one and onto, every possible output comes from exactly one input, and the rule that sends each output back to that input is an inverse. A function that is both one-to-one and onto is called *bijective*, so a function has an inverse exactly when it is bijective.
+
+## Undoing a chain, in reverse order
+
+In Explore you undid Celsius to Fahrenheit by undoing the last step first. Here is why that always works. Take two functions $f$ and $g$ that both have inverses. The chain $g \circ f$ applies $f$ first and then $g$. The claim is that $f^{-1} \circ g^{-1}$, which undoes $g$ first and then $f$, is its inverse.
+
+<Exercise id="derive-socks-shoes" />
+
+</Reveal>
+
+<Reveal for="derive-socks-shoes">
+
+So $f^{-1} \circ g^{-1}$ undoes $g \circ f$. The same steps, with $g\big(g^{-1}(u)\big) = u$ and $f\big(f^{-1}(u)\big) = u$ in place of the undo rules, show that $g \circ f$ undoes $f^{-1} \circ g^{-1}$ as well, so it is the inverse:
+
+$$
+(g \circ f)^{-1} = f^{-1} \circ g^{-1}.
+$$
+
+The inverse of a chain undoes its steps in reverse order. Socks, then shoes; to undo them, shoes, then socks.
+
+## Making a function one-to-one
+
+Squaring is not one-to-one, so on all numbers it has no inverse. The square root looks as if it should be one.
+
+<Exercise id="derive-root-square" />
+
+</Reveal>
+
+<Reveal for="derive-root-square">
+
+$(-3)^2 = 9$, and $\sqrt{9} = 3$, because $\sqrt{y}$ always means the number that is 0 or more whose square is $y$. The square root sent back 3, not the $-3$ that went in. So $\sqrt{x^2} = x$ only when $x \ge 0$; when $x$ is negative, $\sqrt{x^2} = -x$. Both cases together say $\sqrt{x^2} = |x|$, the size of $x$ ignoring its sign.
+
+In M1.1 a square root undid a square. It does, but only for numbers that are 0 or more. The cure is to narrow the inputs. Allow only $x \ge 0$: then no two inputs share a square, squaring is one-to-one, and the square root is its inverse. Narrowing the inputs of a function in this way is called *restricting its domain*.
+
+<Exercise id="derive-restrict-inverse" />
+
+</Reveal>
+
+<Reveal for="derive-restrict-inverse">
+
+<Steps>
+  <Step why="the rule, for inputs x ≥ 2">$y = (x - 2)^2$</Step>
+  <Step why="take square roots: x − 2 is 0 or more, so it is the root itself">$\sqrt{y} = x - 2$</Step>
+  <Step why="add 2 to both sides">$\sqrt{y} + 2 = x$</Step>
+</Steps>
+
+The narrowing did real work in the second line. Without it, $x - 2$ could be negative and equal to $-\sqrt{y}$, and then $x = 2 - \sqrt{y}$ would fit just as well: two inputs again, and no inverse. Taking the square root of both sides of an equation is safe only when you know the sign of what is being squared.
+
+## A second angle: the graph
+
+An inverse swaps each input with its output. See what that does to a graph.
+
+<Exercise id="derive-mirror" />
+
+</Reveal>
+
+<Reveal for="derive-mirror">
+
+<FunctionPlot
+  title="A function and its inverse"
+  description="For x from 0 to 4: the curve y = x², which leaves the top of the picture at x = 2, the curve y = √x, and the straight line y = x between them. The points (2, 4) and (4, 2) are marked. Each curve is the mirror image of the other in the line."
+  curves={[
+    { expr: "x^2", label: "y = x²" },
+    { expr: "sqrt(x)", label: "y = √x" },
+    { expr: "x", label: "y = x" }
+  ]}
+  x={[0, 4]}
+  y={[0, 4]}
+  marks={[{ x: 2, curve: 0, label: "(2, 4)" }, { x: 4, curve: 1, label: "(4, 2)" }]}
+/>
+
+Every point $(a, b)$ on the graph of a function becomes the point $(b, a)$ on the graph of its inverse: input and output change places. Swapping the two coordinates of every point reflects the picture in the line $y = x$, so the graph of an inverse is the mirror image of the graph of the function.
+
+The mirror also gives a test you can see. A function is one-to-one exactly when no horizontal line crosses its graph more than once, and then its mirror image is again the graph of a function. A horizontal line at height 9 crosses the full graph of $y = x^2$ twice, at $x = -3$ and $x = 3$.
+
+</Reveal>

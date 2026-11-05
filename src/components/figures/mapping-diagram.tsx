@@ -66,6 +66,7 @@ export function MappingDiagram({
   fromLabel = "Inputs",
   toLabel = "Outputs",
   editable = false,
+  properties = true,
   predict,
   syms,
 }: {
@@ -79,6 +80,8 @@ export function MappingDiagram({
   toLabel?: string;
   /** Let the learner add and remove arrows. */
   editable?: boolean;
+  /** List whether the rule is a function, one-to-one and onto; off where that would answer a question. */
+  properties?: boolean;
   predict?: { prompt: string; property: Property };
   syms?: { from?: (string | null)[]; to?: (string | null)[] };
 }) {
@@ -112,8 +115,9 @@ export function MappingDiagram({
   const lit = (i: number, j: number) => selected && ((selected.side === "from" && selected.i === i) || (selected.side === "to" && selected.i === j));
   const marker = `${uid}-arrow`.replace(/[^a-zA-Z0-9_-]/g, "");
 
+  // The marks on the elements that decide the properties are hidden with the properties themselves.
   const evidence = new Set<string>(
-    revealed
+    revealed && properties
       ? [...a.noOutput.map((i) => `f${i}`), ...a.manyOutputs.map((i) => `f${i}`), ...a.shared.map((i) => `t${i}`), ...a.unreached.map((i) => `t${i}`)]
       : [],
   );
@@ -252,7 +256,7 @@ export function MappingDiagram({
                 ? "Choose an input, then an output, to add or remove an arrow."
                 : "Choose an input or an output to follow its arrows."}
           </p>
-          {revealed ? (
+          {revealed && properties ? (
             <ul className="flex flex-col gap-0.5 text-sm text-ink">
               <li>
                 <span className="font-semibold">A function: </span>

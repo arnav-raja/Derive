@@ -1,0 +1,153 @@
+misconceptions:
+  - id: inverse-is-reciprocal
+    belief: $f^{-1}(x)$ means $1/f(x)$.
+    why: >-
+      The $-1$ names the function that undoes $f$; it is not a power. For $f(x) = 2x$ the inverse is
+      $f^{-1}(x) = x/2$, while $1/f(x) = 1/(2x)$, and the two disagree at almost every $x$.
+    cue: The learner writes $1/(1.8C + 32)$, or any reciprocal, for an inverse.
+  - id: reverse-is-function
+    belief: Turning the arrows of a function round always gives a function.
+    why: >-
+      If two inputs share an output, the turned-round rule gives that output two images, and an
+      output that nothing reaches gets none. Only a one-to-one, onto function turns round cleanly.
+    cue: The learner treats every function as if it could be run backwards.
+  - id: order-does-not-matter
+    belief: $g\big(f(x)\big)$ and $f\big(g(x)\big)$ are the same.
+    why: >-
+      Composition is like subtraction, not addition: the order usually matters. With $f(x) = x + 3$ and
+      $g(x) = 2x$ the two orders give $2x + 6$ and $2x + 3$.
+    cue: An answer of $x^2 - 4$ for $g\big(f(x)\big)$ with $f(x) = x - 4$ and $g(x) = x^2$.
+  - id: undo-in-same-order
+    belief: To undo a chain, undo the steps in the order they were done.
+    why: >-
+      The last step done sits on the outside, so it has to come off first, as shoes come off before
+      socks.
+    cue: An answer of $F/1.8 - 32$ for the inverse of $F = 1.8C + 32$.
+  - id: root-undoes-square
+    belief: $\sqrt{x^2} = x$ for every number $x$.
+    why: >-
+      The square root always gives the number that is 0 or more, so $\sqrt{x^2} = |x|$. It undoes
+      squaring only for inputs that are 0 or more.
+    cue: An answer of $-3$ for $\sqrt{(-3)^2}$, or $2 - \sqrt{y}$ for the narrowed square.
+  - id: one-way-is-both-ways
+    belief: If $g$ undoes $f$, then $f$ undoes $g$ as well.
+    why: >-
+      $g\big(f(x)\big) = x$ for every input says nothing about outputs that $f$ never produces. Decoding
+      undoes encoding, yet encoding [0, 1]'s text gives [2], not [0, 1].
+    cue: The learner says that decoding and encoding are inverses because one undoes the other.
+  - id: function-must-be-formula
+    belief: A function has to be a formula in $x$.
+    why: >-
+      Any rule that gives each input exactly one output is a function: a table, a list of arrows, a
+      program. The birthday rule has no formula and is still a function.
+    cue: The learner says the birthday rule or the decoder is not a function because it has no formula.
+
+exercises:
+  derive-compose-formula:
+    rungs:
+      - Which of the two functions acts first in $g\big(f(x)\big)$, and what does it give?
+      - >-
+        In Explore you worked out $g\big(f(1)\big)$ by finding $f(1)$ first and then giving the result
+        to $g$. The same works with $x$ in place of 1.
+      - Work out $g\big(f(5)\big)$ first. What is $f(5)$, and what does $g$ do to it?
+      - $g$ squares whatever it is given. Here it is given all of $x - 4$, not just the $x$.
+      - >-
+        With $f(x) = x + 1$ and $g(x) = 3x$, $g\big(f(x)\big) = 3(x + 1)$: the whole of $f(x)$ goes
+        where $g$ had its $x$.
+    notes: >-
+      An answer of $x^2 - 4$ is $f\big(g(x)\big)$, the other order. An answer of $x^2 - 16$ or
+      $x^2 + 16$ squares the two parts separately, the slip M1.2 showed for $(a + b)^2$.
+  derive-inverse-formula:
+    rungs:
+      - What was done to $C$ to make $F$, and in what order?
+      - In M1.2 you solved equations by undoing what had been done to the unknown, one safe step at a time.
+      - Try it with numbers first. If $F = 212$, what is $C$? Write down each step you take.
+      - >-
+        The 32 was added last, so it comes off first. After that, everything left on the $F$ side has
+        to be divided by 1.8, not just part of it.
+      - To solve $y = 4x + 6$ for $x$, subtract 6 to get $y - 6 = 4x$, then divide both sides by 4.
+    notes: >-
+      $F/1.8 - 32$ undoes the steps in the order they were done. $F - 32/1.8$ has lost its bracket, so
+      only the 32 is divided. $(F + 32)/1.8$ adds where it should subtract.
+  derive-inverse-injective:
+    rungs:
+      - The chain has to get from $a$ to $b$. Which fact connects $a$ with $b$?
+      - >-
+        In M1.2 a rule could be used from right to left as well as from left to right: $a \times 1 = a$
+        also lets you write $a$ as $a \times 1$.
+      - Look only at the first line. Which rule turns $a$ into $f^{-1}\big(f(a)\big)$?
+      - >-
+        The second line changes only the inside, from $f(a)$ to $f(b)$. What do you know about those
+        two?
+      - >-
+        To show $p = q$ from $p + 1 = q + 1$, write $p = (p + 1) - 1 = (q + 1) - 1 = q$: undo, replace
+        one thing by an equal one, undo again.
+    notes: >-
+      Choosing Compose for the first line confuses composition with undoing; no second function is
+      involved. Onto is never needed in this proof.
+  derive-socks-shoes:
+    rungs:
+      - Before any undoing can happen, what does $(p \circ q)(u)$ mean written out in full?
+      - In Explore, Celsius to Fahrenheit was undone by undoing the last step first.
+      - Look only at the third line. Which function and which inverse sit next to each other in the line before it?
+      - In the second line, $g^{-1}$ is applied directly to $g(\ldots)$. Which rule removes that pair?
+      - >-
+        With shoes over socks, taking off the shoes leaves the socks, and taking off the socks leaves
+        bare feet: each step removes the layer that is on the outside.
+    notes: >-
+      Redo g is never needed: it removes $g$ applied after $g^{-1}$, but in this chain $g^{-1}$ is
+      applied after $g$.
+  derive-restrict-inverse:
+    rungs:
+      - What is done to $x$ to make $y$, and what undoes each step?
+      - Earlier in this phase, the square root undid squaring only for numbers that are 0 or more.
+      - Try a number. If $y = 9$ and $x \ge 2$, what is $x$?
+      - >-
+        Taking the square root of both sides gives $\sqrt{y}$ on one side. On the other side, is
+        $x - 2$ positive or negative when $x \ge 2$?
+      - For $y = (x + 1)^2$ with $x \ge -1$, $x + 1$ is 0 or more, so $x + 1 = \sqrt{y}$.
+    notes: >-
+      $2 - \sqrt{y}$ is the inverse for the other half, $x \le 2$. $\sqrt{y - 2}$ and $\sqrt{y} - 2$
+      undo the steps in the wrong order or with the wrong sign. $(y - 2)^2$ squares where it should
+      take a root.
+  build-to-celsius:
+    rungs:
+      - What does `to_fahrenheit` do to `c`, step by step, and what would undo each step?
+      - In the Derive phase you solved $F = 1.8C + 32$ for $C$.
+      - What should `to_celsius(32)` give? Run your program with that call and check.
+      - Python follows the same order of operations as algebra. Look at where the brackets are, or are not, in your `return` line.
+      - >-
+        The rule that undoes `return 3 * x + 1` is `return (y - 1) / 3`: the step done last is
+        undone first.
+    notes: >-
+      About 85.8 for 212 means the division came before the subtraction. About 194.2 means the bracket
+      is missing, so only the 32 was divided. About 135.6 means 32 was added instead of subtracted.
+  build-kelvin:
+    rungs:
+      - In `kelvin_to_celsius(to_fahrenheit(k))`, which function runs first?
+      - In Explore, $g\big(f(1)\big)$ worked out $f(1)$ first. In Python, too, the inner call runs first.
+      - Follow 273.15 through by hand. What does the inner call give, and what does the outer call then do with it?
+      - The kelvin reading has to become Celsius before anything turns it into Fahrenheit. Which call belongs on the inside?
+      - >-
+        To turn hours into seconds by way of minutes, write `minutes_to_seconds(hours_to_minutes(h))`:
+        the first step is the inner call.
+    notes: >-
+      250.52 for 273.15 means the kelvin reading went into `to_fahrenheit` as if it were Celsius.
+      0 for 273.15 means the 32 was never added.
+  build-sympy-inverse:
+    rungs:
+      - Which letter do you want each equation solved for?
+      - The example line solves an equation for `x`. Your two lines have the same shape.
+      - Do `celsius` first, run the program, and look at what it prints before you move on to `roots`.
+      - "`solve` takes the equation and then the letter. Here the equations are named `rule` and `square`."
+      - To solve `Eq(y, 4*x - 6)` for `x`, write `solve(Eq(y, 4*x - 6), x)`, which gives `[y/4 + 3/2]`.
+    notes: >-
+      A list holding `9*c/5 + 32` means the rule was solved for `f`. A list holding `x**2` means the
+      square was solved for `y`. A printed equation, `Eq(...)`, means `solve` was never called.
+
+novice:
+  - Why does the decoder count as a function, when two lists give the same text?
+  - Is $f^{-1}(x)$ the same as $1/f(x)$?
+  - Why do you undo the last step first, and not the first step first?
+  - If the square root does not undo squaring, why does a calculator's square root button seem to?
+  - Is every formula a function? Is every function a formula?

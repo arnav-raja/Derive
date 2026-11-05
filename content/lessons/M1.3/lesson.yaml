@@ -1,0 +1,69 @@
+code: M1.3
+title: "Functions: mappings, composition and inverses"
+course: M1
+status: review
+summary: >-
+  A tokeniser's decoder gives back exactly the text its encoder was given. Does every list of
+  token ids survive the trip the other way? Functions as rules that give each input one output,
+  feeding one function into another, and when and how a function can be undone.
+sittings: 2
+minutes:
+  puzzle: 10
+  recall: 10
+  explore: 35
+  derive: 40
+  build: 45
+  explain: 25
+concepts:
+  taught:
+    - id: M1.3/function-as-mapping
+      name: Functions as mappings
+      summary: >-
+        A function is a rule that gives every input exactly one output. It can be drawn as arrows
+        from inputs to outputs, written as a formula, or kept as a table.
+      usedBy: [E1.3, M2.4, M1.4]
+    - id: M1.3/injective-surjective
+      name: One-to-one and onto
+      summary: >-
+        Two questions to ask of any function about how its inputs and outputs pair up, and what their
+        answers decide.
+      usedBy: [M2.7, M12.8]
+    - id: M1.3/composition
+      name: Composition
+      summary: >-
+        Feeding the output of one function into another makes a new function, and the order in which
+        the two are applied usually matters.
+      usedBy: [M3.4, M2.5, E1.3]
+    - id: M1.3/inverse-functions
+      name: Inverse functions
+      summary: >-
+        The function that undoes another: how to find it by solving for the input, and how to undo a
+        chain of functions.
+      usedBy: [M1.5, M4.12]
+  used: [M1.2/solving-equations, M1.2/expression-trees, M1.2/field-axioms]
+links:
+  requires:
+    - lesson: M1.2
+      bridge: >-
+        M1.2 solved equations with steps that can be undone. This lesson makes the undoing itself
+        an object of study: the inverse function.
+  contrastsWith:
+    - lesson: E1.3
+      bridge: >-
+        A mathematical function gives the same output every time it is given the same input. A Python
+        function can also read or change things outside itself, so two calls with the same input can
+        disagree; E1.3 calls the ones that behave like mathematical functions pure.
+  foreshadows:
+    - lesson: E1.3
+      bridge: >-
+        In Python a function is a named rule too, written with def, and calling one function on the
+        result of another is composition.
+    - lesson: M3.4
+      bridge: >-
+        The chain rule finds how fast a composition changes from how fast its parts change, and the
+        order of composition decides how the parts combine.
+    - lesson: L3.2
+      bridge: >-
+        A byte-pair encoder is a full-sized version of the puzzle's tokeniser, with a vocabulary of
+        tens of thousands of pieces, and you will build one.
+skills: []

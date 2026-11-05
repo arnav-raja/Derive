@@ -209,6 +209,18 @@
     "build-break-associativity": {
       "tests": [
         {
+          "name": "test_right",
+          "description": "right adds b and c first, rounds, then adds a and rounds again.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_left_as_written",
+          "description": "left is still worked out as the starter wrote it.",
+          "passed": true,
+          "message": null
+        },
+        {
           "name": "test_three_figures",
           "description": "a, b and c each have at most three significant figures.",
           "passed": true,
@@ -225,12 +237,6 @@
           "description": "The two groupings differ by at least 1.",
           "passed": false,
           "message": "The groupings differ by 0.01. Make the gap at least 1."
-        },
-        {
-          "name": "test_as_written",
-          "description": "left and right are still worked out as the starter wrote them.",
-          "passed": true,
-          "message": null
         }
       ],
       "error": null,
@@ -248,7 +254,7 @@
           "name": "test_slip",
           "description": "slip is the difference of (x + 1)^2 and x^2 + 1, multiplied out.",
           "passed": false,
-          "message": "slip is -x**2 + (x + 1)**2 - 1, which is not that difference multiplied out."
+          "message": "slip is not multiplied out yet. Put the whole difference inside expand(...)."
         },
         {
           "name": "test_built",

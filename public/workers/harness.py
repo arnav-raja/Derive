@@ -448,10 +448,11 @@ def _different_message(payload, table, expr):
     for point, expected_text in zip(payload["points"], payload["values"]):
         got = evaluate_at(expr, table, point)
         expected = sympy.Float(expected_text, 30)
-        if got is None or expected == 0:
+        # is_zero, not == 0: SymPy no longer counts Float(0) as equal to the integer 0.
+        if got is None or expected.is_zero:
             return plain
         ratios.append(got / expected)
-    if len(ratios) < 2 or ratios[0] == 0:
+    if len(ratios) < 2 or ratios[0].is_zero:
         return plain
     first = ratios[0]
     if all(abs(r - first) <= sympy.Float("1e-9") * abs(first) for r in ratios):

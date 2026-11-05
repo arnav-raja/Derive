@@ -1,4 +1,6 @@
-Explore found the rules by trying numbers. That is how rules are discovered, but it cannot be how they are proved, because no list of examples covers every number. So turn it around. Take the rules as the starting point and allow nothing else: every step must be one of them. Whatever follows is then true for every number, with nothing left to check.
+Explore found the rules by trying numbers. That is how rules are discovered, but no list of examples covers every number, so examples cannot prove anything about all numbers. So turn it around. Take the rules as the starting point and allow nothing else: every step must be one of them, or a fact about equality itself, such as that equal things can replace each other. Whatever follows is then true for every number, with nothing left to check.
+
+The rules themselves are not proved here. They are where proof starts, and you trust them because they describe what adding and multiplying mean: 3 rows of 4 dots are 4 rows of 3 seen from the side.
 
 ## Why anything times zero is zero
 
@@ -9,7 +11,7 @@ You have always used $a \times 0 = 0$. It is not on the list of rules, so either
   <Step why="distributivity">$a \times 0 = a \times 0 + a \times 0$</Step>
 </Steps>
 
-Give $a \times 0$ a short name, $z$. The last line says $z = z + z$. Now add $-z$, the negative of $z$, to both sides. Doing the same thing to both sides of an equation keeps them equal.
+Give $a \times 0$ a short name, $z$. The last line says $z = z + z$. Now add $-z$, the negative of $z$, to both sides. That step is not one of the rules of arithmetic but a fact about equality: doing the same thing to both sides of an equation keeps them equal.
 
 <Steps>
   <Step why="add −z to both sides">$z + (-z) = (z + z) + (-z)$</Step>
@@ -28,13 +30,13 @@ In the Recall phase, $(-3) \times (-4) = 12$ was a rule to remember. Now it can 
 
 <Reveal for="derive-minus-one">
 
-In order: times one, distributive, swap, negative, times zero. So $(-1)(-1) + (-1) = 0$. Now add 1 to both sides. On the left, $(-1) + 1$ is 0 and drops out, which leaves
+In order: times one, distributive, swap a sum, negative, times zero. So $(-1)(-1) + (-1) = 0$. Now add 1 to both sides, which gives $\big((-1)(-1) + (-1)\big) + 1 = 0 + 1$. Regroup the left side as $(-1)(-1) + \big((-1) + 1\big)$, which is $(-1)(-1) + 0$, and adding 0 changes nothing on either side. That leaves
 
 $$
 (-1) \times (-1) = 1.
 $$
 
-Look at what kind of argument that was. Nobody chose this answer. Once you accept the distributive law, and that $-1$ is the number that cancels 1, the value of $(-1)(-1)$ is forced: any other value would break a rule you already trust. A similar short argument shows that $-3 = (-1) \times 3$, and then reordering the factors gives $(-3)(-4) = (-1)(-1) \times 3 \times 4 = 12$.
+Look at what kind of argument that was. Nobody chose this answer. Once you accept the distributive law, and that $-1$ is the number that cancels 1, the value of $(-1)(-1)$ is forced: any other value would break a rule you already trust. A similar short argument shows that $(-1) \times 3 = -3$: $(-1) \times 3 + 3 = (-1) \times 3 + 1 \times 3 = \big((-1) + 1\big) \times 3 = 0 \times 3 = 0$, so $(-1) \times 3$ is the number that cancels 3, which is $-3$. Then reordering the factors gives $(-3)(-4) = (-1)(-1) \times 3 \times 4 = 12$.
 
 A second angle, for intuition. Multiply $-1$ by 3, 2, 1 and 0 in turn: the answers are $-3$, $-2$, $-1$ and 0. Each time the multiplier goes down by 1, the answer goes up by 1. One more step, to a multiplier of $-1$, gives 1. The pattern only suggests the answer. The rules prove it, and the two agree.
 
@@ -50,7 +52,7 @@ Most of algebra is rewriting: an expression is replaced by another that is easie
 
 <Steps>
   <Step why="a square is a number multiplied by itself">$(a + b)^2 = (a + b)(a + b)$</Step>
-  <Step why="distributivity, splitting the first bracket">$= a(a + b) + b(a + b)$</Step>
+  <Step why="distributivity from the right: (a + b)c = ac + bc, which is a(b + c) = ab + ac with each product's factors swapped">$= a(a + b) + b(a + b)$</Step>
   <Step why="distributivity again, on each part">$= a^2 + ab + ba + b^2$</Step>
   <Step why="ba = ab by commutativity, then two copies of ab make 2ab">$= a^2 + 2ab + b^2$</Step>
 </Steps>
@@ -75,9 +77,9 @@ So one disagreement is enough to show that two expressions are not equivalent. I
 
 <Reveal for="derive-three-agreements">
 
-At $x = 3$ the second expression is $3 \times 2 \times 1 + 3 = 9$, while $x$ is 3. The extra part, $x(x - 1)(x - 2)$, is 0 when $x$ is 0, 1 or 2, because one of its brackets is 0, and at no other value. The three agreements were built in.
+At $x = 3$ the second expression is $3 \times 2 \times 1 + 3 = 9$, while $x$ is 3. The extra part, $x(x - 1)(x - 2)$, is 0 when $x$ is 0, 1 or 2, because one of its brackets is 0. The three agreements were built in.
 
-The same trick defeats any list of checks: add a product of brackets that is 0 at every value you checked. So agreeing values are only evidence. One disagreement disproves an equivalence, and only a chain of rules proves one.
+The same trick defeats any list of checks: add a product of brackets that is 0 at every value you checked. So, on their own, agreeing values are only evidence. One disagreement disproves an equivalence, and a chain of rules proves one.
 
 <Note>
 
@@ -123,7 +125,7 @@ This is a definition, but not an arbitrary one: it is the only value that keeps 
 
 <Reveal for="derive-negative-power">
 
-For the rule to hold, $2^{-3} \times 2^{3} = 2^{0} = 1$, so $2^{-3}$ is the number that multiplies 8 to give 1, which is $\tfrac{1}{8} = 0.125$. In general $a^{-n} = 1/a^n$. That is the meaning $10^{-3} = 0.001$ had in M1.1, and now you know where it comes from.
+For the rule to hold, $2^{-3} \times 2^{3} = 2^{0} = 1$, so $2^{-3}$ is the number that multiplies 8 to give 1, which is $\tfrac{1}{8} = 0.125$. In general $a^{-n} = 1/a^n$, for every $a$ that is not 0. That is the meaning $10^{-3} = 0.001$ had in M1.1, and now you know where it comes from.
 
 </Reveal>
 
@@ -133,7 +135,7 @@ An equation claims that two expressions are equal, and its solutions are the val
 
 Doing the same thing to both sides keeps two equal things equal, but that alone does not make a step safe. A step is safe when it can also be undone, because then no solution can be gained or lost on the way. Adding a number is undone by subtracting it. Multiplying by a number is undone by dividing by it, provided the number is not 0.
 
-In M1.1 the units found the training time in years, $T = C/(RY)$, from the compute $C$, the chip's speed $R$ and the seconds in a year $Y$. Turn the question around: the lab knows how long it can wait and wants the chip speed that will do.
+In M1.1 the units found the training time in years, $T = C/(RY)$, from the compute $C$, the chip's speed $R$ and the seconds in a year $Y$. Turn the question around: the lab knows how long it can wait and wants the chip speed that will do. When the letter you want sits in the bottom of a fraction, a safe first step is to multiply both sides by it.
 
 <Exercise id="derive-solve-for-speed" />
 
@@ -165,6 +167,6 @@ $$
 
 A product is 0 only when one of its factors is 0: if $x$ is not 0, multiplying both sides of $x(x - 5) = 0$ by $1/x$ leaves $x - 5 = 0$. So $x = 0$ or $x = 5$, and nothing is lost.
 
-Some equations have no solution at all. Subtract $x$ from both sides of $x = x + 1$ and you get $0 = 1$, which no value of $x$ makes true. Remember this one. In Python, which E1.1 introduces properly, the same line is an instruction, and a useful one.
+Some equations have no solution at all. Subtract $x$ from both sides of $x = x + 1$ and you get $0 = 1$, which no value of $x$ makes true. Remember this one. In Python, which a later lesson on programs, E1.1, introduces properly, the same line is an instruction, and a useful one.
 
 </Reveal>

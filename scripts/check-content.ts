@@ -183,6 +183,39 @@ async function checkLesson(code: string, errors: string[], warnings: string[]) {
     }
   }
 
+  // The tests can be shown to the learner, so they must not hold a line of the answer. A line the
+  // starter already has is not an answer, and short right-hand sides such as `100` say nothing.
+  for (const ex of exercises) {
+    const a = ex.answer;
+    if (a.type !== "code") continue;
+    const squash = (t: string) => t.toLowerCase().replace(/\s+/g, "");
+    const starter = squash(a.starter);
+    const tests = squash(a.tests);
+    for (const raw of a.reference.split("\n")) {
+      const line = squash(raw.replace(/#.*$/, ""));
+      if (!line || starter.includes(line)) continue;
+      const m = /^return(.+)$/.exec(line) ?? /^[a-z_][a-z0-9_]*=(?!=)(.+)$/.exec(line);
+      const rhs = m?.[1];
+      if (rhs && rhs.length >= 8 && tests.includes(rhs)) {
+        errors.push(`${code}/${ex.id}: its tests contain \`${rhs}\` from the reference solution, and the learner can show the tests.`);
+        break;
+      }
+    }
+  }
+
+  // A proof whose rules are listed in the order its lines use them can be done by position.
+  for (const ex of exercises) {
+    const a = ex.answer;
+    if (a.type !== "steps") continue;
+    const inPlace = a.lines.filter((l, i) => a.rules[i]?.id === l.rule).length;
+    if (a.lines.length >= 2 && inPlace * 2 > a.lines.length) {
+      warnings.push(`${code}/${ex.id}: ${inPlace} of its ${a.lines.length} lines use the rule in the same position in the list; list the rules in another order.`);
+    }
+    if (new Set(a.lines.map((l) => l.rule)).size === a.rules.length && a.rules.length === a.lines.length) {
+      warnings.push(`${code}/${ex.id} uses every rule exactly once, so the last line can be filled in by elimination; add a rule that no line uses.`);
+    }
+  }
+
   // Options are shown in the order written, so a learner soon notices if the first is usually right.
   const positions: number[] = [];
   for (const ex of exercises) {

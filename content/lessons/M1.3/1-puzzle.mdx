@@ -1,0 +1,25 @@
+A language model does not read letters. A *tokeniser* first turns the text into a list of numbers called *token ids*, using a fixed vocabulary of short pieces of text, and the model works only with those ids. To turn ids back into text, a *decoder* replaces each id by its piece of text and joins the pieces up.
+
+Here is a tokeniser with a vocabulary of just three pieces:
+
+| Id | Piece |
+| --- | --- |
+| 0 | `a` |
+| 1 | `b` |
+| 2 | `ab` |
+
+To encode a text, it reads from the left and always takes the longest piece in the vocabulary that fits. So `ba` encodes to [1, 0], and `aab` encodes to [0, 2]: first `a`, then `ab`. Decoding [0, 2] joins `a` and `ab` and gives `aab` back.
+
+Whatever text you write with the letters `a` and `b`, encoding it and then decoding the result gives you exactly that text again. Real tokenisers are built to promise the same.
+
+<Exercise id="puzzle-round-trip" />
+
+<Reveal for="puzzle-round-trip">
+
+Not every list survives. Start from [0, 1]. Decoding it joins `a` and `b`, which gives the text `ab`. Encoding `ab` takes the longest piece that fits, which is `ab` itself, so the result is [2], not the list you started with.
+
+The trouble is that two different lists, [0, 1] and [2], decode to the same text, and the text cannot remember which list it came from. Real tokenisers behave the same way: a long text can be split into ids in a great many ways, the encoder always produces one particular split, and every other split decodes to the same text.
+
+So "decoding undoes encoding" is true, and "encoding undoes decoding" is false. A rule can be undone in one direction and not in the other. This lesson finds out exactly when a rule can be undone, and how to undo it when it can.
+
+</Reveal>

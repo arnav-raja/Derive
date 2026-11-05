@@ -1,0 +1,63 @@
+Derive found inverses on paper. Now build them in Python, where a test can check that each function undoes the other.
+
+## Functions in Python
+
+In Python a function is written with `def`. Here is one, and a call of it:
+
+```python
+def double(x):
+    return 2 * x
+
+print(double(21))   # prints 42
+```
+
+The name after `def` names the function, `x` stands for its input, and `return` gives its output. Like a mathematical function, a Python function can be any rule at all, not only a formula. A function and its inverse are two such definitions.
+
+<Exercise id="build-to-celsius" />
+
+<Reveal for="build-to-celsius">
+
+## Chaining in the right order
+
+Scientists measure temperature in kelvin, which starts from absolute zero, the coldest anything can be: a temperature of $C$ degrees Celsius is $C + 273.15$ kelvin, written K. To turn kelvin into Fahrenheit, go by way of Celsius: first kelvin to Celsius, then Celsius to Fahrenheit. In Python, as in $g\big(f(x)\big)$, the inner call runs first.
+
+<Exercise id="build-kelvin" />
+
+</Reveal>
+
+<Reveal for="build-kelvin">
+
+## Break it on purpose
+
+A thermometer that shows only whole degrees is a function too, and it can be chained with `to_celsius` like any other.
+
+<Exercise id="build-rounded-thermometer" />
+
+</Reveal>
+
+<Reveal for="build-rounded-thermometer">
+
+Rounding throws information away. Once two temperatures give the same reading, nothing can tell them apart again, so a rounded rule has no inverse. The tokeniser's decoder fails in the same way: once two lists give the same text, the text cannot say which list it came from.
+
+## Compare with the library
+
+SymPy can find an inverse by solving an equation exactly. `Eq(left, right)` builds an equation, and `solve(equation, x)` gives the list of every value of `x` that makes it true. SymPy takes a few seconds to load the first time you run it.
+
+```python
+from sympy import symbols, Eq, solve
+
+x = symbols("x")
+print(solve(Eq(3*x + 2, 17), x))   # prints [5]
+```
+
+A list holding one formula means the input can be recovered from the output. A list holding two means it cannot be, not without more information.
+
+<Exercise id="build-sympy-inverse" />
+
+</Reveal>
+
+<Reveal for="build-sympy-inverse">
+
+SymPy gives one formula for $c$, $\tfrac{5f}{9} - \tfrac{160}{9}$, which is $(f - 32) \div 1.8$ written with exact fractions. For $x$ it gives two, $-\sqrt{y}$ and $\sqrt{y}$: the square cannot be undone without knowing the sign, which is this lesson in one line of output. SymPy reached each answer by applying the rules of algebra, so each is a proof, not a check at a few values.
+
+</Reveal>

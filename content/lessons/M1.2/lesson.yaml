@@ -4,7 +4,7 @@ course: M1
 status: review
 summary: >-
   Does a computer agree that (0.1 + 0.2) + 0.3 is the same as 0.1 + (0.2 + 0.3)? Expressions as
-  trees, the few rules that every step of algebra rests on, what makes two expressions the same,
+  trees, the few rules that every step rewriting an expression rests on, what makes two expressions the same,
   and how to solve an equation without losing or gaining answers.
 sittings: 2
 minutes:
@@ -12,7 +12,7 @@ minutes:
   recall: 10
   explore: 35
   derive: 45
-  build: 40
+  build: 45
   explain: 25
 concepts:
   taught:
@@ -26,9 +26,8 @@ concepts:
     - id: M1.2/field-axioms
       name: The rules of arithmetic
       summary: >-
-        A short list of rules about adding and multiplying, from which every step of algebra follows.
-        They hold exactly for ordinary numbers; a calculator that rounds keeps some of them and not
-        others.
+        A short list of rules about adding and multiplying, and how the other facts of arithmetic,
+        such as a negative times a negative, follow from them.
       usedBy: [M1.6, M2.5, M10.2]
     - id: M1.2/equivalence
       name: Equivalent expressions
@@ -67,8 +66,8 @@ links:
         so the order of operations is a question you can ask the computer.
     - lesson: M10.2
       bridge: >-
-        Rounding after every operation is how computers really calculate. M10.2 measures how much
-        error that adds, and which calculations make it large.
+        M10.2 returns to this lesson's puzzle and measures how much error a computer's arithmetic adds,
+        and which calculations make it large.
     - lesson: M1.8
       bridge: >-
         The proof that (−1) × (−1) = 1 is a direct proof from the rules. M1.8 makes such proofs a
