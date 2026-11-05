@@ -19,7 +19,7 @@ The slope carries units, as every rate does: each degree Celsius is 1.8 degrees 
 
 <Reveal for="derive-line-through">
 
-The slope is $(13 - 5) \div (6 - 2) = 2$ hours per billion tokens: each extra billion tokens costs 2 more hours. Then $5 = 2 \times 2 + c$ gives $c = 1$: an hour of start-up, spent before any training happens, which is the time the rule gives at $n = 0$. So $T = 2n + 1$, and the check at the other point works: $2 \times 6 + 1 = 13$.
+Each extra billion tokens costs 2 more hours, and $c = 1$ is an hour of start-up, spent before any training happens: the time the rule gives at $n = 0$. The check at the other point works too: $2 \times 6 + 1 = 13$.
 
 ## The rate of a square, for every pair
 
@@ -31,7 +31,7 @@ Explore found that the rate of $x^2$ between two inputs came out as their sum fo
 
 <Reveal for="derive-chord-square">
 
-Difference of squares, cancel, swap. The cancelling needs $b - a$ not to be 0, which holds because $a$ and $b$ are different. When $a = b$ there is no chord at all, only a single point, and what a rate should mean at a single point is the question a later lesson on rates of change, M3.1, starts from.
+When $a = b$ there is no chord at all, only a single point, and what a rate should mean at a single point is the question a later lesson on rates of change, M3.1, starts from.
 
 ## The rate of any quadratic
 
@@ -43,7 +43,7 @@ The same cancelling works for every quadratic.
 
 <Reveal for="derive-general-rate">
 
-The rise is $f(b) - f(a) = 3(b^2 - a^2) - 2(b - a)$, because the 5s cancel. Both parts have the factor $b - a$, so the rise is $(b - a)\big(3(b + a) - 2\big)$, and dividing by $b - a$ leaves $3(a + b) - 2$. The same steps on $f(x) = px^2 + qx + r$ give the average rate of change from $a$ to $b$ as
+The same steps on $f(x) = px^2 + qx + r$ give the average rate of change from $a$ to $b$ as
 
 $$
 p(a + b) + q.
@@ -72,7 +72,7 @@ The squared bracket is never negative and is 0 only at $x = -4$, so the lowest v
 
 <Reveal for="derive-complete-square">
 
-Half of $-10$ is $-5$, and $(x - 5)^2 = x^2 - 10x + 25$. Since $31 = 25 + 6$, the quadratic is $(x - 5)^2 + 6$, and its vertex is $(5, 6)$.
+So the vertex of $x^2 - 10x + 31$ is $(5, 6)$.
 
 The steps never used the particular numbers, so they work with letters as well.
 
@@ -82,7 +82,7 @@ The steps never used the particular numbers, so they work with letters as well.
 
 <Reveal for="derive-general-square">
 
-$x^2 + bx + c = \big(x + \tfrac{b}{2}\big)^2 + c - \tfrac{b^2}{4}$, so the bottom of $x^2 + bx + c$ is at $x = -\tfrac{b}{2}$. When the number in front of $x^2$ is some $a$ other than 1, take it out of the first two terms first:
+So the bottom of $x^2 + bx + c$ is at $x = -\tfrac{b}{2}$. When the number in front of $x^2$ is some $a$ other than 1, take it out of the first two terms first:
 
 <Steps>
   <Step why="a is not 0, so it can be taken out of the first two terms">$ax^2 + bx + c = a\Big(x^2 + \dfrac{b}{a}x\Big) + c$</Step>
@@ -119,7 +119,7 @@ This is the *quadratic formula*. The number $b^2 - 4ac$ decides how many solutio
 
 <Reveal for="derive-no-solutions">
 
-None. Completing the square gives $(x + 2)^2 + 1$, which is at least 1 for every $x$, so it is never 0, and the formula agrees: $b^2 - 4ac = 16 - 20 = -4$ is negative. The graph is a bowl whose bottom, $(-2, 1)$, sits above the horizontal axis, so it never touches it.
+The graph is a bowl whose bottom, $(-2, 1)$, sits above the horizontal axis, so it never touches it.
 
 ## Why the mean wins
 
@@ -131,7 +131,7 @@ Now the puzzle. Its squared error is a quadratic in the guess $w$, so completing
 
 <Reveal for="derive-mean-best">
 
-$E(w) = 3(w - 4)^2 + 14$. The squared part is never negative and is 0 only at $w = 4$, so the smallest squared error is 14, at $w = 4$, the mean, exactly as the puzzle found.
+In $E(w) = 3(w - 4)^2 + 14$ the squared part is never negative and is 0 only at $w = 4$, so the smallest squared error is 14, at $w = 4$, the mean, exactly as the puzzle found.
 
 Now take any three values $y_1$, $y_2$ and $y_3$. Each square multiplies out as $(y - w)^2 = y^2 - 2yw + w^2$, and adding the three gives
 
@@ -153,6 +153,6 @@ the mean. With $n$ values instead of three, the same steps give $nw^2$ and $-2 \
 
 <Reveal for="derive-outlier">
 
-25, the mean, although no value is anywhere near it. One wild value, perhaps a 4 mistyped as 94, drags the mean a long way, and with it the model's best guess, because squaring makes that one miss count the most. Data with occasional wild values is common, and it is one reason other scores are used as well, such as the one you will try in Build.
+One wild value, perhaps a 4 mistyped as 94, drags the mean a long way, and with it the model's best guess, because squaring makes that one miss count the most. Data with occasional wild values is common, and it is one reason other scores are used as well, such as the one you will try in Build.
 
 </Reveal>

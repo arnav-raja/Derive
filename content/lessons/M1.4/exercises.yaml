@@ -365,8 +365,8 @@ exercises:
           That is equal, but it still divides by $b - a$. Take out the common factor and cancel it,
           as in the proof above.
     explanation: >-
-      $f(b) - f(a) = 3(b^2 - a^2) - 2(b - a) = (b - a)\big(3(b + a) - 2\big)$, and dividing by
-      $b - a$ leaves $3(a + b) - 2$.
+      The 5s cancel, so $f(b) - f(a) = 3(b^2 - a^2) - 2(b - a) = (b - a)\big(3(b + a) - 2\big)$,
+      and dividing by $b - a$ leaves $3(a + b) - 2$.
 
   - id: derive-complete-square
     phase: derive

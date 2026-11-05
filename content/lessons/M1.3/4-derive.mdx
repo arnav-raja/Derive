@@ -8,7 +8,7 @@ In Explore you worked out $g\big(f(1)\big)$ one number at a time. Substitution d
 
 <Reveal for="derive-compose-formula">
 
-$g$ squares whatever it is given, and here it is given $x - 4$, so $g\big(f(x)\big) = (x - 4)^2$. The other order gives $f\big(g(x)\big) = x^2 - 4$. At $x = 0$ the first is 16 and the second is $-4$: two different functions, as Explore led you to expect.
+The other order gives $f\big(g(x)\big) = x^2 - 4$. At $x = 0$ the first is 16 and the second is $-4$: two different functions, as Explore led you to expect.
 
 ## Undoing a formula
 
@@ -20,13 +20,7 @@ An image model reads the brightness of each pixel as a whole number $p$, from 0 
 
 <Reveal for="derive-inverse-formula">
 
-<Steps>
-  <Step why="the rule">$x = \dfrac{p}{127.5} - 1$</Step>
-  <Step why="add 1 to both sides: subtracting 1 was the last step done, so it is the first undone">$x + 1 = \dfrac{p}{127.5}$</Step>
-  <Step why="multiply both sides by 127.5">$127.5(x + 1) = p$</Step>
-</Steps>
-
-So $p = 127.5(x + 1)$. The bracket matters: all of $x + 1$ is multiplied by 127.5, not just the 1. Check it at the two ends: $x = -1$ gives $p = 0$, and $x = 1$ gives $p = 255$.
+Check it at the two ends: $x = -1$ gives $p = 0$, and $x = 1$ gives $p = 255$. The undoing took the steps off in reverse order: subtracting 1 came last in the rule, so adding 1 came first in the inverse.
 
 ## Why only one-to-one functions can be undone
 
@@ -38,7 +32,7 @@ Explore suggested that a function can be undone only when no two inputs share an
 
 <Reveal for="derive-inverse-injective">
 
-So $a = b$: two inputs with the same output were the same input all along, which is exactly what one-to-one means. A function with an inverse must also be onto, because $f\big(f^{-1}(y)\big) = y$ says that every possible output $y$ is reached, from the input $f^{-1}(y)$.
+So a function with an inverse is one-to-one. It must also be onto, because $f\big(f^{-1}(y)\big) = y$ says that every possible output $y$ is reached, from the input $f^{-1}(y)$.
 
 The converse holds too. If $f$ is one-to-one and onto, every possible output comes from exactly one input, and the rule that sends each output back to that input is an inverse. A function that is both one-to-one and onto is called *bijective*, so a function has an inverse exactly when it is bijective.
 

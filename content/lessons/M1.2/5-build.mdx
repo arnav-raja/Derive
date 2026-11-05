@@ -16,7 +16,7 @@ Here is a program whose tree is wrong.
 
 <Reveal for="build-average-bug">
 
-In `first + second + third / 3` the division sits below the additions in the tree, so only the third score was divided by 3. Brackets move the additions underneath the division: `(first + second + third) / 3`. Python did exactly what the tree said, which is why reading the tree is how you find a mistake like this.
+Python did exactly what the tree said. It never guesses what you meant, which is why reading the tree is how you find a mistake like this.
 
 ## Break a rule on purpose
 

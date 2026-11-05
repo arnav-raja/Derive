@@ -13,3 +13,9 @@ export function Tex({ tex, className }: { tex: string; className?: string }) {
   const html = useMemo(() => katex.renderToString(tex, { throwOnError: false, strict: "ignore", output: "html" }), [tex]);
   return <span className={className} dangerouslySetInnerHTML={{ __html: html }} />;
 }
+
+/** Plain text with inline maths between dollar signs, as lesson files write it. */
+export function MathText({ text }: { text: string }) {
+  const parts = text.split(/(\$[^$]+\$)/g);
+  return <>{parts.map((p, i) => (p.length > 2 && p.startsWith("$") && p.endsWith("$") ? <Tex key={i} tex={p.slice(1, -1)} /> : p))}</>;
+}

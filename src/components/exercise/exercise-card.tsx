@@ -9,7 +9,7 @@ import { answerPlacement } from "@/app/(app)/placement/actions";
 import { answerCheck, answerReview } from "@/app/(app)/review/actions";
 import { useTutor, type TutorEntry } from "@/components/tutor/tutor";
 import { Button } from "@/components/ui/button";
-import { Tex } from "@/components/ui/tex";
+import { MathText, Tex } from "@/components/ui/tex";
 import { inputClasses } from "@/components/ui/field";
 import { HintIcon } from "@/components/ui/icons";
 import { Notice } from "@/components/ui/notice";
@@ -348,6 +348,8 @@ export function ExerciseCard({ view }: { view: ExerciseView }) {
   // After a reload, a one-shot item still says how it went.
   const shown: Outcome =
     outcome ?? (done && oneShot && view.state.correct !== null ? { correct: view.state.correct, message: null, ratio: null } : null);
+  // Lesson files write maths between dollar signs, so the message is rendered with them.
+  const failMessage = shown?.message ?? (a.type === "expression" ? exprResult?.message : undefined) ?? null;
 
   const titleId = `${uid}-title`;
   const working_ = pending || busy !== null;
@@ -544,14 +546,13 @@ export function ExerciseCard({ view }: { view: ExerciseView }) {
               : a.type === "code"
                 ? "Every test passes."
                 : null
-            : (shown.message ??
-              (a.type === "expression" && exprResult?.message
-                ? exprResult.message
-                : oneShot
-                  ? null
-                  : a.type === "code"
-                    ? "Read the message under the first failing test, change that line, and run the tests again."
-                    : "Look again, or ask for a hint."))}
+            : failMessage
+              ? <MathText text={failMessage} />
+              : oneShot
+                ? null
+                : a.type === "code"
+                  ? "Read the message under the first failing test, change that line, and run the tests again."
+                  : "Look again, or ask for a hint."}
         </Notice>
       ) : null}
 

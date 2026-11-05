@@ -15,7 +15,7 @@ print(area(3, 4))   # prints 12
 
 <Reveal for="build-line">
 
-The slope is the rise over the step, `(y2 - y1) / (x2 - x1)`, and the intercept is whatever makes the line pass through the first point: `y1 - slope(x1, y1, x2, y2) * x1`. A function can call another function, as `intercept` calls `slope` here. Naming the points in the other order changes both the rise and the step into their negatives, and their ratio stays the same.
+A function can call another function, as `intercept` calls `slope` here. Naming the points in the other order changes both the rise and the step into their negatives, and their ratio stays the same.
 
 ## A formula with a bug
 
@@ -27,7 +27,7 @@ Python's maths library holds the square root. The line `import math` loads it, a
 
 <Reveal for="build-roots-bug">
 
-The bug was the order of operations. Python works through `*` and `/` from left to right, so `(-b - d) / 2*a` divides by 2 and then multiplies by `a`, instead of dividing by $2a$. With $a = 1$ the two agree, which is why the first equation came out right and hid the bug. Brackets fix it: `(-b - d) / (2*a)`. This is the slip M1.2's expression trees were built to catch: the tree for `/ 2*a` has the multiplication at the top.
+Python works through `*` and `/` from left to right, which is why `/ 2*a` multiplies by `a` after dividing by 2. With $a = 1$ the two agree, which is why the first equation came out right and hid the bug. This is the slip M1.2's expression trees were built to catch: the tree for `/ 2*a` has the multiplication at the top.
 
 ## Break it: an equation with no solution
 
@@ -47,7 +47,7 @@ An error is the program's way of reporting what Derive proved: there is no ordin
 
 <Reveal for="build-vertex">
 
-`vertex` is $-b/(2a)$, written `-b / (2*a)` with the brackets, and `lowest` is $c - b^2/(4a)$, or simply the height of the parabola at the vertex. The tests never needed the formulas. They checked what a vertex must do: give equal heights a step either side. A test that checks a property, instead of a stored answer, can check a formula on any input at all.
+`lowest` could also be written as the height of the parabola at the vertex, `a*v*v + b*v + c` with `v = vertex(a, b, c)`. The tests never needed the formulas. They checked what a vertex must do: give equal heights a step either side. A test that checks a property, instead of a stored answer, can check a formula on any input at all.
 
 ## Break it: a different score
 
@@ -59,7 +59,7 @@ The puzzle scored a guess by its squared error. Here is that score in Python, wi
 
 <Reveal for="build-absolute-error">
 
-The totals are now 5, 6 and 6.5, so the middle value, 3, wins. Adding the sizes of the misses is called the *absolute error*, and its best single guess is the middle value, the *median*. Moving the guess a little towards the middle value shortens more misses than it lengthens, until the guess reaches the middle. Its curve is made of straight pieces, not a smooth bowl, so completing the square cannot find its bottom.
+Adding the sizes of the misses is called the *absolute error*, and its best single guess is the middle value, the *median*. Moving the guess a little towards the middle value shortens more misses than it lengthens, until the guess reaches the middle. Its curve is made of straight pieces, not a smooth bowl, so completing the square cannot find its bottom.
 
 The median barely notices a wild value: for 1, 2, 3 and 94 it is 2.5, however large the 94 is. Which score to train with is a real choice in machine learning, and squared error, with its smooth bowl and its mean, is the most common.
 
