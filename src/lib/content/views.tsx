@@ -125,6 +125,10 @@ function answerLine(answer: Answer): string | null {
 export function formatNumber(value: number): string {
   if (value !== 0 && (Math.abs(value) >= 1e6 || Math.abs(value) < 1e-3)) {
     const [mantissa, exponent] = value.toExponential(3).split("e");
+    // An exact whole number such as 1,048,576 keeps all its digits, which four figures would lose.
+    if (Number.isInteger(value) && Math.abs(value) < 1e15 && Number(value.toExponential(3)) !== value) {
+      return value.toLocaleString("en-GB");
+    }
     const m = Number(mantissa).toString();
     return `$${m} \\times 10^{${Number(exponent)}}$`;
   }

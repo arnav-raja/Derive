@@ -367,15 +367,25 @@ def _sympy_env(symbols):
 
 
 def _parse(text, names, evaluate=True):
+    import sympy
     from sympy.parsing.sympy_parser import (
         convert_xor,
         implicit_application,
         implicit_multiplication,
         parse_expr,
+        split_symbols_custom,
         standard_transformations,
     )
 
+    # A run of the step's own one-letter symbols, such as nL, is their product, as on paper.
+    # Other names are left whole, so a typo is still reported rather than misread.
+    letters = {k for k, v in names.items() if len(k) == 1 and isinstance(v, sympy.Symbol)}
+
+    def is_product(name):
+        return len(name) > 1 and name not in names and all(ch in letters for ch in name)
+
     transformations = standard_transformations + (
+        split_symbols_custom(is_product),
         implicit_multiplication,
         implicit_application,
         convert_xor,

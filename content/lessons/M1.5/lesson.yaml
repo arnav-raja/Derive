@@ -1,0 +1,76 @@
+code: M1.5
+title: Exponentials and logarithms
+course: M1
+status: review
+summary: >-
+  A language model scores a passage of text by multiplying together the probabilities it gave to
+  each word. How do two models' scores for a long passage compare? Repeated multiplication, powers
+  that are not whole numbers, the function that undoes a power, and scales on which equal steps
+  mean equal factors.
+sittings: 2
+minutes:
+  puzzle: 10
+  recall: 10
+  explore: 40
+  derive: 40
+  build: 50
+  explain: 25
+concepts:
+  taught:
+    - id: M1.5/exponential-growth
+      name: Exponential growth and decay
+      summary: >-
+        Quantities multiplied by the same factor at each step, $a \times b^x$. Powers are given a
+        meaning for every number $x$, and growth of this kind soon outruns any steady change.
+      usedBy: [M3.5, M11.6]
+    - id: M1.5/logarithms
+      name: Logarithms
+      summary: >-
+        $\log_b x$ is the power of $b$ that gives $x$: the inverse of $b^x$, defined only for
+        positive $x$. Base 10 counts powers of ten, and base 2 counts doublings.
+      usedBy: [M8.1, M10.3, M3.5]
+    - id: M1.5/log-rules
+      name: The rules for logarithms
+      summary: >-
+        Logarithms turn products into sums, quotients into differences and powers into multiples,
+        and any base can be had from any other by one division.
+      usedBy: [M8.1, M10.3]
+    - id: M1.5/log-scales
+      name: Log scales
+      summary: >-
+        Scales on which equal steps mean equal factors, so a number's position is its logarithm.
+        Exponential change is a straight line on them, and very different sizes fit on one picture.
+      usedBy: [M11.6, L5.2]
+  used: [M1.1/powers-of-ten, M1.2/exponent-rules, M1.2/solving-equations, M1.3/inverse-functions, M1.3/injective-surjective]
+links:
+  requires:
+    - lesson: M1.3
+      bridge: >-
+        M1.3 showed that a function can be undone exactly when it is one-to-one and onto. Raising 10
+        to a power is such a function once its outputs are the positive numbers, and the function
+        that undoes it is the logarithm.
+  contrastsWith:
+    - lesson: M1.4
+      bridge: >-
+        A linear function adds the same amount for each step of its input, while an exponential
+        multiplies by the same factor. An exponential that grows overtakes any straight line,
+        however steep.
+  foreshadows:
+    - lesson: M3.5
+      bridge: >-
+        This lesson uses base 10 and base 2. M3.5 shows why one base, the number e, about 2.718, makes
+        the calculus of exponentials simplest, and why it is the base that Python's math.log uses.
+    - lesson: M8.1
+      bridge: >-
+        The surprise of an event with probability p is measured by minus its logarithm. Logarithms
+        make the surprises of independent events add, as they made the scores of a passage's words
+        add.
+    - lesson: M10.3
+      bridge: >-
+        Products of many probabilities become 0 on a computer. M10.3 shows how to add probabilities
+        that are stored as logarithms without ever leaving the logarithms.
+    - lesson: M11.6
+      bridge: >-
+        On log scales in both directions a power law is a straight line, which is how the scaling
+        laws of language models are read off their graphs.
+skills: []

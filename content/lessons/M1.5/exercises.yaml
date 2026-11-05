@@ -1,0 +1,973 @@
+exercises:
+  # Puzzle ---------------------------------------------------------------------
+  - id: puzzle-passage-ratio
+    phase: puzzle
+    kind: predict
+    concept: M1.5/exponential-growth
+    title: Twice as likely on every word
+    prompt: >-
+      How many times higher is B's score for the whole passage than A's? Choose before working
+      anything out.
+    answer:
+      type: choice
+      options:
+        - { id: twice, label: '2 times, because B gives each word twice the probability' }
+        - { id: per-word, label: '2,000 times: a factor of 2 for each of the 1,000 words' }
+        - { id: million, label: 'About a million times' }
+        - { id: beyond, label: 'More than $10^{100}$ times, a 1 followed by a hundred zeros' }
+      correct: [beyond]
+    explanation: >-
+      Each word multiplies B's score by 0.4 and A's by 0.2, so each word multiplies B's lead by
+      another 2. After 1,000 words B's score is $2^{1000}$ times A's, a 2 multiplied by itself 1,000
+      times. Since $2^4 = 16$ is already more than 10, $2^{400} = (2^4)^{100}$ is more than
+      $10^{100}$, and $2^{1000}$ is far more again.
+
+  # Recall ---------------------------------------------------------------------
+  - id: recall-add-exponents
+    phase: recall
+    kind: recall
+    concept: M1.2/exponent-rules
+    prompt: $2^5 \times 2^3 = 2^{k}$. What is $k$?
+    answer: { type: number, value: 8 }
+    explanation: >-
+      Five 2s multiplied together, then three more, make eight 2s: $k = 5 + 3 = 8$.
+
+  - id: recall-power-of-power
+    phase: recall
+    kind: recall
+    concept: M1.2/exponent-rules
+    prompt: $(10^2)^3 = 10^{k}$. What is $k$?
+    answer: { type: number, value: 6 }
+    explanation: >-
+      Three copies of $10^2$ multiplied together add their exponents: $k = 2 + 2 + 2 = 6$.
+
+  - id: recall-negative-power
+    phase: recall
+    kind: recall
+    concept: M1.2/exponent-rules
+    prompt: What is $10^{-3}$, written as a decimal?
+    answer: { type: number, value: 0.001 }
+    explanation: >-
+      $10^{-3} = 1/10^3 = 1/1{,}000 = 0.001$.
+
+  - id: recall-inverse
+    phase: recall
+    kind: recall
+    concept: M1.3/inverse-functions
+    prompt: $f(x) = 2x + 3$. What is $f^{-1}(11)$?
+    answer: { type: number, value: 4 }
+    explanation: >-
+      Undo the steps in reverse order: $11 - 3 = 8$, then $8 \div 2 = 4$. Check: $f(4) = 11$.
+
+  # Explore --------------------------------------------------------------------
+  - id: explore-twenty-doublings
+    phase: explore
+    kind: predict
+    concept: M1.5/exponential-growth
+    title: Twenty doublings
+    prompt: >-
+      What is B's lead after 20 words, that is, $2^{20}$? Give the exact number, or your best
+      estimate.
+    answer: { type: number, value: 1048576, tolerance: { rel: 0.05 } }
+    explanation: >-
+      $2^{20} = 2^{10} \times 2^{10} = 1{,}024 \times 1{,}024 = 1{,}048{,}576$, a little over a
+      million. Ten more words multiply the lead by another 1,024; they do not add another 1,024.
+    review:
+      variants:
+        - prompt: >-
+            A culture of cells doubles every hour. After 10 hours there are 1,024 times as many cells
+            as at the start. How many times as many are there after 30 hours?
+          answer: { type: number, value: 1073741824, tolerance: { rel: 0.05 } }
+          explanation: >-
+            Each block of 10 hours multiplies by 1,024, so 30 hours multiply by
+            $1{,}024^3 = 2^{30} = 1{,}073{,}741{,}824$, about a thousand million.
+        - prompt: >-
+            A quantity is multiplied by 3 at every step. After 5 steps it is $3^5 = 243$ times its
+            starting value. How many times its starting value is it after 10 steps?
+          answer: { type: number, value: 59049, tolerance: { rel: 0.01 } }
+          explanation: >-
+            The next 5 steps multiply by another 243, so 10 steps give
+            $3^{10} = 243 \times 243 = 59{,}049$.
+        - prompt: >-
+            A quantity halves at every step. After 10 steps it is about one thousandth of its
+            starting value. About what fraction of it is left after 20 steps?
+          answer:
+            type: choice
+            options:
+              - { id: two-thousandth, label: 'About one two-thousandth' }
+              - { id: millionth, label: 'About one millionth' }
+              - { id: none, label: 'Nothing at all' }
+              - { id: twentieth, label: 'About one twentieth' }
+            correct: [millionth]
+          explanation: >-
+            The next 10 halvings shrink it by about another thousand, so about one thousandth of one
+            thousandth is left, one millionth. It is never quite 0.
+
+  - id: explore-log-axis
+    phase: explore
+    kind: predict
+    concept: M1.5/log-scales
+    title: Doubling on a different scale
+    prompt: >-
+      On a scale like M1.1's line, each equal step up multiplies by 10. Draw the lead $y = 2^x$ with
+      such a scale going up. What shape does it make?
+    answer:
+      type: choice
+      options:
+        - { id: bends-up, label: 'A curve that still bends upwards, only less sharply' }
+        - { id: straight, label: 'A straight line' }
+        - { id: bends-over, label: 'A curve that climbs steeply at first, then flattens' }
+        - { id: steps, label: 'A staircase that rises only at each power of ten' }
+      correct: [straight]
+    explanation: >-
+      Each step of one word multiplies the lead by 2, and on this scale multiplying by 2 always moves
+      up the same distance, wherever it starts. Equal steps across give equal steps up, and that
+      draws a straight line.
+
+  - id: explore-where-two
+    phase: explore
+    kind: predict
+    concept: M1.5/log-scales
+    title: Where 2 sits
+    prompt: >-
+      At what power of ten, between 0 and 1, does 2 sit on a log scale? Give your best guess as a
+      decimal.
+    answer: { type: number, value: 0.30103, tolerance: { abs: 0.03 } }
+    explanation: >-
+      Ten doublings make $2^{10} = 1{,}024$, a little more than $1{,}000 = 10^3$. So ten steps of
+      $\times 2$ cover a little more than three steps of $\times 10$, and one step of $\times 2$
+      covers a little more than three tenths of one: 2 sits at about 0.301. That is almost a third
+      of the way from 1 to 10, not a ninth.
+    review:
+      variants:
+        - prompt: >-
+            On a log scale, 1 sits at the power 0 and 10 at the power 1. Using
+            $\log_{10} 2 \approx 0.301$, at what power does 5 sit?
+          answer: { type: number, value: 0.699, tolerance: { abs: 0.005 } }
+          explanation: >-
+            $5 = 10 \div 2$, so 5 sits one doubling below 10: at about $1 - 0.301 = 0.699$.
+        - prompt: >-
+            How far apart do 3 and 30 sit on a log scale, measured in powers of ten?
+          answer: { type: number, value: 1 }
+          explanation: >-
+            30 is 3 multiplied by 10, and on a log scale multiplying by 10 always moves one power of
+            ten, wherever it starts.
+        - prompt: >-
+            Which pair of numbers sits the same distance apart on a log scale as 1 and 2?
+          answer:
+            type: choice
+            options:
+              - { id: ten-eleven, label: '10 and 11' }
+              - { id: two-three, label: '2 and 3' }
+              - { id: ten-twenty, label: '10 and 20' }
+              - { id: one-three, label: '1 and 3' }
+            correct: [ten-twenty]
+          explanation: >-
+            On a log scale the distance depends on the factor between two numbers, not on their
+            difference. 10 and 20, like 1 and 2, differ by a factor of 2.
+
+  - id: explore-half-power
+    phase: explore
+    kind: predict
+    concept: M1.5/exponential-growth
+    title: A power of one half
+    prompt: >-
+      For the rule $a^m \times a^n = a^{m + n}$ to keep working, $10^{0.5} \times 10^{0.5}$ must be
+      $10^{0.5 + 0.5} = 10^1 = 10$. What number must $10^{0.5}$ be? Give it to two decimal places.
+      You may use a calculator.
+    answer: { type: number, value: 3.16, tolerance: { abs: 0.006 } }
+    explanation: >-
+      $10^{0.5}$ is a positive number whose square is 10, which is $\sqrt{10} \approx 3.16$. Halving
+      the exponent does not halve the number: $10^{0.5}$ is not 5.
+    placement: true
+    review:
+      variants:
+        - prompt: >-
+            For the rules for exponents to keep working, what number must $100^{0.5}$ be?
+          answer: { type: number, value: 10 }
+          explanation: >-
+            $100^{0.5} \times 100^{0.5} = 100^1 = 100$, so $100^{0.5}$ is the positive number whose
+            square is 100, which is 10.
+        - prompt: >-
+            For the rules for exponents to keep working, what number must $8^{1/3}$ be?
+          answer: { type: number, value: 2 }
+          explanation: >-
+            Three copies of $8^{1/3}$ multiply to $8^1 = 8$, so $8^{1/3}$ is the number whose cube is
+            8, which is 2.
+        - prompt: >-
+            For the rules for exponents to keep working, what number must $10^{-0.5}$ be? Give it to
+            two decimal places. You may use a calculator.
+          answer: { type: number, value: 0.32, tolerance: { abs: 0.006 } }
+          explanation: >-
+            $10^{-0.5} \times 10^{0.5} = 10^0 = 1$, so $10^{-0.5} = 1/10^{0.5} = 1/\sqrt{10} \approx
+            0.32$.
+
+  - id: explore-power-from-two
+    phase: explore
+    kind: predict
+    concept: M1.5/exponential-growth
+    title: A power from a doubling
+    prompt: >-
+      Using $10^{0.3} \approx 2$ and the rules for exponents, estimate $10^{2.6}$ without a
+      calculator.
+    answer: { type: number, value: 398.107, tolerance: { rel: 0.03 } }
+    explanation: >-
+      $10^{2.6} = 10^{2} \times 10^{0.3} \times 10^{0.3} \approx 100 \times 2 \times 2 = 400$. A
+      calculator gives about 398.
+
+  - id: explore-which-have-logs
+    phase: explore
+    kind: predict
+    concept: M1.5/logarithms
+    title: Which numbers have a logarithm
+    prompt: Which of these numbers have a logarithm to base 10? Choose all that apply.
+    answer:
+      type: choice
+      multiple: true
+      options:
+        - { id: thousand, label: '1,000' }
+        - { id: one, label: '1' }
+        - { id: thousandth, label: '0.001' }
+        - { id: zero, label: '0' }
+        - { id: minus, label: '$-1{,}000$' }
+      correct: [thousand, one, thousandth]
+    explanation: >-
+      $\log_{10} 1{,}000 = 3$, $\log_{10} 1 = 0$ and $\log_{10} 0.001 = -3$. Every power of 10 is
+      positive, so no power of 10 gives 0 or a negative number, and those two have no logarithm.
+    review:
+      variants:
+        - prompt: What is $\log_{10} 0.01$?
+          answer:
+            type: choice
+            options:
+              - { id: two, label: '2' }
+              - { id: minus-two, label: '$-2$' }
+              - { id: half, label: '0.5' }
+              - { id: none, label: 'It has no logarithm' }
+            correct: [minus-two]
+          explanation: >-
+            $10^{-2} = 0.01$, so $\log_{10} 0.01 = -2$. Numbers between 0 and 1 have negative
+            logarithms.
+        - prompt: Which of these numbers has no logarithm to base 2?
+          answer:
+            type: choice
+            options:
+              - { id: quarter, label: '0.25' }
+              - { id: one, label: '1' }
+              - { id: zero, label: '0' }
+              - { id: big, label: '1,024' }
+            correct: [zero]
+          explanation: >-
+            $\log_2 0.25 = -2$, $\log_2 1 = 0$ and $\log_2 1{,}024 = 10$, but no power of 2 is 0.
+
+  - id: explore-log-six
+    phase: explore
+    kind: predict
+    concept: M1.5/log-rules
+    title: A logarithm not in the table
+    prompt: >-
+      6 is not in the table. Without a calculator, use the table to find $\log_{10} 6$.
+    answer: { type: number, value: 0.778, tolerance: { abs: 0.002 } }
+    explanation: >-
+      $6 = 2 \times 3$, and $10^{0.301} \times 10^{0.477} = 10^{0.301 + 0.477} = 10^{0.778}$. So
+      $\log_{10} 6 \approx 0.778$: multiplying the numbers added their logarithms.
+    placement: true
+    review:
+      variants:
+        - prompt: >-
+            $\log_{10} 2 \approx 0.301$ and $\log_{10} 3 \approx 0.477$. Without a calculator, what is
+            $\log_{10} 12$?
+          answer: { type: number, value: 1.079, tolerance: { abs: 0.003 } }
+          explanation: >-
+            $12 = 2 \times 2 \times 3$, so $\log_{10} 12 \approx 0.301 + 0.301 + 0.477 = 1.079$.
+        - prompt: >-
+            $\log_{10} 2 \approx 0.301$ and $\log_{10} 3 \approx 0.477$. Without a calculator, what is
+            $\log_{10} 1.5$?
+          answer: { type: number, value: 0.176, tolerance: { abs: 0.002 } }
+          explanation: >-
+            $1.5 = 3 \div 2$, and dividing subtracts logarithms: $0.477 - 0.301 = 0.176$.
+        - prompt: >-
+            $\log_{10} 3 \approx 0.477$. Without a calculator, what is $\log_{10} 9$?
+          answer: { type: number, value: 0.954, tolerance: { abs: 0.002 } }
+          explanation: >-
+            $9 = 3 \times 3$, so $\log_{10} 9 \approx 0.477 + 0.477 = 0.954$.
+
+  # Derive ---------------------------------------------------------------------
+  - id: derive-log-product
+    phase: derive
+    kind: proof
+    concept: M1.5/log-rules
+    covers: [M1.5/logarithms]
+    title: Why logarithms turn products into sums
+    prompt: >-
+      $a$ and $b$ are positive numbers. Choose the rule that justifies each line. A rule may be used
+      more than once or not at all, and may be read from right to left as well as from left to
+      right.
+    answer:
+      type: steps
+      rules:
+        - { id: undo-log, name: Undo the log, label: '$10^{\log_{10} x} = x$ for every positive number $x$.' }
+        - { id: undo-power, name: Undo the power, label: '$\log_{10}(10^{y}) = y$ for every number $y$.' }
+        - { id: add-exponents, name: Add exponents, label: '$10^{m} \times 10^{n} = 10^{m + n}$ for all numbers $m$ and $n$.' }
+        - { id: multiply-exponents, name: Multiply exponents, label: '$(10^{m})^{n} = 10^{mn}$ for all numbers $m$ and $n$.' }
+        - { id: distribute, name: Distribute, label: '$c(m + n) = cm + cn$ for all numbers $c$, $m$ and $n$.' }
+      start: '\log_{10}(ab)'
+      lines:
+        - math: '= \log_{10}\big(10^{\log_{10} a} \times 10^{\log_{10} b}\big)'
+          rule: undo-log
+        - math: '= \log_{10}\big(10^{\log_{10} a + \log_{10} b}\big)'
+          rule: add-exponents
+        - math: '= \log_{10} a + \log_{10} b'
+          rule: undo-power
+    explanation: >-
+      Write each number as a power of 10, add the exponents, then undo the power. The first line
+      reads the undo-the-log rule from right to left, once for $a$ and once for $b$. The second adds
+      the exponents, and the third undoes $10^{y}$ with $y = \log_{10} a + \log_{10} b$.
+
+  - id: derive-log-tenth
+    phase: derive
+    kind: step
+    concept: M1.5/log-rules
+    title: The logarithm of a probability
+    prompt: >-
+      Model A gives each word a probability of 0.2. Write $\log_{10} 0.2$ in terms of
+      $T = \log_{10} 2$.
+    answer:
+      type: expression
+      symbols:
+        - { name: T }
+      lhs: '\log_{10} 0.2 ='
+      reference: T - 1
+      accept: ['-1 + T', '-(1 - T)', 'T - 10/10']
+      reject: ['T/10', '1 - T', 'T', '-T', 'T - 10', 'T/5', 'T - 2', '2*T - 1', '-0.699']
+    explanation: >-
+      $0.2 = \dfrac{2}{10}$, so $\log_{10} 0.2 = \log_{10} 2 - \log_{10} 10 = T - 1$, which is about
+      $0.30103 - 1 = -0.69897$.
+    placement: true
+    review:
+      variants:
+        - prompt: Write $\log_{10} 50$ in terms of $T = \log_{10} 2$.
+          answer:
+            type: expression
+            symbols:
+              - { name: T }
+            lhs: '\log_{10} 50 ='
+            reference: 2 - T
+            accept: ['-T + 2']
+            reject: ['T + 1', '50*T', 'T - 2', '2 + T']
+          explanation: >-
+            $50 = \dfrac{100}{2}$, so $\log_{10} 50 = \log_{10} 100 - \log_{10} 2 = 2 - T$.
+        - prompt: Write $\log_{10} 0.05$ in terms of $F = \log_{10} 5$.
+          answer:
+            type: expression
+            symbols:
+              - { name: F }
+            lhs: '\log_{10} 0.05 ='
+            reference: F - 2
+            accept: ['-2 + F']
+            reject: ['F/100', '2 - F', 'F - 1', 'F/20']
+          explanation: >-
+            $0.05 = \dfrac{5}{100}$, so $\log_{10} 0.05 = \log_{10} 5 - \log_{10} 100 = F - 2$.
+        - prompt: Write $\log_{10} 2{,}000$ in terms of $T = \log_{10} 2$.
+          answer:
+            type: expression
+            symbols:
+              - { name: T }
+            lhs: '\log_{10} 2{,}000 ='
+            reference: T + 3
+            accept: ['3 + T']
+            reject: ['3*T', '1000*T', 'T + 1000', 'T - 3']
+          explanation: >-
+            $2{,}000 = 2 \times 1{,}000$, so $\log_{10} 2{,}000 = \log_{10} 2 + \log_{10} 1{,}000 = T + 3$.
+
+  - id: derive-log-power
+    phase: derive
+    kind: step
+    concept: M1.5/log-rules
+    title: The logarithm of a power
+    prompt: >-
+      For a whole number $n$ of 1 or more, $a^n$ is $n$ copies of the positive number $a$ multiplied
+      together. Use the product rule to write $\log_{10}(a^n)$ in terms of $n$ and $L = \log_{10} a$.
+    answer:
+      type: expression
+      symbols:
+        - { name: n }
+        - { name: L }
+      lhs: '\log_{10}(a^n) ='
+      reference: n*L
+      accept: ['L*n', 'nL', 'L n', 'L*n + 0']
+      reject: ['L^n', 'n + L', 'L', 'n', 'L/n', 'n^L', '10^(n*L)', 'n*L^n']
+    explanation: >-
+      Each of the $n$ copies of $a$ adds $L$ to the logarithm, so
+      $\log_{10}(a^n) = L + L + \dots + L = nL$.
+    review:
+      variants:
+        - prompt: >-
+            $a$ is a positive number and $L = \log_{10} a$. Write $\log_{10} \sqrt{a}$ in terms of $L$.
+          answer:
+            type: expression
+            symbols:
+              - { name: L }
+            lhs: '\log_{10} \sqrt{a} ='
+            reference: L/2
+            accept: ['0.5*L', 'L*1/2']
+            reject: ['sqrt(L)', '2*L', 'L - 2', 'L^2']
+          explanation: >-
+            $\sqrt{a} = a^{1/2}$, and the power comes down as a multiple: $\log_{10} a^{1/2} = L/2$.
+        - prompt: >-
+            $a$ is a positive number and $L = \log_{10} a$. Write $\log_{10}(1/a^2)$ in terms of $L$.
+          answer:
+            type: expression
+            symbols:
+              - { name: L }
+            lhs: '\log_{10} \dfrac{1}{a^2} ='
+            reference: -2*L
+            accept: ['-L - L', '(-2)*L']
+            reject: ['1/(2*L)', '1/L^2', '-L^2', '2*L', '-L/2']
+          explanation: >-
+            $1/a^2 = a^{-2}$, so its logarithm is $-2L$.
+        - prompt: >-
+            $a$ is a positive number and $L = \log_{10} a$. Write $\log_{10}(100a^3)$ in terms of $L$.
+          answer:
+            type: expression
+            symbols:
+              - { name: L }
+            lhs: '\log_{10}(100 a^3) ='
+            reference: 3*L + 2
+            accept: ['2 + 3*L', '2 + L + L + L']
+            reject: ['300*L', '100*L^3', '3*L + 100', '6*L', '3*(L + 2)']
+          explanation: >-
+            The product rule splits off the 100, and the power rule brings down the 3:
+            $\log_{10} 100 + \log_{10} a^3 = 2 + 3L$.
+
+  - id: derive-score-b
+    phase: derive
+    kind: predict
+    concept: M1.5/log-rules
+    covers: [M1.5/exponential-growth]
+    title: The logarithm of B's score
+    prompt: >-
+      B's score is $0.4^{1000}$. Using $T = \log_{10} 2 \approx 0.30103$, find
+      $\log_{10}(0.4^{1000})$, to two decimal places.
+    answer: { type: number, value: -397.94, tolerance: { abs: 0.07 } }
+    explanation: >-
+      $0.4 = \dfrac{2 \times 2}{10}$, so $\log_{10} 0.4 = 2T - 1 \approx -0.39794$, and 1,000 words
+      give $1{,}000 \times (-0.39794) = -397.94$.
+
+  - id: derive-change-of-base
+    phase: derive
+    kind: step
+    concept: M1.5/log-rules
+    covers: [M1.5/logarithms]
+    title: From base 10 to base 2
+    prompt: >-
+      Let $y = \log_2 x$, so that $2^{y} = x$. Take $\log_{10}$ of both sides, use the rule for
+      powers, and solve for $y$. Write $y$ in terms of $A = \log_{10} x$ and $T = \log_{10} 2$.
+    answer:
+      type: expression
+      symbols:
+        - { name: A }
+        - { name: T }
+      lhs: '\log_2 x ='
+      reference: A/T
+      accept: ['A*T^(-1)', '(1/T)*A', 'A*(1/T)']
+      reject: ['T/A', 'A - T', 'A*T', 'A/2', 'A', '2*A', 'A^T', 'A/(2*T)']
+    explanation: >-
+      $\log_{10}(2^{y}) = \log_{10} x$ gives $yT = A$ by the rule for powers. Dividing both sides by
+      $T$, which is not 0, gives $y = A/T$. So $\log_2 x = \dfrac{\log_{10} x}{\log_{10} 2}$.
+    placement: true
+    review:
+      variants:
+        - prompt: >-
+            Using $\log_{10} 2 \approx 0.30103$, find $\log_2 10$ to two decimal places.
+          answer: { type: number, value: 3.32, tolerance: { abs: 0.006 } }
+          explanation: >-
+            $\log_2 10 = \dfrac{\log_{10} 10}{\log_{10} 2} = \dfrac{1}{0.30103} \approx 3.32$.
+        - prompt: >-
+            Write $\log_8 x$ in terms of $A = \log_2 x$.
+          answer:
+            type: expression
+            symbols:
+              - { name: A }
+            lhs: '\log_8 x ='
+            reference: A/3
+            accept: ['A*(1/3)', '(1/3)*A']
+            reject: ['3*A', 'A/8', 'A - 3', '8*A', 'A^3']
+          explanation: >-
+            Change of base works with base 2 underneath as well:
+            $\log_8 x = \dfrac{\log_2 x}{\log_2 8} = \dfrac{A}{3}$.
+        - prompt: >-
+            Using $\log_{10} 3 \approx 0.47712$, find $\log_3 1{,}000$ to two decimal places.
+          answer: { type: number, value: 6.29, tolerance: { abs: 0.006 } }
+          explanation: >-
+            $\log_3 1{,}000 = \dfrac{\log_{10} 1{,}000}{\log_{10} 3} = \dfrac{3}{0.47712} \approx 6.29$.
+
+  - id: derive-doublings
+    phase: derive
+    kind: predict
+    concept: M1.5/logarithms
+    title: Doublings to a million
+    prompt: >-
+      How many doublings turn 1 into a million? Find $\log_2 1{,}000{,}000$ to two decimal places,
+      using $T = \log_{10} 2 \approx 0.30103$.
+    answer: { type: number, value: 19.93, tolerance: { abs: 0.01 } }
+    explanation: >-
+      $\log_{10} 1{,}000{,}000 = 6$, so $\log_2 1{,}000{,}000 = 6 / 0.30103 \approx 19.93$.
+    review:
+      variants:
+        - prompt: >-
+            How many halvings take 1 down to one thousandth? Find $\log_2 1{,}000$ to two decimal
+            places, using $\log_{10} 2 \approx 0.30103$.
+          answer: { type: number, value: 9.97, tolerance: { abs: 0.01 } }
+          explanation: >-
+            Halving from 1 to $1/1{,}000$ takes as many steps as doubling from 1 to 1,000:
+            $\log_2 1{,}000 = 3 / 0.30103 \approx 9.97$.
+        - prompt: >-
+            A quantity grows 4 times over every year. How many years does it take to grow 1,000
+            times over? Use $\log_{10} 2 \approx 0.30103$, and give two decimal places.
+          answer: { type: number, value: 4.98, tolerance: { abs: 0.01 } }
+          explanation: >-
+            The answer is $\log_4 1{,}000 = \dfrac{3}{\log_{10} 4} = \dfrac{3}{2 \times 0.30103}
+            \approx 4.98$ years.
+
+  - id: derive-log-mirror
+    phase: derive
+    kind: predict
+    concept: M1.5/logarithms
+    title: Folding the graph of a power
+    prompt: >-
+      The graph of $y = 2^{x}$ passes through $(0, 1)$, $(1, 2)$ and $(3, 8)$. To the left it
+      creeps ever closer to the $x$-axis without touching it, and to the right it climbs ever more
+      steeply. Fold it over the line $y = x$ to get the graph of $y = \log_2 x$. Which description
+      fits that graph?
+    answer:
+      type: choice
+      options:
+        - { id: same, label: 'It passes through $(0, 1)$ and $(3, 8)$, and climbs ever more steeply.' }
+        - { id: levels, label: 'It passes through $(1, 0)$ and $(8, 3)$, and levels off at a height it never passes.' }
+        - { id: right, label: 'It passes through $(1, 0)$ and $(8, 3)$, climbs ever more slowly, and plunges ever closer to the $y$-axis as $x$ shrinks towards 0.' }
+        - { id: left, label: 'It passes through $(-1, 0)$ and $(-8, -3)$, and lies to the left of the $y$-axis.' }
+      correct: [right]
+    explanation: >-
+      Folding swaps the two coordinates of every point, so $(0, 1)$, $(1, 2)$ and $(3, 8)$ become
+      $(1, 0)$, $(2, 1)$ and $(8, 3)$. The $x$-axis, which $2^x$ creeps towards, becomes the $y$-axis.
+      A curve that climbs ever more steeply becomes one that climbs ever more slowly, but it never
+      stops climbing: $\log_2 x$ reaches any height $h$ at $x = 2^h$.
+
+  # Build ----------------------------------------------------------------------
+  - id: build-log-score
+    phase: build
+    kind: build
+    concept: M1.5/log-rules
+    covers: [M1.5/exponential-growth]
+    title: The logarithm of a score
+    prompt: >-
+      Replace the `None` so that `log_score(p, n)` gives the logarithm to base 10 of the score of a
+      passage of `n` words, each given the probability `p`.
+    answer:
+      type: code
+      starter: |
+        import math
+
+        def log_score(p, n):
+            return None    # log10 of the score of n words, each with probability p
+
+        print(log_score(0.2, 1000), log_score(0.4, 1000))
+      tests: |
+        # close(a, b) is True when a and b agree to about nine significant figures.
+        import math
+
+        def test_answers():
+            """log_score gives a number, not None."""
+            assert log_score(0.2, 1000) is not None, "Replace the None with a formula."
+
+        def test_one_word():
+            """For a single word, log_score is the logarithm of that word's probability."""
+            for p in (0.2, 0.4, 0.5, 0.01):
+                assert close(log_score(p, 1), math.log10(p)), f"log_score({p}, 1) is {log_score(p, 1)}, not log10 of {p}."
+
+        def test_short_passage():
+            """For a short passage, 10 to the power log_score gives the score itself."""
+            for p, n in ((0.2, 10), (0.5, 20), (0.9, 7)):
+                assert close(10 ** log_score(p, n), p ** n), f"For {n} words with probability {p}, 10 to the power log_score is {10 ** log_score(p, n)}, but the score is {p ** n}."
+
+        def test_adds_up():
+            """A passage of m + n words scores the sum of an m-word and an n-word passage, up to 1,000 words."""
+            for p, m, n in ((0.2, 3, 4), (0.4, 500, 500), (0.2, 600, 400)):
+                assert close(log_score(p, m + n), log_score(p, m) + log_score(p, n)), f"log_score({p}, {m + n}) is {log_score(p, m + n)}, not log_score({p}, {m}) + log_score({p}, {n})."
+      reference: |
+        import math
+
+        def log_score(p, n):
+            return n * math.log10(p)
+
+        print(log_score(0.2, 1000), log_score(0.4, 1000))
+      wrong:
+        - code: |
+            import math
+
+            def log_score(p, n):
+                return math.log10(p ** n)
+
+            print(log_score(0.2, 1000), log_score(0.4, 1000))
+          why: >-
+            Right as mathematics, but `p ** n` is worked out first, and for 1,000 words it is stored
+            as 0.0, which has no logarithm.
+        - code: |
+            import math
+
+            def log_score(p, n):
+                return math.log10(p) ** n
+
+            print(log_score(0.2, 1000), log_score(0.4, 1000))
+          why: Raises the logarithm to a power instead of multiplying it.
+        - code: |
+            import math
+
+            def log_score(p, n):
+                return math.log10(p * n)
+
+            print(log_score(0.2, 1000), log_score(0.4, 1000))
+          why: Multiplies the probability by the number of words before taking the logarithm.
+        - code: |
+            import math
+
+            def log_score(p, n):
+                return n + math.log10(p)
+
+            print(log_score(0.2, 1000), log_score(0.4, 1000))
+          why: Adds the number of words to one logarithm instead of adding the logarithm n times.
+        - code: |
+            import math
+
+            def log_score(p, n):
+                return n * math.log(p)
+
+            print(log_score(0.2, 1000), log_score(0.4, 1000))
+          why: Uses the natural logarithm, `math.log`, instead of base 10.
+    explanation: >-
+      `n * math.log10(p)`: each of the `n` words adds the logarithm of its probability, so the
+      logarithm of the score is `n` times `math.log10(p)`.
+
+  - id: build-underflow
+    phase: build
+    kind: breakit
+    concept: M1.5/exponential-growth
+    title: Multiplying a thousand probabilities
+    prompt: Predict what the program prints after the change, then run both versions to see.
+    answer:
+      type: breakit
+      code: |
+        a = 0.2 ** 10    # model A's score for a 10-word passage
+        b = 0.4 ** 10    # model B's score for the same passage
+        print(b > a)
+      broken: |
+        a = 0.2 ** 1000    # model A's score for a 1,000-word passage
+        b = 0.4 ** 1000    # model B's score for the same passage
+        print(b > a)
+      change: The passage is now 1,000 words long, the length of the puzzle's passage.
+      options:
+        - { id: still-true, label: 'It still prints `True`, because B''s score is still the higher', when: "output.strip() == 'True'" }
+        - { id: prints-false, label: 'It prints `False`', when: "output.strip() == 'False'" }
+        - { id: error, label: 'Python stops with an error', when: 'error is not None' }
+    explanation: >-
+      The smallest positive number Python can store is about $5 \times 10^{-324}$, and a result much
+      smaller than that is stored as `0.0`. Both scores are far smaller, so both become `0.0`, and
+      `0.0 > 0.0` is `False`.
+
+  - id: build-log-base
+    phase: build
+    kind: build
+    concept: M1.5/log-rules
+    covers: [M1.5/logarithms]
+    title: A logarithm in any base
+    prompt: >-
+      Replace the `None` so that `log_base(x, b)` gives $\log_b x$, the power of `b` that gives `x`,
+      using `math.log10` and nothing else from the `math` library.
+    answer:
+      type: code
+      starter: |
+        import math
+
+        def log_base(x, b):
+            return None    # the power of b that gives x
+
+        print(log_base(8, 2), log_base(1024, 2))
+      tests: |
+        # close(a, b) is True when a and b agree to about nine significant figures.
+        import math
+
+        CASES = [(8, 2), (1024, 2), (1000, 10), (81, 3), (0.5, 2), (2, 8), (1e-6, 10), (7, 7)]
+
+        def test_answers():
+            """log_base gives a number, not None."""
+            assert log_base(8, 2) is not None, "Replace the None with a formula."
+
+        def test_undoes():
+            """b to the power log_base(x, b) gives x back."""
+            for x, b in CASES:
+                y = log_base(x, b)
+                assert close(b ** y, x), f"log_base({x}, {b}) is {y}, but {b} to that power is {b ** y}, not {x}."
+
+        def test_library():
+            """It agrees with Python's own math.log(x, b) to about nine significant figures."""
+            for x, b in CASES:
+                assert close(log_base(x, b), math.log(x, b)), f"log_base({x}, {b}) is {log_base(x, b)}, but math.log({x}, {b}) gives {math.log(x, b)}."
+
+        def test_from_log10():
+            """It is built from math.log10, not from math.log or math.log2."""
+            saved = (math.log, math.log2)
+            math.log = math.log2 = None
+            try:
+                log_base(8, 2)
+            except TypeError:
+                raise AssertionError("log_base uses math.log or math.log2. Build it from math.log10 alone.")
+            finally:
+                math.log, math.log2 = saved
+      reference: |
+        import math
+
+        def log_base(x, b):
+            return math.log10(x) / math.log10(b)
+
+        print(log_base(8, 2), log_base(1024, 2))
+      wrong:
+        - code: |
+            import math
+
+            def log_base(x, b):
+                return math.log10(b) / math.log10(x)
+
+            print(log_base(8, 2), log_base(1024, 2))
+          why: Divides the wrong way up, which gives the reciprocal of the answer.
+        - code: |
+            import math
+
+            def log_base(x, b):
+                return math.log10(x) - math.log10(b)
+
+            print(log_base(8, 2), log_base(1024, 2))
+          why: Subtracts the logarithms, which gives the logarithm of x divided by b.
+        - code: |
+            import math
+
+            def log_base(x, b):
+                return math.log10(x) / b
+
+            print(log_base(8, 2), log_base(1024, 2))
+          why: Divides by the base itself instead of by its logarithm.
+        - code: |
+            import math
+
+            def log_base(x, b):
+                return math.log(x, b)
+
+            print(log_base(8, 2), log_base(1024, 2))
+          why: Hands the work to `math.log`, which the exercise asks you to do without.
+    explanation: >-
+      `math.log10(x) / math.log10(b)`: the change of base rule from Derive, with base 10 underneath.
+
+  - id: build-digits
+    phase: build
+    kind: build
+    concept: M1.5/logarithms
+    covers: [M1.5/log-scales]
+    title: Counting digits
+    prompt: >-
+      Replace the `None` so that `digits(n)` gives the number of digits of the whole number `n`, for
+      any `n` of 1 or more, using `math.log10`.
+    answer:
+      type: code
+      starter: |
+        import math
+
+        def digits(n):
+            return None    # how many digits the whole number n has
+
+        print(digits(2 ** 100))
+      tests: |
+        import math
+
+        def test_answers():
+            """digits gives a number, not None."""
+            assert digits(5) is not None, "Replace the None with a formula."
+
+        def test_small():
+            """digits is right from 1 to 12,345, including each power of ten and the number just below it."""
+            cases = {1: 1, 9: 1, 10: 2, 99: 2, 100: 3, 999: 3, 1000: 4, 9999: 4, 10000: 5, 12345: 5}
+            for n, d in cases.items():
+                assert digits(n) == d, f"digits({n}) is {digits(n)}, but {n} has {d} digits."
+
+        def test_large():
+            """digits(2 ** 1000) is 302, as Derive found."""
+            assert digits(2 ** 1000) == 302, f"digits(2 ** 1000) is {digits(2 ** 1000)}, not 302."
+
+        def test_uses_log10():
+            """digits counts with math.log10."""
+            calls = []
+            saved = math.log10
+            math.log10 = lambda x: calls.append(x) or saved(x)
+            try:
+                digits(12345)
+            finally:
+                math.log10 = saved
+            assert calls, "digits never calls math.log10. Count the digits with the logarithm."
+      reference: |
+        import math
+
+        def digits(n):
+            return math.floor(math.log10(n)) + 1
+
+        print(digits(2 ** 100))
+      wrong:
+        - code: |
+            import math
+
+            def digits(n):
+                return math.floor(math.log10(n))
+
+            print(digits(2 ** 100))
+          why: Gives one digit too few for every number.
+        - code: |
+            import math
+
+            def digits(n):
+                return math.ceil(math.log10(n))
+
+            print(digits(2 ** 100))
+          why: Rounds up, which is wrong at each power of ten, where the logarithm is a whole number.
+        - code: |
+            import math
+
+            def digits(n):
+                return round(math.log10(n)) + 1
+
+            print(digits(2 ** 100))
+          why: Rounds to the nearest whole number, which is wrong for 9, whose logarithm is about 0.95.
+        - code: |
+            import math
+
+            def digits(n):
+                return math.floor(math.log(n, 10)) + 1
+
+            print(digits(2 ** 100))
+          why: Uses `math.log(n, 10)`, which gives 2.9999999999999996 for 1,000 and so one digit too few.
+        - code: |
+            import math
+
+            def digits(n):
+                return len(str(n))
+
+            print(digits(2 ** 100))
+          why: Counts the characters, which is right, but without the logarithm the exercise asks for.
+    explanation: >-
+      `math.floor(math.log10(n)) + 1`. A number with $d$ digits has a logarithm from $d - 1$ up to
+      $d$, so rounding the logarithm down gives $d - 1$, and adding 1 gives $d$.
+
+  - id: build-sympy-log
+    phase: build
+    kind: build
+    concept: M1.5/log-rules
+    title: The rules in SymPy
+    prompt: >-
+      Replace the `None` so that `power` is `log(x**3)` rewritten by `expand_log`. Run the program.
+      If SymPy has not used a rule on both logarithms, find out why, and fix it.
+    answer:
+      type: code
+      starter: |
+        from sympy import symbols, log, expand_log
+
+        x, y = symbols('x y')
+        product = expand_log(log(x * y))
+        power = None    # expand_log applied to log(x**3)
+        print(product)
+        print(power)
+      tests: |
+        def test_power_filled():
+            """power is filled in."""
+            assert power is not None, "Replace the None in power."
+
+        def test_product():
+            """product prints as log(x) + log(y): SymPy has used the product rule."""
+            assert str(product) == "log(x) + log(y)", f"product is {product}. SymPy has not used the product rule. Is the rule true for every x and y SymPy allows?"
+
+        def test_power():
+            """power prints as 3*log(x): SymPy has used the rule for powers."""
+            assert str(power) == "3*log(x)", f"power is {power}, not 3*log(x)."
+
+        def test_letters():
+            """SymPy knows the facts about x and y that make both rules true."""
+            assert x.is_positive and y.is_positive, "SymPy does not know that x and y are positive."
+      reference: |
+        from sympy import symbols, log, expand_log
+
+        x, y = symbols('x y', positive=True)
+        product = expand_log(log(x * y))
+        power = expand_log(log(x**3))
+        print(product)
+        print(power)
+      wrong:
+        - code: |
+            from sympy import symbols, log, expand_log
+
+            x, y = symbols('x y')
+            product = expand_log(log(x * y))
+            power = expand_log(log(x**3))
+            print(product)
+            print(power)
+          why: The letters could stand for negative numbers, so SymPy leaves both logarithms as they are.
+        - code: |
+            from sympy import symbols, log, expand_log
+
+            x, y = symbols('x y', positive=True)
+            product = expand_log(log(x * y))
+            power = log(x)**3
+            print(product)
+            print(power)
+          why: Cubes the logarithm instead of rewriting the logarithm of a cube.
+        - code: |
+            from sympy import symbols, log, expand_log
+
+            x, y = symbols('x y')
+            product = expand_log(log(x * y), force=True)
+            power = expand_log(log(x**3), force=True)
+            print(product)
+            print(power)
+          why: Forces the rules onto letters that could be negative, where the rules are false.
+    explanation: >-
+      Make the letters positive with `symbols('x y', positive=True)`, and set
+      `power = expand_log(log(x**3))`. SymPy then prints `log(x) + log(y)` and `3*log(x)`.
+
+  # Explain --------------------------------------------------------------------
+  - id: explain-adding-logs
+    phase: explain
+    kind: explain
+    concept: M1.5/log-rules
+    covers: [M1.5/logarithms, M1.5/exponential-growth, M1.5/log-scales]
+    title: Why models add logarithms
+    prompt: >-
+      Explain to your friend why a language model adds the logarithms of its probabilities instead
+      of multiplying the probabilities, and how adding still lets it compare the puzzle's two models
+      on the 1,000-word passage. Say what a logarithm is in plain words.
+    answer:
+      type: text
+      rubric:
+        - { id: what-log, criterion: 'Says in plain words what a logarithm is: the power of 10 that gives the number.' }
+        - { id: product-sum, criterion: 'Says that the logarithm of a product is the sum of the logarithms, so the logarithm of a score is the sum of its words'' logarithms.' }
+        - { id: why, criterion: 'Says why multiplying fails: the product of many probabilities is too small for a computer to store, and becomes 0.' }
+        - { id: compare, criterion: 'Says that the higher logarithm belongs to the higher score, and that the difference of the logarithms gives the factor between the scores as a power of ten.' }
+        - { id: numbers, criterion: 'Uses the puzzle''s numbers correctly: logarithms of about $-699$ and $-398$, a difference of about 301.' }
+      reference: >-
+        The logarithm of a number is the power you raise 10 to in order to get it: the logarithm of
+        1,000 is 3, and the logarithm of 0.2 is about −0.699, because 10 to the power −0.699 is 0.2.
+        Multiplying numbers adds their powers of 10, so the logarithm of a product is the sum of the
+        logarithms. A model's score for a passage is the product of the probabilities it gave each
+        word. For 1,000 words that product is far too small for a computer, which stores anything
+        below about 10 to the power −324 as 0, so both models' scores come out as 0 and cannot be
+        compared. The logarithms are ordinary numbers, though. Model A's score has logarithm
+        1,000 × (−0.699), about −699, and model B's has 1,000 × (−0.398), about −398. A larger number
+        always has a larger logarithm, so B's score is the higher. The difference, about 301, says
+        how many times higher as a power of ten: B's score is about 10 to the power 301 times A's,
+        because each word gives B a factor of 2 and 2 is 10 to the power 0.301.
+      minWords: 80
+      maxWords: 350

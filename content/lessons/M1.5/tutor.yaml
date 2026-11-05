@@ -1,0 +1,187 @@
+misconceptions:
+  - id: log-of-sum
+    belief: $\log(a + b) = \log a + \log b$.
+    why: >-
+      The rule is for products, $\log(ab) = \log a + \log b$, because multiplying powers of 10 adds
+      their exponents. Sums have no such rule: $\log_{10}(2 + 3) = \log_{10} 5 \approx 0.699$, while
+      $\log_{10} 2 + \log_{10} 3 \approx 0.778$, which is $\log_{10} 6$.
+    cue: The learner adds logarithms to get the logarithm of a sum, or writes $\log(a + b) = \log a + \log b$.
+  - id: doubling-adds
+    belief: Twice as many doublings give twice the result.
+    why: >-
+      Each doubling multiplies, so twice as many doublings square the result:
+      $2^{20} = (2^{10})^2 = 1{,}024^2$, about a million, not 2,048.
+    cue: An answer of 2,048 for $2^{20}$, or the 2,000 option in the puzzle.
+  - id: half-power-is-half
+    belief: $10^{0.5} = 5$.
+    why: >-
+      Halving the exponent does not halve the number. $10^{0.5}$ times itself must give
+      $10^1 = 10$, so it is $\sqrt{10} \approx 3.16$.
+    cue: An answer of 5 for $10^{0.5}$, or any answer that halves the number when the exponent is halved.
+  - id: log-power-is-power
+    belief: $\log(a^n) = (\log a)^n$.
+    why: >-
+      Each of the $n$ copies of $a$ adds $\log a$, so $\log(a^n) = n \log a$: the power becomes a
+      multiple, not a power of the logarithm.
+    cue: The learner writes $L^n$ for $\log_{10}(a^n)$, or `math.log10(p) ** n` in code.
+  - id: log-of-negative
+    belief: A negative number has a negative logarithm.
+    why: >-
+      Every power of 10 is positive, so no power gives 0 or a negative number. Numbers between 0 and
+      1 have negative logarithms; 0 and the negative numbers have none.
+    cue: The learner chooses 0 or $-1{,}000$ as having a logarithm, or writes $\log_{10}(-100) = -2$.
+  - id: log-scale-even
+    belief: On a log scale, 2 sits a ninth of the way from 1 to 10.
+    why: >-
+      On a log scale equal steps are equal factors. Ten steps of $\times 2$ make 1,024, just over three
+      steps of $\times 10$, so one step of $\times 2$ covers about 0.301 of a step of $\times 10$.
+    cue: A guess near 0.11 for where 2 sits between 1 and 10.
+  - id: underflow-error
+    belief: A number too small to store makes Python stop with an error.
+    why: >-
+      Python stores such a result as 0.0 and carries on without a word, which is why the slip is easy
+      to miss. Only a later step that cannot take 0, such as a logarithm, stops with an error.
+    cue: The learner predicts an error in build-underflow, or expects Python to warn when a product becomes too small.
+  - id: base-change-upside-down
+    belief: $\log_2 x = \log_{10} 2 \div \log_{10} x$.
+    why: >-
+      From $2^y = x$, taking logarithms gives $y \log_{10} 2 = \log_{10} x$, so
+      $y = \log_{10} x \div \log_{10} 2$. A check at $x = 8$, where $y$ must be 3, catches the
+      upside-down version, which gives $1/3$.
+    cue: The learner writes $T/A$ for the change of base, or `math.log10(b) / math.log10(x)` in code.
+  - id: log-levels-off
+    belief: The graph of a logarithm levels off at some height.
+    why: >-
+      It climbs ever more slowly but never stops: $\log_2 x$ reaches any height $h$ at $x = 2^h$.
+    cue: The learner chooses the graph that levels off, or says a logarithm has a largest value.
+
+exercises:
+  derive-log-product:
+    rungs:
+      - What does each line change, compared with the line before it?
+      - >-
+        In M1.3 an undo rule could be read from right to left as well as from left to right:
+        $f^{-1}\big(f(a)\big) = a$ also lets you write $a$ as $f^{-1}\big(f(a)\big)$.
+      - Look only at the first line. What has happened to $a$ and to $b$, and which rule says the new form is equal to the old?
+      - >-
+        Your choice for the first line is right. Look again at the last line: no exponents are being
+        added or multiplied there. What is being taken off?
+      - >-
+        To prove $\log_{10}(a/b) = \log_{10} a - \log_{10} b$, write $a$ and $b$ as
+        $10^{\log_{10} a}$ and $10^{\log_{10} b}$, divide the two powers by subtracting their
+        exponents, and take off the power. Match each move in your own proof to a rule in the list
+        in the same way.
+    notes: >-
+      Multiply exponents for the second line confuses $10^m \times 10^n$ with $(10^m)^n$. Undo the
+      power for the first line reads the wrong rule: the first line puts powers in, it does not take
+      one off. Distribute is never needed.
+  derive-log-tenth:
+    rungs:
+      - How can 0.2 be written using the numbers 2 and 10?
+      - In Explore's table, $\log_{10} 5$ was $1 - 0.301$, because $5 = 10 \div 2$.
+      - Try two smaller cases first. What is $\log_{10} 0.1$? And $\log_{10} 20$, in terms of $T$?
+      - >-
+        Your answer uses the right two ingredients, $T$ and the 10 that 2 is divided by. The trouble
+        is in what dividing by 10 does to a logarithm.
+      - >-
+        To write $\log_{10} 0.3$ in terms of $R = \log_{10} 3$, note that $0.3 = 3 \div 10$, and
+        dividing by 10 lowers a logarithm by $\log_{10} 10$.
+    notes: >-
+      $T/10$ divides the logarithm by 10, as if logarithms divided when numbers do. $1 - T$ subtracts
+      the wrong way round: it is $\log_{10} 5$. A check with $T \approx 0.301$ shows the answer must
+      be negative, since 0.2 is less than 1.
+  derive-log-power:
+    rungs:
+      - How many copies of $a$ are multiplied together in $a^n$, and what does each copy add to the logarithm?
+      - The product rule you have just proved says what multiplying by one more $a$ does to a logarithm.
+      - Try $n = 2$, where $a^2 = a \times a$. What is $\log_{10}(a \times a)$ in terms of $L$? Then try $n = 3$.
+      - Your answer has the right two letters, $n$ and $L$. Check it at $n = 2$, where it must give $L + L$.
+      - >-
+        Seven equal payments of ₹500 come to $7 \times 500 = 3{,}500$ rupees: adding the same amount
+        again and again is multiplying it by the number of times.
+    notes: >-
+      $L^n$ treats the logarithm of a power as a power of the logarithm. $n + L$ adds one copy of $L$
+      to $n$. A check at $n = 2$, which must give $2L$, catches both.
+  derive-change-of-base:
+    rungs:
+      - What does taking $\log_{10}$ of both sides of $2^y = x$ give on each side?
+      - >-
+        Earlier in this phase, $\log_{10}(a^n) = n \log_{10} a$: a power comes down as a multiple.
+      - >-
+        Try a case you know: at $x = 8$, $y = \log_2 8 = 3$. What are $A$ and $T$ there, about 0.903
+        and 0.301, and how do you get 3 from them?
+      - Your answer has the right two letters, $A$ and $T$. Check it at $x = 8$, where it must give 3.
+      - >-
+        To solve $5^t = 200$ for $t$, take $\log_{10}$ of both sides to get
+        $t \log_{10} 5 = \log_{10} 200$, then get $t$ on its own with a step that can be undone, as in
+        M1.2.
+    notes: >-
+      $T/A$ is upside down: at $x = 8$ it gives $1/3$. $A - T$ subtracts, which is the rule for
+      $\log_{10}(x/2)$, a different number.
+  build-log-score:
+    rungs:
+      - What does each word add to the logarithm of the score, and how many words are there?
+      - In Derive, A's score for 1,000 words had the logarithm $1{,}000 \times \log_{10} 0.2$.
+      - Try a single word first. What should `log_score(0.2, 1)` give? Then two words.
+      - >-
+        `math.log10` is the right function. The trouble is in what you hand it: what is `0.2 ** 1000`
+        on its own, before any logarithm is taken?
+      - >-
+        To total the cost of `n` tickets at `price` rupees each without listing them, write
+        `n * price`.
+    notes: >-
+      `math.log10(p ** n)` is right as mathematics, but `p ** n` becomes 0.0 for 1,000 words, and
+      `math.log10(0.0)` stops with a math domain error. `math.log10(p) ** n` raises the logarithm to a
+      power. `math.log(p)` is the natural logarithm, so the one-word test fails.
+  build-log-base:
+    rungs:
+      - What did the change of base rule in Derive say $\log_2 x$ is, written with base-10 logarithms?
+      - In Derive, $\log_2 x = \dfrac{\log_{10} x}{\log_{10} 2}$, and nothing in the steps needed the base to be 2.
+      - Try `log_base(100, 10)`, which must be 2, and `log_base(8, 2)`, which must be 3. What does your function give?
+      - >-
+        Your function uses `math.log10`, which is right. The trouble is in how the two logarithms are
+        combined: check it with `log_base(8, 2)`.
+      - >-
+        To turn a length in centimetres into inches, divide by the length of one inch in
+        centimetres, 2.54.
+    notes: >-
+      Dividing the other way up gives $1/\log_b x$. Subtracting the logarithms gives $\log_{10}(x/b)$.
+      `math.log(x, b)` passes every test except the one that asks for `math.log10`.
+  build-digits:
+    rungs:
+      - How many digits do 100 and 999 have, and what are their logarithms?
+      - In Derive, a whole number from $10^{301}$ up to, but not including, $10^{302}$ had 302 digits.
+      - Try `digits(100)`, whose logarithm is exactly 2, and then `digits(999)`, whose logarithm is just under 3.
+      - >-
+        Your function uses `math.log10` and gets most numbers right. Look at the powers of ten, such
+        as 10 and 100: what does your function give there?
+      - >-
+        Someone 2.7 hours into a journey is in its third hour: round the hours down, and add 1.
+    notes: >-
+      `math.ceil` is wrong exactly at the powers of ten, where the logarithm is a whole number.
+      `round` is wrong for numbers such as 9, whose logarithm is more than halfway to the next whole
+      number. Leaving out the + 1 gives one digit too few everywhere.
+  build-sympy-log:
+    rungs:
+      - What did SymPy print for `product`, and is that the product rule applied?
+      - >-
+        In Derive, the proof of the product rule began by writing $a$ as $10^{\log_{10} a}$, which is
+        possible only for some numbers.
+      - Try the rule on numbers. $\log\big((-2) \times (-3)\big)$ exists. Do $\log(-2)$ and $\log(-3)$?
+      - >-
+        `power` is right. The trouble is in the line that makes the letters: SymPy does not yet know
+        what kind of numbers they stand for.
+      - >-
+        SymPy rewrites $\sqrt{x^2}$ as $x$ only for a letter that it knows is positive, since for a
+        negative $x$ the square root gives $-x$, as M1.3 showed.
+    notes: >-
+      With plain letters SymPy prints `log(x*y)` and `log(x**3)` unchanged. `force=True` makes it use
+      the rules anyway, which passes the printing tests but fails the one about what SymPy knows of
+      the letters.
+
+novice:
+  - If $10^{0.5}$ is $\sqrt{10}$, what does $10^{\pi}$ mean?
+  - Why does 0 have no logarithm?
+  - Why do logarithms turn multiplying into adding?
+  - Why base 10? Would any base do?
+  - If logarithms avoid the problem, why does Python print 0.0 for a tiny product instead of using them itself?

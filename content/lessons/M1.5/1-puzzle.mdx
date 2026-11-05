@@ -1,0 +1,15 @@
+A language model reads text one word at a time. Before each word, it gives every word that could come next a probability. To score a passage, take the probabilities it gave to the words that actually came, and multiply them together. A model that expected the passage gets a higher score, and comparing scores on the same text is one way to tell which of two models is better.
+
+Models really work with *tokens*, the pieces of text from M1.3's puzzle, but words keep the numbers simple here.
+
+Two models read the same passage of 1,000 words. Model A gives each word that came a probability of 0.2, and model B gives each one a probability of 0.4. So on every single word, B gives twice the probability that A gives.
+
+<Exercise id="puzzle-passage-ratio" />
+
+<Reveal for="puzzle-passage-ratio">
+
+Twice the probability on every word is not twice the score. The factors of 2 multiply, one for each word, so a small edge on each word becomes an enormous edge on the passage. How enormous is a question with an exact answer, and this lesson finds it: how many digits does $2^{1000}$ have?
+
+There is a practical side as well. Both scores are tiny. A's is $0.2^{1000}$, a 0.2 multiplied by itself a thousand times, and in the Build phase you will see what a computer makes of a number like that. Language models compare scores like these all the time, and they do it with the *logarithm*, a function that turns multiplying into adding. This lesson builds it from the rules for powers you already know.
+
+</Reveal>

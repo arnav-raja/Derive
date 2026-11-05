@@ -1,0 +1,74 @@
+Derive turned the scores of long passages into sums. Now compute them in Python, and see what happens to a program that multiplies instead.
+
+## Scores as sums
+
+Python keeps its mathematics functions in a library called `math`. The line `import math` at the top of a program loads it, and after that `math.log10(x)` gives $\log_{10} x$: `math.log10(1000)` gives `3.0`. A function can also take more than one input, separated by commas:
+
+```python
+def area(width, height):
+    return width * height
+
+print(area(3, 4))   # prints 12
+```
+
+<Exercise id="build-log-score" />
+
+<Reveal for="build-log-score">
+
+`log_score(0.2, 1000)` gives about −698.97, the number Derive found by hand, and the whole calculation stays among ordinary numbers. The tests never stored that answer. They checked properties that every correct `log_score` must have, so they could check it on any passage at all.
+
+## Break it: multiply instead
+
+<Exercise id="build-underflow" />
+
+</Reveal>
+
+<Reveal for="build-underflow">
+
+Mathematically, $0.2^n$ is never 0, however large $n$ is. On a computer, A's score is `0.0` from 463 words on, and B's from 814, so two models whose scores differ by a factor of $10^{301}$ come out equal. This is why models work with the logarithms of probabilities rather than with the probabilities themselves. With your function, `log_score(0.4, 1000) > log_score(0.2, 1000)` is `True`, and the difference between the two, about 301.03, gives the factor between the scores as a power of ten.
+
+## Any base
+
+`math.log10` works in base 10. With the change of base rule from Derive, it gives every other base too.
+
+<Exercise id="build-log-base" />
+
+</Reveal>
+
+<Reveal for="build-log-base">
+
+Python's own `math.log(x, b)` makes the same division, but with the *natural* logarithm underneath, whose base is a number called $e$, about 2.718.
+
+<Foreshadow lesson="M3.5">
+
+M3.5 shows why $e$ is the base that makes the calculus of exponentials simplest, which is why Python and SymPy use it whenever no base is given.
+
+</Foreshadow>
+
+The rounding shows through. `math.log(1000, 10)` gives `2.9999999999999996`, not 3, because neither natural logarithm in its division is stored exactly, while `math.log10(1000)` gives exactly `3.0`. That is why the tests compared the two only to about nine significant figures.
+
+## Counting digits
+
+A whole number with 3 digits lies from 100 up to, but not including, 1,000, so its logarithm lies from 2 up to, but not including, 3. In the same way, a whole number with $d$ digits has a logarithm from $d - 1$ up to $d$. The function `math.floor(x)` rounds $x$ down to a whole number: `math.floor(2.7)` gives `2`, and `math.floor(3.0)` gives `3`.
+
+<Exercise id="build-digits" />
+
+</Reveal>
+
+<Reveal for="build-digits">
+
+Passing tests are not a proof. `digits(10 ** 15 - 1)`, the number written with fifteen 9s, gives 16. Its logarithm falls short of 15 by only about $4 \times 10^{-16}$, while the numbers Python can store near 15 are about $2 \times 10^{-15}$ apart, so `math.log10` gives exactly `15.0`. The formula is exact, but the stored logarithm is not. Python keeps whole numbers exactly, though, so `len(str(n))`, which writes `n` out as text and counts its characters, is right for every whole number.
+
+## Compare with the library
+
+SymPy, the algebra library from M1.2 and M1.3, knows the rules for logarithms, and its function `expand_log` rewrites a logarithm by them. SymPy's letters can carry facts about themselves: `symbols('x y', positive=True)` makes two letters that stand for positive numbers. SymPy's `log` is the natural logarithm, but the rules are the same in every base.
+
+<Exercise id="build-sympy-log" />
+
+</Reveal>
+
+<Reveal for="build-sympy-log">
+
+SymPy would not use the product rule until it knew that $x$ and $y$ are positive, and it was right not to. The proof in Derive began by writing $a$ as $10^{\log_{10} a}$, which needs $a$ to be positive. For negative numbers the rule breaks down: $(-2) \times (-3) = 6$ has a logarithm, but $-2$ and $-3$ have none among the ordinary numbers. A library that used the rule everywhere would sometimes give false answers, and SymPy prefers to give none.
+
+</Reveal>

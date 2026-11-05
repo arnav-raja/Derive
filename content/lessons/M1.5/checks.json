@@ -1,0 +1,428 @@
+{
+  "version": 1,
+  "expressions": {
+    "derive-change-of-base": {
+      "source": "6069f6514a1513e1",
+      "points": [
+        {
+          "A": "-5/4",
+          "T": "29/7"
+        },
+        {
+          "A": "3/2",
+          "T": "6"
+        },
+        {
+          "A": "-35/3",
+          "T": "5"
+        },
+        {
+          "A": "1/6",
+          "T": "-29/7"
+        },
+        {
+          "A": "-3",
+          "T": "-7"
+        },
+        {
+          "A": "6/5",
+          "T": "1"
+        }
+      ],
+      "values": [
+        "-0.30172413793103448276",
+        "0.25000000000000000000",
+        "-2.3333333333333333333",
+        "-0.040229885057471264368",
+        "0.42857142857142857143",
+        "1.2000000000000000000"
+      ]
+    },
+    "derive-change-of-base#1": {
+      "source": "9b0b0c27a7ed0a9e",
+      "points": [
+        {
+          "A": "-35/2"
+        },
+        {
+          "A": "-29/4"
+        },
+        {
+          "A": "-21/5"
+        },
+        {
+          "A": "19"
+        },
+        {
+          "A": "-28/3"
+        },
+        {
+          "A": "4/3"
+        }
+      ],
+      "values": [
+        "-5.8333333333333333333",
+        "-2.4166666666666666667",
+        "-1.4000000000000000000",
+        "6.3333333333333333333",
+        "-3.1111111111111111111",
+        "0.44444444444444444444"
+      ]
+    },
+    "derive-log-power": {
+      "source": "3969c942d17c4a1c",
+      "points": [
+        {
+          "n": "-13",
+          "L": "31/2"
+        },
+        {
+          "n": "4/5",
+          "L": "11"
+        },
+        {
+          "n": "-21/5",
+          "L": "13/4"
+        },
+        {
+          "n": "-40/3",
+          "L": "-4/7"
+        },
+        {
+          "n": "-20/3",
+          "L": "-10"
+        },
+        {
+          "n": "-12",
+          "L": "11/4"
+        }
+      ],
+      "values": [
+        "-201.50000000000000000",
+        "8.8000000000000000000",
+        "-13.650000000000000000",
+        "7.6190476190476190476",
+        "66.666666666666666667",
+        "-33.000000000000000000"
+      ]
+    },
+    "derive-log-power#0": {
+      "source": "f441c6c5d7412634",
+      "points": [
+        {
+          "L": "-28/3"
+        },
+        {
+          "L": "-31/7"
+        },
+        {
+          "L": "-25/7"
+        },
+        {
+          "L": "-3/2"
+        },
+        {
+          "L": "29/5"
+        },
+        {
+          "L": "-10"
+        }
+      ],
+      "values": [
+        "-4.6666666666666666667",
+        "-2.2142857142857142857",
+        "-1.7857142857142857143",
+        "-0.75000000000000000000",
+        "2.9000000000000000000",
+        "-5.0000000000000000000"
+      ]
+    },
+    "derive-log-power#1": {
+      "source": "b2d597314e2a04cc",
+      "points": [
+        {
+          "L": "5"
+        },
+        {
+          "L": "15/2"
+        },
+        {
+          "L": "-36"
+        },
+        {
+          "L": "17/6"
+        },
+        {
+          "L": "1/3"
+        },
+        {
+          "L": "-23/6"
+        }
+      ],
+      "values": [
+        "-10.000000000000000000",
+        "-15.000000000000000000",
+        "72.000000000000000000",
+        "-5.6666666666666666667",
+        "-0.66666666666666666667",
+        "7.6666666666666666667"
+      ]
+    },
+    "derive-log-power#2": {
+      "source": "2aac103e59ac1469",
+      "points": [
+        {
+          "L": "-9"
+        },
+        {
+          "L": "11"
+        },
+        {
+          "L": "-7"
+        },
+        {
+          "L": "35/3"
+        },
+        {
+          "L": "-1"
+        },
+        {
+          "L": "-7/3"
+        }
+      ],
+      "values": [
+        "-25.000000000000000000",
+        "35.000000000000000000",
+        "-19.000000000000000000",
+        "37.000000000000000000",
+        "-1.0000000000000000000",
+        "-5.0000000000000000000"
+      ]
+    },
+    "derive-log-tenth": {
+      "source": "49515f5d96de4343",
+      "points": [
+        {
+          "T": "-13/6"
+        },
+        {
+          "T": "-11/2"
+        },
+        {
+          "T": "25/6"
+        },
+        {
+          "T": "18/5"
+        },
+        {
+          "T": "25"
+        },
+        {
+          "T": "19"
+        }
+      ],
+      "values": [
+        "-3.1666666666666666667",
+        "-6.5000000000000000000",
+        "3.1666666666666666667",
+        "2.6000000000000000000",
+        "24.000000000000000000",
+        "18.000000000000000000"
+      ]
+    },
+    "derive-log-tenth#0": {
+      "source": "9b9d180ace6f8d97",
+      "points": [
+        {
+          "T": "21/4"
+        },
+        {
+          "T": "-13/2"
+        },
+        {
+          "T": "34/3"
+        },
+        {
+          "T": "-5"
+        },
+        {
+          "T": "-20/3"
+        },
+        {
+          "T": "-15/4"
+        }
+      ],
+      "values": [
+        "-3.2500000000000000000",
+        "8.5000000000000000000",
+        "-9.3333333333333333333",
+        "7.0000000000000000000",
+        "8.6666666666666666667",
+        "5.7500000000000000000"
+      ]
+    },
+    "derive-log-tenth#1": {
+      "source": "675953cd2ea868c4",
+      "points": [
+        {
+          "F": "33/7"
+        },
+        {
+          "F": "25/6"
+        },
+        {
+          "F": "-11"
+        },
+        {
+          "F": "-34"
+        },
+        {
+          "F": "-30/7"
+        },
+        {
+          "F": "-11/4"
+        }
+      ],
+      "values": [
+        "2.7142857142857142857",
+        "2.1666666666666666667",
+        "-13.000000000000000000",
+        "-36.000000000000000000",
+        "-6.2857142857142857143",
+        "-4.7500000000000000000"
+      ]
+    },
+    "derive-log-tenth#2": {
+      "source": "1584702f9c4312fe",
+      "points": [
+        {
+          "T": "37/7"
+        },
+        {
+          "T": "-7"
+        },
+        {
+          "T": "28"
+        },
+        {
+          "T": "-17/2"
+        },
+        {
+          "T": "13"
+        },
+        {
+          "T": "-5"
+        }
+      ],
+      "values": [
+        "8.2857142857142857143",
+        "-4.0000000000000000000",
+        "31.000000000000000000",
+        "-5.5000000000000000000",
+        "16.000000000000000000",
+        "-2.0000000000000000000"
+      ]
+    }
+  },
+  "runs": {
+    "build-digits": {
+      "tests": [
+        {
+          "name": "test_answers",
+          "description": "digits gives a number, not None.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_small",
+          "description": "digits is right from 1 to 12,345, including each power of ten and the number just below it.",
+          "passed": false,
+          "message": "digits(1) is 0, but 1 has 1 digits."
+        },
+        {
+          "name": "test_large",
+          "description": "digits(2 ** 1000) is 302, as Derive found.",
+          "passed": false,
+          "message": "digits(2 ** 1000) is 301, not 302."
+        },
+        {
+          "name": "test_uses_log10",
+          "description": "digits counts with math.log10.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": "30\n"
+    },
+    "build-log-base": {
+      "tests": [
+        {
+          "name": "test_answers",
+          "description": "log_base gives a number, not None.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_undoes",
+          "description": "b to the power log_base(x, b) gives x back.",
+          "passed": false,
+          "message": "log_base(8, 2) is 0.33333333333333337, but 2 to that power is 1.2599210498948732, not 8."
+        },
+        {
+          "name": "test_library",
+          "description": "It agrees with Python's own math.log(x, b) to about nine significant figures.",
+          "passed": false,
+          "message": "log_base(8, 2) is 0.33333333333333337, but math.log(8, 2) gives 3.0."
+        },
+        {
+          "name": "test_from_log10",
+          "description": "It is built from math.log10, not from math.log or math.log2.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": "0.33333333333333337 0.09999999999999999\n"
+    },
+    "build-log-score": {
+      "tests": [],
+      "error": {
+        "type": "ValueError",
+        "message": "expected a positive input, got 0.0",
+        "line": 4
+      },
+      "output": ""
+    },
+    "build-sympy-log": {
+      "tests": [
+        {
+          "name": "test_power_filled",
+          "description": "power is filled in.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_product",
+          "description": "product prints as log(x) + log(y): SymPy has used the product rule.",
+          "passed": false,
+          "message": "product is log(x*y). SymPy has not used the product rule. Is the rule true for every x and y SymPy allows?"
+        },
+        {
+          "name": "test_power",
+          "description": "power prints as 3*log(x): SymPy has used the rule for powers.",
+          "passed": false,
+          "message": "power is log(x**3), not 3*log(x)."
+        },
+        {
+          "name": "test_letters",
+          "description": "SymPy knows the facts about x and y that make both rules true.",
+          "passed": false,
+          "message": "SymPy does not know that x and y are positive."
+        }
+      ],
+      "error": null,
+      "output": "log(x*y)\nlog(x**3)\n"
+    }
+  }
+}

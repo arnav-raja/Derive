@@ -74,6 +74,12 @@ export function FigureFrame({
   );
 }
 
+/** A figure's label, in which ^x or ^{...} is drawn as a superscript, so "2^x" reads as 2 to the power x. */
+export function FigureLabel({ text }: { text: string }) {
+  const parts = text.split(/\^(\{[^}]*\}|[A-Za-z0-9.\u2212-]+)/);
+  return <>{parts.map((p, i) => (i % 2 ? <sup key={i}>{p.replace(/^\{|\}$/g, "")}</sup> : p))}</>;
+}
+
 function NumbersTable({ table }: { table: DataTable }) {
   return (
     <details className="group rounded-md border border-rule">
@@ -88,7 +94,7 @@ function NumbersTable({ table }: { table: DataTable }) {
             <tr>
               {table.columns.map((c) => (
                 <th key={c} scope="col" className="px-3 py-1.5 font-semibold text-ink">
-                  {c}
+                  <FigureLabel text={c} />
                 </th>
               ))}
             </tr>

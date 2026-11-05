@@ -2,10 +2,10 @@
 
 import { clsx } from "clsx";
 import { scaleLinear, scaleLog } from "d3-scale";
-import { useId, useMemo, useState } from "react";
+import { Fragment, useId, useMemo, useState } from "react";
 
-import { compileExpr, formatValue } from "./expr";
-import { FigureFrame, PredictPanel, RangeControl, useWidth, type PredictPhase } from "./shell";
+import { compileExpr, formatValue, superscript } from "./expr";
+import { FigureFrame, FigureLabel, PredictPanel, RangeControl, useWidth, type PredictPhase } from "./shell";
 
 /*
  * Graphs of y = f(x), computed point by point in the browser from the
@@ -53,9 +53,16 @@ function safe(f: (s: Record<string, number>) => number, scope: Record<string, nu
 function tickText(v: number, log: boolean): string {
   if (log) {
     const k = Math.log10(v);
-    return Number.isInteger(Math.round(k * 1e6) / 1e6) ? `10^${Math.round(k)}` : "";
+    return Number.isInteger(Math.round(k * 1e6) / 1e6) ? `10${superscript(Math.round(k))}` : "";
   }
   return formatValue(v, 3);
+}
+
+/** Roughly how wide a tick label is drawn at 11 px, so the axis label can sit clear of it. */
+function tickWidth(text: string): number {
+  let w = 0;
+  for (const ch of text) w += /[\u2070-\u209f\u00b9\u00b2\u00b3]/.test(ch) ? 4.4 : /[ ,.]/.test(ch) ? 3.2 : 6.6;
+  return w;
 }
 
 export function FunctionPlot({
@@ -94,23 +101,23 @@ export function FunctionPlot({
   const uid = useId();
   const [ref, width] = useWidth<HTMLDivElement>();
   const square = equalScale && !logX && !logY && yDomain !== undefined;
-  const fullW = Math.max(100, width - M.left - M.right);
   // With equal scales the picture's shape comes from the two ranges; a tall one is drawn narrower, centred.
   const ratio = square ? (yDomain[1] - yDomain[0]) / (xDomain[1] - xDomain[0]) : 0;
   const maxH = 400 - M.top - M.bottom;
-  const plotW = square ? Math.min(fullW, maxH / ratio) : fullW;
-  const plotH = square ? Math.round(plotW * ratio) : Math.round(Math.min(380, Math.max(240, width * 0.6))) - M.top - M.bottom;
-  const height = plotH + M.top + M.bottom;
-  const L = M.left + (fullW - plotW) / 2;
+  const layout = (left: number) => {
+    const fullW = Math.max(100, width - left - M.right);
+    const plotW = square ? Math.min(fullW, maxH / ratio) : fullW;
+    const plotH = square ? Math.round(plotW * ratio) : Math.round(Math.min(380, Math.max(240, width * 0.6))) - M.top - M.bottom;
+    return { fullW, plotW, plotH };
+  };
   const [values, setValues] = useState<Record<string, number>>(() => Object.fromEntries(params.map((p) => [p.name, p.value])));
   const [phase, setPhase] = useState<PredictPhase>("asking");
   const fns = useMemo(() => curves.map((c) => compileExpr(c.expr)), [curves]);
 
   const hidden = predict && phase !== "revealed" ? (predict.curve ?? 0) : -1;
-  const xs = (logX ? scaleLog() : scaleLinear()).domain(xDomain).range([L, L + plotW]);
 
   // Sample each curve; the y range comes from the data unless it is given.
-  const n = Math.min(800, Math.max(160, Math.round(plotW)));
+  const n = Math.min(800, Math.max(160, Math.round(width)));
   const samples = useMemo(() => {
     const pts: number[] = [];
     for (let i = 0; i <= n; i++) {
@@ -131,12 +138,24 @@ export function FunctionPlot({
     }
     return [lo, hi];
   }, [samples, logY]);
-  const range: [number, number] = [M.top + plotH, M.top];
-  const ys = logY
-    ? scaleLog().domain(yDomain ?? autoY).range(range)
-    : yDomain
-      ? scaleLinear().domain(yDomain).range(range)
-      : scaleLinear().domain(autoY).nice().range(range);
+  const yScale = (plotH: number) => {
+    const range: [number, number] = [M.top + plotH, M.top];
+    return logY
+      ? scaleLog().domain(yDomain ?? autoY).range(range)
+      : yDomain
+        ? scaleLinear().domain(yDomain).range(range)
+        : scaleLinear().domain(autoY).nice().range(range);
+  };
+  const yTicksFor = (plotH: number) => yScale(plotH).ticks(Math.max(2, Math.floor(plotH / 50)));
+  // Wide tick labels, such as 8 × 10⁸, push the picture right, so the axis label never sits on them.
+  const tickW = Math.max(0, ...yTicksFor(layout(M.left).plotH).map((t) => tickWidth(tickText(t, logY))));
+  const left = Math.max(M.left, Math.ceil(tickW) + 24);
+  const { fullW, plotW, plotH } = layout(left);
+  const height = plotH + M.top + M.bottom;
+  const L = left + (fullW - plotW) / 2;
+  const yLabelX = Math.min(L - 40, L - tickW - 12);
+  const xs = (logX ? scaleLog() : scaleLinear()).domain(xDomain).range([L, L + plotW]);
+  const ys = yScale(plotH);
   const yd = ys.domain() as [number, number];
 
   const paths = samples.map((pts) => {
@@ -188,7 +207,7 @@ export function FunctionPlot({
   const truth = predict ? safe(fns[predict.curve ?? 0]!, { ...values, x: predict.x }) : Number.NaN;
 
   const xTicks = xs.ticks(Math.max(2, Math.floor(plotW / 80)));
-  const yTicks = ys.ticks(Math.max(2, Math.floor(plotH / 50)));
+  const yTicks = yTicksFor(plotH);
   const clip = `${uid}-clip`.replace(/[^a-zA-Z0-9_-]/g, "");
 
   const tableXs = Array.from({ length: 11 }, (_, i) => fromT(i / 10));
@@ -219,7 +238,7 @@ export function FunctionPlot({
             }
             verdict={
               <p>
-                At {xLabel} = {formatValue(predict.x)}, {curves[predict.curve ?? 0]?.label} is{" "}
+                At {xLabel} = {formatValue(predict.x)}, <FigureLabel text={curves[predict.curve ?? 0]?.label ?? ""} /> is{" "}
                 <span className="tabular font-semibold">{formatValue(truth)}</span>. You guessed {formatValue(guessY, 3)}
                 {Number.isFinite(truth) && truth !== 0
                   ? `, which is ${formatValue(Math.abs(guessY - truth) / Math.abs(truth) * 100, 2)}% away.`
@@ -276,7 +295,7 @@ export function FunctionPlot({
             <text x={L + plotW / 2} y={height - 6} textAnchor="middle" className="fill-ink text-[12px]">
               {xLabel}
             </text>
-            <text x={L - 40} y={M.top + plotH / 2} textAnchor="middle" transform={`rotate(-90 ${L - 40} ${M.top + plotH / 2})`} className="fill-ink text-[12px]">
+            <text x={yLabelX} y={M.top + plotH / 2} textAnchor="middle" transform={`rotate(-90 ${yLabelX} ${M.top + plotH / 2})`} className="fill-ink text-[12px]">
               {yLabel}
             </text>
             <g clipPath={`url(#${clip})`}>
@@ -349,7 +368,16 @@ export function FunctionPlot({
                 <g key={k} data-mark={k}>
                   <circle cx={cx} cy={cy} r={4.5} className="fill-surface stroke-ink" strokeWidth={1.5} />
                   {m.label ? (
-                    <text x={flipX ? cx - 8 : cx + 8} y={flipY ? cy + 20 : cy - 8} textAnchor={flipX ? "end" : "start"} className="fill-ink text-[12px]">
+                    <text
+                      x={flipX ? cx - 8 : cx + 8}
+                      y={flipY ? cy + 20 : cy - 8}
+                      textAnchor={flipX ? "end" : "start"}
+                      // A halo in the background colour keeps the label legible where it crosses a curve.
+                      paintOrder="stroke"
+                      strokeWidth={4}
+                      strokeLinejoin="round"
+                      className="fill-ink stroke-surface text-[12px]"
+                    >
                       {m.label}
                     </text>
                   ) : null}
@@ -367,7 +395,10 @@ export function FunctionPlot({
                 <svg width="20" height="8" aria-hidden="true">
                   <line x1="0" x2="20" y1="4" y2="4" className={TONES[c.tone ?? ORDER[i % ORDER.length]!]} strokeWidth={2.5} strokeDasharray={DASHES[i % DASHES.length]} />
                 </svg>
-                <span className="text-ink">{i === hidden ? `${c.label} (hidden until you predict)` : c.label}</span>
+                <span className="text-ink">
+                  <FigureLabel text={c.label} />
+                  {i === hidden ? " (hidden until you predict)" : null}
+                </span>
               </li>
             ))}
           </ul>
@@ -397,8 +428,12 @@ export function FunctionPlot({
             At {xLabel} = <span className="tabular">{formatValue(readX, 4)}</span>:{" "}
             {readings
               .filter(({ i }) => i !== hidden)
-              .map(({ c, y }) => `${c.label} = ${formatValue(y, 4)}`)
-              .join("; ")}
+              .map(({ c, y }, k) => (
+                <Fragment key={k}>
+                  {k ? "; " : ""}
+                  <FigureLabel text={c.label} /> = {formatValue(y, 4)}
+                </Fragment>
+              ))}
             .
           </p>
           {chordData.map(({ ch, ci, x1, x2, y1, y2, rate }, k) =>

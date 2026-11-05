@@ -415,7 +415,8 @@ const SUPERSCRIPT: Record<string, string> = {
   "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴", "5": "⁵", "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹", "-": "⁻",
 };
 
-function superscript(n: number): string {
+/** An integer in superscript digits, as in 10⁻³. */
+export function superscript(n: number): string {
   return String(n).split("").map((c) => SUPERSCRIPT[c] ?? c).join("");
 }
 
