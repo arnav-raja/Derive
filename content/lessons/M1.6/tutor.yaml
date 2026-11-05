@@ -1,0 +1,232 @@
+misconceptions:
+  - id: triangle-half-square
+    belief: $1 + 2 + \dots + n$ is $\frac{n^2}{2}$, half of the square.
+    why: >-
+      The staircase holds the whole diagonal of the square, $n$ dots, as well as half of the rest, so
+      it is $\frac{n^2}{2} + \frac{n}{2} = \frac{n(n + 1)}{2}$. For $n = 4$ that is 10, not 8.
+    cue: The learner writes $n^2/2$ for the triangle numbers, or gives exactly 500,000 as the puzzle's count.
+  - id: fencepost
+    belief: The whole numbers from 0 to $n$, or a `range(a, b)`, are as many as the difference of the ends.
+    why: >-
+      From 0 to $n$ there are $n + 1$ whole numbers, as a fence with a post every metre needs one more
+      post than metres. `range(a, b)` leaves out `b`, so it counts exactly $b - a$ numbers, and
+      $r^0$ up to $r^{n-1}$ is $n$ terms.
+    cue: The learner uses `range(1, n)` or `range(n + 1)` for $n$ terms, or a sum that starts or stops one place off.
+  - id: infinite-sum-infinite
+    belief: A sum of infinitely many positive terms must be infinite.
+    why: >-
+      If the terms shrink fast enough the sums close in on a limit: after $n$ terms,
+      $1 + 0.9 + \dots + 0.9^{n-1} = 10 - 10 \times 0.9^n$, which is less than 10 for every $n$.
+    cue: The learner says the discounted rewards grow without limit, or gives a very large number for where the sum is heading.
+  - id: reaches-limit
+    belief: After enough terms, a sum with no last term reaches its total.
+    why: >-
+      Every sum of finitely many terms falls short: $10 - 10 \times 0.9^n$ is less than 10 for every
+      $n$. The total of a sum with no last term is defined as the number its sums close in on.
+    cue: The learner says the sum is exactly 10 after 100 terms, or that some term makes it 10.
+  - id: formula-at-one
+    belief: $\frac{1 - r^n}{1 - r}$ gives the geometric sum for every ratio.
+    why: >-
+      At $r = 1$ it divides 0 by 0, and Python stops with a `ZeroDivisionError`. The sum is still
+      there: each of the $n$ terms is 1, so it is $n$.
+    cue: The learner predicts that `geometric_formula(1, 10)` prints 10, or uses the formula at $r = 1$.
+  - id: counter-letter
+    belief: Changing the counter's letter changes the sum.
+    why: >-
+      The counter only marks where each value goes: $\sum_{j=1}^{5} j$ and $\sum_{k=1}^{5} k$ are both
+      $1 + 2 + 3 + 4 + 5$.
+    cue: The learner leaves out $\sum_{j=1}^{5} j$ in explore-sigma-same.
+  - id: sum-of-products
+    belief: A factor that changes with the counter can be taken out of a sum, so $\sum a_k b_k = \sum a_k \times \sum b_k$.
+    why: >-
+      Only a factor that is the same in every term comes out. With $a_k = b_k = k$ for $k = 1, 2$, the
+      left side is $1 + 4 = 5$ and the right side is $3 \times 3 = 9$.
+    cue: The learner takes something that contains $k$ out of a sum, or writes $\sum k^2$ as $\big(\sum k\big)^2$.
+  - id: sum-of-one
+    belief: $\sum_{k=1}^{n} 1 = 1$.
+    why: >-
+      The 1 is added once for each value of the counter, $n$ times, so the sum is $n$.
+    cue: The learner writes $2\sum k - 1$ for the third line of the odd numbers' proof, or chooses Cancel for it.
+  - id: product-factor-once
+    belief: A constant factor comes out of a product once, so $\prod_{k=1}^{n} 2k = 2 \prod_{k=1}^{n} k$.
+    why: >-
+      The 2 is in every one of the $n$ factors, so it comes out $n$ times: $\prod_{k=1}^{n} 2k = 2^n\, n!$.
+    cue: An answer of 12 for $\prod_{k=1}^{3} 2k$.
+  - id: floats-exact
+    belief: A float holds any whole number exactly.
+    why: >-
+      A float keeps about 16 significant figures, so a count with 24 digits is rounded. An int is exact
+      at any size.
+    cue: The learner predicts `1000000000000.0` in build-float-triangle, or divides with `/` in build-triangle.
+
+exercises:
+  derive-triangle-formula:
+    rungs:
+      - What do the two numbers in each column add to, and how many columns are there?
+      - In Explore, $1 + 2 + \dots + 100$ paired 1 with 100, 2 with 99, and so on.
+      - >-
+        Try $n = 4$: write 1, 2, 3, 4 above 4, 3, 2, 1. What does each column add to, how many columns
+        are there, and what is $1 + 2 + 3 + 4$?
+      - >-
+        If the two rows together come to $n(n + 1)$ in your working, that is right, and the trouble is
+        in the step from both rows to one. If not, check the total of a single column, the one with 1
+        above $n$.
+      - >-
+        To add $5 + 10 + 15 + 20 + 25$, write it backwards below itself: each of the 5 columns adds to
+        30, so the two rows make $5 \times 30 = 150$, and one row is half of that, 75.
+    notes: >-
+      $n^2/2$ takes half of the square and loses half of the diagonal. $n(n + 1)$ is both rows, not
+      one. $n(n - 1)/2$ pairs as if the columns added to $n$. A check at $n = 4$, which must give 10,
+      catches all three.
+  derive-arithmetic-sum:
+    rungs:
+      - What are the first and the last terms, and what does each column add to when the sum is written forwards and backwards?
+      - For $1 + 2 + \dots + n$, each column added the first term to the last, $1 + n$, and there were $n$ columns.
+      - Try $a = 3$, $d = 4$ and $n = 3$, so that the terms are 3, 7 and 11. What does each column add to, and what is the sum?
+      - >-
+        If your answer is $n$ times something, halved, that shape is right. The something is what one
+        column adds to: check it against the first term plus the last term, as the left-hand side
+        writes them.
+      - >-
+        To add $1 + 4 + 7 + 10$, write it backwards below itself: each of the 4 columns adds to
+        $1 + 10 = 11$, so the two rows make 44, and the sum is 22.
+    notes: >-
+      $n(2a + nd)/2$ takes the last term as $a + nd$, one step too far. $n(a + (n - 1)d)/2$ uses the
+      last term alone instead of the first plus the last. Leaving out the halving gives twice the sum.
+      A check at $a = 3$, $d = 4$, $n = 3$, which must give 21, catches each of them.
+  derive-odd-squares:
+    rungs:
+      - What changes from each line to the next? Is a sum split, a factor moved, a sum counted, or something multiplied out?
+      - The three rules for $\Sigma$ came just before the proof, each with the reason why it holds.
+      - Look at the third line only, where $\sum_{k=1}^{n} 1$ became $n$. How many 1s does that sum add up?
+      - >-
+        If your rules for the first two lines are right, the trouble is later: look at the lines where a
+        $\Sigma$ disappears, and ask which rule turns that kind of sum into a formula. If the first two
+        are not right, start with the first line and say what happened to the bracket inside the sum.
+      - >-
+        To show $\sum_{k=1}^{n} (3k + 2) = \frac{3n(n + 1)}{2} + 2n$: split the sum into
+        $\sum 3k + \sum 2$, take the 3 out of the first sum, write $\sum k$ as $\frac{n(n + 1)}{2}$,
+        and count the 2s as $2n$. Each move uses exactly one rule.
+    notes: >-
+      Cancel for the third line treats $\sum_{k=1}^{n} 1$ as 1. Multiply out for the second line
+      confuses taking a factor out of a sum with distributing a product. Shift the counter is never
+      needed.
+  derive-geometric-subtract:
+    rungs:
+      - Which terms appear in both $S$ and $rS$?
+      - In the odd numbers' telescoping sum, every square but the first and the last was added once and taken away once.
+      - Try $n = 3$, with $S = 1 + r + r^2$ and $rS = r + r^2 + r^3$. What is $S - rS$?
+      - >-
+        If your answer has exactly two terms, one from each line, that shape is right. Check which term
+        of $S$ has no partner in $rS$, and which term of $rS$ has no partner in $S$.
+      - >-
+        For $T = 1 + 3 + 9 + 27$, $3T = 3 + 9 + 27 + 81$. Subtracting cancels 3, 9 and 27, leaving
+        $T - 3T = 1 - 81 = -80$, so $-2T = -80$ and $T = 40$.
+    notes: >-
+      $1 - r^{n-1}$ takes the last term of $S$ instead of the last term of $rS$. $r^n - 1$ subtracts
+      the wrong way round. $1 - r$ cancels too much. A check at $n = 1$, where $S - rS = 1 - r$, or at
+      $n = 2$, catches these.
+  derive-geometric-sum:
+    rungs:
+      - What number multiplies $S$ on the left-hand side, and what must be done to both sides to leave $S$ on its own?
+      - In Recall, $S - 0.9S = 2$ was solved by collecting the terms in $S$ and then dividing both sides.
+      - Try $r = 2$ and $n = 3$, where $S = 1 + 2 + 4 = 7$. Does your answer give 7?
+      - >-
+        If your answer divides $1 - r^n$ by something, that part is right, and the trouble is in what it
+        divides by: compare it with the number that multiplies $S$ on the left.
+      - >-
+        To solve $(1 - 0.5)S = 0.75$, divide both sides by $1 - 0.5$, which is not 0:
+        $S = 0.75 \div 0.5 = 1.5$, and indeed $1 + 0.5 = 1.5$.
+    notes: >-
+      $\frac{1}{1 - r}$ is the sum with no last term, not the first $n$ terms. $\frac{1 - r^n}{1 + r}$
+      divides by the wrong bracket. $(1 - r^n)(1 - r)$ multiplies instead of dividing. A check at
+      $r = 2$, $n = 3$, which must give 7, catches each of them.
+  derive-ema-start:
+    rungs:
+      - What are $m_1$ and $m_2$, written out with every gradient equal to $g$?
+      - >-
+        The geometric sum just derived, $1 + r + \dots + r^{t-1} = \frac{1 - r^t}{1 - r}$, holds with
+        $\beta$ in place of $r$.
+      - Work out $m_1$, $m_2$ and $m_3$ with $\beta = 0.5$ and $g = 1$. What pattern do the three numbers follow?
+      - >-
+        If your working has $(1 - \beta)$ times a geometric sum times $g$, that is right so far. The
+        trouble is in summing the geometric series, or in what the $(1 - \beta)$ in front does to its
+        denominator.
+      - >-
+        A tank starts empty. Each hour it keeps 80 per cent of its water and gains 10 litres. After $t$
+        hours it holds $10(1 + 0.8 + \dots + 0.8^{t-1}) = 10 \times \frac{1 - 0.8^t}{0.2} = 50(1 - 0.8^t)$
+        litres, closing in on 50.
+    notes: >-
+      $g$ alone forgets that the average started at 0. $(1 - \beta)g$ is only $m_1$. Leaving the
+      $1 - \beta$ in the denominator forgets that it cancels the one in front. A check at $t = 1$,
+      which must give $(1 - \beta)g$, and $t = 2$ catches these.
+  derive-telescoping-product:
+    rungs:
+      - Write the first three factors as fractions. What cancels?
+      - In the odd numbers' telescoping sum, neighbouring terms cancelled, leaving only the two ends.
+      - Try $n = 3$. What is $\frac{2}{1} \times \frac{3}{2} \times \frac{4}{3}$?
+      - >-
+        If you wrote each factor as $\frac{k + 1}{k}$, that is right. The trouble is in what is left
+        after the cancelling: look at the first denominator and the last numerator.
+      - >-
+        In $\frac{3}{1} \times \frac{4}{2} \times \frac{5}{3} \times \frac{6}{4}$, each numerator
+        cancels the denominator two factors later, leaving $\frac{5 \times 6}{1 \times 2} = 15$.
+    notes: >-
+      $n$ keeps the last numerator but loses the 1 that is added. $\frac{n + 1}{n}$ is only the last
+      factor. $2^n$ treats every factor as 2, which only the first is. A check at $n = 3$, which must
+      give 4, catches each of them.
+  build-triangle:
+    rungs:
+      - What formula did Derive find for $1 + 2 + \dots + n$, and how can Python divide while keeping a whole number whole?
+      - In Derive, the sum written forwards and backwards gave $2S = n(n + 1)$.
+      - Try `triangle(4)`, which must be 10. What does your function give, and is it `10` or `10.0`?
+      - >-
+        If your function uses Derive's formula, the mathematics is right. If a test still fails, read
+        which one: the one that times `triangle(10 ** 7)` asks for no adding one by one, and the ones
+        that check for a whole number and for exactness ask how the division is done.
+      - >-
+        To give the number of whole dozens in `m` eggs as an int, write `m // 12`: `30 // 12` is `2`,
+        while `30 / 12` is the float `2.5`.
+    notes: >-
+      `n * (n + 1) / 2` gives a float and fails test_whole_number. `int(n * (n + 1) / 2)` passes that
+      test but fails test_exact, because the float has already rounded the count. `sum(range(1, n + 1))`
+      is right but fails test_at_once, and a loop stops with the message that the code ran too long.
+      `n * n // 2` and `n * (n - 1) // 2` fail test_small.
+  build-geometric:
+    rungs:
+      - Which powers of `r` should the sum add, and which values of `k` does `range(1, n)` give?
+      - Earlier in this phase, `range(1, 5)` counted 1, 2, 3 and 4, and `range(5)` counted 0 to 4.
+      - Try `geometric(2, 1)`, a single term, which must be 1. Which values of `k` does `range(1, 1)` give?
+      - >-
+        If your line still adds `r ** k`, that part is right, and the trouble is in the values that `k`
+        takes: list them for `n = 3`, and compare them with the powers in $1 + r + r^2$.
+      - >-
+        To add $2 + 4 + 6 + 8$, the numbers $2k$ for $k$ from 1 to 4, write
+        `sum(2 * k for k in range(1, 5))`: the range stops before 5, so `k` takes 1, 2, 3 and 4.
+    notes: >-
+      `range(1, n + 1)` has $n$ terms but the wrong ones, $r$ to $r^n$. `range(n + 1)` has one term
+      too many. `r ** (k - 1)` over `range(1, n)` fixes the powers but keeps the short range. Every one
+      of these fails test_one_term.
+  build-sympy-sums:
+    rungs:
+      - Which $\Sigma$ or $\Pi$, with which two ends, does each of the four names stand for?
+      - The starter's `squares` is $\sum_{k=1}^{n} k^2$, written `summation(k**2, (k, 1, n))`.
+      - Fill in `triangle` first and print it. Does `triangle.subs(n, 4)` give 10?
+      - >-
+        If `triangle` and `orderings` pass, the pattern of your lines is right. For the geometric sums,
+        check the ends: which power of `r` is the first term and which is the last, given that SymPy
+        includes both ends?
+      - >-
+        To make $\sum_{j=2}^{6} j^3$ in SymPy, write `summation(j**3, (j, 2, 6))`, which includes
+        both 2 and 6 and gives 440.
+    notes: >-
+      `(k, 1, n - 1)` treats SymPy's top end as left out, like `range`'s. Starting either geometric sum
+      at 1 leaves out the first term, 1. Typing in $\frac{1 - r^n}{1 - r}$ fails at $r = 1$, where SymPy
+      gives `nan`. `summation` for `orderings` adds instead of multiplying, and a product from 0 is 0.
+
+novice:
+  - If the sums never reach 10, how can the total be 10?
+  - Why is a sum with infinitely many terms not always infinite?
+  - Why is each token compared with itself as well as with the earlier ones?
+  - Why does SymPy give the geometric sum in two cases?
+  - Is there a formula like this for $1^2 + 2^2 + \dots + n^2$ as well?

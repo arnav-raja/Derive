@@ -1,0 +1,331 @@
+{
+  "version": 1,
+  "expressions": {
+    "derive-arithmetic-sum": {
+      "source": "4a562cf5ad80bb33",
+      "points": [
+        {
+          "a": "9/5",
+          "d": "14",
+          "n": "6"
+        },
+        {
+          "a": "-22",
+          "d": "-32/3",
+          "n": "6"
+        },
+        {
+          "a": "25/4",
+          "d": "37/5",
+          "n": "6"
+        },
+        {
+          "a": "-8",
+          "d": "25/4",
+          "n": "1"
+        },
+        {
+          "a": "2",
+          "d": "-29/2",
+          "n": "2"
+        },
+        {
+          "a": "8",
+          "d": "-18/7",
+          "n": "2"
+        }
+      ],
+      "values": [
+        "220.80000000000000000",
+        "-292.00000000000000000",
+        "148.50000000000000000",
+        "-8.0000000000000000000",
+        "-10.500000000000000000",
+        "13.428571428571428571"
+      ]
+    },
+    "derive-ema-start": {
+      "source": "8aaa110c8566ad1f",
+      "points": [
+        {
+          "beta": "-29/2",
+          "t": "6",
+          "g": "35/2"
+        },
+        {
+          "beta": "-24/7",
+          "t": "3",
+          "g": "27/4"
+        },
+        {
+          "beta": "-2",
+          "t": "6",
+          "g": "-4"
+        },
+        {
+          "beta": "13/7",
+          "t": "8",
+          "g": "11/6"
+        },
+        {
+          "beta": "-5/2",
+          "t": "4",
+          "g": "26/3"
+        },
+        {
+          "beta": "13/3",
+          "t": "8",
+          "g": "-23/7"
+        }
+      ],
+      "values": [
+        "-162646984.33593750000",
+        "278.79664723032069971",
+        "252.00000000000000000",
+        "-257.58695226426723143",
+        "-329.87500000000000000",
+        "408510.36819300193786"
+      ]
+    },
+    "derive-geometric-subtract": {
+      "source": "4ce06e438208cac8",
+      "points": [
+        {
+          "r": "25/3",
+          "n": "6"
+        },
+        {
+          "r": "30",
+          "n": "9"
+        },
+        {
+          "r": "-15/4",
+          "n": "1"
+        },
+        {
+          "r": "-23",
+          "n": "1"
+        },
+        {
+          "r": "29/3",
+          "n": "3"
+        },
+        {
+          "r": "-10",
+          "n": "6"
+        }
+      ],
+      "values": [
+        "-334896.97668038408779",
+        "-19682999999999.000000",
+        "4.7500000000000000000",
+        "24.000000000000000000",
+        "-902.29629629629629630",
+        "-999999.00000000000000"
+      ]
+    },
+    "derive-geometric-sum": {
+      "source": "f7d9adb2d0f3e08a",
+      "points": [
+        {
+          "r": "-3/4",
+          "n": "6"
+        },
+        {
+          "r": "13/4",
+          "n": "1"
+        },
+        {
+          "r": "-9/2",
+          "n": "1"
+        },
+        {
+          "r": "-12",
+          "n": "8"
+        },
+        {
+          "r": "11",
+          "n": "4"
+        },
+        {
+          "r": "-26/3",
+          "n": "8"
+        }
+      ],
+      "values": [
+        "0.46972656250000000000",
+        "1.0000000000000000000",
+        "1.0000000000000000000",
+        "-33075515.000000000000",
+        "1464.0000000000000000",
+        "-3292607.6977594878829"
+      ]
+    },
+    "derive-telescoping-product": {
+      "source": "155a9d81f7a2c47d",
+      "points": [
+        {
+          "n": "6"
+        },
+        {
+          "n": "9"
+        },
+        {
+          "n": "6"
+        },
+        {
+          "n": "9"
+        },
+        {
+          "n": "2"
+        },
+        {
+          "n": "9"
+        }
+      ],
+      "values": [
+        "7.0000000000000000000",
+        "10.000000000000000000",
+        "7.0000000000000000000",
+        "10.000000000000000000",
+        "3.0000000000000000000",
+        "10.000000000000000000"
+      ]
+    },
+    "derive-triangle-formula": {
+      "source": "3ba5380ddd6fc43e",
+      "points": [
+        {
+          "n": "9"
+        },
+        {
+          "n": "3"
+        },
+        {
+          "n": "1"
+        },
+        {
+          "n": "9"
+        },
+        {
+          "n": "1"
+        },
+        {
+          "n": "3"
+        }
+      ],
+      "values": [
+        "45.000000000000000000",
+        "6.0000000000000000000",
+        "1.0000000000000000000",
+        "45.000000000000000000",
+        "1.0000000000000000000",
+        "6.0000000000000000000"
+      ]
+    }
+  },
+  "runs": {
+    "build-geometric": {
+      "tests": [
+        {
+          "name": "test_three_terms",
+          "description": "Three terms with ratio 2 are 1 + 2 + 4 = 7.",
+          "passed": false,
+          "message": "geometric(2, 3) is 6, not 1 + 2 + 4 = 7."
+        },
+        {
+          "name": "test_one_term",
+          "description": "A single term is 1, whatever the ratio.",
+          "passed": false,
+          "message": "geometric(2, 1) is 0, not 1."
+        },
+        {
+          "name": "test_ratio_one",
+          "description": "With ratio 1, n terms add to n.",
+          "passed": false,
+          "message": "geometric(1, 1) is 0, not 1."
+        },
+        {
+          "name": "test_next_term",
+          "description": "One more term adds r to the power n.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": "6\n"
+    },
+    "build-sympy-sums": {
+      "tests": [
+        {
+          "name": "test_filled",
+          "description": "triangle, geometric, forever and orderings are all filled in.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_triangle",
+          "description": "triangle is 10 at n = 4, and going from n - 1 to n adds n.",
+          "passed": false,
+          "message": "triangle at n = 4 is 6, not 1 + 2 + 3 + 4 = 10."
+        },
+        {
+          "name": "test_geometric",
+          "description": "geometric is 31 at r = 2 and n = 5, and 7 at r = 1 and n = 7.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_forever",
+          "description": "forever is 2 at r = 1/2.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_orderings",
+          "description": "orderings is 120 at n = 5.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": ""
+    },
+    "build-triangle": {
+      "tests": [
+        {
+          "name": "test_answers",
+          "description": "triangle gives a number, not None.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_small",
+          "description": "triangle(n) is 1 + 2 + ... + n for every n from 0 to 30 (for 0 tokens, 0 comparisons).",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_whole_number",
+          "description": "triangle gives a whole number, an int, not a float.",
+          "passed": false,
+          "message": "triangle(10) is 55.0, a float, but a count is a whole number, an int."
+        },
+        {
+          "name": "test_at_once",
+          "description": "triangle(10 ** 7) is found at once, without adding ten million numbers.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_exact",
+          "description": "triangle stays exact for a million million tokens: one more token adds that many comparisons.",
+          "passed": false,
+          "message": "triangle(1000000000000) - triangle(999999999999) is 999989182464.0, not 1,000,000,000,000."
+        }
+      ],
+      "error": null,
+      "output": "500500.0\n"
+    }
+  }
+}

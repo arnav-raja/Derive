@@ -40,13 +40,13 @@ concepts:
       summary: >-
         Solving an equation by replacing it with simpler ones that have the same solutions, and
         spotting the steps that can quietly add solutions or lose them.
-      usedBy: [M1.3, M1.4, M2.6]
+      usedBy: [M1.3, M1.4, M2.6, M1.6]
     - id: M1.2/exponent-rules
       name: Exponent rules
       summary: >-
         The rules for powers, derived from what a power means, and the meanings of zero and negative
         exponents that those rules force.
-      usedBy: [M1.5, M3.5]
+      usedBy: [M1.5, M3.5, M1.6]
   used: [M1.1/powers-of-ten]
 links:
   requires:

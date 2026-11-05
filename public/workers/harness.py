@@ -64,7 +64,7 @@ def _describe(exc):
     if isinstance(exc, StepLimit):
         return {
             "type": "StepLimit",
-            "message": "The code ran for too long and was stopped. Is there a loop that never ends?",
+            "message": "The code ran for too long and was stopped. Is there a loop that never ends, or one that runs a very large number of times?",
             "line": _learner_line(exc),
         }
     if isinstance(exc, SyntaxError):

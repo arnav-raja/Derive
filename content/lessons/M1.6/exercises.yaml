@@ -1,0 +1,917 @@
+exercises:
+  # Puzzle ---------------------------------------------------------------------
+  - id: puzzle-attention-count
+    phase: puzzle
+    kind: predict
+    concept: M1.6/arithmetic-series
+    title: Comparisons for 1,000 tokens
+    prompt: >-
+      About how many comparisons does a passage of 1,000 tokens need? Choose before working anything
+      out.
+    answer:
+      type: choice
+      options:
+        - { id: thousand, label: 'About 1,000' }
+        - { id: half-million, label: 'About 500,000' }
+        - { id: million, label: 'About 1,000,000' }
+        - { id: billion, label: 'About 1,000,000,000' }
+      correct: [half-million]
+    explanation: >-
+      Token number $k$ is compared with $k$ tokens: itself and the $k - 1$ before it. So the count is
+      $1 + 2 + 3 + \dots + 1{,}000$. Picture every pair of tokens as a cell of a 1,000 by 1,000
+      square. The comparisons fill the cells on and below the diagonal, a little over half of the
+      square, so the count is about 500,000.
+
+  # Recall ---------------------------------------------------------------------
+  - id: recall-factor-out
+    phase: recall
+    kind: recall
+    concept: M1.2/field-axioms
+    prompt: Which of these equals $5 \times 8 + 5 \times 2$?
+    answer:
+      type: choice
+      options:
+        - { id: ten-ten, label: '$10 \times 10$' }
+        - { id: five-sixteen, label: '$5 \times 16$' }
+        - { id: five-ten, label: '$5 \times 10$' }
+        - { id: twentyfive-ten, label: '$25 \times 10$' }
+      correct: [five-ten]
+    explanation: >-
+      Both products have the factor 5, and distributivity takes it out:
+      $5 \times 8 + 5 \times 2 = 5 \times (8 + 2) = 5 \times 10 = 50$.
+
+  - id: recall-regroup
+    phase: recall
+    kind: recall
+    concept: M1.2/field-axioms
+    prompt: >-
+      Working exactly, as on paper, for which numbers $a$, $b$, $c$ and $d$ is
+      $(a + b) + (c + d) = (a + d) + (b + c)$?
+    answer:
+      type: choice
+      options:
+        - { id: b-equals-d, label: 'Only when $b = d$' }
+        - { id: positive, label: 'Only when all four are positive' }
+        - { id: never, label: 'For none, since the brackets hold different numbers' }
+        - { id: all, label: 'For all numbers' }
+      correct: [all]
+    explanation: >-
+      Both sides add the same four numbers, and associativity and commutativity let the terms of a
+      sum be regrouped and reordered freely, so the two sides are equal for all numbers.
+
+  - id: recall-power-up
+    phase: recall
+    kind: recall
+    concept: M1.2/exponent-rules
+    prompt: $r \times r^6 = r^{k}$. What is $k$?
+    answer: { type: number, value: 7 }
+    explanation: >-
+      $r$ is $r^1$, and multiplying powers of the same number adds the exponents: $k = 1 + 6 = 7$.
+
+  - id: recall-solve
+    phase: recall
+    kind: recall
+    concept: M1.2/solving-equations
+    prompt: $S - 0.9S = 2$. What is $S$?
+    answer: { type: number, value: 20 }
+    explanation: >-
+      $S - 0.9S = 0.1S$, so $0.1S = 2$, and dividing both sides by 0.1 gives $S = 20$.
+
+  # Explore --------------------------------------------------------------------
+  - id: explore-hundred-tokens
+    phase: explore
+    kind: predict
+    concept: M1.6/arithmetic-series
+    title: A hundred tokens
+    prompt: >-
+      How many comparisons does a passage of 100 tokens need, that is, what is
+      $1 + 2 + 3 + \dots + 100$? Look for a shortcut rather than adding a hundred numbers one by
+      one.
+    answer: { type: number, value: 5050, tolerance: { abs: 0 } }
+    explanation: >-
+      Pair the first number with the last, $1 + 100 = 101$, the second with the second last,
+      $2 + 99 = 101$, and so on. The 100 numbers make 50 pairs, each adding to 101, so the total is
+      $50 \times 101 = 5{,}050$.
+    review:
+      variants:
+        - prompt: >-
+            How many comparisons does a passage of 200 tokens need, that is, what is
+            $1 + 2 + 3 + \dots + 200$?
+          answer: { type: number, value: 20100, tolerance: { abs: 0 } }
+          explanation: >-
+            The 200 numbers make 100 pairs, each adding to $1 + 200 = 201$, so the total is
+            $100 \times 201 = 20{,}100$.
+        - prompt: What is $1 + 2 + 3 + \dots + 50$?
+          answer: { type: number, value: 1275, tolerance: { abs: 0 } }
+          explanation: >-
+            The 50 numbers make 25 pairs, each adding to $1 + 50 = 51$, so the total is
+            $25 \times 51 = 1{,}275$.
+        - prompt: >-
+            A passage of 2,000 tokens is twice as long as one of 1,000 tokens. About how many times as
+            many comparisons does it need?
+          answer:
+            type: choice
+            options:
+              - { id: two, label: 'About 2 times as many' }
+              - { id: three, label: 'About 3 times as many' }
+              - { id: four, label: 'About 4 times as many' }
+              - { id: thousand, label: 'About 2,000 times as many' }
+            correct: [four]
+          explanation: >-
+            The count is a little over half of the square of all pairs of tokens. Doubling the length
+            doubles both sides of the square, which multiplies its area, and the count, by about 4:
+            2,001,000 comparisons against 500,500.
+
+  - id: explore-odd-squares
+    phase: explore
+    kind: predict
+    concept: M1.6/arithmetic-series
+    title: Adding odd numbers
+    prompt: >-
+      What is the sum of the first 50 odd numbers, $1 + 3 + 5 + \dots + 99$?
+    answer: { type: number, value: 2500, tolerance: { abs: 0 } }
+    explanation: >-
+      The totals so far are $1^2$, $2^2$, $3^2$ and $4^2$, so the first 50 odd numbers should add to
+      $50^2 = 2{,}500$. Pairing agrees: $1 + 99 = 100$, $3 + 97 = 100$, and so on, makes 25 pairs of
+      100.
+
+  - id: explore-read-sigma
+    phase: explore
+    kind: predict
+    concept: M1.6/sigma-notation
+    title: Reading a sum
+    prompt: What is $\displaystyle\sum_{k=1}^{4} k^2$?
+    answer: { type: number, value: 30, tolerance: { abs: 0 } }
+    explanation: >-
+      Put $k = 1, 2, 3, 4$ into $k^2$ and add the results: $1 + 4 + 9 + 16 = 30$.
+    review:
+      variants:
+        - prompt: What is $\displaystyle\sum_{k=1}^{3} (2k + 1)$?
+          answer: { type: number, value: 15, tolerance: { abs: 0 } }
+          explanation: >-
+            Put $k = 1, 2, 3$ into $2k + 1$ and add: $3 + 5 + 7 = 15$.
+        - prompt: What is $\displaystyle\sum_{j=2}^{5} j$?
+          answer: { type: number, value: 14, tolerance: { abs: 0 } }
+          explanation: >-
+            The counter is $j$, and it runs from 2 to 5: $2 + 3 + 4 + 5 = 14$.
+        - prompt: What is $\displaystyle\sum_{k=1}^{5} 3$?
+          answer: { type: number, value: 15, tolerance: { abs: 0 } }
+          explanation: >-
+            The expression does not use the counter at all, so each of the five terms is 3:
+            $3 + 3 + 3 + 3 + 3 = 15$.
+
+  - id: explore-sigma-same
+    phase: explore
+    kind: predict
+    concept: M1.6/sigma-notation
+    title: Which sums are the same
+    prompt: >-
+      Which of these are equal to $\displaystyle\sum_{k=1}^{5} k = 1 + 2 + 3 + 4 + 5$? Choose all that
+      apply.
+    answer:
+      type: choice
+      multiple: true
+      options:
+        - { id: other-letter, label: '$\displaystyle\sum_{j=1}^{5} j$' }
+        - { id: constant, label: '$\displaystyle\sum_{k=1}^{5} 5$' }
+        - { id: from-zero, label: '$\displaystyle\sum_{k=0}^{4} (k + 1)$' }
+        - { id: plus-one, label: '$\displaystyle\sum_{k=1}^{5} (k + 1)$' }
+        - { id: from-two, label: '$\displaystyle\sum_{k=2}^{6} (k - 1)$' }
+      correct: [other-letter, from-zero, from-two]
+    explanation: >-
+      Write each one out. $\sum_{j=1}^{5} j$ is $1 + 2 + 3 + 4 + 5$: the counter's letter only marks
+      where each value goes. $\sum_{k=0}^{4} (k + 1)$ and $\sum_{k=2}^{6} (k - 1)$ are also
+      $1 + 2 + 3 + 4 + 5$, since the counter starts somewhere else and the expression makes up for
+      it. $\sum_{k=1}^{5} 5$ is five 5s, 25, and $\sum_{k=1}^{5} (k + 1)$ is
+      $2 + 3 + 4 + 5 + 6 = 20$.
+
+  - id: explore-discount-limit
+    phase: explore
+    kind: predict
+    concept: M1.6/geometric-series
+    title: Where the rewards are heading
+    prompt: >-
+      With the ratio at 0.9, move the number of terms up towards 100. What number is the sum heading
+      for?
+    answer: { type: number, value: 10, tolerance: { abs: 0.05 } }
+    explanation: >-
+      At 50 terms the sum is about 9.95, and at 100 terms about 9.9997. It creeps up on 10, and no
+      number of terms takes it past 10.
+
+  - id: explore-discount-pattern
+    phase: explore
+    kind: predict
+    concept: M1.6/geometric-series
+    title: A pattern in the ratios
+    prompt: >-
+      Use the figure to find where the sum settles for a few other ratios, such as 0.5, 0.75 and
+      0.8, and look for a pattern that includes 0.9. Then predict where
+      $1 + 0.99 + 0.99^2 + 0.99^3 + \dots$ settles. The slider cannot reach 0.99.
+    answer: { type: number, value: 100, tolerance: { rel: 0.01 } }
+    explanation: >-
+      For the ratios 0.5, 0.75, 0.8 and 0.9 the sums settle at 2, 4, 5 and 10, which are
+      $\frac{1}{0.5}$, $\frac{1}{0.25}$, $\frac{1}{0.2}$ and $\frac{1}{0.1}$: each is
+      $\frac{1}{1 - r}$. For $r = 0.99$ the pattern gives $\frac{1}{0.01} = 100$.
+    review:
+      variants:
+        - prompt: Where does $1 + 0.6 + 0.6^2 + 0.6^3 + \dots$ settle?
+          answer: { type: number, value: 2.5, tolerance: { rel: 0.01 } }
+          explanation: >-
+            $\frac{1}{1 - 0.6} = \frac{1}{0.4} = 2.5$.
+        - prompt: >-
+            An agent gets a reward of 2 at every step, for ever, discounted by a factor of 0.95 for
+            each step away. What is the total,
+            $2 + 2 \times 0.95 + 2 \times 0.95^2 + \dots$, worth?
+          answer: { type: number, value: 40, tolerance: { rel: 0.01 } }
+          explanation: >-
+            Each term is twice the matching term of $1 + 0.95 + 0.95^2 + \dots$, which settles at
+            $\frac{1}{0.05} = 20$, so the total is $2 \times 20 = 40$.
+        - prompt: What happens to $1 + 1.1 + 1.1^2 + 1.1^3 + \dots$?
+          answer:
+            type: choice
+            options:
+              - { id: minus-ten, label: 'It settles at $\frac{1}{1 - 1.1} = -10$' }
+              - { id: eleven, label: 'It settles at 11' }
+              - { id: grows, label: 'It grows without limit' }
+              - { id: ten, label: 'It settles at 10' }
+            correct: [grows]
+          explanation: >-
+            Every term is at least 1, so after $n$ terms the sum is at least $n$, and it passes every
+            number. The pattern $\frac{1}{1 - r}$ holds only when the terms shrink.
+
+  - id: explore-orderings
+    phase: explore
+    kind: predict
+    concept: M1.6/product-notation
+    title: Orders of five tokens
+    prompt: >-
+      In how many different orders can 5 different tokens be put in a row? For 2 tokens, A and B,
+      there are 2 orders, AB and BA, and for 3 tokens there are 6.
+    answer: { type: number, value: 120, tolerance: { abs: 0 } }
+    explanation: >-
+      The first place can hold any of the 5 tokens, the second any of the 4 left, then 3, then 2,
+      then 1. So there are $5 \times 4 \times 3 \times 2 \times 1 = 120$ orders.
+    review:
+      variants:
+        - prompt: In how many different orders can 4 different tokens be put in a row?
+          answer: { type: number, value: 24, tolerance: { abs: 0 } }
+          explanation: >-
+            $4 \times 3 \times 2 \times 1 = 24$: any of the 4 first, any of the 3 left second, and so
+            on.
+        - prompt: What is $\displaystyle\prod_{k=1}^{4} 2$?
+          answer: { type: number, value: 16, tolerance: { abs: 0 } }
+          explanation: >-
+            Four factors, each 2: $2 \times 2 \times 2 \times 2 = 16$.
+        - prompt: What is $\dfrac{6!}{4!}$?
+          answer: { type: number, value: 30, tolerance: { abs: 0 } }
+          explanation: >-
+            $\frac{6 \times 5 \times 4 \times 3 \times 2 \times 1}{4 \times 3 \times 2 \times 1}$: the
+            factors from 4 down to 1 cancel, leaving $6 \times 5 = 30$.
+
+  - id: explore-read-product
+    phase: explore
+    kind: predict
+    concept: M1.6/product-notation
+    title: Reading a product
+    prompt: What is $\displaystyle\prod_{k=1}^{3} (2k)$?
+    answer: { type: number, value: 48, tolerance: { abs: 0 } }
+    explanation: >-
+      Put $k = 1, 2, 3$ into $2k$ and multiply the results: $2 \times 4 \times 6 = 48$.
+
+  # Derive ---------------------------------------------------------------------
+  - id: derive-triangle-formula
+    phase: derive
+    kind: step
+    concept: M1.6/arithmetic-series
+    title: The triangle numbers
+    prompt: >-
+      Add the two rows column by column, and solve for $S$. Write $1 + 2 + \dots + n$ in terms of
+      $n$.
+    answer:
+      type: expression
+      symbols:
+        - { name: n, positive: true, integer: true }
+      lhs: '1 + 2 + 3 + \dots + n ='
+      reference: n*(n + 1)/2
+      accept: ['(n^2 + n)/2', 'n^2/2 + n/2', 'n(n + 1)/2', '0.5*n*(n + 1)']
+      reject: ['n*(n + 1)', 'n^2/2', 'n*(n - 1)/2', '(n + 1)/2', 'n^2', 'n*(n + 1)/2 + 1', '(n + 1)^2/2', 'n/2']
+    explanation: >-
+      Each column adds to $n + 1$, and there are $n$ columns, so the two rows together make
+      $2S = n(n + 1)$, and $S = \dfrac{n(n + 1)}{2}$.
+
+  - id: derive-arithmetic-sum
+    phase: derive
+    kind: step
+    concept: M1.6/arithmetic-series
+    title: Any arithmetic series
+    prompt: >-
+      Write the sum forwards and backwards and add the two rows, as for $1 + 2 + \dots + n$. Write
+      the sum of the $n$ terms in terms of $a$, $d$ and $n$.
+    answer:
+      type: expression
+      symbols:
+        - { name: a }
+        - { name: d }
+        - { name: n, positive: true, integer: true }
+      lhs: 'a + (a + d) + \dots + \big(a + (n - 1)d\big) ='
+      reference: n*(2*a + (n - 1)*d)/2
+      accept: ['n*a + n*(n - 1)*d/2', 'n*(a + a + (n - 1)*d)/2', 'a*n + d*n*(n - 1)/2', 'n(2a + (n-1)d)/2']
+      reject: ['n*(2*a + n*d)/2', 'n*(a + (n - 1)*d)/2', 'n*(2*a + (n - 1)*d)', 'n*a + n*(n + 1)*d/2', 'n*(a + d)/2', '(2*a + (n - 1)*d)/2', 'a + n*(n + 1)/2*d']
+    explanation: >-
+      Each column adds the first term to the last, $a + \big(a + (n - 1)d\big) = 2a + (n - 1)d$, and
+      there are $n$ columns. So twice the sum is $n\big(2a + (n - 1)d\big)$, and the sum is
+      $\dfrac{n\big(2a + (n - 1)d\big)}{2}$.
+    placement: true
+    review:
+      variants:
+        - prompt: What is $3 + 7 + 11 + 15 + \dots$, continued for 20 terms in all?
+          answer: { type: number, value: 820, tolerance: { abs: 0 } }
+          explanation: >-
+            The 20th term is $3 + 19 \times 4 = 79$, so the sum is 20 times the average of 3 and 79:
+            $20 \times 41 = 820$.
+        - prompt: >-
+            A runner runs 2 km on the first day and 0.5 km more on each day after. How many
+            kilometres do they run in all over the first 12 days?
+          answer: { type: number, value: 57, tolerance: { rel: 0.001 }, unit: km }
+          explanation: >-
+            On the 12th day they run $2 + 11 \times 0.5 = 7.5$ km, so the total is 12 times the
+            average of 2 and 7.5: $12 \times 4.75 = 57$ km.
+        - prompt: What is $10 + 20 + 30 + \dots + 1{,}000$?
+          answer: { type: number, value: 50500, tolerance: { abs: 0 } }
+          explanation: >-
+            There are 100 terms, and the average of the first and the last is
+            $\frac{10 + 1{,}000}{2} = 505$, so the sum is $100 \times 505 = 50{,}500$.
+
+  - id: derive-odd-squares
+    phase: derive
+    kind: proof
+    concept: M1.6/sigma-notation
+    covers: [M1.6/arithmetic-series]
+    title: Odd numbers, by the rules
+    prompt: >-
+      $n$ is a whole number of 1 or more. Choose the rule that justifies each line. A rule may be
+      used more than once or not at all.
+    answer:
+      type: steps
+      rules:
+        - { id: shift, name: Shift the counter, label: '$\sum_{k=1}^{n} a_k = \sum_{k=0}^{n-1} a_{k+1}$: start the counter one lower and add 1 to it inside.' }
+        - { id: constant-sum, name: Sum of a constant, label: '$\sum_{k=1}^{n} c = nc$ for every number $c$.' }
+        - { id: multiply-out, name: Multiply out, label: '$x(y + z) = xy + xz$ for all numbers $x$, $y$ and $z$.' }
+        - { id: split, name: Split the sum, label: '$\sum_{k=1}^{n} (a_k - b_k) = \sum_{k=1}^{n} a_k - \sum_{k=1}^{n} b_k$.' }
+        - { id: two-staircases, name: Two staircases, label: '$2 \sum_{k=1}^{n} k = n(n + 1)$, from the triangle numbers.' }
+        - { id: factor, name: Take out a factor, label: '$\sum_{k=1}^{n} c\,a_k = c \sum_{k=1}^{n} a_k$ for every number $c$.' }
+        - { id: cancel, name: Cancel, label: '$x + y - y = x$ for all numbers $x$ and $y$.' }
+      start: '\sum_{k=1}^{n} (2k - 1)'
+      lines:
+        - math: '= \sum_{k=1}^{n} 2k - \sum_{k=1}^{n} 1'
+          rule: split
+        - math: '= 2\sum_{k=1}^{n} k - \sum_{k=1}^{n} 1'
+          rule: factor
+        - math: '= 2\sum_{k=1}^{n} k - n'
+          rule: constant-sum
+        - math: '= n(n + 1) - n'
+          rule: two-staircases
+        - math: '= n^2 + n - n'
+          rule: multiply-out
+        - math: '= n^2'
+          rule: cancel
+    explanation: >-
+      Split the sum into the even part and the ones, take the 2 out of the first sum, count the $n$
+      ones, use the two staircases, multiply out and cancel:
+      $\sum_{k=1}^{n} (2k - 1) = n(n + 1) - n = n^2$. Shifting the counter is never needed.
+
+  - id: derive-geometric-subtract
+    phase: derive
+    kind: step
+    concept: M1.6/geometric-series
+    title: Subtracting a shifted copy
+    prompt: >-
+      Subtract the second line from the first. Most terms appear in both lines. Write what is left
+      in terms of $r$ and $n$.
+    answer:
+      type: expression
+      symbols:
+        - { name: r }
+        - { name: n, positive: true, integer: true }
+      lhs: 'S - rS ='
+      reference: 1 - r**n
+      accept: ['-(r^n - 1)', '1 - r^n + 0', '-r^n + 1']
+      reject: ['1 - r^(n - 1)', '1 - r^(n + 1)', 'r^n - 1', '1 + r^n', '1 - r', '0', '1', 'r - r^n']
+    explanation: >-
+      Every term from $r$ up to $r^{n-1}$ is in both lines, and cancels. The first line keeps its 1
+      and the second keeps its $r^n$, so $S - rS = 1 - r^n$.
+
+  - id: derive-geometric-sum
+    phase: derive
+    kind: step
+    concept: M1.6/geometric-series
+    title: The geometric sum
+    prompt: >-
+      Solve $(1 - r)S = 1 - r^n$ for $S$, for a ratio $r$ other than 1.
+    answer:
+      type: expression
+      symbols:
+        - { name: r }
+        - { name: n, positive: true, integer: true }
+      lhs: '1 + r + r^2 + \dots + r^{n-1} ='
+      reference: (1 - r**n)/(1 - r)
+      accept: ['(r^n - 1)/(r - 1)', '1/(1 - r) - r^n/(1 - r)', '(1-r^n)/(1-r)']
+      reject: ['(1 - r^n)/(1 + r)', '1/(1 - r)', '(1 - r^(n + 1))/(1 - r)', '(1 - r^n)*(1 - r)', '(1 - r^n)/r', '(r^n - 1)/(1 - r)', '1 - r^n']
+    explanation: >-
+      $1 - r$ is not 0 when $r$ is not 1, so both sides can be divided by it:
+      $S = \dfrac{1 - r^n}{1 - r}$.
+    placement: true
+    review:
+      variants:
+        - prompt: What is $1 + 2 + 4 + 8 + \dots + 2^9$?
+          answer: { type: number, value: 1023, tolerance: { abs: 0 } }
+          explanation: >-
+            Ten terms with ratio 2: $\frac{1 - 2^{10}}{1 - 2} = \frac{1 - 1{,}024}{-1} = 1{,}023$.
+        - prompt: What is $1 + 3 + 9 + 27 + 81 + 243$?
+          answer: { type: number, value: 364, tolerance: { abs: 0 } }
+          explanation: >-
+            Six terms with ratio 3: $\frac{1 - 3^6}{1 - 3} = \frac{1 - 729}{-2} = 364$.
+        - prompt: >-
+            What is $1 + \frac{1}{3} + \frac{1}{9} + \frac{1}{27} + \dots$, with no last term?
+          answer: { type: number, value: 1.5, tolerance: { rel: 0.001 } }
+          explanation: >-
+            The ratio is $\frac{1}{3}$, between 0 and 1, so the sum is
+            $\frac{1}{1 - 1/3} = \frac{1}{2/3} = \frac{3}{2}$.
+
+  - id: derive-ema-start
+    phase: derive
+    kind: step
+    concept: M1.6/geometric-series
+    title: A running average from 0
+    prompt: >-
+      Write out $m_1$, $m_2$ and $m_3$ with every gradient equal to $g$, find the geometric series
+      inside them, and sum it. Write $m_t$ in terms of $\beta$, $t$ and $g$.
+    answer:
+      type: expression
+      symbols:
+        - { name: beta }
+        - { name: t, positive: true, integer: true }
+        - { name: g }
+      lhs: 'm_t ='
+      reference: (1 - beta**t)*g
+      accept: ['g - g*beta^t', 'g*(1 - beta^t)', '(1-beta^t)*g']
+      reject: ['g', '(1 - beta)*g', '(1 - beta^(t - 1))*g', '(1 - beta^t)*g/(1 - beta)', 'beta^t*g', '(1 - beta^(t + 1))*g', '(1 - beta)*(1 - beta^t)*g', 't*(1 - beta)*g']
+    explanation: >-
+      $m_1 = (1 - \beta)g$, then $m_2 = \beta(1 - \beta)g + (1 - \beta)g = (1 - \beta)(1 + \beta)g$,
+      and each step adds one more power of $\beta$:
+      $m_t = (1 - \beta)(1 + \beta + \dots + \beta^{t-1})\,g$. The geometric sum is
+      $\dfrac{1 - \beta^t}{1 - \beta}$, and the $1 - \beta$ cancels, leaving $m_t = (1 - \beta^t)\,g$.
+
+  - id: derive-telescoping-product
+    phase: derive
+    kind: step
+    concept: M1.6/product-notation
+    title: A product that cancels
+    prompt: >-
+      Write out the first few factors as fractions, and see what cancels. Write the product in terms
+      of $n$.
+    answer:
+      type: expression
+      symbols:
+        - { name: n, positive: true, integer: true }
+      lhs: '\prod_{k=1}^{n} \left(1 + \frac{1}{k}\right) ='
+      reference: n + 1
+      accept: ['1 + n', '(n^2 + n)/n']
+      reject: ['n', '(n + 1)/n', '1', '2^n', 'n + 2', '2*n']
+    explanation: >-
+      $\frac{2}{1} \times \frac{3}{2} \times \frac{4}{3} \times \dots \times \frac{n + 1}{n}$: each
+      numerator cancels the next denominator, leaving $\frac{n + 1}{1} = n + 1$.
+    review:
+      variants:
+        - prompt: What is $\displaystyle\prod_{k=1}^{9} \frac{k}{k + 1}$?
+          answer: { type: number, value: 0.1, tolerance: { rel: 0.000001 } }
+          explanation: >-
+            $\frac{1}{2} \times \frac{2}{3} \times \dots \times \frac{9}{10}$: each numerator cancels
+            the denominator before it, leaving $\frac{1}{10}$.
+        - prompt: What is $\displaystyle\prod_{k=2}^{5} \left(1 - \frac{1}{k}\right)$?
+          answer: { type: number, value: 0.2, tolerance: { rel: 0.000001 } }
+          explanation: >-
+            The factors are $\frac{1}{2} \times \frac{2}{3} \times \frac{3}{4} \times \frac{4}{5}$,
+            and everything cancels except $\frac{1}{5}$.
+
+  # Build ----------------------------------------------------------------------
+  - id: build-triangle
+    phase: build
+    kind: build
+    concept: M1.6/arithmetic-series
+    title: Comparisons at once
+    prompt: >-
+      Replace the `None` so that `triangle(n)` gives $1 + 2 + \dots + n$, the number of comparisons
+      for a passage of `n` tokens, as a whole number, without adding the numbers one by one.
+    answer:
+      type: code
+      starter: |
+        def triangle(n):
+            return None    # 1 + 2 + ... + n, without adding the numbers one by one
+
+        print(triangle(1000))
+      tests: |
+        import time
+
+        def test_answers():
+            """triangle gives a number, not None."""
+            assert triangle(4) is not None, "Replace the None with a formula."
+
+        def test_small():
+            """triangle(n) is 1 + 2 + ... + n for every n from 0 to 30 (for 0 tokens, 0 comparisons)."""
+            for n in range(31):
+                total = sum(range(1, n + 1))
+                assert triangle(n) == total, f"triangle({n}) is {triangle(n)}, but 1 + 2 + ... + {n} is {total}."
+
+        def test_whole_number():
+            """triangle gives a whole number, an int, not a float."""
+            got = triangle(10)
+            assert isinstance(got, int), f"triangle(10) is {got!r}, a {type(got).__name__}, but a count is a whole number, an int."
+
+        def test_at_once():
+            """triangle(10 ** 7) is found at once, without adding ten million numbers."""
+            start = time.perf_counter()
+            triangle(10 ** 7)
+            took = time.perf_counter() - start
+            assert took < 0.05, f"triangle(10 ** 7) took {took:.2f} seconds. Can it be found without adding the numbers one by one?"
+
+        def test_exact():
+            """triangle stays exact for a million million tokens: one more token adds that many comparisons."""
+            # Adding a million million numbers one by one would take hours, so this waits for test_at_once.
+            start = time.perf_counter()
+            triangle(10 ** 7)
+            assert time.perf_counter() - start < 0.05, "Make triangle pass test_at_once first."
+            n = 10 ** 12
+            got = triangle(n) - triangle(n - 1)
+            assert got == n, f"triangle({n}) - triangle({n - 1}) is {got}, not {n:,}."
+      reference: |
+        def triangle(n):
+            return n * (n + 1) // 2
+
+        print(triangle(1000))
+      wrong:
+        - code: |
+            def triangle(n):
+                return n * (n + 1) / 2
+
+            print(triangle(1000))
+          why: Divides with `/`, which gives a float, so the count is no longer an int.
+        - code: |
+            def triangle(n):
+                return sum(range(1, n + 1))
+
+            print(triangle(1000))
+          why: Adds the numbers one by one, which is right but takes far too long for ten million.
+        - code: |
+            def triangle(n):
+                return n * n // 2
+
+            print(triangle(1000))
+          why: Takes half of the square, which leaves out half of the diagonal.
+        - code: |
+            def triangle(n):
+                return n * (n - 1) // 2
+
+            print(triangle(1000))
+          why: Counts the comparisons with earlier tokens only, leaving out each token's comparison with itself.
+        - code: |
+            def triangle(n):
+                return int(n * (n + 1) / 2)
+
+            print(triangle(1000))
+          why: Turns the answer back into an int, but only after a float has rounded it, so huge counts are wrong.
+    explanation: >-
+      `n * (n + 1) // 2`: Derive's formula, with `//` so that the count stays a whole number and
+      stays exact however large it is.
+
+  - id: build-float-triangle
+    phase: build
+    kind: breakit
+    concept: M1.6/arithmetic-series
+    title: A float for the count
+    prompt: Predict what happens after the change, then run both versions to see.
+    answer:
+      type: breakit
+      code: |
+        def triangle(n):
+            return n * (n + 1) // 2
+
+        n = 10 ** 12    # a million million tokens
+        print(triangle(n) - triangle(n - 1))
+      broken: |
+        def triangle(n):
+            return n * (n + 1) / 2
+
+        n = 10 ** 12    # a million million tokens
+        print(triangle(n) - triangle(n - 1))
+      change: '`//` becomes `/`, so each count is worked out as a float.'
+      options:
+        - { id: same-int, label: 'It still prints `1000000000000`', when: "output.strip() == '1000000000000'" }
+        - { id: same-float, label: 'It prints `1000000000000.0`, the same number as a float', when: "output.strip() == '1000000000000.0'" }
+        - { id: off, label: 'It prints a float that is not exactly a million million', when: "error is None and output.strip() not in ('1000000000000', '1000000000000.0')" }
+        - { id: error, label: 'Python stops with an error', when: 'error is not None' }
+    explanation: >-
+      A float keeps about 16 significant figures, but the count for a million million tokens has 24
+      digits. Both counts are rounded before they are subtracted, and the difference comes out as
+      `999989182464.0`, about 11 million short. Python keeps ints exact however long they are, so the
+      working version prints exactly `1000000000000`.
+
+  - id: build-geometric
+    phase: build
+    kind: debug
+    concept: M1.6/geometric-series
+    title: A sum with a bug
+    prompt: >-
+      `geometric(r, n)` should give $1 + r + r^2 + \dots + r^{n-1}$, the first `n` terms of a
+      geometric series with ratio `r`. Some of its tests fail. Find the bug and fix it.
+    answer:
+      type: code
+      starter: |
+        def geometric(r, n):
+            return sum(r ** k for k in range(1, n))    # 1 + r + ... + r^(n-1)
+
+        print(geometric(2, 3))    # 1 + 2 + 4 should be 7
+      tests: |
+        # close(a, b) is True when a and b agree to about nine significant figures.
+        def test_three_terms():
+            """Three terms with ratio 2 are 1 + 2 + 4 = 7."""
+            assert geometric(2, 3) == 7, f"geometric(2, 3) is {geometric(2, 3)}, not 1 + 2 + 4 = 7."
+
+        def test_one_term():
+            """A single term is 1, whatever the ratio."""
+            for r in (2, 0.5, -3):
+                assert geometric(r, 1) == 1, f"geometric({r}, 1) is {geometric(r, 1)}, not 1."
+
+        def test_ratio_one():
+            """With ratio 1, n terms add to n."""
+            for n in (1, 5, 12):
+                assert geometric(1, n) == n, f"geometric(1, {n}) is {geometric(1, n)}, not {n}."
+
+        def test_next_term():
+            """One more term adds r to the power n."""
+            for r, n in ((0.5, 4), (3, 6), (0.9, 20)):
+                step = geometric(r, n + 1) - geometric(r, n)
+                assert close(step, r ** n), f"geometric({r}, {n + 1}) - geometric({r}, {n}) is {step}, not {r} ** {n}."
+      reference: |
+        def geometric(r, n):
+            return sum(r ** k for k in range(n))    # 1 + r + ... + r^(n-1)
+
+        print(geometric(2, 3))    # 1 + 2 + 4 should be 7
+      wrong:
+        - code: |
+            def geometric(r, n):
+                return sum(r ** k for k in range(1, n))
+
+            print(geometric(2, 3))
+          why: The starter's bug. The range starts at 1, so the first term, $r^0 = 1$, is missing.
+        - code: |
+            def geometric(r, n):
+                return sum(r ** k for k in range(1, n + 1))
+
+            print(geometric(2, 3))
+          why: Has the right number of terms, but from $r$ up to $r^n$ instead of from 1 up to $r^{n-1}$.
+        - code: |
+            def geometric(r, n):
+                return sum(r ** k for k in range(n + 1))
+
+            print(geometric(2, 3))
+          why: Adds one term too many, up to $r^n$.
+        - code: |
+            def geometric(r, n):
+                return sum(r ** (k - 1) for k in range(1, n))
+
+            print(geometric(2, 3))
+          why: Starts the powers at 0, but the range still stops one term short.
+    explanation: >-
+      `range(n)`: the powers run from $r^0$ to $r^{n-1}$, so the counter must take 0, 1, ..., up to
+      $n - 1$, which is `range(0, n)`, or `range(n)`. `range(1, n)` starts one too late and misses
+      the first term, 1.
+
+  - id: build-ratio-one
+    phase: build
+    kind: breakit
+    concept: M1.6/geometric-series
+    title: A ratio of 1
+    prompt: Predict what happens after the change, then run both versions to see.
+    answer:
+      type: breakit
+      code: |
+        def geometric_formula(r, n):
+            return (1 - r ** n) / (1 - r)
+
+        print(geometric_formula(0.5, 10))
+      broken: |
+        def geometric_formula(r, n):
+            return (1 - r ** n) / (1 - r)
+
+        print(geometric_formula(1, 10))
+      change: The ratio is now 1.
+      options:
+        - { id: ten, label: 'It prints `10.0`, one for each of the ten terms', when: "output.strip() in ('10', '10.0')" }
+        - { id: zero, label: 'It prints `0.0`', when: "output.strip() in ('0', '0.0')" }
+        - { id: error, label: 'Python stops with an error', when: 'error is not None' }
+        - { id: other, label: 'It prints some other number', when: "error is None and output.strip() not in ('10', '10.0', '0', '0.0')" }
+    explanation: >-
+      At $r = 1$ both $1 - r^n$ and $1 - r$ are 0, and Python stops with
+      `ZeroDivisionError: division by zero`. Derive's formula holds only for a ratio other than 1,
+      although the sum itself is fine there: ten terms of 1 make 10.
+
+  - id: build-sympy-sums
+    phase: build
+    kind: build
+    concept: M1.6/sigma-notation
+    covers: [M1.6/geometric-series, M1.6/product-notation]
+    title: Sums in SymPy
+    prompt: >-
+      Replace each `None` with SymPy's `summation` or `product`, so that `triangle`, `geometric`,
+      `forever` and `orderings` are the sums and the product their comments describe.
+    answer:
+      type: code
+      starter: |
+        from sympy import symbols, summation, product, oo
+
+        k = symbols('k', integer=True)
+        n = symbols('n', integer=True, positive=True)
+        r = symbols('r')
+
+        squares = summation(k**2, (k, 1, n))    # 1^2 + 2^2 + ... + n^2
+        triangle = None     # 1 + 2 + ... + n
+        geometric = None    # 1 + r + r^2 + ... + r^(n-1)
+        forever = None      # 1 + r + r^2 + ..., with no last term
+        orderings = None    # 1 x 2 x 3 x ... x n
+
+        print(squares)
+        print(triangle)
+        print(geometric)
+        print(forever)
+        print(orderings)
+      tests: |
+        from sympy import Rational, simplify
+
+        def test_filled():
+            """triangle, geometric, forever and orderings are all filled in."""
+            for name, value in (("triangle", triangle), ("geometric", geometric), ("forever", forever), ("orderings", orderings)):
+                assert value is not None, f"Replace the None in {name}."
+
+        def test_triangle():
+            """triangle is 10 at n = 4, and going from n - 1 to n adds n."""
+            assert triangle is not None, "Replace the None in triangle first."
+            got = triangle.subs(n, 4)
+            assert got == 10, f"triangle at n = 4 is {got}, not 1 + 2 + 3 + 4 = 10."
+            assert simplify(triangle - triangle.subs(n, n - 1) - n) == 0, "Going from n - 1 to n does not add n."
+
+        def test_geometric():
+            """geometric is 31 at r = 2 and n = 5, and 7 at r = 1 and n = 7."""
+            assert geometric is not None, "Replace the None in geometric first."
+            got = geometric.subs({r: 2, n: 5})
+            assert got == 31, f"geometric at r = 2 and n = 5 is {got}, not 1 + 2 + 4 + 8 + 16 = 31."
+            got = geometric.subs({r: 1, n: 7})
+            assert got == 7, f"geometric at r = 1 and n = 7 is {got}, not 7, one for each of the seven terms."
+
+        def test_forever():
+            """forever is 2 at r = 1/2."""
+            assert forever is not None, "Replace the None in forever first."
+            got = simplify(forever.subs(r, Rational(1, 2)))
+            assert got == 2, f"forever at r = 1/2 is {got}, not 1 + 1/2 + 1/4 + ... = 2."
+
+        def test_orderings():
+            """orderings is 120 at n = 5."""
+            assert orderings is not None, "Replace the None in orderings first."
+            got = orderings.subs(n, 5)
+            assert got == 120, f"orderings at n = 5 is {got}, not 1 x 2 x 3 x 4 x 5 = 120."
+      reference: |
+        from sympy import symbols, summation, product, oo
+
+        k = symbols('k', integer=True)
+        n = symbols('n', integer=True, positive=True)
+        r = symbols('r')
+
+        squares = summation(k**2, (k, 1, n))    # 1^2 + 2^2 + ... + n^2
+        triangle = summation(k, (k, 1, n))
+        geometric = summation(r**k, (k, 0, n - 1))
+        forever = summation(r**k, (k, 0, oo))
+        orderings = product(k, (k, 1, n))
+
+        print(squares)
+        print(triangle)
+        print(geometric)
+        print(forever)
+        print(orderings)
+      wrong:
+        - code: |
+            from sympy import symbols, summation, product, oo
+
+            k = symbols('k', integer=True)
+            n = symbols('n', integer=True, positive=True)
+            r = symbols('r')
+
+            squares = summation(k**2, (k, 1, n))
+            triangle = summation(k, (k, 1, n - 1))
+            geometric = summation(r**k, (k, 0, n - 1))
+            forever = summation(r**k, (k, 0, oo))
+            orderings = product(k, (k, 1, n))
+          why: Stops `triangle` one short, as if SymPy's top end were left out like `range`'s.
+        - code: |
+            from sympy import symbols, summation, product, oo
+
+            k = symbols('k', integer=True)
+            n = symbols('n', integer=True, positive=True)
+            r = symbols('r')
+
+            squares = summation(k**2, (k, 1, n))
+            triangle = summation(k, (k, 1, n))
+            geometric = summation(r**k, (k, 1, n))
+            forever = summation(r**k, (k, 0, oo))
+            orderings = product(k, (k, 1, n))
+          why: Starts the geometric sum at $r^1$, so it runs from $r$ to $r^n$.
+        - code: |
+            from sympy import symbols, summation, product, oo
+
+            k = symbols('k', integer=True)
+            n = symbols('n', integer=True, positive=True)
+            r = symbols('r')
+
+            squares = summation(k**2, (k, 1, n))
+            triangle = summation(k, (k, 1, n))
+            geometric = (1 - r**n) / (1 - r)
+            forever = summation(r**k, (k, 0, oo))
+            orderings = product(k, (k, 1, n))
+          why: Types in Derive's formula, which has no value at $r = 1$, where SymPy gives `nan`.
+        - code: |
+            from sympy import symbols, summation, product, oo
+
+            k = symbols('k', integer=True)
+            n = symbols('n', integer=True, positive=True)
+            r = symbols('r')
+
+            squares = summation(k**2, (k, 1, n))
+            triangle = summation(k, (k, 1, n))
+            geometric = summation(r**k, (k, 0, n - 1))
+            forever = summation(r**k, (k, 1, oo))
+            orderings = product(k, (k, 1, n))
+          why: Starts the sum with no last term at $r$, which leaves out the first term, 1.
+        - code: |
+            from sympy import symbols, summation, product, oo
+
+            k = symbols('k', integer=True)
+            n = symbols('n', integer=True, positive=True)
+            r = symbols('r')
+
+            squares = summation(k**2, (k, 1, n))
+            triangle = summation(k, (k, 1, n))
+            geometric = summation(r**k, (k, 0, n - 1))
+            forever = summation(r**k, (k, 0, oo))
+            orderings = summation(k, (k, 1, n))
+          why: Adds the numbers from 1 to $n$ instead of multiplying them.
+        - code: |
+            from sympy import symbols, summation, product, oo
+
+            k = symbols('k', integer=True)
+            n = symbols('n', integer=True, positive=True)
+            r = symbols('r')
+
+            squares = summation(k**2, (k, 1, n))
+            triangle = summation(k, (k, 1, n))
+            geometric = summation(r**k, (k, 0, n - 1))
+            forever = summation(r**k, (k, 0, oo))
+            orderings = product(k, (k, 0, n))
+          why: Starts the product at 0, which makes every such product 0.
+    explanation: >-
+      `summation(k, (k, 1, n))`, `summation(r**k, (k, 0, n - 1))`, `summation(r**k, (k, 0, oo))` and
+      `product(k, (k, 1, n))`. SymPy includes both ends of each range, and prints the product as
+      `factorial(n)`.
+
+  # Explain --------------------------------------------------------------------
+  - id: explain-attention-count
+    phase: explain
+    kind: explain
+    concept: M1.6/arithmetic-series
+    covers: [M1.6/sigma-notation, M1.6/geometric-series, M1.6/product-notation]
+    title: Long sums, simply
+    prompt: >-
+      Explain to your friend how to count the comparisons for 1,000 tokens without adding a thousand
+      numbers, and why the agent's discounted rewards, $1 + 0.9 + 0.9^2 + \dots$, have a finite total
+      although they never stop. Show what $\Sigma$ and $\Pi$ mean, with an example of each worked
+      out.
+    answer:
+      type: text
+      rubric:
+        - { id: pairing, criterion: 'Explains the pairing: written forwards and backwards, every column adds to the same total, $n + 1$, so twice the sum is $n(n + 1)$.' }
+        - { id: count, criterion: 'Gives the count for 1,000 tokens, 500,500, and says it grows roughly with the square of the number of tokens.' }
+        - { id: geometric, criterion: 'Finds the total of the discounted rewards, 10, by multiplying the sum by the ratio and subtracting, or by the pattern $\frac{1}{1 - r}$.' }
+        - { id: never, criterion: 'Says that the sums never reach 10 but get as close to it as you like, and that this is what the total of a sum with no last term means.' }
+        - { id: notation, criterion: 'Says what $\Sigma$ and $\Pi$ mean, with an example of each worked out.' }
+      reference: >-
+        Write the sum 1 + 2 + ... + 1,000 forwards, and under it backwards. Each column, 1 and 1,000,
+        2 and 999, and so on, adds to 1,001, and there are 1,000 columns, so the two rows make
+        1,000 × 1,001 = 1,001,000. That is twice the sum, so the count is 500,500. In general
+        1 + 2 + ... + n = n(n + 1)/2, which is about half of n squared, so a passage twice as long
+        needs about four times as many comparisons. For the rewards, call the sum of the first n
+        terms S = 1 + 0.9 + ... + 0.9 to the power n − 1. Then 0.9S has the same terms moved up one
+        power, so subtracting leaves S − 0.9S = 1 − 0.9 to the power n, and S = 10 × (1 − 0.9 to the
+        power n). The power shrinks towards 0 as n grows, so the sums climb towards 10, never reach
+        it, and get as close as you like; that number, 10, is what the sum with no last term means.
+        Σ is short for a sum: the sum of k squared for k from 1 to 3 is 1 + 4 + 9 = 14. Π is short for
+        a product: the product of k for k from 1 to 4 is 1 × 2 × 3 × 4 = 24, which is 4 factorial.
+      minWords: 80
+      maxWords: 350

@@ -1,0 +1,159 @@
+The puzzle's count is a sum of a long run of numbers. Start with a picture of it.
+
+## A staircase of comparisons
+
+Draw each comparison as a dot. Row $k$ holds the $k$ comparisons that token $k$ makes, with itself and with every token before it, so the rows climb like a staircase. Move the slider to change the number of tokens.
+
+<Staircase
+  title="The staircase of comparisons"
+  description="Rows of dots, one row for each token. Row k has k dots, the comparisons that token k makes with itself and with every earlier token, so the rows form a staircase. Faint dots fill the rest of a square: comparisons with later tokens, which are never made. A slider sets the number of tokens, from 1 to 12, and a readout gives the count. A second staircase, turned round, can be added once the question below has been answered."
+  max={12}
+  initial={4}
+  turnedAfter="explore-hundred-tokens"
+/>
+
+<Exercise id="explore-hundred-tokens" />
+
+<Reveal for="explore-hundred-tokens">
+
+Now add the second staircase on the figure. Turned round, it fits against the first, and the two together fill a rectangle one column wider than it is tall, whatever the number of tokens. For 100 tokens the rectangle has 100 rows of 101, which is 10,100 dots and squares, and each staircase holds half of them.
+
+A story, no doubt polished in the retelling, has the young Carl Friedrich Gauss finding this in moments, when his teacher set the class to add the numbers from 1 to 100 to keep them busy.
+
+## Adding odd numbers
+
+Pairing works for other runs of numbers too. Here are the first few sums of odd numbers:
+
+$$
+1 = 1, \qquad 1 + 3 = 4, \qquad 1 + 3 + 5 = 9, \qquad 1 + 3 + 5 + 7 = 16.
+$$
+
+<Exercise id="explore-odd-squares" />
+
+</Reveal>
+
+<Reveal for="explore-odd-squares">
+
+Every total is a square. A picture suggests why. A square of $k$ by $k$ dots is a square of $k - 1$ by $k - 1$ with an L-shaped border along two sides: $k$ dots along the bottom and $k - 1$ more up the side, $2k - 1$ in all, which is the $k$th odd number. So each odd number grows the square by one, and the first $n$ odd numbers build an $n$ by $n$ square.
+
+Checking cases and drawing a picture is not yet a proof that the pattern never fails. Derive proves it.
+
+## A short form for sums
+
+Sums like these have a short form. The capital Greek letter $\Sigma$, sigma, the Greek S, stands for "sum":
+
+$$
+\sum_{k=1}^{100} k = 1 + 2 + 3 + \dots + 100.
+$$
+
+Read it as "the sum of $k$, for $k$ from 1 to 100". The letter $k$ is the *counter*. It takes each whole number from the one written below the $\Sigma$ to the one written above, the expression after the $\Sigma$ is worked out for each value, and the results are added. The $k$th odd number is $2k - 1$, so the sum of the first 50 odd numbers is $\sum_{k=1}^{50} (2k - 1)$.
+
+<Exercise id="explore-read-sigma" />
+
+</Reveal>
+
+<Reveal for="explore-read-sigma">
+
+The same sum can be written in more than one way.
+
+<Exercise id="explore-sigma-same" />
+
+</Reveal>
+
+<Reveal for="explore-sigma-same">
+
+Moving the counter's start, while changing the expression so that the same terms come out, is called *shifting the counter*. It is often the first step in matching a sum to a formula.
+
+## Rewards that count for less
+
+An agent that learns by trial and error, such as a program learning to play a game, gets a reward after each step. A reward that comes sooner counts for more, so a reward $k$ steps away is multiplied by a *discount* $r$, a number between 0 and 1, once for each step: by $r^k$. With $r = 0.9$, a reward of 1 at every step, for ever, is worth
+
+$$
+1 + 0.9 + 0.9^2 + 0.9^3 + \dots
+$$
+
+with no last term. Each term is 0.9 times the one before, so each is smaller than the last, but there are infinitely many of them. Here are the terms laid end to end.
+
+<PartialSums
+  title="Adding the discounted rewards"
+  description="A bar made of pieces laid end to end on a fixed scale from 0 to 20. The first piece is 1 long, and each later piece is r times as long as the one before, so the length of the bar is the sum of the first n terms. Sliders set the ratio r, from 0.05 to 0.95, and the number of terms n, from 1 to 100, and a readout gives the sum. A marker for where the sum is heading opens once the questions below have been answered."
+  ratio={0.9}
+  terms={5}
+  maxTerms={100}
+  axisMax={20}
+  limitAfter="explore-discount-pattern"
+/>
+
+<Exercise id="explore-discount-limit" />
+
+</Reveal>
+
+<Reveal for="explore-discount-limit">
+
+The sum never reaches 10, however many terms are added, but it gets as close to 10 as you like. That is what a sum with no last term is taken to mean: $1 + 0.9 + 0.9^2 + \dots = 10$, because 10 is the number its sums close in on. Making "close in on" precise needs the idea of a limit, which a later course on calculus introduces.
+
+Each ratio closes in on a number of its own.
+
+<Exercise id="explore-discount-pattern" />
+
+</Reveal>
+
+<Reveal for="explore-discount-pattern">
+
+Now open the marker on the figure: for every ratio, the sum is heading for $\frac{1}{1 - r}$. The closer the ratio is to 1, the further the sum goes and the more terms it takes to get near, so a discount of 0.99 makes roughly the next hundred rewards count. Derive shows where $\frac{1}{1 - r}$ comes from.
+
+## Products
+
+Sums have a partner for multiplication. How many different orders can a few tokens be put in?
+
+<Exercise id="explore-orderings" />
+
+</Reveal>
+
+<Reveal for="explore-orderings">
+
+A product like $5 \times 4 \times 3 \times 2 \times 1$ has a short form too, with a capital Greek pi, $\Pi$, the Greek P, for "product":
+
+$$
+\prod_{k=1}^{5} k = 1 \times 2 \times 3 \times 4 \times 5 = 120.
+$$
+
+The product of the whole numbers from 1 to $n$ comes up so often that it has a sign of its own, $n!$, read "$n$ factorial", so $5! = 120$. In the same way, $n$ different things can be put in $n!$ different orders.
+
+Products of probabilities are everywhere in machine learning. A language model's score for a passage of $n$ tokens is the product of the probabilities it gave to the tokens that came, $p_1 \times p_2 \times \dots \times p_n = \prod_{k=1}^{n} p_k$. In M1.5, logarithms turn this product into a sum.
+
+<Exercise id="explore-read-product" />
+
+</Reveal>
+
+<Reveal for="explore-read-product">
+
+The 2 in $\prod_{k=1}^{3} (2k)$ is in every one of the three factors, so it comes out once for each: $(2 \times 1)(2 \times 2)(2 \times 3) = 2^3 \times 3! = 8 \times 6$. A sum is different. In $\sum_{k=1}^{3} 2k = 2 + 4 + 6$ the 2 is a common factor of the terms, and distributivity takes it out once: $2 \times (1 + 2 + 3)$.
+
+## The names
+
+<Definition term="Sigma notation">
+
+$\sum_{k=m}^{n} a_k$ stands for $a_m + a_{m+1} + \dots + a_n$: the expression $a_k$ worked out for each whole number $k$ from $m$ to $n$, and the results added. The counter can be given any letter, and shifting its start, while changing the expression so that the same terms come out, gives the same sum.
+
+</Definition>
+
+<Definition term="Product notation">
+
+$\prod_{k=m}^{n} a_k$ stands for $a_m \times a_{m+1} \times \dots \times a_n$. The product of the whole numbers from 1 to $n$ is written $n!$, "$n$ factorial", and counts the orders of $n$ different things.
+
+</Definition>
+
+<Definition term="Arithmetic series">
+
+A sum whose terms go up, or down, by the same amount each time, such as $1 + 2 + 3 + \dots + 100$ or $3 + 7 + 11 + 15$. The amount is the *common difference*.
+
+</Definition>
+
+<Definition term="Geometric series">
+
+A sum whose terms are each the same multiple of the one before, such as $1 + 0.9 + 0.9^2 + \dots$. The multiple is the *common ratio*. A geometric series with no last term and a ratio between 0 and 1 has a finite total, as the figure showed. Derive finds that total, and the other ratios for which there is one.
+
+</Definition>
+
+</Reveal>

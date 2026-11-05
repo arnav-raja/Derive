@@ -1,0 +1,142 @@
+Explore found totals by pairing, by pictures and by trying ratios. Now derive them for every $n$, and settle the puzzle.
+
+## The triangle numbers
+
+Call the sum $S$, and write it forwards and then backwards, one row above the other:
+
+$$
+\begin{aligned}
+S &= 1 + 2 + 3 + \dots + (n - 1) + n \\
+S &= n + (n - 1) + (n - 2) + \dots + 2 + 1
+\end{aligned}
+$$
+
+Each column holds two numbers that add to the same total, and there are $n$ columns.
+
+<Exercise id="derive-triangle-formula" />
+
+<Reveal for="derive-triangle-formula">
+
+These totals are called the *triangle numbers*, after the staircase. With $n = 1{,}000$ the puzzle is settled: $\frac{1{,}000 \times 1{,}001}{2} = 500{,}500$ comparisons, a little over half of the million cells of the 1,000 by 1,000 square.
+
+The formula also says how the cost grows. $\frac{n(n + 1)}{2} = \frac{n^2}{2} + \frac{n}{2}$, and for a long passage the $\frac{n^2}{2}$ is almost all of it, so doubling the length of a passage roughly quadruples the comparisons. This growth with the square of the length is why long passages are expensive for language models.
+
+## Any arithmetic series
+
+The same pairing works whenever the terms go up by a fixed amount. Take $n$ terms that start at $a$ and go up by $d$ each time: $a$, then $a + d$, then $a + 2d$, and so on. The $n$th term has had $d$ added $n - 1$ times, so it is $a + (n - 1)d$.
+
+<Exercise id="derive-arithmetic-sum" />
+
+</Reveal>
+
+<Reveal for="derive-arithmetic-sum">
+
+The formula reads more easily in words: the number of terms times the average of the first and the last. With $a = 1$ and $d = 1$ it gives the triangle numbers again. With $a = 1$ and $d = 2$, the odd numbers, it gives $\frac{n\big(2 + 2(n - 1)\big)}{2} = n^2$, the squares that Explore found.
+
+## Sums by their rules
+
+$\Sigma$ is only a short form for a long sum, so the rules of ordinary addition carry over to it. Three of them do most of the work.
+
+- A sum of differences can be split, $\sum_{k=1}^{n} (a_k - b_k) = \sum_{k=1}^{n} a_k - \sum_{k=1}^{n} b_k$, because the terms can be reordered and regrouped.
+- A common factor comes out, $\sum_{k=1}^{n} c\,a_k = c \sum_{k=1}^{n} a_k$, by distributivity.
+- A number added $n$ times is $n$ times the number, $\sum_{k=1}^{n} c = nc$.
+
+With these, prove what Explore found with a picture: the first $n$ odd numbers add to $n^2$.
+
+<Exercise id="derive-odd-squares" />
+
+</Reveal>
+
+<Reveal for="derive-odd-squares">
+
+A picture, a formula and the rules for $\Sigma$ all give the same answer. A third way adds up differences. Since $k^2 - (k - 1)^2 = 2k - 1$, each odd number is the gap between two neighbouring squares, and adding the gaps climbs from $0^2$ all the way to $n^2$:
+
+<Steps>
+  <Step why="each odd number is the gap between neighbouring squares">$\sum_{k=1}^{n} (2k - 1) = \sum_{k=1}^{n} \big(k^2 - (k - 1)^2\big)$</Step>
+  <Step why="written out, each square in the middle is added once and taken away once">$= (1^2 - 0^2) + (2^2 - 1^2) + \dots + \big(n^2 - (n - 1)^2\big)$</Step>
+  <Step why="everything cancels except the last square and the first">$= n^2 - 0^2 = n^2$</Step>
+</Steps>
+
+A sum that cancels down to its two ends like this is said to *telescope*, like a telescope folding up.
+
+## A sum that keeps multiplying
+
+Now the discounted rewards. Call the sum of the first $n$ terms of a geometric series with ratio $r$
+
+$$
+S = 1 + r + r^2 + \dots + r^{n-1}.
+$$
+
+Pairing does not help here, since the terms do not go up by a fixed amount. Instead, multiply the whole sum by $r$. Every term moves up one power:
+
+$$
+rS = r + r^2 + r^3 + \dots + r^{n}.
+$$
+
+<Exercise id="derive-geometric-subtract" />
+
+</Reveal>
+
+<Reveal for="derive-geometric-subtract">
+
+The left side is $(1 - r)S$, by distributivity, so the sum is one division away.
+
+<Exercise id="derive-geometric-sum" />
+
+</Reveal>
+
+<Reveal for="derive-geometric-sum">
+
+So for every ratio $r$ other than 1,
+
+$$
+1 + r + r^2 + \dots + r^{n-1} = \frac{1 - r^n}{1 - r}.
+$$
+
+At $r = 1$ the formula divides by 0 and says nothing. The sum is still there: every term is 1, and $n$ terms add to $n$.
+
+Now let $n$ grow. When $r$ is between 0 and 1, each step multiplies $r^n$ by $r$ again, and it gets as close to 0 as you like, a fact this lesson takes on trust. So $\frac{1 - r^n}{1 - r}$ closes in on $\frac{1}{1 - r}$, the pattern Explore found, and the sum with no last term is
+
+$$
+1 + r + r^2 + \dots = \frac{1}{1 - r}.
+$$
+
+The same holds for a ratio between $-1$ and 0, whose terms take turns being positive and negative: $1 - \frac{1}{2} + \frac{1}{4} - \frac{1}{8} + \dots = \frac{1}{1 + 1/2} = \frac{2}{3}$. For a ratio of 1 or more, or of $-1$ or less, the terms never shrink, and the sum never settles.
+
+## A running average that starts at 0
+
+Training a model means adjusting its settings again and again, each time in the direction that a number called the *gradient* says will reduce its error. Optimisers smooth these out with a running average, so that one odd gradient does not throw them off course. At each step $t$, the average $m_t$ keeps a fraction $\beta$ of the old average and takes in $1 - \beta$ of the new gradient $g_t$:
+
+$$
+m_t = \beta\, m_{t-1} + (1 - \beta)\, g_t, \qquad m_0 = 0.
+$$
+
+A typical $\beta$ is 0.9. To see what the start does, suppose that every gradient is the same number, $g$.
+
+<Exercise id="derive-ema-start" />
+
+</Reveal>
+
+<Reveal for="derive-ema-start">
+
+Every gradient was $g$, yet the average is only $(1 - \beta^t)\,g$: it starts too small, because it started at 0. With $\beta = 0.9$, after 10 steps $1 - 0.9^{10} \approx 0.65$, so the average is only about 65 per cent of $g$. The optimiser called Adam, which M9.6 builds, divides by exactly this factor, using $\frac{m_t}{1 - \beta^t}$, and so corrects the slow start. As $t$ grows, $\beta^t$ shrinks towards 0 and the correction fades away.
+
+## A product that cancels
+
+Products can telescope too. Each factor of
+
+$$
+\prod_{k=1}^{n} \left(1 + \frac{1}{k}\right)
+$$
+
+is $1 + \frac{1}{k} = \frac{k + 1}{k}$.
+
+<Exercise id="derive-telescoping-product" />
+
+</Reveal>
+
+<Reveal for="derive-telescoping-product">
+
+The factors get ever closer to 1, yet the product grows without limit, like $n$ itself. Compare the geometric series, whose terms shrink towards 0 and whose sum settles. Factors close to 1 can still multiply up to anything, so a long product is not settled by how close its factors are to 1.
+
+</Reveal>

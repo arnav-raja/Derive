@@ -77,7 +77,22 @@ export function FigureFrame({
 /** A figure's label, in which ^x or ^{...} is drawn as a superscript, so "2^x" reads as 2 to the power x. */
 export function FigureLabel({ text }: { text: string }) {
   const parts = text.split(/\^(\{[^}]*\}|[A-Za-z0-9.\u2212-]+)/);
-  return <>{parts.map((p, i) => (i % 2 ? <sup key={i}>{p.replace(/^\{|\}$/g, "")}</sup> : p))}</>;
+  // A screen reader reads a superscript as plain digits, so 0.9 with 99 above it would sound like
+  // 0.999; the hidden words say that it is a power.
+  return (
+    <>
+      {parts.map((p, i) =>
+        i % 2 ? (
+          <sup key={i}>
+            <span className="sr-only">to the power </span>
+            {p.replace(/^\{|\}$/g, "")}
+          </sup>
+        ) : (
+          p
+        ),
+      )}
+    </>
+  );
 }
 
 function NumbersTable({ table }: { table: DataTable }) {

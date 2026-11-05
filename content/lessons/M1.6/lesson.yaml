@@ -1,0 +1,85 @@
+code: M1.6
+title: Sums, products and series
+course: M1
+status: review
+summary: >-
+  A language model compares each token of a passage with itself and every token before it. How many
+  comparisons does a passage of 1,000 tokens take? Adding long runs of numbers without adding them
+  one by one, short forms for sums and products, and sums with no last term that still have a
+  finite total.
+sittings: 2
+minutes:
+  puzzle: 10
+  recall: 10
+  explore: 40
+  derive: 45
+  build: 50
+  explain: 25
+concepts:
+  taught:
+    - id: M1.6/sigma-notation
+      name: Sigma notation
+      summary: >-
+        $\sum_{k=1}^{n} a_k$ is short for $a_1 + a_2 + \dots + a_n$. The counter's letter does not
+        matter, its start can be shifted, and a sum can be split, scaled and regrouped by the rules
+        of ordinary addition.
+      usedBy: [M4.5, M3.8, M1.9]
+    - id: M1.6/arithmetic-series
+      name: Arithmetic series
+      summary: >-
+        Sums whose terms go up by the same amount each time. Pairing the first term with the last
+        gives $1 + 2 + \dots + n = \frac{n(n + 1)}{2}$, and in general $n$ terms add to $n$ times the
+        average of the first and the last.
+      usedBy: [M1.9, M1.10]
+    - id: M1.6/geometric-series
+      name: Geometric series
+      summary: >-
+        Sums whose terms are each the same multiple $r$ of the one before. Subtracting $r$ times the
+        sum gives $1 + r + \dots + r^{n-1} = \frac{1 - r^n}{1 - r}$ for $r \ne 1$, and for $r$
+        between $-1$ and 1 the sum with no last term is $\frac{1}{1 - r}$.
+      usedBy: [L6.3, M9.5]
+    - id: M1.6/product-notation
+      name: Product notation
+      summary: >-
+        $\prod_{k=1}^{n} a_k$ is short for $a_1 \times a_2 \times \dots \times a_n$, and
+        $n! = \prod_{k=1}^{n} k$ counts the orders of $n$ different things. A product can telescope,
+        cancelling down to its two ends.
+      usedBy: [M1.10, M7.2]
+  used: [M1.2/field-axioms, M1.2/solving-equations, M1.2/exponent-rules]
+links:
+  requires:
+    - lesson: M1.2
+      bridge: >-
+        Every move in this lesson is one of M1.2's rules: reordering and regrouping a long sum,
+        taking a common factor out of it, and solving an equation for the unknown total.
+  contrastsWith:
+    - lesson: M1.5
+      bridge: >-
+        M1.5 turned the product of a passage's probabilities into a sum of logarithms. This lesson
+        writes each with a single symbol, Π for the product and Σ for the sum, and finds the totals
+        of long sums without adding term by term.
+  foreshadows:
+    - lesson: M1.9
+      bridge: >-
+        Pairing and subtracting found this lesson's formulas. M1.9's induction proves formulas like
+        them for every n at once, one step at a time.
+    - lesson: M3.8
+      bridge: >-
+        An integral is the limit of sums of ever more, ever thinner strips, each sum written with Σ.
+    - lesson: M4.5
+      bridge: >-
+        The expected value of a sum of random quantities is the sum of their expected values: a rule
+        for splitting a Σ that M4.5 proves and uses throughout.
+    - lesson: L6.3
+      bridge: >-
+        An agent's discounted return adds its rewards weighted by 1, γ, γ² and so on, a geometric
+        series whose total stays finite when γ is less than 1.
+    - lesson: M9.5
+      bridge: >-
+        Momentum keeps a running average of past gradients whose weights shrink geometrically, the
+        average whose slow start this lesson measures.
+    - lesson: E1.2
+      bridge: >-
+        A Σ is a loop that adds. E1.2 writes such loops in Python, and this lesson's formulas are a
+        way to check them.
+skills: []
