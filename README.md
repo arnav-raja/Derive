@@ -1,7 +1,7 @@
 # Derive
 
 A private, Feynman-inspired school for the mathematics, machine learning and ML engineering used
-at frontier AI labs. One learner, three curriculums, 282 long-arc lessons and nine capstones,
+at frontier AI labs. One learner, three curriculums, 332 long-arc lessons and nine capstones,
 joined into one prerequisite graph.
 
 Each lesson runs six phases: Puzzle, Recall, Explore, Derive, Build, and Explain and connect.

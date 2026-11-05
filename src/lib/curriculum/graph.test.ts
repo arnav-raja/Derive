@@ -65,7 +65,7 @@ describe("checkGraph", () => {
   it("passes on the real curriculum", () => {
     const report = checkGraph(curriculum());
     expect(report.errors).toEqual([]);
-    expect(report.stats.lessons).toBe(282);
+    expect(report.stats.lessons).toBe(332);
     expect(report.stats.capstones).toBe(9);
   });
 

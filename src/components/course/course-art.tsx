@@ -115,6 +115,35 @@ function motif(code: string): ReactNode {
       );
     }
     case "M5": {
+      // Partial sums of a series closing in on their limit, inside a narrowing band.
+      const sums: number[] = [];
+      let s = 0;
+      for (let k = 0; k < 12; k++) {
+        s += (k % 2 === 0 ? 1 : -1) / (k + 1);
+        sums.push(s);
+      }
+      const y = (v: number) => 104 - 82 * v;
+      const x = (k: number) => 24 + k * 17.5;
+      const limit = y(Math.log(2));
+      const band = (t: number) => 60 / ((t - 24) / 17.5 + 1.6);
+      const upper: string[] = [];
+      const lower: string[] = [];
+      for (let t = 24; t <= 220; t += 4) {
+        upper.push(`${t} ${f1(limit - band(t))}`);
+        lower.unshift(`${t} ${f1(limit + band(t))}`);
+      }
+      return (
+        <>
+          <path d={`M${upper.join("L")}L${lower.join("L")}Z`} fill="currentColor" opacity={0.1} />
+          <line x1={14} y1={f1(limit)} x2={226} y2={f1(limit)} stroke="currentColor" strokeWidth={1.75} strokeDasharray="6 5" opacity={0.7} />
+          <polyline points={sums.map((v, k) => `${f1(x(k))},${f1(y(v))}`).join(" ")} fill="none" stroke="currentColor" strokeWidth={2} strokeLinejoin="round" opacity={0.55} />
+          {sums.map((v, k) => (
+            <circle key={k} cx={f1(x(k))} cy={f1(y(v))} r={k === 0 ? 4.5 : 3.5} fill="currentColor" />
+          ))}
+        </>
+      );
+    }
+    case "M6": {
       // Level sets of a surface and the gradient across them.
       return (
         <>
@@ -126,7 +155,7 @@ function motif(code: string): ReactNode {
         </>
       );
     }
-    case "M6": {
+    case "M7": {
       // A circle and the ellipse a matrix turns it into, with their axes.
       return (
         <>
@@ -142,7 +171,24 @@ function motif(code: string): ReactNode {
         </>
       );
     }
-    case "M7": {
+    case "M8": {
+      // In high dimensions, random points crowd onto a thin shell.
+      const pts = Array.from({ length: 70 }, () => {
+        const a = r() * Math.PI * 2;
+        const rad = 40 + gauss() * 4;
+        return { x: 120 + rad * Math.cos(a) * 1.35, y: 60 + rad * Math.sin(a) };
+      });
+      return (
+        <>
+          <ellipse cx={120} cy={60} rx={54} ry={40} fill="none" stroke="currentColor" strokeWidth={1.5} opacity={0.35} />
+          <ellipse cx={120} cy={60} rx={20} ry={15} fill="currentColor" opacity={0.08} />
+          {pts.map((p, i) => (
+            <circle key={i} cx={f1(p.x)} cy={f1(p.y)} r={2.5} fill="currentColor" opacity={0.65} />
+          ))}
+        </>
+      );
+    }
+    case "M9": {
       // Noisy points, the line fitted through them and its uncertainty.
       const pts = Array.from({ length: 26 }, (_, i) => {
         const x = 24 + i * 7.6 + r() * 4;
@@ -158,7 +204,31 @@ function motif(code: string): ReactNode {
         </>
       );
     }
-    case "M8": {
+    case "M10": {
+      // Gradient descent zigzagging down a long valley.
+      const path = [
+        [28, 22],
+        [70, 92],
+        [96, 34],
+        [124, 80],
+        [140, 46],
+        [156, 70],
+        [164, 56],
+        [170, 61],
+      ];
+      return (
+        <>
+          {[16, 34, 52, 70, 88].map((k, i) => (
+            <ellipse key={k} cx={170} cy={60} rx={k * 1.9} ry={k * 0.62} fill="none" stroke="currentColor" strokeWidth={1.5} opacity={0.6 - i * 0.1} />
+          ))}
+          <polyline points={path.map((p) => p.join(",")).join(" ")} fill="none" stroke="currentColor" strokeWidth={2.25} strokeLinejoin="round" />
+          {path.map(([x, y], i) => (
+            <circle key={i} cx={x} cy={y} r={i === path.length - 1 ? 5 : 3.25} fill="currentColor" />
+          ))}
+        </>
+      );
+    }
+    case "M11": {
       // A code tree: each branch is one bit.
       const nodes: { x: number; y: number; d: number }[] = [];
       const edges: [number, number, number, number][] = [];
@@ -188,31 +258,48 @@ function motif(code: string): ReactNode {
         </>
       );
     }
-    case "M9": {
-      // Gradient descent zigzagging down a long valley.
-      const path = [
-        [28, 22],
-        [70, 92],
-        [96, 34],
-        [124, 80],
-        [140, 46],
-        [156, 70],
-        [164, 56],
-        [170, 61],
+    case "M12": {
+      // A Kronecker product: each entry of one matrix scales a whole copy of the other.
+      const a = [
+        [1, 0.35, 0.7],
+        [0.35, 0.85, 0.2],
+        [0.7, 0.2, 0.55],
       ];
+      const b = [
+        [0.9, 0.2, 0.5],
+        [0.2, 1, 0.3],
+        [0.5, 0.3, 0.8],
+      ];
+      const small = (ox: number, m: number[][]) =>
+        m.flatMap((row, i) =>
+          row.map((v, j) => <rect key={`${ox}-${i}-${j}`} x={ox + j * 10} y={45 + i * 10} width={8.5} height={8.5} rx={1.5} fill="currentColor" opacity={0.1 + 0.8 * v} />),
+        );
+      const s = 11;
       return (
         <>
-          {[16, 34, 52, 70, 88].map((k, i) => (
-            <ellipse key={k} cx={170} cy={60} rx={k * 1.9} ry={k * 0.62} fill="none" stroke="currentColor" strokeWidth={1.5} opacity={0.6 - i * 0.1} />
-          ))}
-          <polyline points={path.map((p) => p.join(",")).join(" ")} fill="none" stroke="currentColor" strokeWidth={2.25} strokeLinejoin="round" />
-          {path.map(([x, y], i) => (
-            <circle key={i} cx={x} cy={y} r={i === path.length - 1 ? 5 : 3.25} fill="currentColor" />
-          ))}
+          {small(16, a)}
+          <circle cx={62} cy={60} r={7} fill="none" stroke="currentColor" strokeWidth={1.75} />
+          <path d="M57 55 L67 65 M67 55 L57 65" stroke="currentColor" strokeWidth={1.75} />
+          {small(76, b)}
+          <Arrow x1={110} y1={60} x2={124} y2={60} w={1.75} />
+          {Array.from({ length: 9 }, (_, i) =>
+            Array.from({ length: 9 }, (_, j) => (
+              <rect
+                key={`k${i}-${j}`}
+                x={130 + j * s}
+                y={11 + i * s}
+                width={s - 1.5}
+                height={s - 1.5}
+                rx={1.5}
+                fill="currentColor"
+                opacity={f1(0.06 + 0.88 * a[Math.floor(i / 3)]![Math.floor(j / 3)]! * b[i % 3]![j % 3]!)}
+              />
+            )),
+          )}
         </>
       );
     }
-    case "M10": {
+    case "M13": {
       // Floating-point numbers: evenly spaced within each power of two, sparser further out.
       const xs: { x: number; major: boolean }[] = [];
       for (let e = -3; e <= 2; e++) {
@@ -231,24 +318,22 @@ function motif(code: string): ReactNode {
         </>
       );
     }
-    case "M11": {
-      // In high dimensions, random points crowd onto a thin shell.
-      const pts = Array.from({ length: 70 }, () => {
-        const a = r() * Math.PI * 2;
-        const rad = 40 + gauss() * 4;
-        return { x: 120 + rad * Math.cos(a) * 1.35, y: 60 + rad * Math.sin(a) };
-      });
+    case "M14": {
+      // A noisy training loss falling while the learning rate warms up, then decays.
+      const lr = (x: number) => (x < 52 ? (x - 18) / 34 : 0.1 + 0.45 * (1 + Math.cos((Math.PI * (x - 52)) / 170)));
+      const loss = (x: number) => 72 - 50 * Math.exp(-(x - 18) / 46);
+      const noisy: string[] = [];
+      for (let x = 18; x <= 222; x += 3) noisy.push(`${x},${f1(loss(x) + gauss() * 9 * (0.35 + 0.65 * lr(x)))}`);
       return (
         <>
-          <ellipse cx={120} cy={60} rx={54} ry={40} fill="none" stroke="currentColor" strokeWidth={1.5} opacity={0.35} />
-          <ellipse cx={120} cy={60} rx={20} ry={15} fill="currentColor" opacity={0.08} />
-          {pts.map((p, i) => (
-            <circle key={i} cx={f1(p.x)} cy={f1(p.y)} r={2.5} fill="currentColor" opacity={0.65} />
-          ))}
+          <path d={`${curve((x) => 106 - 20 * lr(x), 18, 222, 2)}L222 106L18 106Z`} fill="currentColor" opacity={0.14} />
+          <line x1={14} y1={106} x2={226} y2={106} stroke="currentColor" strokeWidth={1.5} opacity={0.45} />
+          <polyline points={noisy.join(" ")} fill="none" stroke="currentColor" strokeWidth={1.5} opacity={0.5} strokeLinejoin="round" />
+          <path d={curve(loss, 18, 222, 3)} fill="none" stroke="currentColor" strokeWidth={2.5} />
         </>
       );
     }
-    case "M12": {
+    case "M15": {
       // Random walks spreading out from one start.
       const walks = [0.95, 0.6, 0.4, 0.25].map((o) => {
         let y = 60;
@@ -287,6 +372,35 @@ function motif(code: string): ReactNode {
       );
     }
     case "L2": {
+      // A decision tree's axis-aligned regions, each voting for one class.
+      const regions = [
+        { x: 14, y: 8, w: 96, h: 48, a: true },
+        { x: 14, y: 56, w: 96, h: 56, a: false },
+        { x: 110, y: 8, w: 116, h: 68, a: false },
+        { x: 110, y: 76, w: 60, h: 36, a: true },
+        { x: 170, y: 76, w: 56, h: 36, a: false },
+      ];
+      return (
+        <>
+          {regions.map((g, i) => (
+            <rect key={`r${i}`} x={g.x} y={g.y} width={g.w} height={g.h} fill="currentColor" opacity={g.a ? 0.16 : 0.04} />
+          ))}
+          <path d="M110 8 V112 M14 56 H110 M110 76 H226 M170 76 V112" fill="none" stroke="currentColor" strokeWidth={2.25} />
+          {regions.flatMap((g, i) =>
+            Array.from({ length: Math.round((g.w * g.h) / 1100) + 2 }, (_, k) => {
+              const cx = f1(g.x + 8 + r() * (g.w - 16));
+              const cy = f1(g.y + 8 + r() * (g.h - 16));
+              return g.a ? (
+                <circle key={`p${i}-${k}`} cx={cx} cy={cy} r={3.5} fill="currentColor" opacity={0.85} />
+              ) : (
+                <circle key={`p${i}-${k}`} cx={cx} cy={cy} r={3.25} fill="none" stroke="currentColor" strokeWidth={1.75} />
+              );
+            }),
+          )}
+        </>
+      );
+    }
+    case "L3": {
       // A small network: three layers of units and the weights between them.
       const layers = [3, 5, 4, 2].map((n, li) =>
         Array.from({ length: n }, (_, i) => ({ x: 40 + li * 54, y: 60 + (i - (n - 1) / 2) * 22 })),
@@ -306,7 +420,7 @@ function motif(code: string): ReactNode {
         </>
       );
     }
-    case "L3": {
+    case "L4": {
       // A causal attention pattern: each token looks only at the ones before it.
       const n = 8;
       const s = 11;
@@ -329,7 +443,7 @@ function motif(code: string): ReactNode {
         </>
       );
     }
-    case "L4": {
+    case "L5": {
       // A learnt space where similar things land together.
       const centres = [
         { x: 66, y: 44 },
@@ -350,7 +464,7 @@ function motif(code: string): ReactNode {
         </>
       );
     }
-    case "L5": {
+    case "L6": {
       // Loss falling as a straight line on log axes, for models of growing size.
       return (
         <>
@@ -370,7 +484,7 @@ function motif(code: string): ReactNode {
         </>
       );
     }
-    case "L6": {
+    case "L7": {
       // A grid world, and the path an agent learns to the goal.
       const cols = 8;
       const rows = 4;
@@ -403,7 +517,7 @@ function motif(code: string): ReactNode {
         </>
       );
     }
-    case "L7": {
+    case "L8": {
       // A broad starting distribution and the sharper one post-training moves it to.
       const g = (mu: number, sd: number, h: number) => (x: number) => 104 - h * Math.exp(-((x - mu) ** 2) / (2 * sd * sd));
       return (
@@ -416,7 +530,7 @@ function motif(code: string): ReactNode {
         </>
       );
     }
-    case "L8": {
+    case "L9": {
       // Activations of many units, with one feature picked out.
       const cols = 16;
       const rows = 6;
@@ -489,6 +603,28 @@ function motif(code: string): ReactNode {
       );
     }
     case "E4": {
+      // A processor and the memory beneath it: each level larger and slower than the one above.
+      const widths = [24, 52, 80, 108, 136];
+      const pins = [30, 40, 50];
+      return (
+        <>
+          {pins.map((p) => (
+            <g key={p} stroke="currentColor" strokeWidth={2} opacity={0.7}>
+              <line x1={p} y1={33} x2={p} y2={40} />
+              <line x1={p} y1={76} x2={p} y2={83} />
+              <line x1={15} y1={p + 18} x2={22} y2={p + 18} />
+              <line x1={58} y1={p + 18} x2={65} y2={p + 18} />
+            </g>
+          ))}
+          <rect x={22} y={40} width={36} height={36} rx={5} fill="currentColor" />
+          <path d="M67 58 C 100 58, 104 23, 134 23" fill="none" stroke="currentColor" strokeWidth={1.75} strokeDasharray="4 4" opacity={0.6} />
+          {widths.map((w, i) => (
+            <rect key={w} x={150 - w / 2} y={16 + i * 19} width={w} height={14} rx={3} fill="currentColor" opacity={0.85 - i * 0.15} />
+          ))}
+        </>
+      );
+    }
+    case "E5": {
       // A computation graph: values flow forwards, gradients flow back.
       const nodes = [
         { x: 30, y: 34 },
@@ -514,7 +650,7 @@ function motif(code: string): ReactNode {
         </>
       );
     }
-    case "E5": {
+    case "E6": {
       // Tiled matrix multiplication: a row block of A and a column block of B make one tile of C.
       const s = 9;
       const grid = (ox: number, oy: number, cols: number, rows: number, hi: (x: number, y: number) => boolean) =>
@@ -532,7 +668,7 @@ function motif(code: string): ReactNode {
         </>
       );
     }
-    case "E6": {
+    case "E7": {
       // Devices in a ring, each passing a slice to the next.
       const n = 6;
       const pts = Array.from({ length: n }, (_, i) => {
@@ -554,7 +690,7 @@ function motif(code: string): ReactNode {
         </>
       );
     }
-    case "E7": {
+    case "E8": {
       // Requests joining and leaving a running batch over time.
       const bars = Array.from({ length: 7 }, (_, i) => {
         const start = 18 + r() * 110;
@@ -570,7 +706,7 @@ function motif(code: string): ReactNode {
         </>
       );
     }
-    case "E8": {
+    case "E9": {
       // Shards of data streaming through one pipeline.
       return (
         <>
@@ -587,7 +723,7 @@ function motif(code: string): ReactNode {
         </>
       );
     }
-    case "E9": {
+    case "E10": {
       // Results with honest error bars against a baseline.
       const vals = [52, 64, 58, 78, 70];
       return (

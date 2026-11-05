@@ -21,25 +21,25 @@ concepts:
       summary: >-
         Rules of the form mx + c, which change at the same rate everywhere. Their graphs are straight
         lines, two points fix one, and the rate carries units.
-      usedBy: [M2.4, L1.2, M3.1]
+      usedBy: [M2.6, L1.2, M3.1]
     - id: M1.4/average-rate-of-change
       name: Average rate of change
       summary: >-
         The change in a function's output divided by the change in its input between two points: the
         slope of the chord that joins them.
-      usedBy: [M3.1, M3.7]
+      usedBy: [M3.1, M3.8]
     - id: M1.4/quadratics
       name: Quadratic functions
       summary: >-
         Rules built from x², x and a number, with a number other than 0 in front of x². Their graphs
         are bowls, and their zeros come from one formula.
-      usedBy: [M3.6, M9.3]
+      usedBy: [M3.7, M10.4]
     - id: M1.4/completing-the-square
       name: Completing the square
       summary: >-
         Rewriting a quadratic as a number times a squared bracket, plus a number, which shows its
         lowest or highest point at once.
-      usedBy: [M3.6, M4.8, M3.11]
+      usedBy: [M3.7, M4.9, M3.12]
   used:
     - M1.1/units-as-algebra
     - M1.2/expression-trees
@@ -65,7 +65,7 @@ links:
       bridge: >-
         The average rate of change is measured between two points. Shrinking the gap to nothing gives
         the rate at a single point, the derivative.
-    - lesson: M3.6
+    - lesson: M3.7
       bridge: >-
         Near its lowest point, almost any smooth loss, the score of a model's misses that training
         makes small, looks like a bowl, and gradient descent finds the bottom by walking downhill in

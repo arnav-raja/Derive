@@ -22,13 +22,13 @@ concepts:
         Every expression has a shape: a tree in which each operation combines the values beneath
         it. The order of operations and brackets fix the shape, and evaluation works up from the
         leaves.
-      usedBy: [E1.1, M5.6]
+      usedBy: [E1.1, M6.5]
     - id: M1.2/field-axioms
       name: The rules of arithmetic
       summary: >-
         A short list of rules about adding and multiplying, and how the other facts of arithmetic,
         such as a negative times a negative, follow from them.
-      usedBy: [M1.6, M2.5, M10.2]
+      usedBy: [M1.6, M2.7, M13.2]
     - id: M1.2/equivalence
       name: Equivalent expressions
       summary: >-
@@ -40,13 +40,13 @@ concepts:
       summary: >-
         Solving an equation by replacing it with simpler ones that have the same solutions, and
         spotting the steps that can quietly add solutions or lose them.
-      usedBy: [M1.3, M1.4, M2.6, M1.6]
+      usedBy: [M1.3, M1.4, M2.4, M1.6]
     - id: M1.2/exponent-rules
       name: Exponent rules
       summary: >-
         The rules for powers, derived from what a power means, and the meanings of zero and negative
         exponents that those rules force.
-      usedBy: [M1.5, M3.5, M1.6]
+      usedBy: [M1.5, M3.6, M1.6]
   used: [M1.1/powers-of-ten]
 links:
   requires:
@@ -64,9 +64,9 @@ links:
       bridge: >-
         Python reads every expression as exactly these trees and evaluates it from the leaves up,
         so the order of operations is a question you can ask the computer.
-    - lesson: M10.2
+    - lesson: M13.2
       bridge: >-
-        M10.2 returns to this lesson's puzzle and measures how much error a computer's arithmetic adds,
+        M13.2 returns to this lesson's puzzle and measures how much error a computer's arithmetic adds,
         and which calculations make it large.
     - lesson: M1.8
       bridge: >-

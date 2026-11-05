@@ -22,7 +22,7 @@ concepts:
         Every value has a type, such as a whole number (int), a number with a point (float), text
         (str) or a truth value (bool). The type decides what an operation means, so + adds numbers
         but joins text, and a change of type is always written out, as in int("42").
-      usedBy: [E1.2, E1.6, M10.1]
+      usedBy: [E1.2, E1.6, M13.1]
     - id: E1.1/variables-as-names
       name: Variables as names
       summary: >-
@@ -44,7 +44,7 @@ concepts:
         A float holds the nearest number it can make as a whole number times a power of two, good
         to about 16 significant figures. So 0.1 is stored slightly wrong, floats should be compared
         within a tolerance, and big floats are spaced far apart. An int is exact at any size.
-      usedBy: [M10.1, M10.2]
+      usedBy: [M13.1, M13.2]
   used: [M1.1/powers-of-ten, M1.2/expression-trees, M1.2/field-axioms]
 links:
   requires:
@@ -73,12 +73,12 @@ links:
       bridge: >-
         Text is a value with a type of its own, str. E1.6 looks inside it, at the characters, the
         bytes that store them and the files full of text that programs read.
-    - lesson: M10.1
+    - lesson: M13.1
       bridge: >-
-        M10.1 opens up a float: its sign, its power of two and its 52 binary digits after the
+        M13.1 opens up a float: its sign, its power of two and its 52 binary digits after the
         point, and the smaller formats, such as bfloat16, that make training fast.
-    - lesson: M10.2
+    - lesson: M13.2
       bridge: >-
-        M10.2 measures the error that every float operation can add, and finds the calculations,
+        M13.2 measures the error that every float operation can add, and finds the calculations,
         such as subtracting two nearly equal numbers, that make it large.
 skills: []

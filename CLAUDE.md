@@ -62,7 +62,7 @@ It is for development and tests only and refuses to run on Vercel.
 | `src/lib/store/` | The `Store` interface, `SupabaseStore` (production) and `FileStore` (local) |
 | `src/lib/curriculum/` | The compiled curriculum graph and the graph rules |
 | `src/lib/content/` | Lesson file schemas and loaders |
-| `content/curriculum/curriculum.json` | All 282 lessons, 29 courses and 9 capstones with their links |
+| `content/curriculum/curriculum.json` | All 332 lessons, 34 courses and 9 capstones with their links |
 | `content/lessons/<code>/` | One lesson: lesson.yaml, six phase MDX files, exercises, tutor notes, references |
 | `supabase/migrations/` | Every database change, applied in order |
 

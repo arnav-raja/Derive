@@ -21,25 +21,25 @@ concepts:
       summary: >-
         A function is a rule that gives every input exactly one output. It can be drawn as arrows
         from inputs to outputs, written as a formula, or kept as a table.
-      usedBy: [E1.3, M2.4, M1.4]
+      usedBy: [E1.3, M2.6, M1.4]
     - id: M1.3/injective-surjective
       name: One-to-one and onto
       summary: >-
         Two questions to ask of any function about how its inputs and outputs pair up, and what their
         answers decide.
-      usedBy: [M2.7, M12.8]
+      usedBy: [M2.8, M15.9]
     - id: M1.3/composition
       name: Composition
       summary: >-
         Feeding the output of one function into another makes a new function, and the order in which
         the two are applied usually matters.
-      usedBy: [M3.4, M2.5, E1.3]
+      usedBy: [M3.4, M2.7, E1.3]
     - id: M1.3/inverse-functions
       name: Inverse functions
       summary: >-
         The function that undoes another: how to find it by solving for the input, and how to undo a
         chain of functions.
-      usedBy: [M1.5, M4.12]
+      usedBy: [M1.5, M8.7]
   used: [M1.2/solving-equations, M1.2/expression-trees, M1.2/field-axioms]
 links:
   requires:
@@ -62,7 +62,7 @@ links:
       bridge: >-
         The chain rule finds how fast a composition changes from how fast its parts change, and the
         order of composition decides how the parts combine.
-    - lesson: L3.2
+    - lesson: L4.2
       bridge: >-
         A byte-pair encoder is a real tokeniser of the same kind, with a vocabulary of tens of
         thousands of pieces. It chooses its split by merging pairs of pieces in a learned order rather

@@ -23,7 +23,7 @@ concepts:
         $\sum_{k=1}^{n} a_k$ is short for $a_1 + a_2 + \dots + a_n$. The counter's letter does not
         matter, its start can be shifted, and a sum can be split, scaled and regrouped by the rules
         of ordinary addition.
-      usedBy: [M4.5, M3.8, M1.9]
+      usedBy: [M4.6, M3.9, M1.9]
     - id: M1.6/arithmetic-series
       name: Arithmetic series
       summary: >-
@@ -37,14 +37,14 @@ concepts:
         Sums whose terms are each the same multiple $r$ of the one before. Subtracting $r$ times the
         sum gives $1 + r + \dots + r^{n-1} = \frac{1 - r^n}{1 - r}$ for $r \ne 1$, and for $r$
         between $-1$ and 1 the sum with no last term is $\frac{1}{1 - r}$.
-      usedBy: [L6.3, M9.5]
+      usedBy: [L7.3, M14.2]
     - id: M1.6/product-notation
       name: Product notation
       summary: >-
         $\prod_{k=1}^{n} a_k$ is short for $a_1 \times a_2 \times \dots \times a_n$, and
         $n! = \prod_{k=1}^{n} k$ counts the orders of $n$ different things. A product can telescope,
         cancelling down to its two ends.
-      usedBy: [M1.10, M7.2]
+      usedBy: [M1.10, M9.2]
   used: [M1.2/field-axioms, M1.2/solving-equations, M1.2/exponent-rules, M1.3/function-as-mapping]
 links:
   requires:
@@ -68,18 +68,18 @@ links:
         Pairing and subtracting proved this lesson's formulas, with tricks that fit one kind of sum.
         M1.9's induction proves formulas where no such trick is to hand, such as the sum of the first
         n squares, one step at a time.
-    - lesson: M3.8
+    - lesson: M3.9
       bridge: >-
         An integral is the limit of sums of ever more, ever thinner strips, each sum written with Σ.
-    - lesson: M4.5
+    - lesson: M4.6
       bridge: >-
         The expected value of a sum of random quantities is the sum of their expected values: a rule
-        for splitting a Σ that M4.5 proves and uses throughout.
-    - lesson: L6.3
+        for splitting a Σ that M4.6 proves and uses throughout.
+    - lesson: L7.3
       bridge: >-
         An agent's discounted return adds its rewards weighted by 1, γ, γ² and so on, a geometric
         series whose total stays finite when γ is less than 1.
-    - lesson: M9.5
+    - lesson: M14.2
       bridge: >-
         Momentum keeps a running average of past gradients whose weights shrink geometrically, so
         how far back it remembers is a geometric series, about 1/(1 − β) steps.

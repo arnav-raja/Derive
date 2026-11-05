@@ -13,7 +13,15 @@ lessons) is under way: seven lessons written (M1.1 to M1.6 and E1.1), five to go
 - Plan approved; decision 1 revised on 4 November 2026: Derive is for Arnav alone.
 - Supabase project `spivlvrkjsqxjeonnmvd` (Mumbai) with the schema, row-level security and a
   sign-up guard that admits exactly one allow-listed account.
-- Curriculum graph for 282 lessons, 29 courses and 9 capstones, with the graph rules.
+- Curriculum graph for 332 lessons, 34 courses and 9 capstones, with the graph rules.
+- Course update, approved by Arnav and applied on 5 November (plan:
+  https://claude.ai/artifact/4ncP8AwPJM1JxBnYK3WFLj): the mathematics, ML and MLE courses
+  rebuilt from the source textbooks, with five new courses (M5 Calculus II, M8 Probability II,
+  M12 Linear algebra III, L2 Statistical learning, E4 Computer systems), 57 new lessons, seven
+  merges, and stage hours of 80, 175, 315, 280 and 465 (about 1,315). Most lesson codes after
+  M1 and E1 changed; `docs/course-update.md` maps every old code to its new one. The written
+  lessons' links and `docs/phase-1-lessons.md` now use the new codes, and the course artwork
+  follows the new course codes, with drawings for the five new courses.
 - App: design tokens, app shell, sign-in, Today, Curriculum, Review, Notebook, Progress,
   Settings and the health route. Vercel project `derive` (bom1) at https://derive-tan.vercel.app.
   CI runs the type check, lint, unit tests, graph and content checks, and the build.
@@ -65,7 +73,7 @@ lessons) is under way: seven lessons written (M1.1 to M1.6 and E1.1), five to go
   the real numbers, the product rule named and the change of base given for any two bases,
   build reordered so that underflow comes before the log score, tests that guard the starter and
   check that `math.log10` is really used, SymPy's rules tested without `force=True`, rewritten
-  rungs, and new later uses (M1.12, L1.6, M7.2, M10.1), with M7.2 now requiring M1.5. All 51
+  rungs, and new later uses (M1.12, L1.6, M9.2, M13.1), with M9.2 now requiring M1.5. All 51
   items pass `check:exercises` and the lesson was walked again end to end.
 - Engine work from these lessons: the mapping diagram's `properties` switch and clearer
   verdicts, fraction and power-of-ten number input, `polynomial` and `completedSquare` answer
@@ -84,7 +92,7 @@ lessons) is under way: seven lessons written (M1.1 to M1.6 and E1.1), five to go
   shown rounded up to its limit; the staircase's turn button stays hidden until it opens; the
   sums are said to "close in on" their limit throughout; build tests for n = 0 and for a missing
   `return`, and a message that shows the float's wrong difference at 10¹²; a wrong program for
-  the SymPy build; rewritten rungs and misconceptions; and new bridges for M1.5, M1.9 and M9.5.
+  the SymPy build; rewritten rungs and misconceptions; and new bridges for M1.5, M1.9 and M14.2.
   All 49 items pass `check:exercises`, and the lesson was walked again end to end after the
   redesign, with its figures checked in both themes and at phone width.
 - E1.1 Programs as precise instructions: values, variables and expressions: written on
@@ -109,8 +117,8 @@ lessons) is under way: seven lessons written (M1.1 to M1.6 and E1.1), five to go
    `python3 -I prep-store.py store-before-E1.1-walk.json .derive-local/store.json M1.6=<day>`,
    then `node walk-e11.cjs overview puzzle recall explore` and `derive build explain`.
 2. Write E1.2 to E1.6 from `docs/phase-1-lessons.md`, the same way, keeping the uses that M1.1 and
-   E1.1 promise (listed there). Fix these descendant targets on the way: E1.5 not L2.4 or L6.3,
-   E1.6 unicode-and-bytes not M8.6.
+   E1.1 promise (listed there). Fix these descendant targets on the way: E1.5 not L3.4 or L7.3,
+   E1.6 unicode-and-bytes not M11.7. Codes are the new ones from the course update.
 3. Tests and CI: Playwright end-to-end tests (no config yet) with axe and screenshots in both
    themes; unit tests for the mixed check, placement and the review queue; add
    `check:exercises` to CI; update the commands table in CLAUDE.md.
@@ -142,6 +150,9 @@ lessons) is under way: seven lessons written (M1.1 to M1.6 and E1.1), five to go
 - Lesson rule learnt from the M1.1 review: prose after a prediction, a figure caption or the
   names section must sit inside a `<Reveal>` for the exercise it would give away (now in
   CLAUDE.md).
+- Lesson codes changed with the course update of 5 November. A note, store or script from
+  before then that names a lesson after M1 or E1 uses the old code; `docs/course-update.md`
+  gives the new one.
 
 ## Waiting on Arnav
 

@@ -119,7 +119,7 @@ A typical $\beta$ is 0.9. To see what the start does, suppose that every gradien
 
 <Reveal for="derive-ema-start">
 
-Every gradient was $g$, yet the average is only $(1 - \beta^t)\,g$: it starts too small, because it started at 0. With $\beta = 0.9$, after 10 steps $1 - 0.9^{10} \approx 0.65$, so the average is only about 65 per cent of $g$. The optimiser called Adam, which M9.6 builds, divides by exactly this factor, using $\frac{m_t}{1 - \beta^t}$, and so corrects the slow start. As $t$ grows, $\beta^t$ shrinks towards 0 and the correction fades away.
+Every gradient was $g$, yet the average is only $(1 - \beta^t)\,g$: it starts too small, because it started at 0. With $\beta = 0.9$, after 10 steps $1 - 0.9^{10} \approx 0.65$, so the average is only about 65 per cent of $g$. The optimiser called Adam, which M14.3 builds, divides by exactly this factor, using $\frac{m_t}{1 - \beta^t}$, and so corrects the slow start. As $t$ grows, $\beta^t$ shrinks towards 0 and the correction fades away.
 
 ## A product that cancels
 

@@ -72,6 +72,6 @@ Explore found that near $10^{16}$ neighbouring floats are 2 apart, because a who
 
 They are 16,384 apart, which is $2^{14}$. Each time the numbers pass a power of two, they gain a binary digit that a float cannot keep, so the gap doubles: 2 from $2^{53}$, 4 from $2^{54}$, and so on, up to $2^{14}$ from $2^{66}$, about $7.4 \times 10^{19}$, to $2^{67}$, about $1.5 \times 10^{20}$. So the gap grows roughly in proportion to the numbers, and a quick estimate comes close: from $10^{16}$ to $10^{20}$ the numbers grow by a factor of $10^4$, so the gap grows from 2 to about 20,000. Everywhere, the gap is between about $1.1 \times 10^{-16}$ and $2.2 \times 10^{-16}$ of the number itself, which is the exact meaning of "about 16 significant figures".
 
-A gap of 16,384 means that `1e20 + 1000 == 1e20` is `True`: 1,000 is less than half a gap, so the sum rounds straight back. A long run of small numbers added one at a time to a huge float total can vanish entirely in this way, which is why M10.2 measures such errors with care.
+A gap of 16,384 means that `1e20 + 1000 == 1e20` is `True`: 1,000 is less than half a gap, so the sum rounds straight back. A long run of small numbers added one at a time to a huge float total can vanish entirely in this way, which is why M13.2 measures such errors with care.
 
 </Reveal>

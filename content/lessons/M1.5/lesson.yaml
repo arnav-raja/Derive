@@ -22,26 +22,26 @@ concepts:
       summary: >-
         Quantities multiplied by the same factor at each step, $a \times b^x$. Powers are given a
         meaning for every number $x$, and growth of this kind soon outruns any steady change.
-      usedBy: [M3.5, M11.6, M1.12]
+      usedBy: [M3.6, L6.2, M1.12]
     - id: M1.5/logarithms
       name: Logarithms
       summary: >-
         For a positive base $b$ other than 1, $\log_b x$ is the power of $b$ that gives $x$: the
         inverse of $b^x$, defined only for positive $x$. Base 10 counts powers of ten, and base 2
         counts doublings.
-      usedBy: [M8.1, M10.3, M3.5]
+      usedBy: [M11.1, M13.3, M3.6]
     - id: M1.5/log-rules
       name: The rules for logarithms
       summary: >-
         Logarithms turn products into sums, quotients into differences and powers into multiples,
         and any base can be had from any other by one division.
-      usedBy: [M8.1, M10.3, L1.6, M7.2]
+      usedBy: [M11.1, M13.3, L1.6, M9.2]
     - id: M1.5/log-scales
       name: Log scales
       summary: >-
         Scales on which equal steps mean equal factors, so a number's position is its logarithm.
         Exponential change is a straight line on them, and very different sizes fit on one picture.
-      usedBy: [M11.6, L5.2, M10.1]
+      usedBy: [L6.2, M13.1]
   used: [M1.1/powers-of-ten, M1.2/exponent-rules, M1.2/solving-equations, M1.3/inverse-functions, M1.3/injective-surjective]
 links:
   requires:
@@ -57,20 +57,20 @@ links:
         multiplies by the same factor. An exponential that grows overtakes any straight line,
         however steep.
   foreshadows:
-    - lesson: M3.5
+    - lesson: M3.6
       bridge: >-
-        This lesson uses base 10 and base 2. M3.5 shows why one base, the number e, about 2.718, makes
+        This lesson uses base 10 and base 2. M3.6 shows why one base, the number e, about 2.718, makes
         the calculus of exponentials simplest, and why it is the base that Python's math.log uses.
-    - lesson: M8.1
+    - lesson: M11.1
       bridge: >-
-        The surprise of an event with probability p is measured by minus its logarithm, and M8.1
+        The surprise of an event with probability p is measured by minus its logarithm, and M11.1
         shows why, using this lesson's rules.
-    - lesson: M10.3
+    - lesson: M13.3
       bridge: >-
-        Multiplying many probabilities runs into the limits of how a computer stores numbers. M10.3
+        Multiplying many probabilities runs into the limits of how a computer stores numbers. M13.3
         shows how to add probabilities that are stored as logarithms without ever leaving the
         logarithms.
-    - lesson: M11.6
+    - lesson: L6.2
       bridge: >-
         On log scales in both directions a power law is a straight line, which is how the scaling
         laws of language models are read off their graphs.
