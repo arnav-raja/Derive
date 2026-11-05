@@ -12,16 +12,10 @@ This total is called the *squared error*. Squaring makes every miss count as pos
 
 <Reveal for="puzzle-best-guess">
 
-Side by side, the totals look like this:
+Squaring does pull the best guess towards the far-off 7, but only as far as the mean.
 
-| Guess $w$ | 3 | 3.9 | 4 | 4.1 | 4.5 | 5 |
-| --- | --- | --- | --- | --- | --- | --- |
-| $E(w)$ | 17 | 14.03 | 14 | 14.03 | 14.75 | 17 |
+That raises two questions. Is the mean the best guess for every set of data, or only for these three numbers? And can the lowest point be found exactly, without trying values one at a time? Both answers come from the shape of $E$. Multiplied out, $E(w) = 3w^2 - 24w + 62$, a *quadratic*, and this lesson finds the lowest point of any quadratic exactly. The Derive phase answers both questions.
 
-The middle value, 3, does worse than the mean, and so does halfway, 4.5. Squaring does pull the best guess towards the far-off 7, but only as far as the mean. Even guesses just either side of 4 do slightly worse.
-
-That raises two questions. Is the mean the best guess for every set of data, or only for these three numbers? And can the lowest point be found exactly, without trying values one at a time? Both answers come from the shape of $E$. Multiplied out, $E(w) = 3w^2 - 24w + 62$, a *quadratic*, and this lesson finds the lowest point of any quadratic exactly. In the Derive phase you will prove that, under squared error, the mean is always the best single guess.
-
-This is not a curiosity. Squared error is the most common way to score a model's numerical predictions, and the link between squared error and averages runs through the whole of machine learning. Other scores pick other winners: the middle value wins under a different score, and in Build you will see which.
+Squared error is the most common way to score a model's numerical predictions, so its link with averages comes up again and again in machine learning. Other scores can pick other winners, and in Build you will try one.
 
 </Reveal>

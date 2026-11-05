@@ -80,7 +80,8 @@ def answer_key(ans):
     if t == "number":
         tol = ans.get("tolerance") or {}
         extra = f", within a factor of {tol['factor']}" if tol.get("factor") else (
-            f", relative tolerance {tol['rel']}" if tol.get("rel") else "")
+            f", relative tolerance {tol['rel']}" if tol.get("rel") else (
+                f", give or take {tol['abs']}" if tol.get("abs") else ""))
         return f"{ans['value']} {ans.get('unit', '')}{extra}"
     if t == "expression":
         return f"{ans['reference']} (also accepted: {ans.get('accept', [])})"
@@ -93,7 +94,9 @@ def answer_key(ans):
         names = {r["id"]: r.get("name", r["id"]) for r in ans["rules"]}
         return "rules in order: " + ", ".join(names[l["rule"]] for l in ans["lines"])
     if t == "text":
-        return "graded against the rubric"
+        rub = "\n".join(f"   - {r['criterion']}" for r in ans["rubric"])
+        return (f"graded against the rubric:\n{rub}\n\nA reference answer that meets it:\n"
+                f"{ans.get('reference', '').strip()}")
     return ""
 
 

@@ -2,9 +2,9 @@ Explore found its facts by looking at tables and pictures. Derive proves them fo
 
 ## Two points fix a line
 
-A linear function is $f(x) = mx + c$, so two numbers decide it, and two points are enough to find them. The slope is the rise between the points divided by the step; then $c$ is whatever makes the line pass through one of them.
+A linear function is $f(x) = mx + c$, so two numbers decide it, and two points with different $x$ are enough to find them. The slope is the rise between the points divided by the step; then $c$ is whatever makes the line pass through one of them.
 
-Here is a rule you used in M1.3 without being told where it came from. Water freezes at 0 °C, which is 32 °F, and boils at 100 °C, which is 212 °F, and the two scales are related by a steady rule.
+Here is a rule you used in M1.3, on functions and inverses, without being told where it came from. Water freezes at 0 °C, which is 32 °F, and boils at 100 °C, which is 212 °F, and the two scales are related by a steady rule.
 
 <Steps>
   <Step why="the two points, as (Celsius, Fahrenheit)">$(0, 32)$ and $(100, 212)$</Step>
@@ -13,7 +13,7 @@ Here is a rule you used in M1.3 without being told where it came from. Water fre
   <Step why="the line through both points">$F = 1.8C + 32$</Step>
 </Steps>
 
-The slope carries units, as every rate does: each degree Celsius is 1.8 degrees Fahrenheit.
+The slope carries units, as every rate does: a rise of 1 °C is a rise of 1.8 °F.
 
 <Exercise id="derive-line-through" />
 
@@ -23,7 +23,7 @@ Each extra billion tokens costs 2 more hours, and $c = 1$ is an hour of start-up
 
 ## The rate of a square, for every pair
 
-Explore found that the rate of $x^2$ between two inputs came out as their sum for every pair tried. Trying pairs can never cover every pair, so prove it.
+Explore found that the rate of $x^2$ between two inputs came out as their sum for every pair tried. Now prove it for every pair.
 
 <Exercise id="derive-chord-square" />
 
@@ -31,7 +31,7 @@ Explore found that the rate of $x^2$ between two inputs came out as their sum fo
 
 <Reveal for="derive-chord-square">
 
-When $a = b$ there is no chord at all, only a single point, and what a rate should mean at a single point is the question a later lesson on rates of change, M3.1, starts from.
+When $u = v$ there is no chord at all, only a single point, and what a rate should mean at a single point is the question a later lesson on rates of change, M3.1, starts from.
 
 ## The rate of any quadratic
 
@@ -43,17 +43,17 @@ The same cancelling works for every quadratic.
 
 <Reveal for="derive-general-rate">
 
-The same steps on $f(x) = px^2 + qx + r$ give the average rate of change from $a$ to $b$ as
+The same steps on $f(x) = px^2 + qx + r$ give the average rate of change from $u$ to $v$ as
 
 $$
-p(a + b) + q.
+p(u + v) + q.
 $$
 
 The number $r$ drops out, because adding a number lifts the whole curve without changing any rise. Two of Explore's findings follow from this formula.
 
 The rises of rises. With steps of 1, the rise from $x$ to $x + 1$ is the rate times the step, $p(2x + 1) + q$. Moving $x$ on by 1 adds $2p$ to that rise. So the rises of the rises are all $2p$: 2 for $x^2$, and 6 for $3x^2 + x$, as the table showed.
 
-Where the chord sits. The sum $a + b$ is twice the midpoint of $a$ and $b$, so the rate depends only on where the middle of the interval is, not on how wide it is. For $x^2$, the pairs 1 and 3, and 0 and 4, share the midpoint 2, and both have the rate 4.
+Where the chord sits. The sum $u + v$ is twice the midpoint of $u$ and $v$, so the rate depends only on where the middle of the interval is, not on how wide it is. For $x^2$, the pairs 1 and 3, and 0 and 4, share the midpoint 2, and both have the rate 4.
 
 ## Completing the square
 
@@ -96,9 +96,9 @@ $$
 x = -\frac{b}{2a}.
 $$
 
-## A second angle: the mirror
+## A second angle: equal heights
 
-Explore found the bottom of $x^2 - 6x + 11$ another way, halfway between two inputs of equal height, and that works in general too. The first two terms, $ax^2 + bx = x(ax + b)$, are 0 at $x = 0$ and at $x = -\tfrac{b}{a}$. So $ax^2 + bx + c$ has the same height, $c$, at both, and the vertex is halfway between them, at $x = -\tfrac{b}{2a}$. One argument used algebra and the other symmetry, and they agree.
+The rate of a quadratic gives the vertex without completing the square. For $f(x) = ax^2 + bx + c$, the chord from $u$ to $v$ has rate $a(u + v) + b$, so $f(v) - f(u) = (v - u)\big(a(u + v) + b\big)$. Two different inputs therefore have the same height exactly when $a(u + v) + b = 0$, that is, when their midpoint $\tfrac{u + v}{2}$ is $-\tfrac{b}{2a}$. So inputs of equal height come in pairs mirrored about the line $x = -\tfrac{b}{2a}$, as Explore saw for one bowl. When $a > 0$, every chord to the right of that line slopes up and every chord to its left slopes down, so the bottom is on the line. Completing the square and the chords are different arguments, and they agree.
 
 ## Where a quadratic is zero
 
@@ -106,12 +106,12 @@ Completing the square also solves $ax^2 + bx + c = 0$.
 
 <Steps>
   <Step why="the completed square, set equal to 0">$a\Big(x + \dfrac{b}{2a}\Big)^2 + c - \dfrac{b^2}{4a} = 0$</Step>
-  <Step why="move the number part to the other side, then divide both sides by a">$\Big(x + \dfrac{b}{2a}\Big)^2 = \dfrac{b^2 - 4ac}{4a^2}$</Step>
-  <Step why="when the right side is positive, two numbers have it as their square, as M1.3 found; the ± takes both, and also covers the sign of 2a">$x + \dfrac{b}{2a} = \pm\dfrac{\sqrt{b^2 - 4ac}}{2a}$</Step>
-  <Step why="subtract b/(2a) from both sides">$x = \dfrac{-b \pm \sqrt{b^2 - 4ac}}{2a}$</Step>
+  <Step why="move the number part to the other side and divide both sides by a; then c/a is 4ac/(4a²), so the right side is one fraction over 4a²">$\Big(x + \dfrac{b}{2a}\Big)^2 = \dfrac{b^2 - 4ac}{4a^2}$</Step>
+  <Step why="when the right side is positive, two numbers have it as their square, as M1.3 found when it undid squaring, and the ± takes both; the square root of 4a² is 2a when a > 0 and −2a when a < 0, and the ± covers that sign too">$x + \dfrac{b}{2a} = \pm\dfrac{\sqrt{b^2 - 4ac}}{2a}$</Step>
+  <Step why="subtract b/(2a) from both sides, and write the result as one fraction">$x = \dfrac{-b \pm \sqrt{b^2 - 4ac}}{2a}$</Step>
 </Steps>
 
-This is the *quadratic formula*. The number $b^2 - 4ac$ decides how many solutions there are. When it is positive there are two, mirrored about the vertex. When it is 0 there is one, the vertex itself. When it is negative there are none, because no number has a negative square.
+This is the *quadratic formula*. The number $b^2 - 4ac$ decides how many solutions there are. When it is positive there are two, mirrored about the vertex. When it is 0 there is one, the vertex itself. When it is negative there are no real solutions, because no real number has a negative square; M1.12, on complex numbers, meets numbers that do.
 
 <Exercise id="derive-no-solutions" />
 
@@ -136,16 +136,18 @@ In $E(w) = 3(w - 4)^2 + 14$ the squared part is never negative and is 0 only at 
 Now take any three values $y_1$, $y_2$ and $y_3$. Each square multiplies out as $(y - w)^2 = y^2 - 2yw + w^2$, and adding the three gives
 
 $$
-E(w) = 3w^2 - 2(y_1 + y_2 + y_3)\,w + \big(y_1^2 + y_2^2 + y_3^2\big).
+E(w) = 3w^2 - 2Sw + Q, \quad \text{where } S = y_1 + y_2 + y_3 \text{ and } Q = y_1^2 + y_2^2 + y_3^2.
 $$
 
-That is a quadratic in $w$ with $a = 3$ and $b = -2(y_1 + y_2 + y_3)$, so its vertex is at
+For the puzzle's waiting times, $S = 12$ and $Q = 62$.
 
-$$
-w = -\frac{b}{2a} = \frac{2(y_1 + y_2 + y_3)}{6} = \frac{y_1 + y_2 + y_3}{3},
-$$
+<Exercise id="derive-mean-general" />
 
-the mean. With $n$ values instead of three, the same steps give $nw^2$ and $-2 \times (\text{their sum}) \times w$, and the vertex is the sum divided by $n$: the mean again. So, under squared error, the best single guess is the mean, for any data at all.
+</Reveal>
+
+<Reveal for="derive-mean-general">
+
+The number in front of the squared bracket is 3, which is positive, so the squared part is never negative and is 0 only at $w = \tfrac{S}{3}$: the sum of the three values divided by 3, which is their mean. So for any three values, the mean gives the smallest squared error. With $k$ values instead of three, the same steps give $kw^2 - 2Sw + Q = k\big(w - \tfrac{S}{k}\big)^2 + Q - \tfrac{S^2}{k}$, and the best guess is $\tfrac{S}{k}$, the mean again. So, under squared error, the best single guess is the mean, for any data at all.
 
 <Exercise id="derive-outlier" />
 

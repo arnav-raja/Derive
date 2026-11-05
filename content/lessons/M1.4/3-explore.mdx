@@ -8,7 +8,7 @@ A cloud company rents out a GPU for ₹150 an hour, plus a one-off ₹200 to set
 | --- | --- | --- | --- | --- | --- |
 | Bill $C(t)$ in ₹ | 200 | 350 | 500 | 650 | 800 |
 
-Each extra hour adds ₹150, whichever hour it is. So between any two times, the change in the bill divided by the change in time comes out the same. From 1 hour to 4 hours the bill rises by ₹450 over 3 hours, which is ₹150 per hour. That ratio is the *rate of change* of the bill. As M1.1 showed, units divide along with the numbers, so the rate is measured in rupees per hour.
+Each extra hour adds ₹150, whichever hour it is. So between any two times, the change in the bill divided by the change in time comes out the same. From 1 hour to 4 hours the bill rises by ₹450 over 3 hours, which is ₹150 per hour. That ratio is the *rate of change* of the bill. As M1.1, on quantities and units, showed, units divide along with the numbers, so the rate is measured in rupees per hour.
 
 <FunctionPlot
   title="A GPU bill"
@@ -24,13 +24,13 @@ Each extra hour adds ₹150, whichever hour it is. So between any two times, the
   yLabel="bill in ₹"
 />
 
-Move the sliders. The rate tilts the line and the set-up cost lifts it, and the graph stays straight whatever you choose: a steady rate draws a straight line.
+Move the sliders and watch the shape: whatever you choose, the graph stays straight. A steady rate draws a straight line.
 
 <Exercise id="explore-download-rate" />
 
 <Reveal for="explore-download-rate">
 
-Running the clock back from 2 seconds to 0 takes away $2 \times 15 = 30$ MB, so 10 MB had already arrived when the clock started, and the amount after $t$ seconds is $A(t) = 15t + 10$. The download and the GPU bill are the same kind of rule: a starting value, plus a fixed rate times the input.
+Running the clock back from 2 seconds to 0 takes away $2 \times 15 = 30$ MB, so 10 MB had already arrived when the clock started, and the amount after $t$ seconds is $A(t) = 15t + 10$. The download and the GPU bill are the same kind of rule: a starting value, plus a fixed rate times the input. A rate can also be negative. A tank that loses 4 litres every minute changes at $-4$ litres per minute, and its line slopes down instead of up.
 
 ## Is it steady?
 
@@ -54,9 +54,7 @@ Each table below comes from a rule. Look at how the outputs change between the p
 
 <Reveal for="explore-which-steady">
 
-In C the steps in $x$ are uneven, 1, 2 and 3, and so are the rises, 2, 4 and 6, yet the rule is steady. What stays fixed in a steady rule is the rate, not the rise. Table C is $y = 2x + 2$, and A is $y = 3x + 1$.
-
-B is not steady. From 0 to 1 it rises by 1, and from 2 to 3 it rises by 5. B is the squares, $y = x^2$.
+What stays fixed in a steady rule is the rate, not the rise: C's rises, 2, 4 and 6, differ only because its steps do. Table C fits $y = 2x + 2$, A fits $y = 3x + 1$, and B is the squares, $y = x^2$.
 
 ## Change that changes
 
@@ -67,17 +65,17 @@ The squares rise faster and faster. Here are more of them, with the rise from ea
 | $x^2$ | 0 | 1 | 4 | 9 | 16 | 25 |
 | Rise from the one before | | 1 | 3 | 5 | 7 | 9 |
 
-For such a rule the rate depends on where you measure it. Between two inputs $a$ and $b$, the rate is the rise divided by the step, $\dfrac{b^2 - a^2}{b - a}$. On the graph it is the slope of the straight line that joins the two points, a line called a *chord*. A chord rises by the rate for every unit it goes across.
+For such a rule the rate depends on where you measure it. Between two different inputs $u$ and $v$, the rise divided by the step, $\dfrac{v^2 - u^2}{v - u}$, is called the *average rate of change* from $u$ to $v$. On the graph it is the *slope* of the straight line that joins the two points, a line called a *chord*: how far the chord rises for every unit it goes across.
 
 <FunctionPlot
   title="Chords of y = x²"
-  description="The curve y = x² for x from −4 to 6, with a chord: a straight segment joining the points of the curve above two inputs a and b, which sliders set, at first 1 and 3. A faint dashed line continues the chord across the picture. Below the picture, a sentence gives the rise, the step and their ratio for the chosen pair."
+  description="The curve y = x² for x from −4 to 6, with a chord: a straight segment joining the points of the curve above two inputs u and v, which sliders set, at first 1 and 3. A faint dashed line continues the chord across the picture. Below the picture, a sentence gives the rise, the step and their ratio for the chosen pair."
   curves={[{ expr: "x^2", label: "y = x²" }]}
   params={[
-    { name: "a", label: "First input a", min: -3, max: 5, step: 0.5, value: 1 },
-    { name: "b", label: "Second input b", min: -3, max: 5, step: 0.5, value: 3 }
+    { name: "u", label: "First input u", min: -3, max: 5, step: 0.5, value: 1 },
+    { name: "v", label: "Second input v", min: -3, max: 5, step: 0.5, value: 3 }
   ]}
-  chords={[{ from: "a", to: "b", label: "The chord", extend: true }]}
+  chords={[{ from: "u", to: "v", label: "The chord", extend: true }]}
   x={[-4, 6]}
   y={[-4, 36]}
 />
@@ -88,7 +86,7 @@ For such a rule the rate depends on where you measure it. Between two inputs $a$
 
 <Reveal for="explore-chord-pattern">
 
-The pairs suggested give 4, 6 and 5, each the sum of its two inputs. Trying pairs can never cover every pair, so the Derive phase proves that the pattern always holds.
+Trying pairs can never cover every pair, so the Derive phase proves that the pattern always holds.
 
 For a steady rule, every chord has the same slope. For $x^2$, chords further to the right are steeper, which is what a curve that bends upwards looks like.
 
@@ -109,11 +107,11 @@ The rises of the squares were 1, 3, 5, 7 and 9, and these rise steadily themselv
 
 The rule behind the table is $y = 3x^2 + x$, and indeed $3 \times 25 + 5 = 80$.
 
-For the squares the rises of the rises were 2; for $3x^2 + x$ they are 6, three times as much, matching the 3 in front of $x^2$. A steady rule has steady rises. A rule built from $x^2$, $x$ and a number has steady rises of its rises. The Derive phase shows why.
+For the squares the rises of the rises were 2; for $3x^2 + x$ they are 6, three times as much, matching the 3 in front of $x^2$. With equal steps in $x$, a steady rule has steady rises, and a rule built from $x^2$, $x$ and a number has steady rises of its rises. The Derive phase shows why.
 
 ## The bottom of a bowl
 
-Every rule built from $x^2$, $x$ and numbers draws the same kind of curve: a bowl, or an upturned bowl when the number in front of $x^2$ is negative. Here is $y = (x - 2)^2 + 1$.
+Every rule built from $x^2$, $x$ and numbers, with a number other than 0 in front of $x^2$, draws the same kind of curve: a bowl, or an upturned bowl when that number is negative. Here is $y = (x - 2)^2 + 1$.
 
 <FunctionPlot
   title="A bowl"
@@ -175,7 +173,7 @@ In $f(x) = mx + c$, the number $m$ is the *slope*: the rate of change, the same 
 
 <Definition term="Average rate of change">
 
-The average rate of change of $f$ from $a$ to $b$ is $\dfrac{f(b) - f(a)}{b - a}$: the change in output divided by the change in input. It is the slope of the chord that joins the two points of the graph. For a linear function it is the slope $m$, whichever two points you choose.
+The average rate of change of $f$ from $u$ to $v$, for two different inputs, is $\dfrac{f(v) - f(u)}{v - u}$: the change in output divided by the change in input. It is the slope of the chord that joins the two points of the graph. For a linear function it is the slope $m$, whichever two points you choose.
 
 </Definition>
 

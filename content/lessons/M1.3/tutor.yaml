@@ -104,7 +104,10 @@ exercises:
       - Before any undoing can happen, what does $(p \circ q)(u)$ mean written out in full?
       - In Explore, Celsius to Fahrenheit was undone by undoing the last step first.
       - Look only at the third line. Which function and which inverse sit next to each other in the line before it?
-      - In the second line, $g^{-1}$ is applied directly to $g(\ldots)$. Which rule removes that pair?
+      - >-
+        If your rules for the first two lines are right, the trouble is in a later line. Compare each
+        later line with the one before it, say in words what changed, and look for the rule in the list
+        that describes exactly that change.
       - >-
         To check that "subtract 3, then halve" undoes "double, then add 3", write the chain out in
         full: $\big((2x + 3) - 3\big)/2$. Adding 3 was done last, so it comes off first, leaving

@@ -2,7 +2,7 @@ Derive found formulas for lines, vertices and solutions. Now build them in Pytho
 
 ## A line from two points
 
-In M1.3 a Python function took one input. It can take several, separated by commas:
+In M1.3, on functions and inverses, a Python function took one input. It can take several, separated by commas:
 
 ```python
 def area(width, height):
@@ -15,7 +15,7 @@ print(area(3, 4))   # prints 12
 
 <Reveal for="build-line">
 
-A function can call another function, as `intercept` calls `slope` here. Naming the points in the other order changes both the rise and the step into their negatives, and their ratio stays the same.
+`intercept` can call `slope` instead of repeating its formula: a function can call another function. Naming the points in the other order changes both the rise and the step into their negatives, and their ratio stays the same.
 
 ## A formula with a bug
 
@@ -27,9 +27,9 @@ Python's maths library holds the square root. The line `import math` loads it, a
 
 <Reveal for="build-roots-bug">
 
-Python works through `*` and `/` from left to right, which is why `/ 2*a` multiplies by `a` after dividing by 2. With $a = 1$ the two agree, which is why the first equation came out right and hid the bug. This is the slip M1.2's expression trees were built to catch: the tree for `/ 2*a` has the multiplication at the top.
+With $a = 1$ the two agree, which is why the first equation came out right and hid the bug. This is the slip M1.2's expression trees were built to catch: the tree for `/ 2*a` has the multiplication at the top.
 
-## Break it: an equation with no solution
+## Break it: an equation with no real solution
 
 <Exercise id="build-no-solution" />
 
@@ -37,7 +37,7 @@ Python works through `*` and `/` from left to right, which is why `/ 2*a` multip
 
 <Reveal for="build-no-solution">
 
-An error is the program's way of reporting what Derive proved: there is no ordinary number to give back. A careful version of `roots` would check whether $b^2 - 4ac$ is negative before taking its square root, and say so.
+An error is the program's way of reporting what Derive proved: there is no real number to give back. A careful version of `roots` would check whether $b^2 - 4ac$ is negative before taking its square root, and say so.
 
 ## The vertex of any parabola
 
@@ -47,7 +47,7 @@ An error is the program's way of reporting what Derive proved: there is no ordin
 
 <Reveal for="build-vertex">
 
-`lowest` could also be written as the height of the parabola at the vertex, `a*v*v + b*v + c` with `v = vertex(a, b, c)`. The tests never needed the formulas. They checked what a vertex must do: give equal heights a step either side. A test that checks a property, instead of a stored answer, can check a formula on any input at all.
+`vertex_height` can work out the height at the vertex directly, as `a * v**2 + b * v + c` with `v = vertex(a, b, c)`, or use the completed square's `c - b**2 / (4*a)`: both give the same number. The tests never needed the formulas. They checked what a vertex must do: give equal heights a step either side. A test that checks a property, instead of a stored answer, can check a formula on any input at all.
 
 ## Break it: a different score
 
@@ -59,13 +59,13 @@ The puzzle scored a guess by its squared error. Here is that score in Python, wi
 
 <Reveal for="build-absolute-error">
 
-Adding the sizes of the misses is called the *absolute error*, and its best single guess is the middle value, the *median*. Moving the guess a little towards the middle value shortens more misses than it lengthens, until the guess reaches the middle. Its curve is made of straight pieces, not a smooth bowl, so completing the square cannot find its bottom.
+Adding the sizes of the misses is called the *absolute error*, and its best single guess is the middle value, the *median*. Moving the guess a little towards the middle value shortens more misses than it lengthens, until the guess reaches the middle. (With an even number of values, every guess between the two middle ones gives the same total; the median, halfway between them, is one of these best guesses.) Its curve is made of straight pieces, not a smooth bowl, so completing the square cannot find its bottom.
 
-The median barely notices a wild value: for 1, 2, 3 and 94 it is 2.5, however large the 94 is. Which score to train with is a real choice in machine learning, and squared error, with its smooth bowl and its mean, is the most common.
+The median barely notices a wild value: for 1, 2, 3 and 94 it is 2.5, however large the 94 is, and every guess from 2 to 3 gives the same total, 94. Which score to train with is a real choice in machine learning, and squared error, with its smooth bowl and its mean, is the most common.
 
 ## Compare with the library
 
-SymPy, the algebra library from M1.2 and M1.3, can solve a quadratic with letters left in, so you can compare its answer with the formula you derived.
+SymPy, which checked equivalences in M1.2 and found inverses in M1.3, can solve a quadratic with letters left in, so you can compare its answer with the formula you derived.
 
 <Exercise id="build-sympy-quadratic" />
 
@@ -79,6 +79,6 @@ SymPy prints `formula` as
 [(-b - sqrt(-4*a*c + b**2))/(2*a), (-b + sqrt(-4*a*c + b**2))/(2*a)]
 ```
 
-which is the quadratic formula, with $b^2 - 4ac$ written in another order. SymPy did the algebra itself, so its answer holds for every $a$, $b$ and $c$, not just a few, and the tests checked it by putting each solution back into the equation. For `doubled` it gives `[1, 2]`, the same answer as the fixed `roots`.
+which is the quadratic formula, with $b^2 - 4ac$ written in another order. SymPy did the algebra itself, so its answer holds for every $b$ and $c$ and every $a$ except 0, not just a few values; when $b^2 - 4ac$ is negative the square root is not a real number, and there are no real solutions, as Derive found. The tests checked it by putting each solution back into the equation, and `doubled`, `[1, 2]`, agrees with the fixed `roots`.
 
 </Reveal>

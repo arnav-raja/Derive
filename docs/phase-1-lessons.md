@@ -25,7 +25,7 @@ M1.1 (rule 6).
 | M1.2 | expression-trees (E1.1, M5.6); field-axioms (M1.6, M2.5, M10.2); equivalence (M1.8, E1.9); solving-equations (M1.3, M1.4, M2.6); exponent-rules (M1.5, M3.5) |
 | M1.3 | function-as-mapping (E1.3, M2.4, M1.4); injective-surjective (M2.7, M12.8); composition (M3.4, M2.5, E1.3); inverse-functions (M1.5, M4.12) |
 | M1.4 | linear-functions (M2.4, L1.2, M3.1); average-rate-of-change (M3.1, M3.7); quadratics (M3.6, M9.3); completing-the-square (M3.6, M4.8, M3.11) |
-| M1.5 | exponential-growth (M3.5, M11.6); logarithms (M8.1, M10.3, M3.5); log-rules (M8.1, M10.3, and one more descendant: not M7.2); log-scales (M11.6, L5.2, and one more descendant: not E2.6) |
+| M1.5 | exponential-growth (M3.5, M11.6); logarithms (M8.1, M10.3, M3.5); log-rules (M8.1, M10.3); log-scales (M11.6, L5.2) |
 | M1.6 | sigma-notation (M4.5, M3.8, and one more descendant: not M2.3); arithmetic-series (M1.9, E1.10); geometric-series (L6.3, M9.5); product-notation (M1.10, M7.2) |
 | E1.1 | values-and-types (E1.2, E1.6, M10.1); variables-as-names (E1.2, E1.3, E1.4); evaluation-order (E1.2, E1.8); floats-are-approximate (M10.1, M10.2) |
 | E1.2 | conditions (E1.3, E1.5, M4.1); loops (E1.3, E1.4, M4.1); loop-invariants (E1.10, E1.9); accumulator-pattern (E1.4, E1.6, M4.10) |
@@ -39,7 +39,7 @@ written; check candidates against the graph before writing `usedBy`.
 
 ## Written so far
 
-M1.1, M1.2, M1.3 and M1.4 are written; their files in `content/lessons/` are now the source,
-and the outlines that were here have been removed. M1.4 added a contrast with M1.5 (linear
-change adds the same amount each step, exponential change multiplies by the same factor), so
-M1.5 should carry the other side of it.
+M1.1 to M1.5 are written; their files in `content/lessons/` are now the source, and the
+outlines that were here have been removed. M1.4 and M1.5 carry both sides of the contrast
+between linear change (the same amount each step) and exponential change (the same factor
+each step).

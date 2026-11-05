@@ -31,8 +31,8 @@ concepts:
     - id: M1.4/quadratics
       name: Quadratic functions
       summary: >-
-        Rules built from x², x and a number. Their graphs are symmetric bowls, their rates of change
-        themselves change steadily, and their zeros come from one formula.
+        Rules built from x², x and a number, with a number other than 0 in front of x². Their graphs
+        are bowls, and their zeros come from one formula.
       usedBy: [M3.6, M9.3]
     - id: M1.4/completing-the-square
       name: Completing the square
@@ -40,7 +40,14 @@ concepts:
         Rewriting a quadratic as a number times a squared bracket, plus a number, which shows its
         lowest or highest point at once.
       usedBy: [M3.6, M4.8, M3.11]
-  used: [M1.1/units-as-algebra, M1.2/solving-equations, M1.2/equivalence, M1.3/function-as-mapping]
+  used:
+    - M1.1/units-as-algebra
+    - M1.2/expression-trees
+    - M1.2/field-axioms
+    - M1.2/solving-equations
+    - M1.2/equivalence
+    - M1.3/function-as-mapping
+    - M1.3/inverse-functions
 links:
   requires:
     - lesson: M1.3
@@ -60,8 +67,9 @@ links:
         the rate at a single point, the derivative.
     - lesson: M3.6
       bridge: >-
-        Near its lowest point, almost any smooth loss looks like a bowl, and gradient descent finds the
-        bottom by walking downhill in small steps instead of completing the square.
+        Near its lowest point, almost any smooth loss, the score of a model's misses that training
+        makes small, looks like a bowl, and gradient descent finds the bottom by walking downhill in
+        small steps instead of completing the square.
     - lesson: L1.2
       bridge: >-
         Fitting a straight line to data by least squares uses the same idea as the best constant
