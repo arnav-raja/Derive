@@ -12,7 +12,7 @@ $g$ squares whatever it is given, and here it is given $x - 4$, so $g\big(f(x)\b
 
 ## Undoing a formula
 
-The rule $F = 1.8C + 32$ turns Celsius into Fahrenheit. Its inverse turns Fahrenheit back into Celsius. To find it, treat $F$ as known and solve for $C$, with steps that can be undone, as in M1.2.
+An image model reads the brightness of each pixel as a whole number $p$, from 0 for black to 255 for white. Many models compute with $x = \dfrac{p}{127.5} - 1$ instead, which runs from $-1$ to $1$. To show a picture the model has made, its numbers have to be turned back into brightnesses, and that needs the inverse rule.
 
 <Exercise id="derive-inverse-formula" />
 
@@ -21,12 +21,12 @@ The rule $F = 1.8C + 32$ turns Celsius into Fahrenheit. Its inverse turns Fahren
 <Reveal for="derive-inverse-formula">
 
 <Steps>
-  <Step why="the rule">$F = 1.8C + 32$</Step>
-  <Step why="subtract 32 from both sides: the last step done is the first undone">$F - 32 = 1.8C$</Step>
-  <Step why="divide both sides by 1.8">$\dfrac{F - 32}{1.8} = C$</Step>
+  <Step why="the rule">$x = \dfrac{p}{127.5} - 1$</Step>
+  <Step why="add 1 to both sides: subtracting 1 was the last step done, so it is the first undone">$x + 1 = \dfrac{p}{127.5}$</Step>
+  <Step why="multiply both sides by 127.5">$127.5(x + 1) = p$</Step>
 </Steps>
 
-So $C = \dfrac{F - 32}{1.8}$. The bracket matters: all of $F - 32$ is divided, not just the 32. Check it on boiling water: $(212 - 32) \div 1.8 = 100$.
+So $p = 127.5(x + 1)$. The bracket matters: all of $x + 1$ is multiplied by 127.5, not just the 1. Check it at the two ends: $x = -1$ gives $p = 0$, and $x = 1$ gives $p = 255$.
 
 ## Why only one-to-one functions can be undone
 
@@ -72,7 +72,7 @@ Squaring is not one-to-one, so on all numbers it has no inverse. The square root
 
 $(-3)^2 = 9$, and $\sqrt{9} = 3$, because $\sqrt{y}$ always means the number that is 0 or more whose square is $y$. The square root sent back 3, not the $-3$ that went in. So $\sqrt{x^2} = x$ only when $x \ge 0$; when $x$ is negative, $\sqrt{x^2} = -x$. Both cases together say $\sqrt{x^2} = |x|$, the size of $x$ ignoring its sign.
 
-In M1.1 a square root undid a square. It does, but only for numbers that are 0 or more. The cure is to narrow the inputs. Allow only $x \ge 0$: then no two inputs share a square, squaring is one-to-one, and the square root is its inverse. Narrowing the inputs of a function in this way is called *restricting its domain*.
+In M1.1, on quantities and units, a square root undid a square: $\sqrt{9} = 3$, because $3^2 = 9$. It does, but only for numbers that are 0 or more. The cure is to narrow the function. Allow only inputs $x \ge 0$, and count only numbers 0 or more as possible outputs. Then no two inputs share a square, and every such $y$ is the square of $\sqrt{y}$, so squaring is one-to-one and onto, and the square root is its inverse. Narrowing the inputs of a function in this way is called *restricting its domain*.
 
 <Exercise id="derive-restrict-inverse" />
 
@@ -90,7 +90,7 @@ The narrowing did real work in the second line. Without it, $x - 2$ could be neg
 
 ## A second angle: the graph
 
-An inverse swaps each input with its output. See what that does to a graph.
+A graph shows each input paired with its output. See what an inverse does to a graph.
 
 <Exercise id="derive-mirror" />
 
@@ -98,20 +98,29 @@ An inverse swaps each input with its output. See what that does to a graph.
 
 <Reveal for="derive-mirror">
 
+The square root takes 4 back to 2, so $(4, 2)$ is on the graph of $y = \sqrt{x}$: the same two numbers as $(2, 4)$, swapped. The same happens to every point. Each point $(a, b)$ on the graph of a function becomes the point $(b, a)$ on the graph of its inverse, because input and output change places.
+
+<Exercise id="derive-mirror-line" />
+
+</Reveal>
+
+<Reveal for="derive-mirror-line">
+
 <FunctionPlot
   title="A function and its inverse"
-  description="For x from 0 to 4: the curve y = x², which leaves the top of the picture at x = 2, the curve y = √x, and the straight line y = x between them. The points (2, 4) and (4, 2) are marked. Each curve is the mirror image of the other in the line."
+  description="Drawn with the same scale on both axes, for x from 0 to 4.5: the curve y = x², which leaves the top of the picture just after x = 2, the curve y = √x, and the straight line y = x between them. The points (2, 4) and (4, 2) are marked. Each curve is the mirror image of the other in the line."
   curves={[
     { expr: "x^2", label: "y = x²" },
     { expr: "sqrt(x)", label: "y = √x" },
     { expr: "x", label: "y = x" }
   ]}
-  x={[0, 4]}
-  y={[0, 4]}
+  x={[0, 4.5]}
+  y={[0, 4.5]}
+  equalScale
   marks={[{ x: 2, curve: 0, label: "(2, 4)" }, { x: 4, curve: 1, label: "(4, 2)" }]}
 />
 
-Every point $(a, b)$ on the graph of a function becomes the point $(b, a)$ on the graph of its inverse: input and output change places. Swapping the two coordinates of every point reflects the picture in the line $y = x$, so the graph of an inverse is the mirror image of the graph of the function.
+Folding the picture along the line $y = x$ swaps the two axes, so it carries every point $(a, b)$ to $(b, a)$. The graph of an inverse is therefore the mirror image of the graph of the function in the line $y = x$, which the picture shows because both axes have the same scale.
 
 The mirror also gives a test you can see. A function is one-to-one exactly when no horizontal line crosses its graph more than once, and then its mirror image is again the graph of a function. A horizontal line at height 9 crosses the full graph of $y = x^2$ twice, at $x = -3$ and $x = 3$.
 

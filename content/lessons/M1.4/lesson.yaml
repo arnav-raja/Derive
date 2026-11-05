@@ -1,0 +1,69 @@
+code: M1.4
+title: Linear and quadratic functions, and rates of change
+course: M1
+status: review
+summary: >-
+  The simplest model in machine learning always predicts the same number. Which number fits its
+  data best? Steady change and straight lines, rates of change measured between two points, the
+  bowl-shaped curves of quadratics, and how to find the bottom of a bowl exactly.
+sittings: 2
+minutes:
+  puzzle: 10
+  recall: 10
+  explore: 35
+  derive: 45
+  build: 45
+  explain: 25
+concepts:
+  taught:
+    - id: M1.4/linear-functions
+      name: Linear functions
+      summary: >-
+        Rules of the form mx + c, which change at the same rate everywhere. Their graphs are straight
+        lines, two points fix one, and the rate carries units.
+      usedBy: [M2.4, L1.2, M3.1]
+    - id: M1.4/average-rate-of-change
+      name: Average rate of change
+      summary: >-
+        The change in a function's output divided by the change in its input between two points: the
+        slope of the chord that joins them.
+      usedBy: [M3.1, M3.7]
+    - id: M1.4/quadratics
+      name: Quadratic functions
+      summary: >-
+        Rules built from x², x and a number. Their graphs are symmetric bowls, their rates of change
+        themselves change steadily, and their zeros come from one formula.
+      usedBy: [M3.6, M9.3]
+    - id: M1.4/completing-the-square
+      name: Completing the square
+      summary: >-
+        Rewriting a quadratic as a number times a squared bracket, plus a number, which shows its
+        lowest or highest point at once.
+      usedBy: [M3.6, M4.8, M3.11]
+  used: [M1.1/units-as-algebra, M1.2/solving-equations, M1.2/equivalence, M1.3/function-as-mapping]
+links:
+  requires:
+    - lesson: M1.3
+      bridge: >-
+        M1.3 treated a function as a rule from inputs to outputs. This lesson studies two families of
+        such rules closely, and asks how fast their outputs change.
+  contrastsWith:
+    - lesson: M1.5
+      bridge: >-
+        A linear function adds the same amount for each step of its input. An exponential multiplies
+        by the same factor for each step, so its rises grow in proportion to its height, and M1.5 asks
+        what undoes it.
+  foreshadows:
+    - lesson: M3.1
+      bridge: >-
+        The average rate of change is measured between two points. Shrinking the gap to nothing gives
+        the rate at a single point, the derivative.
+    - lesson: M3.6
+      bridge: >-
+        Near its lowest point, almost any smooth loss looks like a bowl, and gradient descent finds the
+        bottom by walking downhill in small steps instead of completing the square.
+    - lesson: L1.2
+      bridge: >-
+        Fitting a straight line to data by least squares uses the same idea as the best constant
+        guess: the squared error is a bowl, and its bottom is the best fit.
+skills: []

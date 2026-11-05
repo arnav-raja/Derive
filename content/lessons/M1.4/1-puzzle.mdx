@@ -1,0 +1,27 @@
+The simplest model in machine learning ignores its input altogether and always predicts the same number, $w$. Training it still takes a decision: which $w$ fits the data best?
+
+Say the data are three waiting times, in seconds: 2, 3 and 7. For a guess $w$, each miss is a data value minus $w$. A common way to score the guess is to square each miss and add the squares:
+
+$$
+E(w) = (2 - w)^2 + (3 - w)^2 + (7 - w)^2.
+$$
+
+This total is called the *squared error*. Squaring makes every miss count as positive, whichever side of $w$ it falls on, and it makes a big miss count for much more than a small one: one miss of 4 adds 16, while two misses of 2 add only 8 between them. Training picks the $w$ that makes $E(w)$ as small as possible. The letter $w$ is a common name for a number that training adjusts.
+
+<Exercise id="puzzle-best-guess" />
+
+<Reveal for="puzzle-best-guess">
+
+Training picks 4, the mean. Work out a few totals:
+
+| Guess $w$ | 3 | 3.9 | 4 | 4.1 | 4.5 | 5 |
+| --- | --- | --- | --- | --- | --- | --- |
+| $E(w)$ | 17 | 14.03 | 14 | 14.03 | 14.75 | 17 |
+
+The middle value, 3, does worse than the mean, and so does halfway, 4.5. Squaring does pull the best guess towards the far-off 7, but only as far as the mean. Even guesses just either side of 4 do slightly worse.
+
+That raises two questions. Is the mean the best guess for every set of data, or only for these three numbers? And can the lowest point be found exactly, without trying values one at a time? Both answers come from the shape of $E$. Multiplied out, $E(w) = 3w^2 - 24w + 62$, a *quadratic*, and this lesson finds the lowest point of any quadratic exactly. In the Derive phase you will prove that, under squared error, the mean is always the best single guess.
+
+This is not a curiosity. Squared error is the most common way to score a model's numerical predictions, and the link between squared error and averages runs through the whole of machine learning. Other scores pick other winners: the middle value wins under a different score, and in Build you will see which.
+
+</Reveal>

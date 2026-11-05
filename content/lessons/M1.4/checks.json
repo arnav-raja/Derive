@@ -1,0 +1,332 @@
+{
+  "version": 1,
+  "expressions": {
+    "derive-complete-square": {
+      "source": "ad37d880df86c608",
+      "points": [
+        {
+          "x": "11/4"
+        },
+        {
+          "x": "-5/2"
+        },
+        {
+          "x": "-1/5"
+        },
+        {
+          "x": "-9"
+        },
+        {
+          "x": "7/2"
+        },
+        {
+          "x": "3"
+        }
+      ],
+      "values": [
+        "11.062500000000000000",
+        "62.250000000000000000",
+        "33.040000000000000000",
+        "202.00000000000000000",
+        "8.2500000000000000000",
+        "10.000000000000000000"
+      ]
+    },
+    "derive-complete-square#0": {
+      "source": "669c39b4b8eac429",
+      "points": [
+        {
+          "x": "17/3"
+        },
+        {
+          "x": "3"
+        },
+        {
+          "x": "21/5"
+        },
+        {
+          "x": "-38"
+        },
+        {
+          "x": "-36/7"
+        },
+        {
+          "x": "8"
+        }
+      ],
+      "values": [
+        "61.777777777777777778",
+        "28.000000000000000000",
+        "41.440000000000000000",
+        "1299.0000000000000000",
+        "12.877551020408163265",
+        "103.00000000000000000"
+      ]
+    },
+    "derive-general-rate": {
+      "source": "6d9de1659fdf4575",
+      "points": [
+        {
+          "a": "13/2",
+          "b": "-16"
+        },
+        {
+          "a": "-2/3",
+          "b": "1"
+        },
+        {
+          "a": "12/5",
+          "b": "-1/2"
+        },
+        {
+          "a": "25/3",
+          "b": "-29/6"
+        },
+        {
+          "a": "-32/5",
+          "b": "-32"
+        },
+        {
+          "a": "2",
+          "b": "7"
+        }
+      ],
+      "values": [
+        "-30.500000000000000000",
+        "-1.0000000000000000000",
+        "3.7000000000000000000",
+        "8.5000000000000000000",
+        "-117.20000000000000000",
+        "25.000000000000000000"
+      ]
+    },
+    "derive-general-square": {
+      "source": "a4d753a1156c02fa",
+      "points": [
+        {
+          "x": "-3",
+          "b": "-3/2",
+          "c": "-5"
+        },
+        {
+          "x": "37/2",
+          "b": "1",
+          "c": "-5/3"
+        },
+        {
+          "x": "-30/7",
+          "b": "-11/6",
+          "c": "-15/4"
+        },
+        {
+          "x": "-9/2",
+          "b": "4",
+          "c": "-6"
+        },
+        {
+          "x": "11/2",
+          "b": "-33/4",
+          "c": "21/2"
+        },
+        {
+          "x": "3/4",
+          "b": "-40",
+          "c": "30"
+        }
+      ],
+      "values": [
+        "8.5000000000000000000",
+        "359.08333333333333333",
+        "22.474489795918367347",
+        "-3.7500000000000000000",
+        "-4.6250000000000000000",
+        "0.56250000000000000000"
+      ]
+    },
+    "derive-line-through": {
+      "source": "7ed2345989598eee",
+      "points": [
+        {
+          "n": "-5/3"
+        },
+        {
+          "n": "25/7"
+        },
+        {
+          "n": "15/2"
+        },
+        {
+          "n": "-30"
+        },
+        {
+          "n": "-35/6"
+        },
+        {
+          "n": "-9/4"
+        }
+      ],
+      "values": [
+        "-2.3333333333333333333",
+        "8.1428571428571428571",
+        "16.000000000000000000",
+        "-59.000000000000000000",
+        "-10.666666666666666667",
+        "-3.5000000000000000000"
+      ]
+    },
+    "derive-line-through#0": {
+      "source": "39a55d740fb38fa7",
+      "points": [
+        {
+          "x": "-1/3"
+        },
+        {
+          "x": "-14"
+        },
+        {
+          "x": "33/4"
+        },
+        {
+          "x": "1/5"
+        },
+        {
+          "x": "-31"
+        },
+        {
+          "x": "8"
+        }
+      ],
+      "values": [
+        "1.0000000000000000000",
+        "-40.000000000000000000",
+        "26.750000000000000000",
+        "2.6000000000000000000",
+        "-91.000000000000000000",
+        "26.000000000000000000"
+      ]
+    },
+    "derive-mean-best": {
+      "source": "df7a81c0b9d90463",
+      "points": [
+        {
+          "w": "-37/7"
+        },
+        {
+          "w": "12/7"
+        },
+        {
+          "w": "-37/3"
+        },
+        {
+          "w": "2"
+        },
+        {
+          "w": "12"
+        },
+        {
+          "w": "1/6"
+        }
+      ],
+      "values": [
+        "272.67346938775510204",
+        "29.673469387755102041",
+        "814.33333333333333333",
+        "26.000000000000000000",
+        "206.00000000000000000",
+        "58.083333333333333333"
+      ]
+    }
+  },
+  "runs": {
+    "build-line": {
+      "tests": [
+        {
+          "name": "test_answers",
+          "description": "slope and intercept each give a number, not None.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_through_both",
+          "description": "The line with that slope and intercept passes through both points.",
+          "passed": false,
+          "message": "For the points (2, 5) and (6, 13), the line gives 7.0 at x = 6, not 13."
+        },
+        {
+          "name": "test_either_order",
+          "description": "Naming the two points in the other order gives the same line.",
+          "passed": false,
+          "message": "The intercept changes when (2, 5) and (6, 13) swap places."
+        }
+      ],
+      "error": null,
+      "output": "0.5 4.0\n"
+    },
+    "build-roots-bug": {
+      "tests": [
+        {
+          "name": "test_simple",
+          "description": "x^2 - 3x + 2 = 0 has the solutions 1 and 2.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_doubled",
+          "description": "2x^2 - 6x + 4 = 0, the same equation doubled, has the same solutions.",
+          "passed": false,
+          "message": "roots(2, -6, 4) gave [4.0, 8.0], not 1 and 2."
+        },
+        {
+          "name": "test_each_solves",
+          "description": "Each answer makes a x^2 + b x + c equal to 0, for several equations.",
+          "passed": false,
+          "message": "roots(3, 1, -2) gave -9.0, where a x^2 + b x + c is 232.0, not 0."
+        }
+      ],
+      "error": null,
+      "output": "(1.0, 2.0)\n(4.0, 8.0)\n"
+    },
+    "build-sympy-quadratic": {
+      "tests": [
+        {
+          "name": "test_formula",
+          "description": "formula is the list of solutions of a x^2 + b x + c = 0, with the letters left in.",
+          "passed": false,
+          "message": "formula is [(-b*x - c)/x**2], not a list of two solutions."
+        },
+        {
+          "name": "test_doubled",
+          "description": "doubled is the list of solutions of 2x^2 - 6x + 4 = 0.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": "formula: [(-b*x - c)/x**2]\ndoubled: [1, 2]\n"
+    },
+    "build-vertex": {
+      "tests": [
+        {
+          "name": "test_answers",
+          "description": "vertex and lowest each give a number, not None.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_mirror",
+          "description": "The parabola has the same height a step either side of the vertex.",
+          "passed": false,
+          "message": "For a, b, c = 2, 8, -3, the heights a step of 0.5 either side of -8.0 are 73.5 and 49.5, so -8.0 is not the middle."
+        },
+        {
+          "name": "test_lowest",
+          "description": "lowest gives the height of the parabola at the vertex.",
+          "passed": false,
+          "message": "lowest(2, 8, -3) gave -11.0, but the height at the vertex is 61.0."
+        }
+      ],
+      "error": null,
+      "output": "3.0 2.0\n"
+    }
+  }
+}

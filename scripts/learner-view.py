@@ -133,12 +133,19 @@ def main():
         text = text.replace("<MixedCheck />", "\n[A MIXED CHECK OF REVIEW QUESTIONS APPEARS HERE]\n")
         view.append(f"\n\n---\n## Phase {phase}\n\n{text}")
 
+    # The variants' questions come before any of their answers, so they can be tried blind.
     key = [f"# Answer key for {code}\n"]
     for e in data["exercises"]:
         key.append(f"\n## {e['id']}\n{answer_key(e['answer'])}\n\nExplanation: {e.get('explanation', '').strip()}\n")
-        for i, v in enumerate((e.get("review") or {}).get("variants", [])):
-            key.append(f"\nReview variant {i}: {v['prompt'].strip()}\n{answer_shape(v['answer'])}\n"
-                       f"Answer: {answer_key(v['answer'])}\nExplanation: {v.get('explanation', '').strip()}\n")
+    variants = [(e, i, v) for e in data["exercises"] for i, v in enumerate((e.get("review") or {}).get("variants", []))]
+    if variants:
+        key.append("\n\n# Review variants: questions only (answer them all before reading on)\n")
+        for e, i, v in variants:
+            key.append(f"\n## {e['id']} variant {i}\n{v['prompt'].strip()}\n{answer_shape(v['answer'])}\n")
+        key.append("\n\n# Review variants: answers\n")
+        for e, i, v in variants:
+            key.append(f"\n## {e['id']} variant {i}\nAnswer: {answer_key(v['answer'])}\n"
+                       f"Explanation: {v.get('explanation', '').strip()}\n")
 
     os.makedirs(out, exist_ok=True)
     open(os.path.join(out, f"learner-view-{code}.md"), "w", encoding="utf8").write("".join(view))

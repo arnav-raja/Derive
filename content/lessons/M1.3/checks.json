@@ -64,34 +64,34 @@
       ]
     },
     "derive-inverse-formula": {
-      "source": "f9d46f6a2ce14344",
+      "source": "7b68e0b58e656c7b",
       "points": [
         {
-          "F": "-32/5"
+          "x": "-32/5"
         },
         {
-          "F": "21/5"
+          "x": "21/5"
         },
         {
-          "F": "1"
+          "x": "1"
         },
         {
-          "F": "-39/7"
+          "x": "-39/7"
         },
         {
-          "F": "1"
+          "x": "1"
         },
         {
-          "F": "9"
+          "x": "9"
         }
       ],
       "values": [
-        "-21.333333333333335702",
-        "-15.444444444444444642",
-        "-17.222222222222221433",
-        "-20.873015873015873467",
-        "-17.222222222222221433",
-        "-12.777777777777778567"
+        "-688.50000000000000000",
+        "663.00000000000000000",
+        "255.00000000000000000",
+        "-582.85714285714277594",
+        "255.00000000000000000",
+        "1275.0000000000000000"
       ]
     },
     "derive-inverse-formula#0": {
@@ -185,10 +185,10 @@
     "build-sympy-inverse": {
       "tests": [
         {
-          "name": "test_celsius",
-          "description": "celsius is the list of solutions of the rule, solved for c.",
+          "name": "test_undo_chain",
+          "description": "undo_chain is the list of solutions of the chain, solved for x.",
           "passed": false,
-          "message": "9*c/5 + 32 does not turn 212 into 100 and 32 into 0."
+          "message": "2*x + 6 does not take 2(x + 3) back to x."
         },
         {
           "name": "test_roots",
@@ -198,7 +198,7 @@
         }
       ],
       "error": null,
-      "output": "example: [5]\ncelsius: [9*c/5 + 32]\nroots: [-sqrt(y), sqrt(y)]\n"
+      "output": "example: [5]\nundo_chain: [2*x + 6]\nroots: [-sqrt(y), sqrt(y)]\n"
     },
     "build-to-celsius": {
       "tests": [
@@ -223,6 +223,36 @@
       ],
       "error": null,
       "output": "85.77777777777777\n"
+    },
+    "build-undo-chain": {
+      "tests": [
+        {
+          "name": "test_celsius_to_kelvin",
+          "description": "celsius_to_kelvin and kelvin_to_celsius undo each other.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_freezing",
+          "description": "Water freezes at 32 °F, which is 273.15 K.",
+          "passed": false,
+          "message": "fahrenheit_to_kelvin(32) gave 151.74999999999997, not 273.15."
+        },
+        {
+          "name": "test_there_and_back",
+          "description": "Kelvin to Fahrenheit and back again gives the starting temperature.",
+          "passed": false,
+          "message": "fahrenheit_to_kelvin(kelvin_to_fahrenheit(0)) gave -121.39999999999999, not 0."
+        },
+        {
+          "name": "test_back_and_there",
+          "description": "Fahrenheit to kelvin and back again gives the starting reading.",
+          "passed": false,
+          "message": "kelvin_to_fahrenheit(fahrenheit_to_kelvin(-459.67)) gave -678.19, not -459.67."
+        }
+      ],
+      "error": null,
+      "output": "151.74999999999997\n"
     }
   }
 }

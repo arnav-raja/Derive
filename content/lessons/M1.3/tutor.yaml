@@ -10,7 +10,9 @@ misconceptions:
     why: >-
       If two inputs share an output, the turned-round rule gives that output two images, and an
       output that nothing reaches gets none. Only a one-to-one, onto function turns round cleanly.
-    cue: The learner treats every function as if it could be run backwards.
+    cue: >-
+      The learner answers Yes to turning the birthday arrows round, or says the decoder can be run
+      backwards because it is a function.
   - id: order-does-not-matter
     belief: $g\big(f(x)\big)$ and $f\big(g(x)\big)$ are the same.
     why: >-
@@ -22,13 +24,22 @@ misconceptions:
     why: >-
       The last step done sits on the outside, so it has to come off first, as shoes come off before
       socks.
-    cue: An answer of $F/1.8 - 32$ for the inverse of $F = 1.8C + 32$.
+    cue: >-
+      An answer of $127.5x + 1$ for the inverse of $x = p/127.5 - 1$, or $F/1.8 - 32$ for turning
+      Fahrenheit back into Celsius.
   - id: root-undoes-square
     belief: $\sqrt{x^2} = x$ for every number $x$.
     why: >-
       The square root always gives the number that is 0 or more, so $\sqrt{x^2} = |x|$. It undoes
       squaring only for inputs that are 0 or more.
-    cue: An answer of $-3$ for $\sqrt{(-3)^2}$, or $2 - \sqrt{y}$ for the narrowed square.
+    cue: An answer of $-3$ for $\sqrt{(-3)^2}$, or writing $\sqrt{x^2} = x$ with no condition on $x$.
+  - id: root-is-plus-minus
+    belief: $\sqrt{9} = \pm 3$.
+    why: >-
+      $\sqrt{9}$ names one number, the one that is 0 or more whose square is 9, which is 3. The
+      equation $x^2 = 9$ has two solutions, 3 and $-3$, and $\pm\sqrt{9}$ names them both, but the
+      square root alone gives only 3. That is what makes it a function.
+    cue: The learner writes $\sqrt{9} = \pm 3$, or gives two answers for one square root.
   - id: one-way-is-both-ways
     belief: If $g$ undoes $f$, then $f$ undoes $g$ as well.
     why: >-
@@ -49,8 +60,10 @@ exercises:
       - >-
         In Explore you worked out $g\big(f(1)\big)$ by finding $f(1)$ first and then giving the result
         to $g$. The same works with $x$ in place of 1.
-      - Work out $g\big(f(5)\big)$ first. What is $f(5)$, and what does $g$ do to it?
-      - $g$ squares whatever it is given. Here it is given all of $x - 4$, not just the $x$.
+      - >-
+        Work out $g\big(f(7)\big)$ first. What is $f(7)$, and what does $g$ do to it? Does your
+        formula give the same number at $x = 7$?
+      - Your answer uses both steps. The trouble is in what your square covers.
       - >-
         With $f(x) = x + 1$ and $g(x) = 3x$, $g\big(f(x)\big) = 3(x + 1)$: the whole of $f(x)$ goes
         where $g$ had its $x$.
@@ -59,16 +72,17 @@ exercises:
       $x^2 + 16$ squares the two parts separately, the slip M1.2 showed for $(a + b)^2$.
   derive-inverse-formula:
     rungs:
-      - What was done to $C$ to make $F$, and in what order?
-      - In M1.2 you solved equations by undoing what had been done to the unknown, one safe step at a time.
-      - Try it with numbers first. If $F = 212$, what is $C$? Write down each step you take.
+      - What was done to $p$ to make $x$, and in what order?
+      - In M1.2 you solved equations with steps that can be undone, doing the same to both sides.
+      - Try it with a number first. If $x = 0$, what is $p$? Write down each step you take.
+      - Your answer has the right two numbers, 1 and 127.5. The trouble is in what the 127.5 multiplies.
       - >-
-        The 32 was added last, so it comes off first. After that, everything left on the $F$ side has
-        to be divided by 1.8, not just part of it.
-      - To solve $y = 4x + 6$ for $x$, subtract 6 to get $y - 6 = 4x$, then divide both sides by 4.
+        To solve $y = \dfrac{t}{4} - 6$ for $t$, add 6 to both sides to get $y + 6 = \dfrac{t}{4}$,
+        then multiply both sides by 4.
     notes: >-
-      $F/1.8 - 32$ undoes the steps in the order they were done. $F - 32/1.8$ has lost its bracket, so
-      only the 32 is divided. $(F + 32)/1.8$ adds where it should subtract.
+      $127.5x + 1$ undoes the steps in the order they were done, or has lost its bracket, so that only
+      $x$ is multiplied. $(x + 1)/127.5$ divides where it should multiply. $127.5(x - 1)$ subtracts
+      where it should add. A check at $x = -1$, which must give 0, catches all three.
   derive-inverse-injective:
     rungs:
       - The chain has to get from $a$ to $b$. Which fact connects $a$ with $b$?
@@ -80,8 +94,8 @@ exercises:
         The second line changes only the inside, from $f(a)$ to $f(b)$. What do you know about those
         two?
       - >-
-        To show $p = q$ from $p + 1 = q + 1$, write $p = (p + 1) - 1 = (q + 1) - 1 = q$: undo, replace
-        one thing by an equal one, undo again.
+        To show $p = q$ from $p + 1 = q + 1$, write $p = (p + 1) - 1 = (q + 1) - 1 = q$. Match each
+        $=$ there to a rule in the list.
     notes: >-
       Choosing Compose for the first line confuses composition with undoing; no second function is
       involved. Onto is never needed in this proof.
@@ -92,11 +106,12 @@ exercises:
       - Look only at the third line. Which function and which inverse sit next to each other in the line before it?
       - In the second line, $g^{-1}$ is applied directly to $g(\ldots)$. Which rule removes that pair?
       - >-
-        With shoes over socks, taking off the shoes leaves the socks, and taking off the socks leaves
-        bare feet: each step removes the layer that is on the outside.
+        To check that "subtract 3, then halve" undoes "double, then add 3", write the chain out in
+        full: $\big((2x + 3) - 3\big)/2$. Adding 3 was done last, so it comes off first, leaving
+        $2x/2$, and halving then leaves $x$.
     notes: >-
-      Redo g is never needed: it removes $g$ applied after $g^{-1}$, but in this chain $g^{-1}$ is
-      applied after $g$.
+      Redo g and Redo f are never needed: they remove a function applied after its inverse, but in
+      this chain each inverse is applied after its function.
   derive-restrict-inverse:
     rungs:
       - What is done to $x$ to make $y$, and what undoes each step?
@@ -113,9 +128,9 @@ exercises:
   build-to-celsius:
     rungs:
       - What does `to_fahrenheit` do to `c`, step by step, and what would undo each step?
-      - In the Derive phase you solved $F = 1.8C + 32$ for $C$.
+      - In Explore you turned 212 °F back into Celsius by hand. Which step did you take first, and which second?
       - What should `to_celsius(32)` give? Run your program with that call and check.
-      - Python follows the same order of operations as algebra. Look at where the brackets are, or are not, in your `return` line.
+      - Your function has the right numbers, 32 and 1.8. The problem is in the order Python does the two steps on your `return` line.
       - >-
         The rule that undoes `return 3 * x + 1` is `return (y - 1) / 3`: the step done last is
         undone first.
@@ -127,22 +142,43 @@ exercises:
       - In `kelvin_to_celsius(to_fahrenheit(k))`, which function runs first?
       - In Explore, $g\big(f(1)\big)$ worked out $f(1)$ first. In Python, too, the inner call runs first.
       - Follow 273.15 through by hand. What does the inner call give, and what does the outer call then do with it?
-      - The kelvin reading has to become Celsius before anything turns it into Fahrenheit. Which call belongs on the inside?
+      - Both helper functions are correct. The problem is in the return line of `kelvin_to_fahrenheit`.
       - >-
         To turn hours into seconds by way of minutes, write `minutes_to_seconds(hours_to_minutes(h))`:
         the first step is the inner call.
     notes: >-
-      250.52 for 273.15 means the kelvin reading went into `to_fahrenheit` as if it were Celsius.
+      About 250.52 for 273.15 means the kelvin reading went into `to_fahrenheit` as if it were Celsius.
       0 for 273.15 means the 32 was never added.
+  build-undo-chain:
+    rungs:
+      - Which step does `kelvin_to_fahrenheit` do first, and which last? Which of them must the undoing take off first?
+      - >-
+        In Derive you proved that the inverse of $g \circ f$ is $f^{-1} \circ g^{-1}$: the step done
+        last is undone first.
+      - Follow 32 °F back by hand. What is it in Celsius, and what is that in kelvin?
+      - >-
+        If `test_celsius_to_kelvin` passes, that function is right, and the problem is in the order
+        of the two calls in `fahrenheit_to_kelvin`.
+      - >-
+        To undo `minutes_to_seconds(hours_to_minutes(h))`, write
+        `minutes_to_hours(seconds_to_minutes(s))`: the outer step is undone first, so its inverse
+        goes on the inside.
+    notes: >-
+      About 151.75 for 32 °F means the calls are in the order they were done: the Fahrenheit reading
+      went into `celsius_to_kelvin` as if it were Celsius. -273.15 for 32 °F means 273.15 was
+      subtracted where it should be added, or `kelvin_to_celsius` was used where its inverse was
+      needed.
   build-sympy-inverse:
     rungs:
       - Which letter do you want each equation solved for?
-      - The example line solves an equation for `x`. Your two lines have the same shape.
-      - Do `celsius` first, run the program, and look at what it prints before you move on to `roots`.
-      - "`solve` takes the equation and then the letter. Here the equations are named `rule` and `square`."
+      - >-
+        In M1.2 you called `expand` on an expression and printed what came back. `solve` is called
+        the same way, with an equation and then a letter.
+      - Do `undo_chain` first, run the program, and look at what it prints before you move on to `roots`.
+      - "`chain` and `square` are right. The problem is in what you put inside `solve( )`."
       - To solve `Eq(y, 4*x - 6)` for `x`, write `solve(Eq(y, 4*x - 6), x)`, which gives `[y/4 + 3/2]`.
     notes: >-
-      A list holding `9*c/5 + 32` means the rule was solved for `f`. A list holding `x**2` means the
+      A list holding `2*x + 6` means the chain was solved for `y`. A list holding `x**2` means the
       square was solved for `y`. A printed equation, `Eq(...)`, means `solve` was never called.
 
 novice:

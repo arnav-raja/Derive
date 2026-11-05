@@ -1,0 +1,84 @@
+Derive found formulas for lines, vertices and solutions. Now build them in Python, where tests can try each one on many cases at once.
+
+## A line from two points
+
+In M1.3 a Python function took one input. It can take several, separated by commas:
+
+```python
+def area(width, height):
+    return width * height
+
+print(area(3, 4))   # prints 12
+```
+
+<Exercise id="build-line" />
+
+<Reveal for="build-line">
+
+The slope is the rise over the step, `(y2 - y1) / (x2 - x1)`, and the intercept is whatever makes the line pass through the first point: `y1 - slope(x1, y1, x2, y2) * x1`. A function can call another function, as `intercept` calls `slope` here. Naming the points in the other order changes both the rise and the step into their negatives, and their ratio stays the same.
+
+## A formula with a bug
+
+Python's maths library holds the square root. The line `import math` loads it, and then `math.sqrt(9)` gives `3.0`. A function can also give back two values at once, separated by a comma, and Python prints them in brackets, such as `(1.0, 2.0)`.
+
+<Exercise id="build-roots-bug" />
+
+</Reveal>
+
+<Reveal for="build-roots-bug">
+
+The bug was the order of operations. Python works through `*` and `/` from left to right, so `(-b - d) / 2*a` divides by 2 and then multiplies by `a`, instead of dividing by $2a$. With $a = 1$ the two agree, which is why the first equation came out right and hid the bug. Brackets fix it: `(-b - d) / (2*a)`. This is the slip M1.2's expression trees were built to catch: the tree for `/ 2*a` has the multiplication at the top.
+
+## Break it: an equation with no solution
+
+<Exercise id="build-no-solution" />
+
+</Reveal>
+
+<Reveal for="build-no-solution">
+
+An error is the program's way of reporting what Derive proved: there is no ordinary number to give back. A careful version of `roots` would check whether $b^2 - 4ac$ is negative before taking its square root, and say so.
+
+## The vertex of any parabola
+
+<Exercise id="build-vertex" />
+
+</Reveal>
+
+<Reveal for="build-vertex">
+
+`vertex` is $-b/(2a)$, written `-b / (2*a)` with the brackets, and `lowest` is $c - b^2/(4a)$, or simply the height of the parabola at the vertex. The tests never needed the formulas. They checked what a vertex must do: give equal heights a step either side. A test that checks a property, instead of a stored answer, can check a formula on any input at all.
+
+## Break it: a different score
+
+The puzzle scored a guess by its squared error. Here is that score in Python, with the totals for three guesses.
+
+<Exercise id="build-absolute-error" />
+
+</Reveal>
+
+<Reveal for="build-absolute-error">
+
+The totals are now 5, 6 and 6.5, so the middle value, 3, wins. Adding the sizes of the misses is called the *absolute error*, and its best single guess is the middle value, the *median*. Moving the guess a little towards the middle value shortens more misses than it lengthens, until the guess reaches the middle. Its curve is made of straight pieces, not a smooth bowl, so completing the square cannot find its bottom.
+
+The median barely notices a wild value: for 1, 2, 3 and 94 it is 2.5, however large the 94 is. Which score to train with is a real choice in machine learning, and squared error, with its smooth bowl and its mean, is the most common.
+
+## Compare with the library
+
+SymPy, the algebra library from M1.2 and M1.3, can solve a quadratic with letters left in, so you can compare its answer with the formula you derived.
+
+<Exercise id="build-sympy-quadratic" />
+
+</Reveal>
+
+<Reveal for="build-sympy-quadratic">
+
+SymPy prints `formula` as
+
+```text
+[(-b - sqrt(-4*a*c + b**2))/(2*a), (-b + sqrt(-4*a*c + b**2))/(2*a)]
+```
+
+which is the quadratic formula, with $b^2 - 4ac$ written in another order. SymPy did the algebra itself, so its answer holds for every $a$, $b$ and $c$, not just a few, and the tests checked it by putting each solution back into the equation. For `doubled` it gives `[1, 2]`, the same answer as the fixed `roots`.
+
+</Reveal>

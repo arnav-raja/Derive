@@ -11,7 +11,7 @@ def double(x):
 print(double(21))   # prints 42
 ```
 
-The name after `def` names the function, `x` stands for its input, and `return` gives its output. Like a mathematical function, a Python function can be any rule at all, not only a formula. A function and its inverse are two such definitions.
+The name after `def` names the function, and `x` stands for its input. The first line ends with a colon, and the indented lines under it are the function's *body*, the steps it carries out; the body ends where the indenting stops. `return` gives the output. Like a mathematical function, a Python function can be any rule at all, not only a formula. A function and its inverse are two such definitions.
 
 <Exercise id="build-to-celsius" />
 
@@ -19,7 +19,7 @@ The name after `def` names the function, `x` stands for its input, and `return` 
 
 ## Chaining in the right order
 
-Scientists measure temperature in kelvin, which starts from absolute zero, the coldest anything can be: a temperature of $C$ degrees Celsius is $C + 273.15$ kelvin, written K. To turn kelvin into Fahrenheit, go by way of Celsius: first kelvin to Celsius, then Celsius to Fahrenheit. In Python, as in $g\big(f(x)\big)$, the inner call runs first.
+Scientists measure temperature in kelvin, which starts from absolute zero, the coldest anything can be: a temperature of $C$ degrees Celsius is $C + 273.15$ kelvin, written K. Here is a program meant to turn kelvin into Fahrenheit by way of Celsius.
 
 <Exercise id="build-kelvin" />
 
@@ -27,17 +27,31 @@ Scientists measure temperature in kelvin, which starts from absolute zero, the c
 
 <Reveal for="build-kelvin">
 
-## Break it on purpose
+The kelvin reading has to become Celsius first, and only then Fahrenheit. In Python, as in $g\big(f(x)\big)$, the inner call runs first, so `kelvin_to_celsius` belongs on the inside.
 
-A thermometer that shows only whole degrees is a function too, and it can be chained with `to_celsius` like any other.
+## Undoing the chain
 
-<Exercise id="build-rounded-thermometer" />
+Derive proved that the inverse of a chain undoes its steps in reverse order: $(g \circ f)^{-1} = f^{-1} \circ g^{-1}$. Use that to go back from Fahrenheit to kelvin.
+
+<Exercise id="build-undo-chain" />
 
 </Reveal>
 
-<Reveal for="build-rounded-thermometer">
+<Reveal for="build-undo-chain">
 
-Rounding throws information away. Once two temperatures give the same reading, nothing can tell them apart again, so a rounded rule has no inverse. The tokeniser's decoder fails in the same way: once two lists give the same text, the text cannot say which list it came from.
+`kelvin_to_fahrenheit` turns kelvin into Celsius and then Celsius into Fahrenheit, so its inverse first undoes the Fahrenheit step, with `to_celsius`, and then the kelvin step, with `celsius_to_kelvin`. The tests tried both round trips, there and back and back and there, which is what an inverse has to pass.
+
+## Break it on purpose
+
+Derive turned an image model's numbers back into brightnesses with $p = 127.5(x + 1)$. A saved picture stores each brightness as a whole number, so saving ends with rounding, and rounding is a function too.
+
+<Exercise id="build-rounded-pixels" />
+
+</Reveal>
+
+<Reveal for="build-rounded-pixels">
+
+Rounding throws information away. Once two numbers give the same pixel, nothing can tell them apart again, so a rounded rule has no inverse, and a saved picture cannot give back exactly the numbers the model made. The tokeniser's decoder fails in the same way: once two lists give the same text, the text cannot say which list it came from.
 
 ## Compare with the library
 
@@ -50,14 +64,12 @@ x = symbols("x")
 print(solve(Eq(3*x + 2, 17), x))   # prints [5]
 ```
 
-A list holding one formula means the input can be recovered from the output. A list holding two means it cannot be, not without more information.
-
 <Exercise id="build-sympy-inverse" />
 
 </Reveal>
 
 <Reveal for="build-sympy-inverse">
 
-SymPy gives one formula for $c$, $\tfrac{5f}{9} - \tfrac{160}{9}$, which is $(f - 32) \div 1.8$ written with exact fractions. For $x$ it gives two, $-\sqrt{y}$ and $\sqrt{y}$: the square cannot be undone without knowing the sign, which is this lesson in one line of output. SymPy reached each answer by applying the rules of algebra, so each is a proof, not a check at a few values.
+For the chain, SymPy gives one solution, $\tfrac{y}{2} - 3$: halve first, undoing the doubling that was done last, and then take off the 3. That is $f^{-1} \circ g^{-1}$ from Derive, found by the machine. For the square it gives two, $-\sqrt{y}$ and $\sqrt{y}$: the square cannot be undone without knowing the sign, which is this lesson in one line of output. For these two equations, a list holding one solution means the input can be recovered from the output, and a list holding two means it cannot be, not without more information. SymPy reached each answer by exact algebra on the letters, not by trying a few values.
 
 </Reveal>

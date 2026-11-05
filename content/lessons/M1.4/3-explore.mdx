@@ -1,0 +1,194 @@
+The puzzle's squared error is a curve with a lowest point. Before finding that point exactly, look at how the outputs of simple rules change as their inputs change, starting with the simplest kind of change.
+
+## Steady change
+
+A cloud company rents out a GPU for ₹150 an hour, plus a one-off ₹200 to set the machine up. After $t$ hours the bill is $C(t) = 150t + 200$ rupees.
+
+| Hours $t$ | 0 | 1 | 2 | 3 | 4 |
+| --- | --- | --- | --- | --- | --- |
+| Bill $C(t)$ in ₹ | 200 | 350 | 500 | 650 | 800 |
+
+Each extra hour adds ₹150, whichever hour it is. So between any two times, the change in the bill divided by the change in time comes out the same. From 1 hour to 4 hours the bill rises by ₹450 over 3 hours, which is ₹150 per hour. That ratio is the *rate of change* of the bill. As M1.1 showed, units divide along with the numbers, so the rate is measured in rupees per hour.
+
+<FunctionPlot
+  title="A GPU bill"
+  description="The bill in rupees against hours, from 0 to 8 hours, drawn as a straight line. Two sliders set the hourly rate, at first 150 rupees per hour, and the set-up cost, at first 200 rupees. The rate tilts the line; the set-up cost lifts it without tilting it."
+  curves={[{ expr: "m*x + c", label: "bill in ₹" }]}
+  params={[
+    { name: "m", label: "Rate, ₹ per hour", min: 0, max: 300, step: 10, value: 150 },
+    { name: "c", label: "Set-up cost, ₹", min: 0, max: 600, step: 50, value: 200 }
+  ]}
+  x={[0, 8]}
+  y={[0, 3000]}
+  xLabel="hours"
+  yLabel="bill in ₹"
+/>
+
+Move the sliders. The rate tilts the line and the set-up cost lifts it, and the graph stays straight whatever you choose: a steady rate draws a straight line.
+
+<Exercise id="explore-download-rate" />
+
+<Reveal for="explore-download-rate">
+
+In the 3 seconds from 2 to 5, another 45 MB arrived, so the rate is $45 \div 3 = 15$ MB per second. Running the clock back from 2 seconds to 0 takes away $2 \times 15 = 30$ MB, so 10 MB had already arrived when the clock started, and the amount after $t$ seconds is $A(t) = 15t + 10$. The download and the GPU bill are the same kind of rule: a starting value, plus a fixed rate times the input.
+
+## Is it steady?
+
+Each table below comes from a rule. Look at how the outputs change between the points given.
+
+| Table A: $x$ | 0 | 1 | 2 | 3 |
+| --- | --- | --- | --- | --- |
+| $y$ | 1 | 4 | 7 | 10 |
+
+| Table B: $x$ | 0 | 1 | 2 | 3 |
+| --- | --- | --- | --- | --- |
+| $y$ | 0 | 1 | 4 | 9 |
+
+| Table C: $x$ | 0 | 1 | 3 | 6 |
+| --- | --- | --- | --- | --- |
+| $y$ | 2 | 4 | 8 | 14 |
+
+<Exercise id="explore-which-steady" />
+
+</Reveal>
+
+<Reveal for="explore-which-steady">
+
+A and C. In A, $y$ rises by 3 for every step of 1. In C the steps in $x$ are uneven, 1, 2 and 3, and so are the rises, 2, 4 and 6, but each rise divided by its step is 2. What stays fixed in a steady rule is the rate, not the rise. Table C is $y = 2x + 2$, and A is $y = 3x + 1$.
+
+B is not steady. From 0 to 1 it rises by 1, and from 2 to 3 it rises by 5. B is the squares, $y = x^2$.
+
+## Change that changes
+
+The squares rise faster and faster. Here are more of them, with the rise from each one to the next:
+
+| $x$ | 0 | 1 | 2 | 3 | 4 | 5 |
+| --- | --- | --- | --- | --- | --- | --- |
+| $x^2$ | 0 | 1 | 4 | 9 | 16 | 25 |
+| Rise from the one before | | 1 | 3 | 5 | 7 | 9 |
+
+For such a rule the rate depends on where you measure it. Between two inputs $a$ and $b$, the rate is the rise divided by the step, $\dfrac{b^2 - a^2}{b - a}$. On the graph it is the slope of the straight line that joins the two points, a line called a *chord*. A chord rises by the rate for every unit it goes across.
+
+<FunctionPlot
+  title="Chords of y = x²"
+  description="The curve y = x² for x from −4 to 6, with a chord: a straight segment joining the points of the curve above two inputs a and b, which sliders set, at first 1 and 3. A faint dashed line continues the chord across the picture. Below the picture, a sentence gives the rise, the step and their ratio for the chosen pair."
+  curves={[{ expr: "x^2", label: "y = x²" }]}
+  params={[
+    { name: "a", label: "First input a", min: -3, max: 5, step: 0.5, value: 1 },
+    { name: "b", label: "Second input b", min: -3, max: 5, step: 0.5, value: 3 }
+  ]}
+  chords={[{ from: "a", to: "b", label: "The chord", extend: true }]}
+  x={[-4, 6]}
+  y={[-4, 36]}
+/>
+
+<Exercise id="explore-chord-pattern" />
+
+</Reveal>
+
+<Reveal for="explore-chord-pattern">
+
+30. Every pair gives the sum of its two inputs: 1 and 3 give 4, 2 and 4 give 6, 0 and 5 give 5. So 10 and 20 give 30, which agrees with working it out directly: $(400 - 100) \div 10 = 30$. The Derive phase proves that the pattern holds for every pair.
+
+For a steady rule, every chord has the same slope. For $x^2$, chords further to the right are steeper, which is what a curve that bends upwards looks like.
+
+## Rises of rises
+
+The rises of the squares were 1, 3, 5, 7 and 9, and these rise steadily themselves, by 2 each time. Here is another rule's table, with its rises:
+
+| $x$ | 0 | 1 | 2 | 3 | 4 | 5 |
+| --- | --- | --- | --- | --- | --- | --- |
+| $y$ | 0 | 4 | 14 | 30 | 52 | ? |
+| Rise from the one before | | 4 | 10 | 16 | 22 | ? |
+
+<Exercise id="explore-next-value" />
+
+</Reveal>
+
+<Reveal for="explore-next-value">
+
+80. The rises go up by 6 each time, so the next rise is $22 + 6 = 28$, and $52 + 28 = 80$. The rule is $y = 3x^2 + x$, and indeed $3 \times 25 + 5 = 80$.
+
+For the squares the rises of the rises were 2; for $3x^2 + x$ they are 6, three times as much, matching the 3 in front of $x^2$. A steady rule has steady rises. A rule built from $x^2$, $x$ and a number has steady rises of its rises. The Derive phase shows why.
+
+## The bottom of a bowl
+
+Every rule built from $x^2$, $x$ and numbers draws the same kind of curve: a bowl, or an upturned bowl when the number in front of $x^2$ is negative. Here is $y = (x - 2)^2 + 1$.
+
+<FunctionPlot
+  title="A bowl"
+  description="The curve y = (x − 2)² + 1 for x from −2 to 6: a bowl whose lowest point, (2, 1), is marked, along with the point (−1, 10) on its left side."
+  curves={[{ expr: "(x - 2)^2 + 1", label: "y = (x − 2)² + 1" }]}
+  x={[-2, 6]}
+  y={[0, 18]}
+  marks={[{ x: 2, label: "(2, 1)" }, { x: -1, label: "(−1, 10)" }]}
+/>
+
+This formula shows where the bottom is. A square is never negative, so $(x - 2)^2$ is 0 when $x = 2$ and more than 0 everywhere else. The lowest value of $y$ is therefore 1, at $x = 2$.
+
+<Exercise id="explore-mirror" />
+
+</Reveal>
+
+<Reveal for="explore-mirror">
+
+5. The point $-1$ is 3 to the left of 2, and 5 is 3 to the right. Going a distance $d$ either way from 2 gives the same height, $d^2 + 1$, because $d$ and $-d$ have the same square. So the bowl is symmetric: points of equal height come in pairs, mirrored about the line $x = 2$, and the bottom is halfway between the two points of any pair.
+
+## Finding the bottom without a picture
+
+The bowl $y = x^2 - 6x + 11$ has a formula that does not show its bottom. The mirror gives a way to find it anyway: find two inputs with the same height, and the bottom is halfway between them.
+
+<Exercise id="explore-find-bottom" />
+
+</Reveal>
+
+<Reveal for="explore-find-bottom">
+
+At 3. The heights at $x = 0$ and $x = 6$ are both 11, because $x^2 - 6x = x(x - 6)$ is 0 at both. So the bottom is halfway between them, at $x = 3$, where $y = 9 - 18 + 11 = 2$.
+
+There is a second way to see it. Multiply out $(x - 3)^2 + 2$: it is $x^2 - 6x + 9 + 2 = x^2 - 6x + 11$. So the formula was $(x - 3)^2 + 2$ all along, written out, and in that form it shows its bottom at once, just as $(x - 2)^2 + 1$ did. Rewriting a quadratic as a squared bracket plus a number is called *completing the square*, and the Derive phase does it for every quadratic, including the puzzle's.
+
+<FunctionPlot
+  title="The puzzle's squared error"
+  description="The squared error E(w) = 3w² − 24w + 62 for the waiting times 2, 3 and 7, against the guess w from 0 to 8: a bowl whose lowest point, (4, 14), is marked."
+  curves={[{ expr: "3*x^2 - 24*x + 62", label: "E(w)" }]}
+  x={[0, 8]}
+  y={[0, 70]}
+  xLabel="w"
+  yLabel="E(w)"
+  marks={[{ x: 4, label: "(4, 14)" }]}
+/>
+
+## The names
+
+<Definition term="Linear function">
+
+A function of the form $f(x) = mx + c$, where $m$ and $c$ are fixed numbers. Its graph is a straight line, and it changes at the same rate everywhere.
+
+</Definition>
+
+<Definition term="Slope and intercept">
+
+In $f(x) = mx + c$, the number $m$ is the *slope*: the rate of change, the same between any two points, measured in units of output per unit of input. The number $c$ is the *intercept*: the output at $x = 0$, where the line crosses the vertical axis.
+
+</Definition>
+
+<Definition term="Average rate of change">
+
+The average rate of change of $f$ from $a$ to $b$ is $\dfrac{f(b) - f(a)}{b - a}$: the change in output divided by the change in input. It is the slope of the chord that joins the two points of the graph. For a linear function it is the slope $m$, whichever two points you choose.
+
+</Definition>
+
+<Definition term="Quadratic function">
+
+A function of the form $f(x) = ax^2 + bx + c$ with $a \ne 0$. Its graph is a *parabola*: a bowl that opens upwards when $a > 0$ and downwards when $a < 0$.
+
+</Definition>
+
+<Definition term="Vertex">
+
+The lowest point of a parabola that opens upwards, or the highest point of one that opens downwards. The parabola is symmetric about the vertical line through its vertex.
+
+</Definition>
+
+</Reveal>

@@ -1,0 +1,1051 @@
+exercises:
+  # Puzzle ---------------------------------------------------------------------
+  - id: puzzle-best-guess
+    phase: puzzle
+    kind: predict
+    concept: M1.4/completing-the-square
+    title: The best single guess
+    prompt: >-
+      Which guess $w$ makes the squared error $E(w)$ smallest? Choose before working out any
+      totals.
+    answer:
+      type: choice
+      options:
+        - { id: middle, label: '3, the middle one of the three values' }
+        - { id: mean, label: '4, their mean: $(2 + 3 + 7) \div 3$' }
+        - { id: halfway, label: '4.5, halfway between the smallest and the largest' }
+        - { id: beyond, label: 'A guess between 4.5 and 7, because squaring makes the miss from 7 count the most' }
+      correct: [mean]
+    explanation: >-
+      $E(4) = 4 + 1 + 9 = 14$, while $E(3) = 17$ and $E(4.5) = 14.75$. The mean gives the smallest
+      total of the three, and guesses just either side of it, such as 3.9 and 4.1, give 14.03.
+
+  # Recall ---------------------------------------------------------------------
+  - id: recall-expand
+    phase: recall
+    kind: recall
+    concept: M1.2/equivalence
+    prompt: Which expression is $(x + 3)^2$ multiplied out?
+    answer:
+      type: choice
+      options:
+        - { id: squares, label: '$x^2 + 9$' }
+        - { id: right, label: '$x^2 + 6x + 9$' }
+        - { id: single, label: '$x^2 + 3x + 9$' }
+        - { id: sixes, label: '$x^2 + 6x + 6$' }
+      correct: [right]
+    explanation: >-
+      $(x + 3)(x + 3) = x^2 + 3x + 3x + 9 = x^2 + 6x + 9$.
+
+  - id: recall-solve
+    phase: recall
+    kind: recall
+    concept: M1.2/solving-equations
+    prompt: Solve $5x - 3 = 2x + 9$. What is $x$?
+    answer: { type: number, value: 4 }
+    explanation: >-
+      Subtract $2x$ from both sides to get $3x - 3 = 9$, then add 3 and divide by 3: $x = 4$.
+
+  - id: recall-function
+    phase: recall
+    kind: recall
+    concept: M1.3/function-as-mapping
+    prompt: For $f(x) = x^2 - 4x$, what is $f(5)$?
+    answer: { type: number, value: 5 }
+    explanation: >-
+      $f(5) = 5^2 - 4 \times 5 = 25 - 20 = 5$.
+
+  - id: recall-speed
+    phase: recall
+    kind: recall
+    concept: M1.1/units-as-algebra
+    prompt: A train covers 150 km in 2 hours at a steady speed. What is its speed?
+    answer: { type: number, value: 75, unit: km/h }
+    explanation: >-
+      $150 \text{ km} \div 2 \text{ h} = 75$ km/h.
+
+  # Explore --------------------------------------------------------------------
+  - id: explore-download-rate
+    phase: explore
+    kind: predict
+    concept: M1.4/linear-functions
+    title: A steady download
+    prompt: >-
+      A file downloads at a steady rate. Two seconds after a clock is started, 40 MB of it have
+      arrived; five seconds after, 85 MB. How many megabytes arrive each second?
+    answer: { type: number, value: 15, unit: MB per second }
+    explanation: >-
+      From 2 to 5 seconds, $85 - 40 = 45$ MB arrived in 3 seconds, so the rate is
+      $45 \div 3 = 15$ MB per second.
+    review:
+      variants:
+        - prompt: >-
+            A tank fills at a steady rate. After 4 minutes it holds 50 litres, and after 10 minutes it
+            holds 110 litres. How many litres flow in each minute?
+          answer: { type: number, value: 10, unit: litres per minute }
+          explanation: >-
+            $110 - 50 = 60$ litres flowed in over $10 - 4 = 6$ minutes, so the rate is 10 litres per
+            minute.
+        - prompt: >-
+            A phone's battery drains steadily, from 80% at 2 pm to 50% at 5 pm. What is the rate of
+            change of the charge, in percentage points per hour?
+          answer: { type: number, value: -10, unit: points per hour }
+          explanation: >-
+            The charge changed by $50 - 80 = -30$ points over 3 hours, which is $-10$ points per hour.
+            The minus sign says the charge is falling.
+
+  - id: explore-which-steady
+    phase: explore
+    kind: predict
+    concept: M1.4/linear-functions
+    title: Which rules are steady?
+    prompt: Which of the three tables come from rules that change at a steady rate?
+    answer:
+      type: choice
+      multiple: true
+      options:
+        - { id: table-a, label: 'Table A' }
+        - { id: table-b, label: 'Table B' }
+        - { id: table-c, label: 'Table C' }
+      correct: [table-a, table-c]
+    explanation: >-
+      In A every rise divided by its step is 3, and in C it is 2, although C's steps are uneven. B
+      rises by 1, then 3, then 5.
+    placement: true
+    review:
+      variants:
+        - prompt: >-
+            A rule gives $y = 5$ at $x = 1$, $y = 11$ at $x = 3$ and $y = 20$ at $x = 6$. Does it change
+            at a steady rate?
+          answer:
+            type: choice
+            options:
+              - { id: rises, label: 'No: the rises, 6 and 9, are different' }
+              - { id: steady, label: 'Yes: each rise divided by its step is 3' }
+              - { id: steps, label: 'No: the steps, 2 and 3, are different' }
+            correct: [steady]
+          explanation: >-
+            From 1 to 3 the rise is 6 over a step of 2, and from 3 to 6 it is 9 over a step of 3. Both
+            rates are 3, so the rule is steady: it is $y = 3x + 2$.
+        - prompt: Which of these is a linear function?
+          answer:
+            type: choice
+            options:
+              - { id: square, label: '$y = 3x^2$' }
+              - { id: reciprocal, label: '$y = 1/x$' }
+              - { id: line, label: '$y = 7 - 2x$' }
+              - { id: product, label: '$y = x(x + 1)$' }
+            correct: [line]
+          explanation: >-
+            $y = 7 - 2x$ is $mx + c$ with $m = -2$ and $c = 7$. The others are not steady:
+            $x(x + 1) = x^2 + x$, for example, is a quadratic.
+        - prompt: A line has intercept 4 and slope 3. What is its height at $x = 5$?
+          answer: { type: number, value: 19 }
+          explanation: >-
+            The line is $y = 3x + 4$, so at $x = 5$ it is $15 + 4 = 19$.
+
+  - id: explore-chord-pattern
+    phase: explore
+    kind: predict
+    concept: M1.4/average-rate-of-change
+    title: A pattern in the chords
+    prompt: >-
+      Use the figure to find the rate of $x^2$ between a few pairs of inputs, such as 1 and 3, 2 and 4,
+      or 0 and 5. Then, without the figure, predict the rate of $x^2$ from $x = 10$ to $x = 20$.
+    answer: { type: number, value: 30 }
+    explanation: >-
+      Each pair gives the sum of its two inputs, so 10 and 20 give 30. Directly:
+      $(400 - 100) \div (20 - 10) = 30$.
+    placement: true
+    review:
+      variants:
+        - prompt: What is the average rate of change of $x^2$ from $x = 2$ to $x = 6$?
+          answer: { type: number, value: 8 }
+          explanation: >-
+            $(36 - 4) \div (6 - 2) = 32 \div 4 = 8$, which is also $2 + 6$.
+        - prompt: >-
+            A model's training loss is 3.2 after 1,000 steps and 2.4 after 3,000 steps. What is its
+            average rate of change over those steps, in loss per 1,000 steps?
+          answer: { type: number, value: -0.4 }
+          explanation: >-
+            The loss changed by $2.4 - 3.2 = -0.8$ over 2,000 steps, which is two lots of 1,000 steps,
+            so the average rate is $-0.4$ per 1,000 steps. The minus sign says the loss was falling.
+        - prompt: For $f(x) = 5x + 1$, what is the average rate of change from $x = -3$ to $x = 7$?
+          answer: { type: number, value: 5 }
+          explanation: >-
+            $f(7) = 36$ and $f(-3) = -14$, so the rate is $50 \div 10 = 5$, the slope. For a linear
+            function every pair of points gives the slope.
+
+  - id: explore-next-value
+    phase: explore
+    kind: predict
+    concept: M1.4/quadratics
+    title: The next value
+    prompt: In the table above, what is $y$ when $x = 5$?
+    answer: { type: number, value: 80 }
+    explanation: >-
+      The rises go up by 6 each time, so the next rise is $22 + 6 = 28$, and $52 + 28 = 80$.
+    review:
+      variants:
+        - prompt: >-
+            A rule gives 1, 3, 9, 19 and 33 at $x = 0, 1, 2, 3, 4$, and its rises of rises are
+            steady. What does it give at $x = 5$?
+          answer: { type: number, value: 51 }
+          explanation: >-
+            The rises are 2, 6, 10 and 14, going up by 4 each time, so the next rise is 18 and the
+            value is $33 + 18 = 51$. The rule is $2x^2 + 1$.
+        - prompt: >-
+            For $y = 4x^2$ at $x = 0, 1, 2, 3$ and so on, what are the rises of the rises?
+          answer: { type: number, value: 8 }
+          explanation: >-
+            The values are 0, 4, 16, 36 and 64, the rises are 4, 12, 20 and 28, and the rises of the
+            rises are all 8, twice the 4 in front of $x^2$.
+        - prompt: Which list of values, at $x = 0, 1, 2, 3, 4$, could come from a quadratic?
+          answer:
+            type: choice
+            options:
+              - { id: steady, label: '2, 5, 8, 11, 14' }
+              - { id: doubling, label: '1, 2, 4, 8, 16' }
+              - { id: quadratic, label: '0, 2, 6, 12, 20' }
+            correct: [quadratic]
+          explanation: >-
+            The rises of 0, 2, 6, 12, 20 are 2, 4, 6 and 8, which rise steadily by 2, as a quadratic's
+            do: it is $x^2 + x$. The first list is steady, so it is linear. The doubling list has rises
+            1, 2, 4 and 8, whose rises, 1, 2 and 4, are not steady.
+
+  - id: explore-mirror
+    phase: explore
+    kind: predict
+    concept: M1.4/quadratics
+    title: The other side of the bowl
+    prompt: >-
+      At $x = -1$ the bowl $y = (x - 2)^2 + 1$ has height 10. At which other $x$ is its height 10?
+    answer: { type: number, value: 5 }
+    explanation: >-
+      $-1$ is 3 to the left of 2, and the point 3 to the right of 2 is 5: $(5 - 2)^2 + 1 = 10$.
+    review:
+      variants:
+        - prompt: >-
+            The bowl $y = (x + 1)^2 - 4$ has height 5 at $x = 2$. At which other $x$ is its height 5?
+          answer: { type: number, value: -4 }
+          explanation: >-
+            The bowl is symmetric about $x = -1$. The input 2 is 3 to the right of $-1$, so the other
+            is 3 to the left, $-4$. Check: $(-4 + 1)^2 - 4 = 9 - 4 = 5$.
+        - prompt: A parabola has the same height at $x = 1$ and at $x = 9$. At which $x$ is its vertex?
+          answer: { type: number, value: 5 }
+          explanation: >-
+            Points of equal height are mirrored about the vertex, which is halfway between them:
+            $(1 + 9) \div 2 = 5$.
+
+  - id: explore-find-bottom
+    phase: explore
+    kind: predict
+    concept: M1.4/completing-the-square
+    title: Finding the bottom
+    prompt: At which $x$ is the bowl $y = x^2 - 6x + 11$ lowest?
+    answer: { type: number, value: 3 }
+    explanation: >-
+      At $x = 0$ and $x = 6$ the height is 11, so the bottom is halfway between them, at $x = 3$.
+
+  # Derive ---------------------------------------------------------------------
+  - id: derive-line-through
+    phase: derive
+    kind: step
+    concept: M1.4/linear-functions
+    title: A line through two points
+    prompt: >-
+      A training run takes a fixed start-up time, plus a time that grows steadily with the data.
+      Training on 2 billion tokens took 5 hours, and on 6 billion tokens it took 13 hours. Write the
+      time $T$, in hours, as a linear function of $n$, the number of billions of tokens.
+    answer:
+      type: expression
+      symbols:
+        - { name: n }
+      lhs: 'T ='
+      reference: 2*n + 1
+      accept: ['1 + 2*n', '2*(n - 2) + 5', '13 + 2*(n - 6)', '(8*n + 4)/4']
+      reject: ['2*n', '2.5*n', 'n/2 + 4', '2*n + 5', '13*n/6', '4*n - 3', '2*n - 1', '8*n + 1']
+    explanation: >-
+      The slope is $(13 - 5) \div (6 - 2) = 2$ hours per billion tokens. Then $5 = 2 \times 2 + c$
+      gives $c = 1$, so $T = 2n + 1$.
+    placement: true
+    review:
+      variants:
+        - prompt: Find the line through the points $(1, 5)$ and $(3, 11)$.
+          answer:
+            type: expression
+            symbols:
+              - { name: x }
+            lhs: 'y ='
+            reference: 3*x + 2
+            accept: ['2 + 3*x', '3*(x - 1) + 5']
+            reject: ['3*x', '3*x + 5', 'x/3 + 2', '6*x - 1', '2*x + 3']
+          explanation: >-
+            The slope is $(11 - 5) \div (3 - 1) = 3$, and $5 = 3 \times 1 + c$ gives $c = 2$:
+            $y = 3x + 2$.
+        - prompt: >-
+            A taxi charges a fixed amount plus a fixed rate per kilometre. A 4 km ride costs ₹130 and a
+            10 km ride costs ₹250. What is the rate per kilometre?
+          answer: { type: number, value: 20, unit: ₹ per km }
+          explanation: >-
+            The extra 6 km cost an extra ₹120, so the rate is ₹20 per km. The fixed amount is
+            $130 - 4 \times 20 = 50$ rupees.
+        - prompt: >-
+            In $T = 2n + 1$, $T$ is in hours and $n$ in billions of tokens. In what units is the slope,
+            2?
+          answer:
+            type: choice
+            options:
+              - { id: hours, label: 'Hours' }
+              - { id: tokens, label: 'Billions of tokens' }
+              - { id: tokens-per-hour, label: 'Billions of tokens per hour' }
+              - { id: hours-per-token, label: 'Hours per billion tokens' }
+            correct: [hours-per-token]
+          explanation: >-
+            The slope is a change in $T$ divided by a change in $n$, so its units are hours divided by
+            billions of tokens: hours per billion tokens.
+
+  - id: derive-chord-square
+    phase: derive
+    kind: proof
+    concept: M1.4/average-rate-of-change
+    title: The rate of a square, for every pair
+    prompt: >-
+      For two different inputs $a$ and $b$, the average rate of change of $x^2$ from $a$ to $b$ is
+      $\dfrac{b^2 - a^2}{b - a}$. Choose the rule that justifies each line. Each line uses exactly one
+      rule, and two of the rules are not used.
+    answer:
+      type: steps
+      rules:
+        - { id: cancel, name: Cancel, label: 'A factor on both the top and the bottom of a fraction can be cancelled if it is not 0: $\dfrac{pq}{p} = q$ when $p \ne 0$.' }
+        - { id: squares, name: Difference of squares, label: '$b^2 - a^2 = (b - a)(b + a)$, as multiplying out the right side shows.' }
+        - { id: root, name: Square root, label: '$\sqrt{p^2} = p$ when $p \ge 0$.' }
+        - { id: swap, name: Swap a sum, label: 'The order of a sum can be swapped: $p + q = q + p$.' }
+        - { id: split, name: Split a fraction, label: 'A fraction can be split over its top: $\dfrac{p - q}{r} = \dfrac{p}{r} - \dfrac{q}{r}$.' }
+      start: '\frac{b^2 - a^2}{b - a}'
+      lines:
+        - math: '= \frac{(b - a)(b + a)}{b - a}'
+          rule: squares
+        - math: '= b + a'
+          rule: cancel
+        - math: '= a + b'
+          rule: swap
+    explanation: >-
+      Difference of squares, cancel, swap. Cancelling $b - a$ is allowed because $a$ and $b$ are
+      different, so $b - a$ is not 0. So the rate is $a + b$ for every pair of different inputs.
+
+  - id: derive-general-rate
+    phase: derive
+    kind: step
+    concept: M1.4/average-rate-of-change
+    covers: [M1.4/quadratics]
+    title: The rate of any quadratic
+    prompt: >-
+      Find the average rate of change of $f(x) = 3x^2 - 2x + 5$ from $x = a$ to $x = b$, for two
+      different inputs $a$ and $b$. Simplify until no fraction is left.
+    answer:
+      type: expression
+      symbols:
+        - { name: a }
+        - { name: b }
+      lhs: '\dfrac{f(b) - f(a)}{b - a} ='
+      reference: 3*(a + b) - 2
+      accept: ['3*a + 3*b - 2', '3*(b + a) - 2', '-2 + 3*(a + b)']
+      reject:
+        - '(3*b^2 - 2*b - 3*a^2 + 2*a)/(b - a)'
+        - '3*(a + b)'
+        - '3*(a + b) + 5'
+        - '6*(a + b) - 2'
+        - '3*a + b - 2'
+        - 'a + b - 2'
+        - '3*(a + b) - 2*(a + b)'
+      form:
+        polynomial: true
+        message: >-
+          That is equal, but it still divides by $b - a$. Take out the common factor and cancel it,
+          as in the proof above.
+    explanation: >-
+      $f(b) - f(a) = 3(b^2 - a^2) - 2(b - a) = (b - a)\big(3(b + a) - 2\big)$, and dividing by
+      $b - a$ leaves $3(a + b) - 2$.
+
+  - id: derive-complete-square
+    phase: derive
+    kind: step
+    concept: M1.4/completing-the-square
+    title: Completing a square
+    prompt: Write $x^2 - 10x + 31$ as a squared bracket plus a number.
+    answer:
+      type: expression
+      symbols:
+        - { name: x }
+      lhs: 'x^2 - 10x + 31 ='
+      reference: (x - 5)**2 + 6
+      accept: ['(x - 5)^2 + 6', '6 + (5 - x)^2', '(x - 5)*(x - 5) + 6']
+      reject:
+        - 'x^2 - 10*x + 31'
+        - '(x - 5)^2 + 31'
+        - '(x - 10)^2 - 69'
+        - '(x + 5)^2 + 6'
+        - '(x - 5)^2 - 19'
+        - '(x - 5)^2 + 56'
+        - '(x - 5)^2'
+      form:
+        completedSquare: x
+        message: That is equal, but it is not yet a squared bracket plus a number.
+    explanation: >-
+      Half of $-10$ is $-5$, and $(x - 5)^2 = x^2 - 10x + 25$. Since $31 = 25 + 6$, the quadratic is
+      $(x - 5)^2 + 6$.
+    placement: true
+    review:
+      variants:
+        - prompt: Write $x^2 + 4x + 7$ as a squared bracket plus a number.
+          answer:
+            type: expression
+            symbols:
+              - { name: x }
+            lhs: 'x^2 + 4x + 7 ='
+            reference: (x + 2)**2 + 3
+            accept: ['(x + 2)^2 + 3', '3 + (x + 2)^2']
+            reject: ['x^2 + 4*x + 7', '(x + 4)^2 - 9', '(x + 2)^2 + 7', '(x - 2)^2 + 3', '(x + 2)^2 - 3']
+            form:
+              completedSquare: x
+          explanation: >-
+            Half of 4 is 2, and $(x + 2)^2 = x^2 + 4x + 4$, which is 3 short of $x^2 + 4x + 7$.
+        - prompt: What is the lowest value of $x^2 - 8x + 20$?
+          answer: { type: number, value: 4 }
+          explanation: >-
+            $x^2 - 8x + 20 = (x - 4)^2 + 4$, and the squared bracket is never negative, so the lowest
+            value is 4, at $x = 4$.
+        - prompt: At which $x$ is $y = x^2 + 12x + 1$ lowest?
+          answer: { type: number, value: -6 }
+          explanation: >-
+            Half of 12 is 6, so $y = (x + 6)^2 - 35$, which is lowest where $x + 6 = 0$, at $x = -6$.
+
+  - id: derive-general-square
+    phase: derive
+    kind: step
+    concept: M1.4/completing-the-square
+    title: Completing the square with letters
+    prompt: >-
+      Now put a letter in place of the number in front of $x$: write $x^2 + bx + c$ as a squared
+      bracket plus a part without $x$.
+    answer:
+      type: expression
+      symbols:
+        - { name: x }
+        - { name: b }
+        - { name: c }
+      lhs: 'x^2 + bx + c ='
+      reference: (x + b/2)**2 + c - b**2/4
+      accept: ['(x + b/2)^2 - b^2/4 + c', '(2*x + b)^2/4 + c - b^2/4', '(x + 0.5*b)^2 + c - 0.25*b^2']
+      reject:
+        - 'x^2 + b*x + c'
+        - '(x + b)^2 + c - b^2'
+        - '(x + b/2)^2 + c'
+        - '(x + b/2)^2 + c - b^2/2'
+        - '(x - b/2)^2 + c - b^2/4'
+        - '(x + b/2)^2 + c + b^2/4'
+      form:
+        completedSquare: x
+        message: That is equal, but it is not yet a squared bracket plus a part without $x$.
+    explanation: >-
+      Half of $b$ is $\tfrac{b}{2}$, and $\big(x + \tfrac{b}{2}\big)^2 = x^2 + bx + \tfrac{b^2}{4}$,
+      so $x^2 + bx + c = \big(x + \tfrac{b}{2}\big)^2 + c - \tfrac{b^2}{4}$.
+
+  - id: derive-no-solutions
+    phase: derive
+    kind: predict
+    concept: M1.4/quadratics
+    title: A quadratic that is never zero
+    prompt: How many numbers $x$ make $x^2 + 4x + 5 = 0$ true?
+    answer:
+      type: choice
+      options:
+        - { id: two, label: 'Two' }
+        - { id: one, label: 'Exactly one' }
+        - { id: none, label: 'None' }
+      correct: [none]
+    explanation: >-
+      $x^2 + 4x + 5 = (x + 2)^2 + 1$, which is at least 1 for every $x$, so it is never 0. The
+      formula agrees: $b^2 - 4ac = 16 - 20 = -4$ is negative.
+    review:
+      variants:
+        - prompt: How many numbers $x$ make $x^2 - 6x + 9 = 0$ true?
+          answer:
+            type: choice
+            options:
+              - { id: none, label: 'None' }
+              - { id: one, label: 'Exactly one' }
+              - { id: two, label: 'Two' }
+            correct: [one]
+          explanation: >-
+            $x^2 - 6x + 9 = (x - 3)^2$, which is 0 only at $x = 3$. Here $b^2 - 4ac = 36 - 36 = 0$.
+        - prompt: Use the quadratic formula to find the larger solution of $x^2 - 2x - 8 = 0$.
+          answer: { type: number, value: 4 }
+          explanation: >-
+            $b^2 - 4ac = 4 + 32 = 36$, so $x = \dfrac{2 \pm 6}{2}$, which is 4 or $-2$. Check:
+            $16 - 8 - 8 = 0$.
+
+  - id: derive-mean-best
+    phase: derive
+    kind: step
+    concept: M1.4/completing-the-square
+    title: Why the mean wins
+    prompt: >-
+      The puzzle's squared error multiplies out to $E(w) = 3w^2 - 24w + 62$. Write it as a number
+      times a squared bracket, plus a number.
+    answer:
+      type: expression
+      symbols:
+        - { name: w }
+      lhs: 'E(w) ='
+      reference: 3*(w - 4)**2 + 14
+      accept: ['3*(w - 4)^2 + 14', '14 + 3*(4 - w)^2', '3*((w - 4)^2) + 14']
+      reject:
+        - '3*w^2 - 24*w + 62'
+        - '(w - 4)^2 + 14'
+        - '3*(w - 4)^2 + 62'
+        - '3*(w - 12)^2 - 370'
+        - '3*(w - 8)^2 - 130'
+        - '3*(w - 4)^2 - 34'
+      form:
+        completedSquare: w
+        message: That is equal, but it is not yet a number times a squared bracket, plus a number.
+    explanation: >-
+      Take the 3 out of the first two terms: $3(w^2 - 8w) + 62$. Half of $-8$ is $-4$, and
+      $w^2 - 8w = (w - 4)^2 - 16$, so $E(w) = 3(w - 4)^2 - 48 + 62 = 3(w - 4)^2 + 14$.
+
+  - id: derive-outlier
+    phase: derive
+    kind: predict
+    concept: M1.4/completing-the-square
+    title: One wild value
+    prompt: The data are 1, 2, 3 and 94. Which single guess $w$ makes the squared error smallest?
+    answer:
+      type: choice
+      options:
+        - { id: middle, label: '2.5, halfway between the two middle values' }
+        - { id: halfway, label: '47.5, halfway between the smallest and the largest' }
+        - { id: mean, label: '25, the mean' }
+      correct: [mean]
+    explanation: >-
+      Under squared error the best single guess is always the mean, here
+      $(1 + 2 + 3 + 94) \div 4 = 25$, even though no value is anywhere near it.
+
+  # Build ----------------------------------------------------------------------
+  - id: build-line
+    phase: build
+    kind: build
+    concept: M1.4/linear-functions
+    title: A line from two points
+    prompt: >-
+      Replace each `None` so that `slope` and `intercept` give the slope and intercept of the line
+      through the points $(x_1, y_1)$ and $(x_2, y_2)$, for any two points with different $x$.
+    answer:
+      type: code
+      starter: |
+        def slope(x1, y1, x2, y2):
+            return None    # the rise divided by the step
+
+        def intercept(x1, y1, x2, y2):
+            return None    # the height of the line at x = 0
+
+        # Derive's training runs: 2 billion tokens took 5 hours, 6 billion took 13.
+        print(slope(2, 5, 6, 13), intercept(2, 5, 6, 13))
+      tests: |
+        # close(a, b) is True when a and b agree to about nine significant figures.
+        POINTS = [(2, 5, 6, 13), (0, 32, 100, 212), (-1, 4, 3, -8), (1.5, 2, 4, 2)]
+
+        def test_answers():
+            """slope and intercept each give a number, not None."""
+            assert slope(2, 5, 6, 13) is not None, "Replace the None in slope with a formula."
+            assert intercept(2, 5, 6, 13) is not None, "Replace the None in intercept with a formula."
+
+        def test_through_both():
+            """The line with that slope and intercept passes through both points."""
+            for x1, y1, x2, y2 in POINTS:
+                m = slope(x1, y1, x2, y2)
+                c = intercept(x1, y1, x2, y2)
+                assert m is not None and c is not None, "Replace each None with a formula first."
+                for x, y in ((x1, y1), (x2, y2)):
+                    assert close(m * x + c, y), f"For the points ({x1}, {y1}) and ({x2}, {y2}), the line gives {m * x + c} at x = {x}, not {y}."
+
+        def test_either_order():
+            """Naming the two points in the other order gives the same line."""
+            for x1, y1, x2, y2 in POINTS:
+                assert close(slope(x1, y1, x2, y2), slope(x2, y2, x1, y1)), f"The slope changes when ({x1}, {y1}) and ({x2}, {y2}) swap places."
+                assert close(intercept(x1, y1, x2, y2), intercept(x2, y2, x1, y1)), f"The intercept changes when ({x1}, {y1}) and ({x2}, {y2}) swap places."
+      reference: |
+        def slope(x1, y1, x2, y2):
+            return (y2 - y1) / (x2 - x1)
+
+        def intercept(x1, y1, x2, y2):
+            return y1 - slope(x1, y1, x2, y2) * x1
+
+        print(slope(2, 5, 6, 13), intercept(2, 5, 6, 13))
+      wrong:
+        - code: |
+            def slope(x1, y1, x2, y2):
+                return (x2 - x1) / (y2 - y1)
+
+            def intercept(x1, y1, x2, y2):
+                return y1 - slope(x1, y1, x2, y2) * x1
+
+            print(slope(2, 5, 6, 13), intercept(2, 5, 6, 13))
+          why: Divides the step by the rise, the wrong way up.
+        - code: |
+            def slope(x1, y1, x2, y2):
+                return (y2 - y1) / (x2 - x1)
+
+            def intercept(x1, y1, x2, y2):
+                return y1
+
+            print(slope(2, 5, 6, 13), intercept(2, 5, 6, 13))
+          why: Takes the first point's height as the intercept, which is right only when that point is at x = 0.
+        - code: |
+            def slope(x1, y1, x2, y2):
+                return y2 - y1 / (x2 - x1)
+
+            def intercept(x1, y1, x2, y2):
+                return y1 - slope(x1, y1, x2, y2) * x1
+
+            print(slope(2, 5, 6, 13), intercept(2, 5, 6, 13))
+          why: Without brackets, only y1 is divided by the step.
+        - code: |
+            def slope(x1, y1, x2, y2):
+                return (y2 - y1) / (x2 - x1)
+
+            def intercept(x1, y1, x2, y2):
+                return y1 - slope(x1, y1, x2, y2) * x2
+
+            print(slope(2, 5, 6, 13), intercept(2, 5, 6, 13))
+          why: Mixes the first point's height with the second point's x.
+        - code: |
+            def slope(x1, y1, x2, y2):
+                return y2 / x2
+
+            def intercept(x1, y1, x2, y2):
+                return 0
+
+            print(slope(2, 5, 6, 13), intercept(2, 5, 6, 13))
+          why: Treats every line as passing through 0.
+    explanation: >-
+      The slope is `(y2 - y1) / (x2 - x1)`, and the intercept is `y1 - slope(x1, y1, x2, y2) * x1`,
+      the number that makes the line pass through the first point.
+
+  - id: build-roots-bug
+    phase: build
+    kind: debug
+    concept: M1.4/quadratics
+    title: A formula with a bug
+    prompt: >-
+      `roots` should give the two solutions of $ax^2 + bx + c = 0$ by the quadratic formula. It gets the
+      first equation right, but not the second, which is the same equation doubled. Find the bug and
+      fix it.
+    answer:
+      type: code
+      starter: |
+        import math
+
+        def roots(a, b, c):
+            d = math.sqrt(b**2 - 4*a*c)
+            return (-b - d) / 2*a, (-b + d) / 2*a
+
+        print(roots(1, -3, 2))   # x^2 - 3x + 2 = 0 has the solutions 1 and 2
+        print(roots(2, -6, 4))   # 2x^2 - 6x + 4 = 0 is the same equation doubled
+      tests: |
+        # close(a, b) is True when a and b agree to about nine significant figures.
+        def test_simple():
+            """x^2 - 3x + 2 = 0 has the solutions 1 and 2."""
+            got = sorted(roots(1, -3, 2))
+            assert close(got[0], 1) and close(got[1], 2), f"roots(1, -3, 2) gave {got}, not 1 and 2."
+
+        def test_doubled():
+            """2x^2 - 6x + 4 = 0, the same equation doubled, has the same solutions."""
+            got = sorted(roots(2, -6, 4))
+            assert close(got[0], 1) and close(got[1], 2), f"roots(2, -6, 4) gave {got}, not 1 and 2."
+
+        def test_each_solves():
+            """Each answer makes a x^2 + b x + c equal to 0, for several equations."""
+            for a, b, c in [(3, 1, -2), (0.5, -1, -4), (-1, 0, 9), (4, -4, 1)]:
+                for x in roots(a, b, c):
+                    value = a * x**2 + b * x + c
+                    assert close(value, 0, abs_tol=1e-9), f"roots({a}, {b}, {c}) gave {x}, where a x^2 + b x + c is {value}, not 0."
+      reference: |
+        import math
+
+        def roots(a, b, c):
+            d = math.sqrt(b**2 - 4*a*c)
+            return (-b - d) / (2*a), (-b + d) / (2*a)
+
+        print(roots(1, -3, 2))
+        print(roots(2, -6, 4))
+      wrong:
+        - code: |
+            import math
+
+            def roots(a, b, c):
+                d = math.sqrt(b**2 - 4*a*c)
+                return (-b - d) / 2*a, (-b + d) / 2*a
+
+            print(roots(1, -3, 2))
+            print(roots(2, -6, 4))
+          why: The starter's bug, dividing by 2 and then multiplying by a.
+        - code: |
+            import math
+
+            def roots(a, b, c):
+                d = math.sqrt(b**2 - 4*a*c)
+                return (b - d) / (2*a), (b + d) / (2*a)
+
+            print(roots(1, -3, 2))
+            print(roots(2, -6, 4))
+          why: Uses b where the formula has -b, which gives the solutions with their signs flipped.
+        - code: |
+            import math
+
+            def roots(a, b, c):
+                d = math.sqrt(b**2 - 4*a*c)
+                return (-b - d) / (2*a), (-b - d) / (2*a)
+
+            print(roots(1, -3, 2))
+            print(roots(2, -6, 4))
+          why: Gives the same solution twice.
+        - code: |
+            import math
+
+            def roots(a, b, c):
+                d = math.sqrt(b**2 - 4*a*c)
+                return -b - d / (2*a), -b + d / (2*a)
+
+            print(roots(1, -3, 2))
+            print(roots(2, -6, 4))
+          why: Without brackets on the top, only d is divided.
+    explanation: >-
+      `/ 2*a` divides by 2 and then multiplies by `a`. The fix is `/ (2*a)`, which divides by $2a$.
+
+  - id: build-no-solution
+    phase: build
+    kind: breakit
+    concept: M1.4/quadratics
+    title: An equation with no solution
+    prompt: Predict what happens after the change, then run both versions to see.
+    answer:
+      type: breakit
+      code: |
+        import math
+
+        def roots(a, b, c):
+            d = math.sqrt(b**2 - 4*a*c)
+            return (-b - d) / (2*a), (-b + d) / (2*a)
+
+        answer = roots(1, -3, 2)
+        print(answer)
+      broken: |
+        import math
+
+        def roots(a, b, c):
+            d = math.sqrt(b**2 - 4*a*c)
+            return (-b - d) / (2*a), (-b + d) / (2*a)
+
+        answer = roots(1, 4, 5)
+        print(answer)
+      change: >-
+        The program now solves $x^2 + 4x + 5 = 0$, the equation that Derive showed has no solution.
+      options:
+        - { id: two, label: 'It prints two different numbers', when: 'error is None and answer[0] != answer[1]' }
+        - { id: same, label: 'It prints the same number twice', when: 'error is None and answer[0] == answer[1]' }
+        - { id: error, label: 'Python stops with an error', when: 'error is not None' }
+    explanation: >-
+      $b^2 - 4ac = 16 - 20 = -4$, so the program asks for `math.sqrt(-4)`. No ordinary number has a
+      square of $-4$, and Python stops with `ValueError: math domain error`.
+
+  - id: build-vertex
+    phase: build
+    kind: build
+    concept: M1.4/completing-the-square
+    covers: [M1.4/quadratics]
+    title: The vertex of any parabola
+    prompt: >-
+      Replace each `None` so that `vertex` gives the $x$ of the vertex of $y = ax^2 + bx + c$, and
+      `lowest` gives the height of the parabola there, for any numbers $a$, $b$ and $c$ with $a$ not 0.
+    answer:
+      type: code
+      starter: |
+        def vertex(a, b, c):
+            return None    # the x of the lowest or highest point of a x^2 + b x + c
+
+        def lowest(a, b, c):
+            return None    # the height of a x^2 + b x + c at that x
+
+        print(vertex(1, -6, 11), lowest(1, -6, 11))   # Explore's bowl, x^2 - 6x + 11
+      tests: |
+        # close(a, b) is True when a and b agree to about nine significant figures.
+        CASES = [(1, -6, 11), (2, 8, -3), (-1, 4, 0), (0.5, -3, 2)]
+
+        def height(a, b, c, x):
+            return a * x**2 + b * x + c
+
+        def test_answers():
+            """vertex and lowest each give a number, not None."""
+            assert vertex(1, -6, 11) is not None, "Replace the None in vertex with a formula."
+            assert lowest(1, -6, 11) is not None, "Replace the None in lowest with a formula."
+
+        def test_mirror():
+            """The parabola has the same height a step either side of the vertex."""
+            for a, b, c in CASES:
+                v = vertex(a, b, c)
+                assert v is not None, "Replace the None in vertex with a formula first."
+                for d in (0.5, 1, 3):
+                    left, right = height(a, b, c, v - d), height(a, b, c, v + d)
+                    assert close(left, right), f"For a, b, c = {a}, {b}, {c}, the heights a step of {d} either side of {v} are {left} and {right}, so {v} is not the middle."
+
+        def test_lowest():
+            """lowest gives the height of the parabola at the vertex."""
+            for a, b, c in CASES:
+                want = height(a, b, c, vertex(a, b, c))
+                got = lowest(a, b, c)
+                assert got is not None and close(got, want), f"lowest({a}, {b}, {c}) gave {got}, but the height at the vertex is {want}."
+      reference: |
+        def vertex(a, b, c):
+            return -b / (2*a)
+
+        def lowest(a, b, c):
+            return c - b**2 / (4*a)
+
+        print(vertex(1, -6, 11), lowest(1, -6, 11))
+      wrong:
+        - code: |
+            def vertex(a, b, c):
+                return -b / 2*a
+
+            def lowest(a, b, c):
+                return c - b**2 / (4*a)
+
+            print(vertex(1, -6, 11), lowest(1, -6, 11))
+          why: Divides by 2 and then multiplies by a, which is right only when a is 1.
+        - code: |
+            def vertex(a, b, c):
+                return b / (2*a)
+
+            def lowest(a, b, c):
+                return c - b**2 / (4*a)
+
+            print(vertex(1, -6, 11), lowest(1, -6, 11))
+          why: Drops the minus sign, which puts the vertex on the wrong side.
+        - code: |
+            def vertex(a, b, c):
+                return -b / a
+
+            def lowest(a, b, c):
+                return c - b**2 / (4*a)
+
+            print(vertex(1, -6, 11), lowest(1, -6, 11))
+          why: Forgets to halve, which gives the second input of height c instead of the midpoint.
+        - code: |
+            def vertex(a, b, c):
+                return -b / (2*a)
+
+            def lowest(a, b, c):
+                return c - b**2 / 4*a
+
+            print(vertex(1, -6, 11), lowest(1, -6, 11))
+          why: Divides by 4 and then multiplies by a.
+        - code: |
+            def vertex(a, b, c):
+                return -b / (2*a)
+
+            def lowest(a, b, c):
+                return c
+
+            print(vertex(1, -6, 11), lowest(1, -6, 11))
+          why: Gives the height at x = 0, not at the vertex.
+    explanation: >-
+      `vertex` is `-b / (2*a)`, with the brackets, and `lowest` is `c - b**2 / (4*a)`, which is the
+      height at the vertex.
+
+  - id: build-absolute-error
+    phase: build
+    kind: breakit
+    concept: M1.4/completing-the-square
+    title: A different score
+    prompt: Predict which guess has the smallest total after the change, then run both versions to see.
+    answer:
+      type: breakit
+      code: |
+        def total(w):
+            return (2 - w)**2 + (3 - w)**2 + (7 - w)**2
+
+        at_3 = total(3)
+        at_4 = total(4)
+        at_4_5 = total(4.5)
+        print(at_3, at_4, at_4_5)
+      broken: |
+        def total(w):
+            return abs(2 - w) + abs(3 - w) + abs(7 - w)
+
+        at_3 = total(3)
+        at_4 = total(4)
+        at_4_5 = total(4.5)
+        print(at_3, at_4, at_4_5)
+      change: >-
+        The total now adds up the sizes of the misses without squaring them. `abs` gives the size of a
+        number without its sign: `abs(-3)` is 3.
+      options:
+        - { id: four, label: 'The guess 4, the mean, still has the smallest total', when: 'error is None and at_4 < at_3 and at_4 < at_4_5' }
+        - { id: three, label: 'The guess 3, the middle value, now has the smallest total', when: 'error is None and at_3 < at_4 and at_3 < at_4_5' }
+        - { id: halfway, label: 'The guess 4.5 now has the smallest total', when: 'error is None and at_4_5 < at_3 and at_4_5 < at_4' }
+        - { id: error, label: 'Python stops with an error', when: 'error is not None' }
+    explanation: >-
+      The totals are now 5, 6 and 6.5, so the middle value, 3, wins. Under squared error the mean was
+      best; under this score, the absolute error, the middle value is.
+
+  - id: build-sympy-quadratic
+    phase: build
+    kind: build
+    concept: M1.4/quadratics
+    title: The formula by machine
+    prompt: >-
+      Replace each `None` with a call of `solve`, as in the example line, so that `formula` holds the
+      solutions of $ax^2 + bx + c = 0$ with the letters left in, and `doubled` holds the solutions of
+      $2x^2 - 6x + 4 = 0$.
+    answer:
+      type: code
+      starter: |
+        from sympy import symbols, solve
+
+        a, b, c, x = symbols("a b c x")
+
+        # solve(expression, x) gives the list of every x that makes the expression 0.
+        example = solve(x**2 - 9, x)
+        print("example:", example)
+
+        formula = None    # a x^2 + b x + c = 0, with a, b and c left as letters
+        doubled = None    # 2x^2 - 6x + 4 = 0
+
+        print("formula:", formula)
+        print("doubled:", doubled)
+      tests: |
+        from sympy import simplify
+
+        def test_formula():
+            """formula is the list of solutions of a x^2 + b x + c = 0, with the letters left in."""
+            assert formula is not None, "Replace the None in formula with a call of solve."
+            assert isinstance(formula, list) and len(formula) == 2, f"formula is {formula}, not a list of two solutions."
+            for r in formula:
+                assert r.has(a) and r.has(b) and r.has(c), f"{r} does not have all of a, b and c in it."
+                assert simplify(a*r**2 + b*r + c) == 0, f"{r} does not solve a x^2 + b x + c = 0."
+
+        def test_doubled():
+            """doubled is the list of solutions of 2x^2 - 6x + 4 = 0."""
+            assert doubled is not None, "Replace the None in doubled with a call of solve."
+            assert isinstance(doubled, list) and len(doubled) == 2, f"doubled is {doubled}, not a list of two solutions."
+            for r in doubled:
+                assert 2*r**2 - 6*r + 4 == 0, f"{r} does not solve 2x^2 - 6x + 4 = 0."
+      reference: |
+        from sympy import symbols, solve
+
+        a, b, c, x = symbols("a b c x")
+
+        example = solve(x**2 - 9, x)
+        print("example:", example)
+
+        formula = solve(a*x**2 + b*x + c, x)
+        doubled = solve(2*x**2 - 6*x + 4, x)
+
+        print("formula:", formula)
+        print("doubled:", doubled)
+      wrong:
+        - code: |
+            from sympy import symbols, solve
+
+            a, b, c, x = symbols("a b c x")
+
+            formula = solve(a*x**2 + b*x + c, a)
+            doubled = solve(2*x**2 - 6*x + 4, x)
+
+            print("formula:", formula)
+            print("doubled:", doubled)
+          why: Solves for a instead of x.
+        - code: |
+            from sympy import symbols, solve
+
+            a, b, c, x = symbols("a b c x")
+
+            formula = solve(x**2 + b*x + c, x)
+            doubled = solve(2*x**2 - 6*x + 4, x)
+
+            print("formula:", formula)
+            print("doubled:", doubled)
+          why: Leaves out the a in front of x squared.
+        - code: |
+            from sympy import symbols, solve
+
+            a, b, c, x = symbols("a b c x")
+
+            formula = solve(a*x**2 + b*x + c, x)
+            doubled = solve(2*x**2 - 6*x + 4, x)[0]
+
+            print("formula:", formula)
+            print("doubled:", doubled)
+          why: Keeps only the first solution, a number instead of the list.
+    explanation: >-
+      `solve(a*x**2 + b*x + c, x)` gives the quadratic formula's two solutions, and
+      `solve(2*x**2 - 6*x + 4, x)` gives `[1, 2]`.
+
+  # Explain --------------------------------------------------------------------
+  - id: explain-bowls
+    phase: explain
+    kind: explain
+    concept: M1.4/completing-the-square
+    covers: [M1.4/linear-functions, M1.4/average-rate-of-change, M1.4/quadratics]
+    title: Explain it to a friend
+    prompt: >-
+      A friend says: "To find the lowest point of a curve, you have to draw it carefully or try lots of
+      values." Explain to your friend how completing the square finds the lowest point of a quadratic
+      exactly, with an example. Then explain why, under squared error, the best single guess is the
+      mean. Finish by explaining how the rate of change of a straight line differs from that of a
+      quadratic.
+    answer:
+      type: text
+      rubric:
+        - id: square
+          criterion: Completes the square for an example quadratic and reads off its lowest point.
+        - id: never-negative
+          criterion: >-
+            Explains why the completed square shows the lowest point: a square is never negative, so
+            the smallest value comes where the bracket is 0.
+        - id: mean
+          criterion: >-
+            Explains why the mean is the best single guess under squared error, using the fact that
+            the squared error is a quadratic in the guess.
+        - id: rates
+          criterion: >-
+            Explains that a line changes at the same rate between any two points, while a quadratic's
+            average rate of change depends on the two points chosen.
+        - id: plain
+          criterion: >-
+            Is simple enough for the friend to follow, and explains any term such as "vertex" or
+            "average rate of change" the first time it is used.
+      reference: >-
+        Drawing or trying values only gets you close. Completing the square gets the lowest point
+        exactly. Take $x^2 - 6x + 11$. Half of the $-6$ is $-3$, and $(x - 3)^2$ multiplies out to
+        $x^2 - 6x + 9$, so $x^2 - 6x + 11$ is the same as $(x - 3)^2 + 2$. Now look at that form. A
+        square is never negative, so $(x - 3)^2$ is at least 0, and it is exactly 0 only when $x = 3$.
+        So the whole thing is at least 2, and it equals 2 at $x = 3$: the lowest point, called the
+        vertex, is $(3, 2)$, with no drawing and no guessing. The same works for any quadratic, and
+        with letters it gives the vertex of $ax^2 + bx + c$ at $x = -b/(2a)$. Now the guessing game.
+        If a model must give one number $w$ for the data 2, 3 and 7, and is scored by adding the squares
+        of its misses, the score is $(2 - w)^2 + (3 - w)^2 + (7 - w)^2$. Multiplied out, that is
+        $3w^2 - 24w + 62$, a quadratic in $w$, and completing the square turns it into
+        $3(w - 4)^2 + 14$. The lowest score is 14, at $w = 4$, which is the mean of the three. With any
+        data, the score is (number of values) times $w^2$, minus twice their sum times $w$, plus a
+        number, so its lowest point is the sum divided by the number of values: always the mean.
+        Finally, rates. A straight line, such as a GPU bill of ₹150 an hour plus ₹200 set-up, rises by
+        the same amount for every extra hour, so the change in output divided by the change in input,
+        the average rate of change, is the same between any two points: 150 rupees per hour. A
+        quadratic is different. For $x^2$, the rate from 1 to 3 is 4, but from 10 to 20 it is 30: the
+        average rate of change depends on which two points you pick, which is why its graph curves
+        instead of running straight.
+      minWords: 100
+      maxWords: 500

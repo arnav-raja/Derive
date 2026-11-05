@@ -5,7 +5,7 @@ Updated 5 November 2026. Resumed at Arnav's request; work is in progress.
 ## Where things stand
 
 Phase 0 (set-up) is done apart from the steps waiting on Arnav. Phase 1 (the first slice of 12
-lessons) is under way: two lessons written, ten to go.
+lessons) is under way: four lessons written, eight to go.
 
 ### Done
 
@@ -19,26 +19,30 @@ lessons) is under way: two lessons written, ten to go.
 - Phase 1 engine (commit 1ffbbac): six-phase lessons, in-browser Python and SymPy, five figure
   components, reviews with FSRS, mastery, the pace governor, placement, and the tutor with its
   hint ladder and guard.
-- M1.1 Quantities, units and estimation: written, reviewed by the independent reviewer and the
-  simulated learner (5 November), and every finding applied: Explore and Derive reordered so no
-  answer shows before it is asked for, an 11-line cancel chain, units carried through the
-  in-head check, a SymPy library comparison in Build, and corrected hints and tutor notes. All
-  checks pass and the changed phases were walked again in the browser.
-- M1.2 Algebra as a language: written in full (22 exercises), all checks pass, and walked end
-  to end in the browser.
-- Engine fixes from these walks: tree text keeps every bracket, numeric leaves show their value
-  once, tree tables hide values until shown, the ordinary scale waits for its prediction
-  (`linearAfter`), worked steps never break across lines, the break-it view marks only the
-  changed lines, digits are grouped in threes everywhere, and the content check warns when right
-  answers cluster in the first option.
+- M1.1 Quantities, units and estimation, and M1.2 Algebra as a language: written, walked,
+  reviewed by the independent reviewer and the simulated learner, every finding applied, and
+  the changed parts walked again.
+- M1.3 Functions: written, walked, and reviewed by both (findings in the session scratchpad,
+  summarised in the commit). All findings applied on 5 November: the codomain is chosen at
+  set-up and narrowed with the inputs at the square root, an editable mapping diagram in
+  Explore, an image model's pixel scaling as the inverse to derive, a second prediction on the
+  mirror line with an equal-scale plot, a new build that undoes a chain in reverse order, a
+  rounding break-it on pixels, SymPy solving the chain, and reworked rungs. All 37 items pass
+  `check:exercises` and the lesson was walked again end to end.
+- M1.4 Linear and quadratic functions: written in full (25 exercises). Graph, content and all
+  47 exercise items pass. Not yet walked or reviewed.
+- Engine work from these lessons: the mapping diagram's `properties` switch and clearer
+  verdicts, fraction and power-of-ten number input, `polynomial` and `completedSquare` answer
+  forms, FunctionPlot chords with a rate readout, `equalScale`, and marks drawn whole at the
+  edges with labels kept in view, and a "Read as" line that keeps the learner's own brackets.
 
 ### Resume here
 
-1. M1.2 quality gate: run the independent reviewer and the simulated learner
-   (`python3 -I scripts/learner-view.py . M1.2 <scratch dir>` writes the learner's view and a
-   separate answer key; the view now shows options by letter and hides figure answers). Apply
-   the findings, then `check:content` and `check:exercises -- --write M1.2`.
-2. Write M1.3 to M1.6 and E1.1 to E1.6 from `docs/phase-1-lessons.md`. Fix these descendant
+1. M1.4: walk it in the browser (set M1.3's concepts provisional and date M1.3's start the day
+   before), checking the chord readout; then run the independent reviewer and the simulated
+   learner (`python3 -I scripts/learner-view.py . M1.4 <scratch dir>`), apply the findings,
+   rerun the checks and walk the changed parts.
+2. Write M1.5, M1.6 and E1.1 to E1.6 from `docs/phase-1-lessons.md`. Fix these descendant
    targets on the way: M1.5 log-rules to M7.2, M1.5 log-scales to E2.6, M1.6 sigma-notation to
    M2.3, E1.5 to L2.4 and L6.3, E1.6 unicode-and-bytes to M8.6. For each lesson:
    `npm run check:graph -- --fix`, `check:content`, `check:exercises -- --write <code>`, a

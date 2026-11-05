@@ -13,11 +13,12 @@ import { FigureFrame, PredictPanel, useWidth, type PredictPhase } from "./shell"
 
 type Property = "function" | "injective" | "surjective" | "bijective";
 
-const PROPERTY_WORDS: Record<Property, string> = {
-  function: "a function (every input has exactly one output)",
-  injective: "one-to-one (no two inputs share an output)",
-  surjective: "onto (every output is reached)",
-  bijective: "one-to-one and onto, so it can be undone",
+/** What the verdict says when the property holds, and when it does not. */
+const VERDICTS: Record<Property, [string, string]> = {
+  function: ["It is a function: every input has exactly one output.", "It is not a function."],
+  injective: ["It is one-to-one: no two inputs share an output.", "It is not one-to-one."],
+  surjective: ["It is onto: every output is reached.", "It is not onto."],
+  bijective: ["It is one-to-one and onto, so it can be undone.", "It is not both one-to-one and onto, so it cannot be undone."],
 };
 
 export type Analysis = {
@@ -160,8 +161,7 @@ export function MappingDiagram({
             }
             verdict={
               <p>
-                It is {holds(a, predict.property) ? "" : "not "}
-                {PROPERTY_WORDS[predict.property]}.{" "}
+                {VERDICTS[predict.property][holds(a, predict.property) ? 0 : 1]}{" "}
                 {(answer === "yes") === holds(a, predict.property) ? "Your prediction was right." : "Your prediction was not."}{" "}
                 {findings.length ? `The evidence: ${findings.join("; ")}.` : "No input or output breaks the rule."}
               </p>

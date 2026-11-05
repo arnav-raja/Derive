@@ -387,6 +387,21 @@ def _parse(text, names, evaluate=True):
                       evaluate=evaluate)
 
 
+def _read_as(text, names, expr):
+    """LaTeX for the answer as the learner wrote it, so the brackets shown are the ones typed."""
+    import re
+
+    import sympy
+
+    try:
+        shown = sympy.latex(_parse(text, names, evaluate=False), order="none")
+    except Exception:  # noqa: BLE001 - fall back to the evaluated form
+        return sympy.latex(expr)
+    # An unevaluated parse spells a leading minus as (-1) times, and 1/2 x as 1 times a half.
+    shown = re.sub(r"(^|\{)\\left\(-1\\right\) ", r"\1-", shown)
+    return re.sub(r"(?<![\d.])1 \\cdot ", "", shown)
+
+
 def _undefined_names(expr, table):
     import sympy
     from sympy.core.function import AppliedUndef
@@ -418,6 +433,20 @@ def _contains(expr, pattern):
     return False
 
 
+def _is_completed_square(expr, x):
+    """True when x appears only inside one squared bracket that is linear in x: a(x - h)^2 + k."""
+    import sympy
+
+    with_x = [t for t in sympy.Add.make_args(expr) if t.has(x)]
+    if len(with_x) != 1:
+        return False
+    coeff, rest = with_x[0].as_independent(x, as_Add=False)
+    if coeff.has(x) or not (rest.is_Pow and rest.exp == 2):
+        return False
+    base = rest.base
+    return base.is_polynomial(x) and sympy.degree(base, x) == 1
+
+
 def check_form(expr, form, names):
     """Returns a message when the expression has the wrong shape, else None."""
     import sympy
@@ -427,6 +456,11 @@ def check_form(expr, form, names):
         return message or "That is equal, but this step asks for the expanded form."
     if form.get("factored") and sympy.factor(expr) != expr:
         return message or "That is equal, but this step asks for the factored form."
+    if form.get("polynomial") and not expr.is_polynomial(*expr.free_symbols):
+        return message or "That is equal, but it still divides by a letter. Simplify the fraction away."
+    square = form.get("completedSquare")
+    if square and not _is_completed_square(expr, names.get(square, sympy.Symbol(square))):
+        return message or "That is equal, but it is not yet a number times a squared bracket, plus a number."
     for text in form.get("forbid") or []:
         if _contains(expr, _parse(text, names)):
             return message or "That is equal, but it has not taken this step yet."
@@ -475,22 +509,23 @@ def check_expression(payload):
                 "message": "That could not be read as an expression. Check the brackets and operators."}
     if not isinstance(expr, sympy.Basic):
         expr = sympy.sympify(expr)
+    shown = _read_as(text, names, expr)
     unknown = _undefined_names(expr, table)
     if unknown:
         allowed = ", ".join(sorted(table)) or "no letters"
-        return {"status": "unknown-names", "latex": sympy.latex(expr),
+        return {"status": "unknown-names", "latex": shown,
                 "message": f"This step uses only {allowed}, but your answer has {', '.join(unknown)}."
                            " Write products with * if you meant a product."}
     for point, expected_text in zip(payload["points"], payload["values"]):
         got = evaluate_at(expr, table, point)
         expected = sympy.Float(expected_text, 30)
         if got is None or abs(got - expected) > sympy.Float("1e-9") * max(1, abs(expected)):
-            return {"status": "different", "latex": sympy.latex(expr),
+            return {"status": "different", "latex": shown,
                     "message": _different_message(payload, table, expr)}
     shape = check_form(expr, payload.get("form") or {}, names)
     if shape:
-        return {"status": "form", "latex": sympy.latex(expr), "message": shape}
-    return {"status": "correct", "latex": sympy.latex(expr)}
+        return {"status": "form", "latex": shown, "message": shape}
+    return {"status": "correct", "latex": shown}
 
 
 def fingerprint(payload):

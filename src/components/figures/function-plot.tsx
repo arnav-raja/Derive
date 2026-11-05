@@ -15,7 +15,13 @@ import { FigureFrame, PredictPanel, RangeControl, useWidth, type PredictPhase } 
 
 export type PlotCurve = { expr: string; label: string; sym?: string; tone?: "vector" | "gradient" | "mass" | "point" };
 export type PlotParam = { name: string; label?: string; min: number; max: number; step: number; value: number; sym?: string };
-export type PlotMark = { x: number; curve?: number; label?: string };
+/** A mark's x is a number, or the name of a parameter, so the mark follows its slider. */
+export type PlotMark = { x: number | string; curve?: number; label?: string };
+/**
+ * A chord joins two points of a curve and reports the average rate of change between them.
+ * Each end is a number or the name of a parameter; `extend` also draws the whole line faintly.
+ */
+export type PlotChord = { curve?: number; from: number | string; to: number | string; label?: string; extend?: boolean };
 
 const TONES = {
   vector: "stroke-fig-vector",
@@ -64,6 +70,8 @@ export function FunctionPlot({
   xLabel = "x",
   yLabel = "y",
   marks = [],
+  chords = [],
+  equalScale = false,
   predict,
 }: {
   title: string;
@@ -77,20 +85,29 @@ export function FunctionPlot({
   xLabel?: string;
   yLabel?: string;
   marks?: PlotMark[];
+  chords?: PlotChord[];
+  /** One unit across is drawn the same length as one unit up, so slopes and mirror images look true. Needs y. */
+  equalScale?: boolean;
   /** Keeps one curve back until the learner has guessed its value at x. */
   predict?: { prompt: string; curve?: number; x: number };
 }) {
   const uid = useId();
   const [ref, width] = useWidth<HTMLDivElement>();
-  const height = Math.round(Math.min(380, Math.max(240, width * 0.6)));
+  const square = equalScale && !logX && !logY && yDomain !== undefined;
+  const fullW = Math.max(100, width - M.left - M.right);
+  // With equal scales the picture's shape comes from the two ranges; a tall one is drawn narrower, centred.
+  const ratio = square ? (yDomain[1] - yDomain[0]) / (xDomain[1] - xDomain[0]) : 0;
+  const maxH = 400 - M.top - M.bottom;
+  const plotW = square ? Math.min(fullW, maxH / ratio) : fullW;
+  const plotH = square ? Math.round(plotW * ratio) : Math.round(Math.min(380, Math.max(240, width * 0.6))) - M.top - M.bottom;
+  const height = plotH + M.top + M.bottom;
+  const L = M.left + (fullW - plotW) / 2;
   const [values, setValues] = useState<Record<string, number>>(() => Object.fromEntries(params.map((p) => [p.name, p.value])));
   const [phase, setPhase] = useState<PredictPhase>("asking");
   const fns = useMemo(() => curves.map((c) => compileExpr(c.expr)), [curves]);
 
   const hidden = predict && phase !== "revealed" ? (predict.curve ?? 0) : -1;
-  const plotW = Math.max(100, width - M.left - M.right);
-  const plotH = height - M.top - M.bottom;
-  const xs = (logX ? scaleLog() : scaleLinear()).domain(xDomain).range([M.left, M.left + plotW]);
+  const xs = (logX ? scaleLog() : scaleLinear()).domain(xDomain).range([L, L + plotW]);
 
   // Sample each curve; the y range comes from the data unless it is given.
   const n = Math.min(800, Math.max(160, Math.round(plotW)));
@@ -148,6 +165,23 @@ export function FunctionPlot({
   const readT = logX ? (Math.log10(readX) - Math.log10(xDomain[0])) / (Math.log10(xDomain[1]) - Math.log10(xDomain[0])) : (readX - xDomain[0]) / (xDomain[1] - xDomain[0]);
   const fromT = (t: number) => (logX ? 10 ** (Math.log10(xDomain[0]) + t * (Math.log10(xDomain[1]) - Math.log10(xDomain[0]))) : xDomain[0] + t * (xDomain[1] - xDomain[0]));
   const readings = curves.map((c, i) => ({ c, i, y: safe(fns[i]!, { ...values, x: readX }) }));
+  const at = (v: number | string) => (typeof v === "string" ? (values[v] ?? Number.NaN) : v);
+  /** Whether a point lies in the picture, allowing for rounding at its edges. */
+  const inside = (px: number, py: number) => {
+    if (!Number.isFinite(px) || !Number.isFinite(py) || (logY && py <= 0) || (logX && px <= 0)) return false;
+    const sx = xs(px);
+    const sy = ys(py);
+    return sx >= L - 0.5 && sx <= L + plotW + 0.5 && sy >= M.top - 0.5 && sy <= M.top + plotH + 0.5;
+  };
+  const chordData = chords.map((ch) => {
+    const ci = ch.curve ?? 0;
+    const x1 = at(ch.from);
+    const x2 = at(ch.to);
+    const y1 = safe(fns[ci]!, { ...values, x: x1 });
+    const y2 = safe(fns[ci]!, { ...values, x: x2 });
+    const rate = x1 !== x2 ? (y2 - y1) / (x2 - x1) : Number.NaN;
+    return { ch, ci, x1, x2, y1, y2, rate };
+  });
 
   const [guess, setGuess] = useState(0.5);
   const guessY = logY ? 10 ** (Math.log10(yd[0]) + guess * (Math.log10(yd[1]) - Math.log10(yd[0]))) : yd[0] + guess * (yd[1] - yd[0]);
@@ -207,19 +241,19 @@ export function FunctionPlot({
             className="block max-w-full touch-none font-sans"
             onPointerMove={(e) => {
               const box = e.currentTarget.getBoundingClientRect();
-              const t = (e.clientX - box.left - M.left) / plotW;
+              const t = (e.clientX - box.left - L) / plotW;
               if (t >= 0 && t <= 1) setReadX(fromT(t));
             }}
           >
             <defs>
               <clipPath id={clip}>
-                <rect x={M.left} y={M.top} width={plotW} height={plotH} />
+                <rect x={L} y={M.top} width={plotW} height={plotH} />
               </clipPath>
             </defs>
             {yTicks.map((t) => (
               <g key={`y${t}`}>
-                <line x1={M.left} x2={M.left + plotW} y1={ys(t)} y2={ys(t)} className="stroke-fig-grid" />
-                <text x={M.left - 6} y={ys(t)} dy="0.32em" textAnchor="end" className="fill-ink-muted text-[11px]">
+                <line x1={L} x2={L + plotW} y1={ys(t)} y2={ys(t)} className="stroke-fig-grid" />
+                <text x={L - 6} y={ys(t)} dy="0.32em" textAnchor="end" className="fill-ink-muted text-[11px]">
                   {tickText(t, logY)}
                 </text>
               </g>
@@ -233,16 +267,16 @@ export function FunctionPlot({
               </g>
             ))}
             {!logY && yd[0] < 0 && yd[1] > 0 ? (
-              <line x1={M.left} x2={M.left + plotW} y1={ys(0)} y2={ys(0)} className="stroke-fig-axis" />
+              <line x1={L} x2={L + plotW} y1={ys(0)} y2={ys(0)} className="stroke-fig-axis" />
             ) : null}
             {!logX && xDomain[0] < 0 && xDomain[1] > 0 ? (
               <line x1={xs(0)} x2={xs(0)} y1={M.top} y2={M.top + plotH} className="stroke-fig-axis" />
             ) : null}
-            <rect x={M.left} y={M.top} width={plotW} height={plotH} className="fill-none stroke-fig-axis" />
-            <text x={M.left + plotW / 2} y={height - 6} textAnchor="middle" className="fill-ink text-[12px]">
+            <rect x={L} y={M.top} width={plotW} height={plotH} className="fill-none stroke-fig-axis" />
+            <text x={L + plotW / 2} y={height - 6} textAnchor="middle" className="fill-ink text-[12px]">
               {xLabel}
             </text>
-            <text x={12} y={M.top + plotH / 2} textAnchor="middle" transform={`rotate(-90 12 ${M.top + plotH / 2})`} className="fill-ink text-[12px]">
+            <text x={L - 40} y={M.top + plotH / 2} textAnchor="middle" transform={`rotate(-90 ${L - 40} ${M.top + plotH / 2})`} className="fill-ink text-[12px]">
               {yLabel}
             </text>
             <g clipPath={`url(#${clip})`}>
@@ -264,19 +298,18 @@ export function FunctionPlot({
                   <circle key={i} cx={xs(readX)} cy={ys(y)} r={4} className={DOTS[c.tone ?? ORDER[i % ORDER.length]!]} />
                 ),
               )}
-              {marks.map((m, k) => {
-                const ci = m.curve ?? 0;
-                if (ci === hidden) return null;
-                const y = safe(fns[ci]!, { ...values, x: m.x });
-                if (!Number.isFinite(y)) return null;
+              {chordData.map(({ ch, ci, x1, x2, y1, y2, rate }, k) => {
+                if (ci === hidden || ![x1, x2, y1, y2].every(Number.isFinite)) return null;
+                // The whole line through the two points, faint, so its slope can be compared with the curve's.
+                const far = Number.isFinite(rate)
+                  ? [xDomain[0], xDomain[1]].map((x) => [xs(x), ys(y1 + rate * (x - x1))] as const)
+                  : null;
                 return (
-                  <g key={k}>
-                    <circle cx={xs(m.x)} cy={ys(y)} r={4.5} className="fill-surface stroke-ink" strokeWidth={1.5} />
-                    {m.label ? (
-                      <text x={xs(m.x) + 8} y={ys(y) - 8} className="fill-ink text-[12px]">
-                        {m.label}
-                      </text>
+                  <g key={`chord${k}`} data-chord={k}>
+                    {ch.extend && far ? (
+                      <line x1={far[0]![0]} y1={far[0]![1]} x2={far[1]![0]} y2={far[1]![1]} className="stroke-ink-muted" strokeWidth={1} strokeDasharray="4 4" />
                     ) : null}
+                    <line x1={xs(x1)} y1={ys(y1)} x2={xs(x2)} y2={ys(y2)} className="stroke-ink" strokeWidth={1.75} />
                   </g>
                 );
               })}
@@ -289,6 +322,40 @@ export function FunctionPlot({
                 <circle cx={xs(predict.x)} cy={ys(guessY)} r={6} className="fill-none stroke-fig-gradient" strokeWidth={2} />
               ) : null}
             </g>
+            {/* Points and their labels sit above the clip, so one on the edge of the picture is drawn whole. */}
+            {chordData.map(({ ci, x1, x2, y1, y2 }, k) =>
+              ci === hidden
+                ? null
+                : [
+                    [x1, y1],
+                    [x2, y2],
+                  ].map(([px, py], e) =>
+                    inside(px!, py!) ? <circle key={`chord${k}-${e}`} cx={xs(px!)} cy={ys(py!)} r={4} className="fill-ink" /> : null,
+                  ),
+            )}
+            {marks.map((m, k) => {
+              const ci = m.curve ?? 0;
+              if (ci === hidden) return null;
+              const mx = at(m.x);
+              const y = safe(fns[ci]!, { ...values, x: mx });
+              if (!inside(mx, y)) return null;
+              const cx = xs(mx);
+              const cy = ys(y);
+              // Labels go up and to the right, unless that would run off the picture.
+              const textW = (m.label?.length ?? 0) * 7;
+              const flipX = cx + 8 + textW > width - 2;
+              const flipY = cy - 8 - 12 < 0;
+              return (
+                <g key={k} data-mark={k}>
+                  <circle cx={cx} cy={cy} r={4.5} className="fill-surface stroke-ink" strokeWidth={1.5} />
+                  {m.label ? (
+                    <text x={flipX ? cx - 8 : cx + 8} y={flipY ? cy + 20 : cy - 8} textAnchor={flipX ? "end" : "start"} className="fill-ink text-[12px]">
+                      {m.label}
+                    </text>
+                  ) : null}
+                </g>
+              );
+            })}
           </svg>
         </div>
       )}
@@ -334,6 +401,24 @@ export function FunctionPlot({
               .join("; ")}
             .
           </p>
+          {chordData.map(({ ch, ci, x1, x2, y1, y2, rate }, k) =>
+            ci === hidden ? null : (
+              <p key={`chord${k}`} className="text-sm text-ink" aria-live="polite" data-chord-readout={k}>
+                {ch.label ? `${ch.label}: ` : ""}
+                {Number.isFinite(rate) ? (
+                  <>
+                    from {xLabel} = <span className="tabular">{formatValue(x1, 4)}</span> to{" "}
+                    <span className="tabular">{formatValue(x2, 4)}</span>, {yLabel} changes by{" "}
+                    <span className="tabular">{formatValue(y2 - y1, 4)}</span> over{" "}
+                    <span className="tabular">{formatValue(x2 - x1, 4)}</span>, an average rate of change of{" "}
+                    <span className="tabular font-semibold">{formatValue(rate, 4)}</span>.
+                  </>
+                ) : (
+                  <>both ends are at the same {xLabel}, so there is no rate to report. Move one end.</>
+                )}
+              </p>
+            ),
+          )}
         </>
       }
       table={{

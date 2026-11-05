@@ -37,28 +37,9 @@ M1.1 (rule 6).
 Targets marked "not" failed the descendant check and must be replaced when that lesson is
 written; check candidates against the graph before writing `usedBy`.
 
-## M1.2 outline (not yet written)
+## Written so far
 
-Algebra as a language: why the rules hold. Requires M1.1; uses `M1.1/powers-of-ten`;
-`contrastsWith` E1.1 (in algebra `x = x + 1` has no solution; in Python it replaces the value
-named `x`); foreshadows E1.1 and M10.2.
-
-- Puzzle: Python says `(0.1 + 0.2) + 0.3 == 0.1 + (0.2 + 0.3)` is False. Predict, then the
-  reveal: the computer rounds after every addition, so grouping changes what is rounded.
-- Recall: 3 + 4 × 2; a quotient of powers of ten; (−3) × (−4); 7 × 98 as 7 × 100 − 7 × 2.
-- Explore: expressions as trees (precedence and brackets decide the shape); 8 − 3 − 2 versus
-  its two groupings; which operations ignore grouping (addition and multiplication); the
-  distributive law as a change of tree; a three-significant-figure calculator in which
-  (1 + 0.004) + 0.004 gives 1.00 but 1 + (0.004 + 0.004) gives 1.01. This needs a new
-  rounding option on `ExpressionTree` that rounds every operation's result.
-- Derive: a × 0 = 0 as a worked chain of rules; the learner cites the rules for
-  (−1)(−1) + (−1) = 0, hence (−1)(−1) = 1, with the number-pattern argument as a second
-  angle; expand (a + b)²; refute (a + b)² = a² + b² with one counterexample; x and
-  x(x − 1)(x − 2) + x agree at 0, 1 and 2 but are not equivalent; a^0 and a^(−n) defined so
-  the exponent rules keep holding; solve T = C/(RY) for R; squaring both sides adds a
-  solution, and dividing by x loses one.
-- Build: with a given 3-significant-figure rounding helper, the learner chooses a, b and c that
-  break associativity, and sees that no choice breaks commutativity; break it with float
-  grouping; compare with the library: SymPy's `expand` and `simplify` (check that learner code
-  can import SymPy in the worker first).
-- Explain: a friend says the rules of algebra, and (−1)(−1) = 1, are only conventions.
+M1.1, M1.2, M1.3 and M1.4 are written; their files in `content/lessons/` are now the source,
+and the outlines that were here have been removed. M1.4 added a contrast with M1.5 (linear
+change adds the same amount each step, exponential change multiplies by the same factor), so
+M1.5 should carry the other side of it.

@@ -1,0 +1,158 @@
+Explore found its facts by looking at tables and pictures. Derive proves them for every input, and then answers the puzzle for every set of data.
+
+## Two points fix a line
+
+A linear function is $f(x) = mx + c$, so two numbers decide it, and two points are enough to find them. The slope is the rise between the points divided by the step; then $c$ is whatever makes the line pass through one of them.
+
+Here is a rule you used in M1.3 without being told where it came from. Water freezes at 0 °C, which is 32 °F, and boils at 100 °C, which is 212 °F, and the two scales are related by a steady rule.
+
+<Steps>
+  <Step why="the two points, as (Celsius, Fahrenheit)">$(0, 32)$ and $(100, 212)$</Step>
+  <Step why="the slope is the rise divided by the step, in degrees Fahrenheit per degree Celsius">$m = \dfrac{212 - 32}{100 - 0} = 1.8$</Step>
+  <Step why="at C = 0 the rule gives c, and the first point says that is 32">$c = 32$</Step>
+  <Step why="the line through both points">$F = 1.8C + 32$</Step>
+</Steps>
+
+The slope carries units, as every rate does: each degree Celsius is 1.8 degrees Fahrenheit.
+
+<Exercise id="derive-line-through" />
+
+<Reveal for="derive-line-through">
+
+The slope is $(13 - 5) \div (6 - 2) = 2$ hours per billion tokens: each extra billion tokens costs 2 more hours. Then $5 = 2 \times 2 + c$ gives $c = 1$: an hour of start-up, spent before any training happens, which is the time the rule gives at $n = 0$. So $T = 2n + 1$, and the check at the other point works: $2 \times 6 + 1 = 13$.
+
+## The rate of a square, for every pair
+
+Explore found that the rate of $x^2$ between two inputs came out as their sum for every pair tried. Trying pairs can never cover every pair, so prove it.
+
+<Exercise id="derive-chord-square" />
+
+</Reveal>
+
+<Reveal for="derive-chord-square">
+
+Difference of squares, cancel, swap. The cancelling needs $b - a$ not to be 0, which holds because $a$ and $b$ are different. When $a = b$ there is no chord at all, only a single point, and what a rate should mean at a single point is the question a later lesson on rates of change, M3.1, starts from.
+
+## The rate of any quadratic
+
+The same cancelling works for every quadratic.
+
+<Exercise id="derive-general-rate" />
+
+</Reveal>
+
+<Reveal for="derive-general-rate">
+
+The rise is $f(b) - f(a) = 3(b^2 - a^2) - 2(b - a)$, because the 5s cancel. Both parts have the factor $b - a$, so the rise is $(b - a)\big(3(b + a) - 2\big)$, and dividing by $b - a$ leaves $3(a + b) - 2$. The same steps on $f(x) = px^2 + qx + r$ give the average rate of change from $a$ to $b$ as
+
+$$
+p(a + b) + q.
+$$
+
+The number $r$ drops out, because adding a number lifts the whole curve without changing any rise. Two of Explore's findings follow from this formula.
+
+The rises of rises. With steps of 1, the rise from $x$ to $x + 1$ is the rate times the step, $p(2x + 1) + q$. Moving $x$ on by 1 adds $2p$ to that rise. So the rises of the rises are all $2p$: 2 for $x^2$, and 6 for $3x^2 + x$, as the table showed.
+
+Where the chord sits. The sum $a + b$ is twice the midpoint of $a$ and $b$, so the rate depends only on where the middle of the interval is, not on how wide it is. For $x^2$, the pairs 1 and 3, and 0 and 4, share the midpoint 2, and both have the rate 4.
+
+## Completing the square
+
+Explore rewrote $x^2 - 6x + 11$ as $(x - 3)^2 + 2$, which shows its bottom at once. Here is how to find such a rewriting for any quadratic. A squared bracket multiplies out as $(x + h)^2 = x^2 + 2hx + h^2$, so the number in the bracket is half the number in front of $x$. Take $x^2 + 8x + 20$:
+
+<Steps>
+  <Step why="half of 8 is 4, and (x + 4)² multiplies out to x² + 8x + 16; split 20 as 16 + 4">$x^2 + 8x + 20 = (x^2 + 8x + 16) + 4$</Step>
+  <Step why="the bracket is a square">$= (x + 4)^2 + 4$</Step>
+</Steps>
+
+The squared bracket is never negative and is 0 only at $x = -4$, so the lowest value is 4, at $x = -4$.
+
+<Exercise id="derive-complete-square" />
+
+</Reveal>
+
+<Reveal for="derive-complete-square">
+
+Half of $-10$ is $-5$, and $(x - 5)^2 = x^2 - 10x + 25$. Since $31 = 25 + 6$, the quadratic is $(x - 5)^2 + 6$, and its vertex is $(5, 6)$.
+
+The steps never used the particular numbers, so they work with letters as well.
+
+<Exercise id="derive-general-square" />
+
+</Reveal>
+
+<Reveal for="derive-general-square">
+
+$x^2 + bx + c = \big(x + \tfrac{b}{2}\big)^2 + c - \tfrac{b^2}{4}$, so the bottom of $x^2 + bx + c$ is at $x = -\tfrac{b}{2}$. When the number in front of $x^2$ is some $a$ other than 1, take it out of the first two terms first:
+
+<Steps>
+  <Step why="a is not 0, so it can be taken out of the first two terms">$ax^2 + bx + c = a\Big(x^2 + \dfrac{b}{a}x\Big) + c$</Step>
+  <Step why="complete the square inside, with b/a in place of b">$= a\Big(\Big(x + \dfrac{b}{2a}\Big)^2 - \dfrac{b^2}{4a^2}\Big) + c$</Step>
+  <Step why="multiply out the outer bracket">$= a\Big(x + \dfrac{b}{2a}\Big)^2 + c - \dfrac{b^2}{4a}$</Step>
+</Steps>
+
+When $a > 0$ the squared part is never negative, so the lowest value, $c - \dfrac{b^2}{4a}$, comes where the bracket is 0. When $a < 0$ the same point is the highest. Either way the vertex is at
+
+$$
+x = -\frac{b}{2a}.
+$$
+
+## A second angle: the mirror
+
+Explore found the bottom of $x^2 - 6x + 11$ another way, halfway between two inputs of equal height, and that works in general too. The first two terms, $ax^2 + bx = x(ax + b)$, are 0 at $x = 0$ and at $x = -\tfrac{b}{a}$. So $ax^2 + bx + c$ has the same height, $c$, at both, and the vertex is halfway between them, at $x = -\tfrac{b}{2a}$. One argument used algebra and the other symmetry, and they agree.
+
+## Where a quadratic is zero
+
+Completing the square also solves $ax^2 + bx + c = 0$.
+
+<Steps>
+  <Step why="the completed square, set equal to 0">$a\Big(x + \dfrac{b}{2a}\Big)^2 + c - \dfrac{b^2}{4a} = 0$</Step>
+  <Step why="move the number part to the other side, then divide both sides by a">$\Big(x + \dfrac{b}{2a}\Big)^2 = \dfrac{b^2 - 4ac}{4a^2}$</Step>
+  <Step why="when the right side is positive, two numbers have it as their square, as M1.3 found; the ± takes both, and also covers the sign of 2a">$x + \dfrac{b}{2a} = \pm\dfrac{\sqrt{b^2 - 4ac}}{2a}$</Step>
+  <Step why="subtract b/(2a) from both sides">$x = \dfrac{-b \pm \sqrt{b^2 - 4ac}}{2a}$</Step>
+</Steps>
+
+This is the *quadratic formula*. The number $b^2 - 4ac$ decides how many solutions there are. When it is positive there are two, mirrored about the vertex. When it is 0 there is one, the vertex itself. When it is negative there are none, because no number has a negative square.
+
+<Exercise id="derive-no-solutions" />
+
+</Reveal>
+
+<Reveal for="derive-no-solutions">
+
+None. Completing the square gives $(x + 2)^2 + 1$, which is at least 1 for every $x$, so it is never 0, and the formula agrees: $b^2 - 4ac = 16 - 20 = -4$ is negative. The graph is a bowl whose bottom, $(-2, 1)$, sits above the horizontal axis, so it never touches it.
+
+## Why the mean wins
+
+Now the puzzle. Its squared error is a quadratic in the guess $w$, so completing the square shows its lowest point.
+
+<Exercise id="derive-mean-best" />
+
+</Reveal>
+
+<Reveal for="derive-mean-best">
+
+$E(w) = 3(w - 4)^2 + 14$. The squared part is never negative and is 0 only at $w = 4$, so the smallest squared error is 14, at $w = 4$, the mean, exactly as the puzzle found.
+
+Now take any three values $y_1$, $y_2$ and $y_3$. Each square multiplies out as $(y - w)^2 = y^2 - 2yw + w^2$, and adding the three gives
+
+$$
+E(w) = 3w^2 - 2(y_1 + y_2 + y_3)\,w + \big(y_1^2 + y_2^2 + y_3^2\big).
+$$
+
+That is a quadratic in $w$ with $a = 3$ and $b = -2(y_1 + y_2 + y_3)$, so its vertex is at
+
+$$
+w = -\frac{b}{2a} = \frac{2(y_1 + y_2 + y_3)}{6} = \frac{y_1 + y_2 + y_3}{3},
+$$
+
+the mean. With $n$ values instead of three, the same steps give $nw^2$ and $-2 \times (\text{their sum}) \times w$, and the vertex is the sum divided by $n$: the mean again. So, under squared error, the best single guess is the mean, for any data at all.
+
+<Exercise id="derive-outlier" />
+
+</Reveal>
+
+<Reveal for="derive-outlier">
+
+25, the mean, although no value is anywhere near it. One wild value, perhaps a 4 mistyped as 94, drags the mean a long way, and with it the model's best guess, because squaring makes that one miss count the most. Data with occasional wild values is common, and it is one reason other scores are used as well, such as the one you will try in Build.
+
+</Reveal>

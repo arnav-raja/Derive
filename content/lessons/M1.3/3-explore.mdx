@@ -46,7 +46,7 @@ A formula is also a rule. The function $f(x) = x^2$ takes a number and gives its
 
 <Reveal for="explore-square-undo">
 
-On the graph, the two inputs sit at the same height.
+The *graph* of a function has a point $\big(x, f(x)\big)$ for each input $x$: the input is measured across, and its output up. On the graph of $y = x^2$, the two inputs sit at the same height.
 
 <FunctionPlot
   title="The graph of y = x²"
@@ -70,6 +70,8 @@ Functions can be chained, so that the output of one becomes the input of the nex
 <Reveal for="explore-compose-order">
 
 $f(1) = 4$, and then $g(4) = 8$. The other order gives something else: $f\big(g(1)\big)$ works out $g(1) = 2$ first, and then $f(2) = 5$.
+
+The same steps work with a letter in place of the 1. $f(x) = x + 3$, and $g$ doubles whatever it is given, so $g\big(f(x)\big)$ doubles all of $x + 3$: it is $2(x + 3)$.
 
 <Exercise id="explore-compose-swap" />
 
@@ -95,7 +97,7 @@ Here are both chains as trees, with $x = 1$.
 
 In $g\big(f(x)\big) = 2(x + 3) = 2x + 6$ the doubling comes last, so it doubles the 3 as well, while $f\big(g(x)\big) = 2x + 3$ adds the 3 after the doubling. The first is always 3 more than the second, so they are equal for no $x$ at all. Feeding the output of one function into another is called *composition*, and, as with subtraction, the order matters.
 
-Everyday life has the same rule. You put on socks and then shoes, and the two cannot be done in the other order.
+Everyday life has the same rule. You put on socks and then shoes, and doing them in the other order gives a different result.
 
 ## Undoing a chain
 
@@ -144,13 +146,27 @@ If some text encoded to [0, 1], decoding [0, 1] would give that text back, so th
   toLabel="Lists of ids"
 />
 
-The encoder is one-to-one but not onto: no two texts share a list, but some lists are never reached. The decoder is the other way about: onto, since every text comes from some list, but not one-to-one. Each undoes the other in one direction only, and that was the whole puzzle.
+The encoder is one-to-one but not onto: no two texts share a list, but some lists are never reached. Turned round, its arrows would give [0, 1] no output at all, so a function that can be turned round into a function must be onto as well as one-to-one. The decoder is the other way about: onto, since every text comes from some list, but not one-to-one. Decoding undoes encoding, but encoding does not undo decoding, and that was the whole puzzle.
+
+Try it yourself. This rule cannot be turned round, because 1 and 2 share the output p and nothing reaches r. Choose an input and then an output to add or remove an arrow.
+
+<MappingDiagram
+  title="Make a rule that can be turned round"
+  description="Three inputs, 1, 2 and 3, and three outputs, p, q and r. At first 1 and 2 both go to p and 3 goes to q, so r is never reached. Arrows can be added and removed."
+  from={["1", "2", "3"]}
+  to={["p", "q", "r"]}
+  arrows={[[0, 0], [1, 0], [2, 1]]}
+  fromLabel="Inputs"
+  toLabel="Outputs"
+  editable
+  predict={{ prompt: "Move one arrow so that the rule could be turned round into a function. Is your new rule one-to-one and onto?", property: "bijective" }}
+/>
 
 ## The names
 
 <Definition term="Function">
 
-A rule that gives every input exactly one output. Its allowed inputs are its *domain*, its possible outputs are its *codomain*, and the outputs it actually produces are its *image*. The output of $f$ at the input $x$ is written $f(x)$.
+A rule that gives every input exactly one output. Its allowed inputs are its *domain*, and the outputs it may give, chosen when the function is set up, are its *codomain*. The output of $f$ at the input $x$ is written $f(x)$.
 
 </Definition>
 
@@ -162,7 +178,7 @@ No two inputs share an output: if $f(a) = f(b)$, then $a = b$. The birthday rule
 
 <Definition term="Onto, or surjective">
 
-Every possible output is reached: for every $y$ in the codomain there is an input $x$ with $f(x) = y$. The decoder is onto; the encoder is not, because nothing reaches [0, 1].
+Every possible output is reached: for every $y$ in the codomain there is an input $x$ with $f(x) = y$. The decoder is onto; the encoder is not, because nothing reaches [0, 1]. Whether a function is onto depends on the codomain chosen for it: squaring is not onto when every number counts as a possible output, since nothing squares to $-1$, but it is onto when only numbers 0 or more do.
 
 </Definition>
 

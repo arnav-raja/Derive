@@ -55,17 +55,17 @@ exercises:
     phase: recall
     kind: recall
     concept: M1.2/field-axioms
-    prompt: Which numbers have a square of 16?
+    prompt: What is $(-5)^2$?
     answer:
       type: choice
       options:
-        - { id: only-four, label: 'Only 4' }
-        - { id: both, label: '4 and $-4$' }
-        - { id: eights, label: '8 and $-8$' }
-        - { id: only-minus, label: 'Only $-4$' }
-      correct: [both]
+        - { id: minus, label: '$-25$' }
+        - { id: plus, label: '25' }
+        - { id: minus-ten, label: '$-10$' }
+        - { id: ten, label: '10' }
+      correct: [plus]
     explanation: >-
-      $4^2 = 16$, and $(-4)^2 = 16$ as well, because a negative times a negative is positive.
+      $(-5)^2 = (-5) \times (-5)$, and a negative times a negative is positive, so it is 25.
 
   # Explore --------------------------------------------------------------------
   - id: explore-reverse-arrows
@@ -139,17 +139,18 @@ exercises:
     review:
       variants:
         - prompt: >-
-            The function $f(x) = 2x$ doubles a number. Can two different inputs give the same output?
+            The function $f(x) = 10 - x$ takes a number away from 10. Can two different inputs give
+            the same output?
           answer:
             type: choice
             options:
               - { id: negatives, label: 'Yes: $x$ and $-x$ always do' }
               - { id: never, label: 'No, never' }
-              - { id: zero, label: 'Only when one of them is 0' }
+              - { id: five, label: 'Only when one of them is 5' }
             correct: [never]
           explanation: >-
-            If $2a = 2b$, dividing both sides by 2 gives $a = b$. Different inputs always give
-            different doubles, so doubling is one-to-one.
+            If $10 - a = 10 - b$, adding $a + b$ to both sides gives $10 + b = 10 + a$, and taking 10
+            away gives $b = a$. Different inputs always give different outputs, so $f$ is one-to-one.
         - prompt: >-
             A rule sends 1 to 5, 2 to 7 and 3 to 5. Its possible outputs are 5, 7 and 9. Which is
             true?
@@ -170,13 +171,13 @@ exercises:
             options:
               - { id: square, label: 'Squaring' }
               - { id: size, label: 'Taking the size of a number, ignoring its sign' }
-              - { id: cube, label: 'Cubing' }
+              - { id: affine, label: 'Multiplying by 3, then adding 1' }
               - { id: zero, label: 'Multiplying by 0' }
-            correct: [cube]
+            correct: [affine]
           explanation: >-
-            Cubing keeps the sign, $2^3 = 8$ while $(-2)^3 = -8$, so no two numbers share a cube, and
-            the cube root undoes it. Squaring and taking the size both send $x$ and $-x$ to the same
-            output, and multiplying by 0 sends every number to 0.
+            Subtracting 1 and then dividing by 3 undoes multiplying by 3 and then adding 1, whatever
+            the input. Squaring and taking the size both send $x$ and $-x$ to the same output, and
+            multiplying by 0 sends every number to 0.
 
   - id: explore-compose-order
     phase: explore
@@ -307,26 +308,26 @@ exercises:
     concept: M1.3/inverse-functions
     title: Undoing a formula
     prompt: >-
-      Solve $F = 1.8C + 32$ for $C$, to get the rule that turns a Fahrenheit reading $F$ back into
-      Celsius.
+      Solve $x = \dfrac{p}{127.5} - 1$ for $p$, to get the rule that turns the model's number $x$
+      back into a brightness.
     answer:
       type: expression
       symbols:
-        - { name: F }
-      lhs: 'C ='
-      reference: (F - 32)/1.8
-      accept: ['5*(F - 32)/9', 'F/1.8 - 32/1.8', '(F - 32)*5/9', '5*F/9 - 160/9', '(F - 32)/(9/5)']
+        - { name: x }
+      lhs: 'p ='
+      reference: 127.5*(x + 1)
+      accept: ['127.5*x + 127.5', '(x + 1)*127.5', '255*(x + 1)/2', '255/2*(x + 1)', '(x + 1)/(1/127.5)']
       reject:
-        - 'F/1.8 - 32'
-        - 'F - 32/1.8'
-        - '(F + 32)/1.8'
-        - '1.8*F + 32'
-        - '1.8*(F - 32)'
-        - '(F - 32)/18'
-        - '(F - 32)*1.8'
+        - '127.5*x + 1'
+        - '127.5*(x - 1)'
+        - '(x + 1)/127.5'
+        - '127.5*x - 1'
+        - '127.5/(x + 1)'
+        - '(x - 1)/127.5'
+        - '255*(x + 1)'
     explanation: >-
-      Subtract 32 from both sides to get $F - 32 = 1.8C$, then divide both sides by 1.8:
-      $C = \dfrac{F - 32}{1.8}$. All of $F - 32$ is divided by 1.8, not just the 32.
+      Add 1 to both sides to get $x + 1 = \dfrac{p}{127.5}$, then multiply both sides by 127.5:
+      $p = 127.5(x + 1)$. All of $x + 1$ is multiplied by 127.5, not just the 1.
     placement: true
     review:
       variants:
@@ -408,6 +409,7 @@ exercises:
         - { id: redo-g, name: Redo g, label: '$g\big(g^{-1}(u)\big) = u$ for every output $u$ of $g$.' }
         - { id: compose, name: Compose, label: '$(p \circ q)(u)$ means $p\big(q(u)\big)$, for any functions $p$ and $q$.' }
         - { id: undo-f, name: Undo f, label: '$f^{-1}\big(f(u)\big) = u$ for every input $u$ of $f$.' }
+        - { id: redo-f, name: Redo f, label: '$f\big(f^{-1}(u)\big) = u$ for every output $u$ of $f$.' }
       start: '(f^{-1} \circ g^{-1})\big((g \circ f)(x)\big)'
       lines:
         - math: '= f^{-1}\Big(g^{-1}\big((g \circ f)(x)\big)\Big)'
@@ -441,7 +443,8 @@ exercises:
     title: An inverse for a narrowed square
     prompt: >-
       The function $f(x) = (x - 2)^2$ is not one-to-one, but with its inputs narrowed to $x \ge 2$ it
-      is. Solve $y = (x - 2)^2$ for $x$, for inputs $x \ge 2$.
+      is, and it still reaches every $y \ge 0$. Solve $y = (x - 2)^2$ for $x$, for inputs $x \ge 2$
+      and outputs $y \ge 0$.
     answer:
       type: expression
       symbols:
@@ -468,8 +471,8 @@ exercises:
     concept: M1.3/inverse-functions
     title: The graph of an inverse
     prompt: >-
-      The point $(2, 4)$ is on the graph of $y = x^2$, because squaring takes 2 to 4. The square root
-      takes 4 back to 2. Which point does that put on the graph of $y = \sqrt{x}$?
+      The point $(2, 4)$ is on the graph of $y = x^2$, because squaring takes 2 to 4. Which point does
+      that give on the graph of the square root, $y = \sqrt{x}$?
     answer:
       type: choice
       options:
@@ -481,6 +484,28 @@ exercises:
     explanation: >-
       The graph of $y = \sqrt{x}$ has a point $(x, y)$ for each input $x$ and its output $y$. The
       input 4 gives the output 2, so $(4, 2)$ is on it: the same two numbers as $(2, 4)$, swapped.
+
+  - id: derive-mirror-line
+    phase: derive
+    kind: predict
+    concept: M1.3/inverse-functions
+    title: The two graphs together
+    prompt: >-
+      Every point $(a, b)$ on the graph of $y = x^2$, for $x \ge 0$, becomes the point $(b, a)$ on
+      the graph of $y = \sqrt{x}$. Drawn with the same scale on both axes, how are the two graphs
+      related?
+    answer:
+      type: choice
+      options:
+        - { id: horizontal, label: 'Each is the mirror image of the other in the horizontal axis' }
+        - { id: diagonal, label: 'Each is the mirror image of the other in the line $y = x$' }
+        - { id: vertical, label: 'Each is the mirror image of the other in the vertical axis' }
+        - { id: same, label: 'They are the same curve' }
+      correct: [diagonal]
+    explanation: >-
+      Folding the picture along the line $y = x$ swaps the two axes, so it carries each point
+      $(a, b)$ to $(b, a)$: $(2, 4)$ lands on $(4, 2)$, and $(1, 1)$, which lies on the line, stays
+      where it is. A mirror in the horizontal axis would send $(2, 4)$ to $(2, -4)$ instead.
 
   # Build ----------------------------------------------------------------------
   - id: build-to-celsius
@@ -495,14 +520,17 @@ exercises:
     answer:
       type: code
       starter: |
-        def to_fahrenheit(c):
-            return 1.8 * c + 32
+        def to_fahrenheit(celsius):
+            return 1.8 * celsius + 32
 
-        def to_celsius(f):
+        def to_celsius(fahrenheit):
             return 0   # replace 0 with the rule that undoes to_fahrenheit
 
         print(to_celsius(212))
       tests: |
+        # close(a, b) is True when a and b agree apart from the tiny rounding
+        # errors of decimals; abs_tol allows the same for answers near 0.
+
         def test_boiling():
             """Water boils at 212 °F, which is 100 °C."""
             got = to_celsius(212)
@@ -510,58 +538,58 @@ exercises:
 
         def test_there_and_back():
             """Celsius to Fahrenheit and back again gives the starting temperature."""
-            for c in [-40, 0, 37, 100]:
-                got = to_celsius(to_fahrenheit(c))
-                assert close(got, c, abs_tol=1e-9), f"to_celsius(to_fahrenheit({c})) gave {got}, not {c}."
+            for celsius in [-40, 0, 37, 100]:
+                got = to_celsius(to_fahrenheit(celsius))
+                assert close(got, celsius, abs_tol=1e-9), f"to_celsius(to_fahrenheit({celsius})) gave {got}, not {celsius}."
 
         def test_back_and_there():
             """Fahrenheit to Celsius and back again gives the starting reading."""
-            for f in [-40, 32, 98.6, 451]:
-                got = to_fahrenheit(to_celsius(f))
-                assert close(got, f, abs_tol=1e-9), f"to_fahrenheit(to_celsius({f})) gave {got}, not {f}."
+            for fahrenheit in [-40, 32, 98.6, 451]:
+                got = to_fahrenheit(to_celsius(fahrenheit))
+                assert close(got, fahrenheit, abs_tol=1e-9), f"to_fahrenheit(to_celsius({fahrenheit})) gave {got}, not {fahrenheit}."
       reference: |
-        def to_fahrenheit(c):
-            return 1.8 * c + 32
+        def to_fahrenheit(celsius):
+            return 1.8 * celsius + 32
 
-        def to_celsius(f):
-            return (f - 32) / 1.8
+        def to_celsius(fahrenheit):
+            return (fahrenheit - 32) / 1.8
 
         print(to_celsius(212))
       wrong:
         - code: |
-            def to_fahrenheit(c):
-                return 1.8 * c + 32
+            def to_fahrenheit(celsius):
+                return 1.8 * celsius + 32
 
-            def to_celsius(f):
-                return f / 1.8 - 32
+            def to_celsius(fahrenheit):
+                return fahrenheit / 1.8 - 32
 
             print(to_celsius(212))
           why: >-
             Undoes the steps in the order they were done, dividing before subtracting, which turns
             212 into about 85.8.
         - code: |
-            def to_fahrenheit(c):
-                return 1.8 * c + 32
+            def to_fahrenheit(celsius):
+                return 1.8 * celsius + 32
 
-            def to_celsius(f):
-                return f - 32 / 1.8
+            def to_celsius(fahrenheit):
+                return fahrenheit - 32 / 1.8
 
             print(to_celsius(212))
           why: >-
             Leaves out the brackets, so Python divides only the 32 by 1.8, and 212 becomes about
             194.2.
         - code: |
-            def to_fahrenheit(c):
-                return 1.8 * c + 32
+            def to_fahrenheit(celsius):
+                return 1.8 * celsius + 32
 
-            def to_celsius(f):
-                return (f + 32) / 1.8
+            def to_celsius(fahrenheit):
+                return (fahrenheit + 32) / 1.8
 
             print(to_celsius(212))
           why: Adds 32 where it should subtract it, so 212 becomes about 135.6.
     explanation: >-
-      `return (f - 32) / 1.8`. The brackets make Python subtract before it divides, the reverse of the
-      order `to_fahrenheit` used.
+      `return (fahrenheit - 32) / 1.8`. The brackets make Python subtract before it divides, the
+      reverse of the order `to_fahrenheit` used.
 
   - id: build-kelvin
     phase: build
@@ -575,17 +603,20 @@ exercises:
     answer:
       type: code
       starter: |
-        def to_fahrenheit(c):
-            return 1.8 * c + 32
+        def to_fahrenheit(celsius):
+            return 1.8 * celsius + 32
 
-        def kelvin_to_celsius(k):
-            return k - 273.15
+        def kelvin_to_celsius(kelvin):
+            return kelvin - 273.15
 
-        def kelvin_to_fahrenheit(k):
-            return kelvin_to_celsius(to_fahrenheit(k))
+        def kelvin_to_fahrenheit(kelvin):
+            return kelvin_to_celsius(to_fahrenheit(kelvin))
 
         print(kelvin_to_fahrenheit(273.15))
       tests: |
+        # close(a, b) is True when a and b agree apart from the tiny rounding
+        # errors of decimals.
+
         def test_freezing():
             """Water freezes at 273.15 K, which is 32 °F."""
             got = kelvin_to_fahrenheit(273.15)
@@ -601,108 +632,260 @@ exercises:
             got = kelvin_to_fahrenheit(0)
             assert close(got, -459.67), f"kelvin_to_fahrenheit(0) gave {got}, not -459.67."
       reference: |
-        def to_fahrenheit(c):
-            return 1.8 * c + 32
+        def to_fahrenheit(celsius):
+            return 1.8 * celsius + 32
 
-        def kelvin_to_celsius(k):
-            return k - 273.15
+        def kelvin_to_celsius(kelvin):
+            return kelvin - 273.15
 
-        def kelvin_to_fahrenheit(k):
-            return to_fahrenheit(kelvin_to_celsius(k))
+        def kelvin_to_fahrenheit(kelvin):
+            return to_fahrenheit(kelvin_to_celsius(kelvin))
 
         print(kelvin_to_fahrenheit(273.15))
       wrong:
         - code: |
-            def to_fahrenheit(c):
-                return 1.8 * c + 32
+            def to_fahrenheit(celsius):
+                return 1.8 * celsius + 32
 
-            def kelvin_to_celsius(k):
-                return k - 273.15
+            def kelvin_to_celsius(kelvin):
+                return kelvin - 273.15
 
-            def kelvin_to_fahrenheit(k):
-                return kelvin_to_celsius(to_fahrenheit(k))
+            def kelvin_to_fahrenheit(kelvin):
+                return kelvin_to_celsius(to_fahrenheit(kelvin))
 
             print(kelvin_to_fahrenheit(273.15))
           why: >-
             Runs the two steps in the wrong order: it treats the kelvin reading as Celsius, converts
-            that to Fahrenheit, and only then subtracts 273.15, giving 250.52 for 273.15.
+            that to Fahrenheit, and only then subtracts 273.15, giving about 250.52 for 273.15.
         - code: |
-            def to_fahrenheit(c):
-                return 1.8 * c + 32
+            def to_fahrenheit(celsius):
+                return 1.8 * celsius + 32
 
-            def kelvin_to_celsius(k):
-                return k - 273.15
+            def kelvin_to_celsius(kelvin):
+                return kelvin - 273.15
 
-            def kelvin_to_fahrenheit(k):
-                return to_fahrenheit(k) - 273.15
+            def kelvin_to_fahrenheit(kelvin):
+                return to_fahrenheit(kelvin) - 273.15
 
             print(kelvin_to_fahrenheit(273.15))
           why: Still converts the kelvin reading as if it were Celsius, and subtracts 273.15 from Fahrenheit.
         - code: |
-            def to_fahrenheit(c):
-                return 1.8 * c + 32
+            def to_fahrenheit(celsius):
+                return 1.8 * celsius + 32
 
-            def kelvin_to_celsius(k):
-                return k - 273.15
+            def kelvin_to_celsius(kelvin):
+                return kelvin - 273.15
 
-            def kelvin_to_fahrenheit(k):
-                return to_fahrenheit(k)
+            def kelvin_to_fahrenheit(kelvin):
+                return to_fahrenheit(kelvin)
 
             print(kelvin_to_fahrenheit(273.15))
           why: Drops the kelvin step altogether.
         - code: |
-            def to_fahrenheit(c):
-                return 1.8 * c + 32
+            def to_fahrenheit(celsius):
+                return 1.8 * celsius + 32
 
-            def kelvin_to_celsius(k):
-                return k - 273.15
+            def kelvin_to_celsius(kelvin):
+                return kelvin - 273.15
 
-            def kelvin_to_fahrenheit(k):
-                return kelvin_to_celsius(k) * 1.8
+            def kelvin_to_fahrenheit(kelvin):
+                return kelvin_to_celsius(kelvin) * 1.8
 
             print(kelvin_to_fahrenheit(273.15))
           why: Multiplies by 1.8 but forgets to add 32, so freezing comes out as 0.
     explanation: >-
       The inner call runs first, so `kelvin_to_celsius` must be on the inside:
-      `return to_fahrenheit(kelvin_to_celsius(k))`.
+      `return to_fahrenheit(kelvin_to_celsius(kelvin))`.
 
-  - id: build-rounded-thermometer
+  - id: build-undo-chain
+    phase: build
+    kind: build
+    concept: M1.3/inverse-functions
+    covers: [M1.3/composition]
+    title: Fahrenheit back to kelvin
+    prompt: >-
+      `kelvin_to_fahrenheit` is the chain from the last exercise, fixed. Finish `celsius_to_kelvin`,
+      and then `fahrenheit_to_kelvin`, which must undo `kelvin_to_fahrenheit`, as a chain of two
+      functions that are already in the program.
+    answer:
+      type: code
+      starter: |
+        def to_fahrenheit(celsius):
+            return 1.8 * celsius + 32
+
+        def to_celsius(fahrenheit):
+            return (fahrenheit - 32) / 1.8
+
+        def kelvin_to_celsius(kelvin):
+            return kelvin - 273.15
+
+        def kelvin_to_fahrenheit(kelvin):
+            return to_fahrenheit(kelvin_to_celsius(kelvin))
+
+        def celsius_to_kelvin(celsius):
+            return 0   # replace 0 with the rule that undoes kelvin_to_celsius
+
+        def fahrenheit_to_kelvin(fahrenheit):
+            return 0   # replace 0 with a chain that undoes kelvin_to_fahrenheit
+
+        print(fahrenheit_to_kelvin(32))
+      tests: |
+        # close(a, b) is True when a and b agree apart from the tiny rounding
+        # errors of decimals; abs_tol allows the same for answers near 0.
+
+        def test_celsius_to_kelvin():
+            """celsius_to_kelvin and kelvin_to_celsius undo each other."""
+            for kelvin in [0, 273.15, 373.15]:
+                got = celsius_to_kelvin(kelvin_to_celsius(kelvin))
+                assert close(got, kelvin, abs_tol=1e-9), f"celsius_to_kelvin(kelvin_to_celsius({kelvin})) gave {got}, not {kelvin}."
+            for celsius in [-273.15, 0, 100]:
+                got = kelvin_to_celsius(celsius_to_kelvin(celsius))
+                assert close(got, celsius, abs_tol=1e-9), f"kelvin_to_celsius(celsius_to_kelvin({celsius})) gave {got}, not {celsius}."
+
+        def test_freezing():
+            """Water freezes at 32 °F, which is 273.15 K."""
+            got = fahrenheit_to_kelvin(32)
+            assert close(got, 273.15), f"fahrenheit_to_kelvin(32) gave {got}, not 273.15."
+
+        def test_there_and_back():
+            """Kelvin to Fahrenheit and back again gives the starting temperature."""
+            for kelvin in [0, 273.15, 373.15]:
+                got = fahrenheit_to_kelvin(kelvin_to_fahrenheit(kelvin))
+                assert close(got, kelvin, abs_tol=1e-9), f"fahrenheit_to_kelvin(kelvin_to_fahrenheit({kelvin})) gave {got}, not {kelvin}."
+
+        def test_back_and_there():
+            """Fahrenheit to kelvin and back again gives the starting reading."""
+            for fahrenheit in [-459.67, 32, 98.6]:
+                got = kelvin_to_fahrenheit(fahrenheit_to_kelvin(fahrenheit))
+                assert close(got, fahrenheit, abs_tol=1e-9), f"kelvin_to_fahrenheit(fahrenheit_to_kelvin({fahrenheit})) gave {got}, not {fahrenheit}."
+      reference: |
+        def to_fahrenheit(celsius):
+            return 1.8 * celsius + 32
+
+        def to_celsius(fahrenheit):
+            return (fahrenheit - 32) / 1.8
+
+        def kelvin_to_celsius(kelvin):
+            return kelvin - 273.15
+
+        def kelvin_to_fahrenheit(kelvin):
+            return to_fahrenheit(kelvin_to_celsius(kelvin))
+
+        def celsius_to_kelvin(celsius):
+            return celsius + 273.15
+
+        def fahrenheit_to_kelvin(fahrenheit):
+            return celsius_to_kelvin(to_celsius(fahrenheit))
+
+        print(fahrenheit_to_kelvin(32))
+      wrong:
+        - code: |
+            def to_fahrenheit(celsius):
+                return 1.8 * celsius + 32
+
+            def to_celsius(fahrenheit):
+                return (fahrenheit - 32) / 1.8
+
+            def kelvin_to_celsius(kelvin):
+                return kelvin - 273.15
+
+            def kelvin_to_fahrenheit(kelvin):
+                return to_fahrenheit(kelvin_to_celsius(kelvin))
+
+            def celsius_to_kelvin(celsius):
+                return celsius + 273.15
+
+            def fahrenheit_to_kelvin(fahrenheit):
+                return to_celsius(celsius_to_kelvin(fahrenheit))
+
+            print(fahrenheit_to_kelvin(32))
+          why: >-
+            Undoes the steps in the order they were done: it treats the Fahrenheit reading as
+            Celsius and turns it into kelvin first, giving about 151.75 for 32.
+        - code: |
+            def to_fahrenheit(celsius):
+                return 1.8 * celsius + 32
+
+            def to_celsius(fahrenheit):
+                return (fahrenheit - 32) / 1.8
+
+            def kelvin_to_celsius(kelvin):
+                return kelvin - 273.15
+
+            def kelvin_to_fahrenheit(kelvin):
+                return to_fahrenheit(kelvin_to_celsius(kelvin))
+
+            def celsius_to_kelvin(celsius):
+                return celsius - 273.15
+
+            def fahrenheit_to_kelvin(fahrenheit):
+                return celsius_to_kelvin(to_celsius(fahrenheit))
+
+            print(fahrenheit_to_kelvin(32))
+          why: Subtracts 273.15 where it should add it, so freezing comes out as -273.15.
+        - code: |
+            def to_fahrenheit(celsius):
+                return 1.8 * celsius + 32
+
+            def to_celsius(fahrenheit):
+                return (fahrenheit - 32) / 1.8
+
+            def kelvin_to_celsius(kelvin):
+                return kelvin - 273.15
+
+            def kelvin_to_fahrenheit(kelvin):
+                return to_fahrenheit(kelvin_to_celsius(kelvin))
+
+            def celsius_to_kelvin(celsius):
+                return celsius + 273.15
+
+            def fahrenheit_to_kelvin(fahrenheit):
+                return kelvin_to_celsius(to_celsius(fahrenheit))
+
+            print(fahrenheit_to_kelvin(32))
+          why: Uses kelvin_to_celsius, the step that was done, where its inverse is needed.
+    explanation: >-
+      `return celsius + 273.15`, and `return celsius_to_kelvin(to_celsius(fahrenheit))`. The
+      Fahrenheit step was done last, so `to_celsius`, its inverse, goes on the inside and runs
+      first.
+
+  - id: build-rounded-pixels
     phase: build
     kind: breakit
     concept: M1.3/injective-surjective
-    title: A thermometer that rounds
+    title: Pixels that round
     prompt: Predict what `back` will be after the change, then run both versions to see.
     answer:
       type: breakit
       code: |
-        def to_fahrenheit(c):
-            return 1.8 * c + 32
+        def to_model(pixel):
+            return pixel / 127.5 - 1
 
-        def to_celsius(f):
-            return (f - 32) / 1.8
+        def to_pixel(x):
+            return 127.5 * (x + 1)
 
-        back = to_celsius(to_fahrenheit(37))
+        back = to_model(to_pixel(0.5))
         print(back)
       broken: |
-        def to_fahrenheit(c):
-            return round(1.8 * c + 32)
+        def to_model(pixel):
+            return pixel / 127.5 - 1
 
-        def to_celsius(f):
-            return (f - 32) / 1.8
+        def to_pixel(x):
+            return round(127.5 * (x + 1))
 
-        back = to_celsius(to_fahrenheit(37))
+        back = to_model(to_pixel(0.5))
         print(back)
       change: >-
-        `to_fahrenheit` now rounds its answer to the nearest whole degree, as a cheap thermometer does.
+        `to_pixel` now rounds its answer to the nearest whole number, as saving a picture does.
       options:
-        - { id: same, label: '`back` is still 37', when: 'abs(back - 37) < 1e-9' }
-        - { id: near, label: '`back` is near 37, but not 37', when: '1e-9 <= abs(back - 37) < 1' }
-        - { id: far, label: '`back` is a degree or more away from 37', when: 'abs(back - 37) >= 1' }
+        - { id: same, label: '`back` is still 0.5', when: 'abs(back - 0.5) < 1e-9' }
+        - { id: near, label: '`back` is near 0.5, but not 0.5', when: '1e-9 <= abs(back - 0.5) < 0.1' }
+        - { id: far, label: '`back` is 0.1 or more away from 0.5', when: 'abs(back - 0.5) >= 0.1' }
         - { id: error, label: 'Python stops with an error', when: 'error is not None' }
     explanation: >-
-      `to_fahrenheit(37)` is 98.6, which now rounds to 99, and `to_celsius(99)` is $67 \div 1.8$, about
-      37.22. Every temperature from about 36.95 °C up to 37.5 °C now reads 99 °F, so the rounded rule
-      is not one-to-one, and `to_celsius` cannot know which of them you started with.
+      `to_pixel(0.5)` is 191.25, which now rounds to 191, and `to_model(191)` is about 0.498. Every
+      number from about 0.494 up to about 0.502 now gives the pixel 191, so the rounded rule is not
+      one-to-one, and `to_model` cannot know which of them you started with.
 
   - id: build-sympy-inverse
     phase: build
@@ -711,37 +894,37 @@ exercises:
     covers: [M1.3/injective-surjective]
     title: Inverses by machine
     prompt: >-
-      Replace each `None` with a call of `solve`, as in the example line, so that `celsius` holds the
-      rule solved for `c` and `roots` holds the square solved for `x`.
+      Replace each `None` with a call of `solve`, as in the example line, so that `undo_chain` holds
+      the chain solved for `x` and `roots` holds the square solved for `x`.
     answer:
       type: code
       starter: |
-        from sympy import symbols, Eq, Rational, solve
+        from sympy import symbols, Eq, solve
 
-        c, f, x, y = symbols("c f x y")
+        x, y = symbols("x y")   # two letters at once
 
-        # Eq(left, right) is an equation. Rational(9, 5) is the exact
-        # fraction 9/5, where the decimal 1.8 would be stored rounded.
-        rule = Eq(f, Rational(9, 5)*c + 32)
+        # Eq(left, right) is an equation. The chain is Explore's f and g:
+        # add 3, then double. The square is y = x squared.
+        chain = Eq(y, 2*(x + 3))
         square = Eq(y, x**2)
 
         example = solve(Eq(3*x + 2, 17), x)
         print("example:", example)
 
-        celsius = None   # the rule, solved for c
-        roots = None     # the square, solved for x
+        undo_chain = None   # the chain, solved for x
+        roots = None        # the square, solved for x
 
-        print("celsius:", celsius)
+        print("undo_chain:", undo_chain)
         print("roots:", roots)
       tests: |
         from sympy import simplify
 
-        def test_celsius():
-            """celsius is the list of solutions of the rule, solved for c."""
-            assert celsius is not None, "Replace None with a call of solve."
-            assert isinstance(celsius, list) and len(celsius) == 1, f"celsius is {celsius}, not a list of one formula for c."
-            back = celsius[0]
-            assert back.subs(f, 212) == 100 and back.subs(f, 32) == 0, f"{back} does not turn 212 into 100 and 32 into 0."
+        def test_undo_chain():
+            """undo_chain is the list of solutions of the chain, solved for x."""
+            assert undo_chain is not None, "Replace None with a call of solve."
+            assert isinstance(undo_chain, list) and len(undo_chain) == 1, f"undo_chain is {undo_chain}, not a list of one formula for x."
+            back = undo_chain[0]
+            assert simplify(back.subs(y, 2*(x + 3)) - x) == 0, f"{back} does not take 2(x + 3) back to x."
 
         def test_roots():
             """roots is the list of solutions of the square, solved for x."""
@@ -750,76 +933,76 @@ exercises:
             for r in roots:
                 assert simplify(r**2 - y) == 0, f"{r} squared is not y."
       reference: |
-        from sympy import symbols, Eq, Rational, solve
+        from sympy import symbols, Eq, solve
 
-        c, f, x, y = symbols("c f x y")
+        x, y = symbols("x y")
 
-        rule = Eq(f, Rational(9, 5)*c + 32)
+        chain = Eq(y, 2*(x + 3))
         square = Eq(y, x**2)
 
         example = solve(Eq(3*x + 2, 17), x)
         print("example:", example)
 
-        celsius = solve(rule, c)
+        undo_chain = solve(chain, x)
         roots = solve(square, x)
 
-        print("celsius:", celsius)
+        print("undo_chain:", undo_chain)
         print("roots:", roots)
       wrong:
         - code: |
-            from sympy import symbols, Eq, Rational, solve
+            from sympy import symbols, Eq, solve
 
-            c, f, x, y = symbols("c f x y")
+            x, y = symbols("x y")
 
-            rule = Eq(f, Rational(9, 5)*c + 32)
+            chain = Eq(y, 2*(x + 3))
             square = Eq(y, x**2)
 
             example = solve(Eq(3*x + 2, 17), x)
             print("example:", example)
 
-            celsius = solve(rule, f)
+            undo_chain = solve(chain, y)
             roots = solve(square, x)
 
-            print("celsius:", celsius)
+            print("undo_chain:", undo_chain)
             print("roots:", roots)
-          why: Solves the rule for f instead of c, which only gives back the rule itself.
+          why: Solves the chain for y instead of x, which only multiplies it out.
         - code: |
-            from sympy import symbols, Eq, Rational, solve
+            from sympy import symbols, Eq, solve
 
-            c, f, x, y = symbols("c f x y")
+            x, y = symbols("x y")
 
-            rule = Eq(f, Rational(9, 5)*c + 32)
+            chain = Eq(y, 2*(x + 3))
             square = Eq(y, x**2)
 
             example = solve(Eq(3*x + 2, 17), x)
             print("example:", example)
 
-            celsius = solve(rule, c)
+            undo_chain = solve(chain, x)
             roots = solve(square, y)
 
-            print("celsius:", celsius)
+            print("undo_chain:", undo_chain)
             print("roots:", roots)
           why: Solves the square for y instead of x, which only restates it.
         - code: |
-            from sympy import symbols, Eq, Rational, solve
+            from sympy import symbols, Eq, solve
 
-            c, f, x, y = symbols("c f x y")
+            x, y = symbols("x y")
 
-            rule = Eq(f, Rational(9, 5)*c + 32)
+            chain = Eq(y, 2*(x + 3))
             square = Eq(y, x**2)
 
             example = solve(Eq(3*x + 2, 17), x)
             print("example:", example)
 
-            celsius = rule
+            undo_chain = chain
             roots = solve(square, x)
 
-            print("celsius:", celsius)
+            print("undo_chain:", undo_chain)
             print("roots:", roots)
-          why: Leaves the rule unsolved.
+          why: Leaves the chain unsolved.
     explanation: >-
-      `celsius = solve(rule, c)` gives one formula, and `roots = solve(square, x)` gives two, $-\sqrt{y}$
-      and $\sqrt{y}$.
+      `undo_chain = solve(chain, x)` gives one formula, $\tfrac{y}{2} - 3$, and
+      `roots = solve(square, x)` gives two, $-\sqrt{y}$ and $\sqrt{y}$.
 
   # Explain --------------------------------------------------------------------
   - id: explain-undoing
@@ -846,8 +1029,8 @@ exercises:
           criterion: Explains how to undo a chain of two functions, and why the order matters.
         - id: restrict
           criterion: >-
-            Explains, with an example, how narrowing the inputs can turn a function that cannot be
-            undone into one that can.
+            Explains, with an example, how narrowing the inputs, and with them the outputs counted as
+            possible, can turn a function that cannot be undone into one that can.
         - id: plain
           criterion: >-
             Is simple enough for the friend to follow, and explains any term such as "one-to-one" the
@@ -862,14 +1045,15 @@ exercises:
         directions only when two things hold. It must be one-to-one: no two inputs share an output, so
         each output points back to a single input. And it must be onto: every possible output is
         reached, so there is always an input to go back to. The encoder is one-to-one but not onto,
-        since no text encodes to [0, 1]; the decoder is onto but not one-to-one. That is why each undoes
-        the other in one direction only. A function that is both, such as turning Celsius into
+        since no text encodes to [0, 1]; the decoder is onto but not one-to-one. That is why decoding
+        undoes encoding, but encoding does not undo decoding. A function that is both, such as turning Celsius into
         Fahrenheit, has an inverse that undoes it either way round. To undo a chain, undo the last step
         first. To turn Celsius into Fahrenheit you multiply by 1.8 and then add 32, so to go back you
         subtract 32 first and then divide by 1.8. The other order gives the wrong answer: 212 °F would
         come out as about 85.8 °C instead of 100. It is like socks and shoes, where the shoes come off
         first. Squaring cannot be undone, because 3 and $-3$ both square to 9. But if you allow only
-        inputs that are 0 or more, no two inputs share a square, and the square root undoes it:
-        $\sqrt{x^2} = x$ for every $x \ge 0$. Narrowing the inputs removed the sharing.
+        inputs that are 0 or more, and count only numbers 0 or more as outputs, no two inputs share a
+        square and every output is reached, so the square root undoes it: $\sqrt{x^2} = x$ for every
+        $x \ge 0$. Narrowing the inputs removed the sharing.
       minWords: 100
       maxWords: 500

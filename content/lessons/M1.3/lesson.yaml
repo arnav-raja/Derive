@@ -5,7 +5,7 @@ status: review
 summary: >-
   A tokeniser's decoder gives back exactly the text its encoder was given. Does every list of
   token ids survive the trip the other way? Functions as rules that give each input one output,
-  feeding one function into another, and when and how a function can be undone.
+  feeding one function into another, and inverse functions.
 sittings: 2
 minutes:
   puzzle: 10
@@ -64,6 +64,7 @@ links:
         order of composition decides how the parts combine.
     - lesson: L3.2
       bridge: >-
-        A byte-pair encoder is a full-sized version of the puzzle's tokeniser, with a vocabulary of
-        tens of thousands of pieces, and you will build one.
+        A byte-pair encoder is a real tokeniser of the same kind, with a vocabulary of tens of
+        thousands of pieces. It chooses its split by merging pairs of pieces in a learned order rather
+        than by taking the longest piece, and you will build one.
 skills: []

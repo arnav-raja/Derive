@@ -86,6 +86,10 @@ export const expressionAnswer = z.object({
     .object({
       expanded: z.boolean().optional(),
       factored: z.boolean().optional(),
+      /** No division by anything that contains a letter, so an unsimplified fraction does not count. */
+      polynomial: z.boolean().optional(),
+      /** The named letter appears only inside one squared bracket, as in 3(x - 4)^2 + 14. */
+      completedSquare: z.string().optional(),
       /** Subexpressions, in SymPy syntax, that must not appear. */
       forbid: z.array(z.string().min(1)).optional(),
       /** Subexpressions that must appear. */

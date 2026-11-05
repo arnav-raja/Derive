@@ -1,0 +1,234 @@
+misconceptions:
+  - id: slope-upside-down
+    belief: A slope is the step divided by the rise.
+    why: >-
+      The slope says how much the output changes for each unit of input, so the change in output goes
+      on top. Upside down, the training runs would give half an hour per billion tokens instead of 2.
+    cue: An answer of $n/2 + 4$ for the training time, or a slope of 0.5 where 2 is right.
+  - id: intercept-is-first-point
+    belief: The intercept is the height of the first point given.
+    why: >-
+      The intercept is the height at $x = 0$. It equals the first point's height only when that point
+      sits at $x = 0$, as the freezing point does on the Celsius scale.
+    cue: An answer of $2n + 5$ for the training time.
+  - id: everything-steady
+    belief: Every rule changes at a steady rate, so the next rise is the same as the last one.
+    why: >-
+      Only linear rules have steady rises. The squares rise by 1, 3, 5, 7: a curve's rate depends on
+      where it is measured.
+    cue: Predicting 74 for the next value after 52 in Explore's table, by repeating the last rise of 22.
+  - id: square-splits
+    belief: $(x + h)^2 = x^2 + h^2$.
+    why: >-
+      Multiplying out gives $x^2 + 2hx + h^2$. The middle term, $2hx$, is what lets a squared bracket
+      match the $x$ term of a quadratic.
+    cue: Choosing $x^2 + 9$ for $(x + 3)^2$, or trying to match $x^2 - 10x$ with $x^2 + 25$.
+  - id: bracket-not-halved
+    belief: The number in the bracket is the number in front of $x$.
+    why: >-
+      $(x + h)^2$ has $2h$ in front of $x$, so $h$ must be half of that number.
+    cue: An answer of $(x - 10)^2 - 69$ for $x^2 - 10x + 31$.
+  - id: leftover-added
+    belief: When completing the square, the bracket's extra number is added on, not taken away.
+    why: >-
+      $(x - 5)^2$ already brings $+25$ with it, so to get back to $+31$ only 6 more is needed. Adding
+      25 again overshoots.
+    cue: An answer of $(x - 5)^2 + 56$, or of $(x - 5)^2 + 31$, which forgets the 25 altogether.
+  - id: vertex-sign
+    belief: The vertex of $ax^2 + bx + c$ is at $x = b/(2a)$.
+    why: >-
+      The bracket is $x + \tfrac{b}{2a}$, and it is 0 when $x = -\tfrac{b}{2a}$. With $b = -6$ and
+      $a = 1$ the vertex is at $+3$.
+    cue: A vertex on the wrong side, such as $-3$ for $x^2 - 6x + 11$.
+  - id: slash-two-a
+    belief: In Python, `/ 2*a` divides by $2a$.
+    why: >-
+      Python works through `*` and `/` from left to right, so `/ 2*a` divides by 2 and then
+      multiplies by `a`. Only brackets, `/ (2*a)`, divide by $2a$.
+    cue: Code that writes `/ 2*a` or `/ 4*a`, which passes every test with $a = 1$ and fails the rest.
+  - id: middle-always-best
+    belief: The best single guess is the middle value, whatever the score.
+    why: >-
+      Under squared error the best guess is the mean; the middle value, the median, is best under the
+      absolute error. Different scores choose different guesses.
+    cue: Choosing 3 in the puzzle, or 2.5 for the data with the wild value.
+
+exercises:
+  derive-line-through:
+    rungs:
+      - What do the two runs tell you about how many extra hours each extra billion tokens costs?
+      - >-
+        The worked example above found the Fahrenheit rule the same way: the slope first, from the
+        rise and the step, then the number at the start.
+      - Going from 2 to 6 billion tokens added how many hours? And how many billions of tokens is that step?
+      - >-
+        Check your line at both runs: it must give 5 at $n = 2$ and 13 at $n = 6$. If only one is
+        wrong, look at the number at the start; if both are, look at the slope.
+      - >-
+        For a phone plan, 3 GB cost ₹250 and 7 GB cost ₹450. The slope is
+        $(450 - 250) \div (7 - 3) = 50$ rupees per GB, and $250 = 50 \times 3 + c$ gives $c = 100$, so
+        the cost is $50g + 100$.
+    notes: >-
+      $n/2 + 4$ divides the step by the rise. $2n + 5$ takes the first run's time as the intercept.
+      $13n/6$ or $2.5n$ assumes the line passes through 0. $4n - 3$ divides the rise of 8 by 2 instead
+      of by the step of 4.
+  derive-chord-square:
+    rungs:
+      - What does the top of the fraction, $b^2 - a^2$, have in common with the bottom, $b - a$?
+      - >-
+        M1.2 multiplied out brackets with the distributive law. Multiply out $(b - a)(b + a)$ and
+        compare it with the top.
+      - >-
+        Try $a = 1$ and $b = 3$: the top is 8 and the bottom is 2. Can you write 8 as 2 times
+        something that appears in a later line?
+      - The second line has no fraction any more. Which rule removes a factor that sits on both the top and the bottom?
+      - >-
+        To show that $\dfrac{6p + 6}{p + 1} = 6$ when $p \ne -1$, write the top as $6(p + 1)$ by the
+        distributive law, then cancel the factor $p + 1$, which is not 0.
+    notes: >-
+      Choosing Square root anywhere treats $b^2 - a^2$ as if it were $(b - a)^2$. Choosing Split a
+      fraction for the first line splits the top correctly but leads nowhere, since neither part
+      simplifies on its own.
+  derive-general-rate:
+    rungs:
+      - What is $f(b) - f(a)$ before you divide? Write it out and see what cancels.
+      - The proof just above showed that $b^2 - a^2$ has the factor $b - a$.
+      - >-
+        Try numbers first. With $a = 1$ and $b = 2$, $f(1) = 6$ and $f(2) = 13$, so the rate is 7.
+        Whatever formula you find must give 7 there.
+      - Both $3(b^2 - a^2)$ and $-2(b - a)$ have the factor $b - a$. Take it out of both before you divide.
+      - >-
+        For $g(x) = 2x^2 + x$: $g(b) - g(a) = 2(b^2 - a^2) + (b - a) = (b - a)\big(2(b + a) + 1\big)$,
+        so the rate from $a$ to $b$ is $2(a + b) + 1$.
+    notes: >-
+      $3(a + b)$ drops the $-2$ from the $x$ term. $3(a + b) + 5$ keeps the 5, which cancels in
+      $f(b) - f(a)$. $6(a + b) - 2$ doubles the 3, as if the rate were $2p(a + b)$. An unsimplified
+      fraction is equal but has not taken the step.
+  derive-complete-square:
+    rungs:
+      - What is half of the number in front of $x$?
+      - The worked example above did $x^2 + 8x + 20$, where half of 8 gave the bracket $(x + 4)^2$.
+      - >-
+        Start with a smaller one: $x^2 - 2x + 3$. Half of $-2$ is $-1$, and $(x - 1)^2 = x^2 - 2x + 1$.
+        What is left over?
+      - >-
+        Multiply your bracket out again and check that the number added after it brings the total
+        back to exactly 31.
+      - >-
+        $x^2 + 6x + 14$: half of 6 is 3, $(x + 3)^2 = x^2 + 6x + 9$, and $14 - 9 = 5$, so
+        $x^2 + 6x + 14 = (x + 3)^2 + 5$.
+    notes: >-
+      $(x - 10)^2 - 69$ uses the whole $-10$ instead of half of it. $(x - 5)^2 + 56$ adds the 25 a
+      second time, and $(x - 5)^2 + 31$ forgets it. $(x + 5)^2 + 6$ has the wrong sign in the bracket,
+      which gives $+10x$.
+  derive-general-square:
+    rungs:
+      - In the examples with numbers, how did the number in the bracket relate to the number in front of $x$?
+      - >-
+        Each example above halved the number in front of $x$: 8 gave $x + 4$, and $-10$ gave
+        $x - 5$.
+      - >-
+        Try $b = 6$ first: $x^2 + 6x + c = (x + 3)^2 + c - 9$. Where did the 3 and the 9 come from,
+        in terms of 6?
+      - >-
+        Multiply out your bracket. Its square brings an extra part with it, which the part without
+        $x$ has to take away again.
+      - >-
+        For $x^2 - 3x + c$: half of $-3$ is $-\tfrac{3}{2}$, and
+        $\big(x - \tfrac{3}{2}\big)^2 = x^2 - 3x + \tfrac{9}{4}$, so the quadratic is
+        $\big(x - \tfrac{3}{2}\big)^2 + c - \tfrac{9}{4}$.
+    notes: >-
+      $(x + b)^2 + c - b^2$ forgets to halve. $(x + \tfrac{b}{2})^2 + c$ forgets that the square brings
+      $\tfrac{b^2}{4}$ with it. $-\tfrac{b^2}{2}$ squares the half wrongly.
+  derive-mean-best:
+    rungs:
+      - The number in front of $w^2$ is 3, not 1. What can you do with it before completing the square?
+      - >-
+        The Steps above took $a$ out of the first two terms, $ax^2 + bx = a\big(x^2 + \tfrac{b}{a}x\big)$,
+        before completing the square inside the bracket.
+      - >-
+        Try $2w^2 - 8w + 10$ first: it is $2(w^2 - 4w) + 10$, and $w^2 - 4w = (w - 2)^2 - 4$. What
+        does that make the whole expression?
+      - >-
+        When the 3 multiplies the bracket back out, it multiplies the number you took away inside it
+        too. Check that your answer gives 62 at $w = 0$.
+      - >-
+        $2w^2 + 12w + 5 = 2(w^2 + 6w) + 5 = 2\big((w + 3)^2 - 9\big) + 5 = 2(w + 3)^2 - 13$.
+    notes: >-
+      $3(w - 4)^2 + 62$ forgets that the bracket brings $3 \times 16 = 48$ with it. $3(w - 4)^2 - 34$
+      takes away 48 twice, adding nothing back. $(w - 4)^2 + 14$ drops the 3 in front. $3(w - 12)^2$
+      or $3(w - 8)^2$ halves the wrong number.
+  build-line:
+    rungs:
+      - What two numbers decide a line, and which of them can you work out from the two points straight away?
+      - >-
+        Derive found the training-time line in two steps: the slope from the rise and the step, then
+        the intercept from one point.
+      - >-
+        For the points (2, 5) and (6, 13) the slope is 2. Which arithmetic on the four numbers gives 2?
+        Now write that with the names `x1`, `y1`, `x2` and `y2`.
+      - >-
+        The second test checks that your line passes through both points. If it misses only one,
+        look at `intercept`; if it misses both, look at `slope` and at its brackets.
+      - >-
+        A trip counter reads 120 km at 2 hours and 300 km at 5 hours. `(300 - 120) / (5 - 2)` gives 60
+        km per hour, and going back two hours at that rate, `120 - 60 * 2` gives 0, the reading when
+        the clock read 0.
+    notes: >-
+      A slope of 0.5 for the training runs divides the step by the rise. An intercept equal to `y1`
+      forgets to go back to x = 0. `y2 - y1 / (x2 - x1)` is missing the brackets on the top. A
+      division by zero for the flat line (1.5, 2) to (4, 2) means the rise is on the bottom.
+  build-roots-bug:
+    rungs:
+      - Which line does the arithmetic, and in what order does Python do its parts?
+      - M1.2's expression trees showed that `*` and `/` are worked from left to right when there are no brackets.
+      - Work out `8 / 2*2` by hand, the way Python does. Is it 2 or 8?
+      - >-
+        The formula divides the whole top by $2a$. Look at what the code divides by, and at what it
+        does with `a` afterwards.
+      - >-
+        To share ₹600 among 3 groups of 4 people, each person gets `600 / (3*4)`, which is 50. Without
+        the brackets, `600 / 3*4` is 800, because Python divides by 3 and then multiplies by 4.
+    notes: >-
+      (4.0, 8.0) for the doubled equation is the bug itself: divided by 2, then multiplied by 2. Signs
+      flipped, such as (-2.0, -1.0), mean `b` was used where the formula has `-b`. The same number
+      twice means both lines use the same sign before `d`.
+  build-vertex:
+    rungs:
+      - What did Derive find for the $x$ of the vertex of $ax^2 + bx + c$?
+      - >-
+        Derive's Steps took $a$ out of the first two terms and completed the square; the vertex was
+        where the bracket is 0.
+      - >-
+        For $x^2 - 6x + 11$ the vertex is at 3. Which formula in $a$, $b$ and $c$ gives 3 when $a = 1$,
+        $b = -6$ and $c = 11$?
+      - >-
+        If the mirror test fails only for the cases where $a$ is not 1, look at the brackets around
+        the bottom of your fraction.
+      - >-
+        For $y = 2x^2 - 8x + 1$, the vertex is at $x = 8 \div (2 \times 2) = 2$, and the height there
+        is $2 \times 4 - 16 + 1 = -7$.
+    notes: >-
+      A vertex that is right only when $a = 1$ means `/ 2*a`. A vertex on the wrong side has lost the
+      minus sign. A vertex twice as far from 0 as it should be has not been halved. `lowest` equal to
+      `c` gives the height at x = 0.
+  build-sympy-quadratic:
+    rungs:
+      - What expression, set equal to 0, is each equation, and which letter should it be solved for?
+      - The example line solves $x^2 - 9 = 0$ for `x`. Your two lines have the same shape.
+      - Do `doubled` first, since it has only numbers in it. Run the program and look at what it prints.
+      - >-
+        `solve` takes the expression and then the letter to solve for. Check that you solve for `x`,
+        and that the expression has `a` in front of `x**2`.
+      - To solve $3x^2 - 12 = 0$ for $x$, write `solve(3*x**2 - 12, x)`, which gives `[-2, 2]`.
+    notes: >-
+      A list holding `-(b*x + c)/x**2` means the expression was solved for `a`. Solutions without `a`
+      mean the `a` in front of `x**2` is missing. A single number for `doubled` means only the first
+      solution was kept.
+
+novice:
+  - Why square the misses instead of just adding them up?
+  - If the mean is the best single guess, why would anyone use the median?
+  - Does every parabola have a lowest point?
+  - Why does half of the number in front of $x$ go in the bracket, and not the whole of it?
+  - What is the rate of change of $x^2$ at a single point, when $a$ and $b$ are the same?
