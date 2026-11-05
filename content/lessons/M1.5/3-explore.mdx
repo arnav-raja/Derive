@@ -8,14 +8,14 @@ After one word, B's score is twice A's. After two words it is $2 \times 2 = 4$ t
 
 <Reveal for="explore-twenty-doublings">
 
-Thirty words give $1{,}024^3$, more than a thousand million, and the puzzle's 1,000 words, a hundred blocks of ten, give more than $1{,}000^{100} = 10^{300}$: a number more than 300 digits long.
+Thirty words give $1{,}024^3$, more than a billion, and the puzzle's 1,000 words, a hundred blocks of ten, give more than $1{,}000^{100} = 10^{300}$: a number more than 300 digits long.
 
 Here is the lead drawn against the number of words, up to 30 of them. The curve joins up the points for whole numbers of words; what a power such as $2^{2.5}$ means comes later in this phase.
 
 <FunctionPlot
   title="Doubling, on an ordinary scale"
-  description="The curve y = 2 to the power x, for x from 0 to 30 words, with the up axis running from 0 to 1.1 thousand million. The curve cannot be told apart from the axis until about 24 words, then climbs almost straight up."
-  curves={[{ expr: "2^x", label: "B's lead, 2^x" }]}
+  description="The curve y = 2 to the power x, for x from 0 to 30 words, with the vertical axis running from 0 to 1.1 billion. The curve cannot be told apart from the axis until about 24 words, then climbs almost straight up."
+  curves={[{ expr: "2^x", label: "the lead, 2^x" }]}
   x={[0, 30]}
   y={[0, 1100000000]}
   xLabel="words"
@@ -32,8 +32,8 @@ On an ordinary scale most of the doubling cannot be seen. By the time the curve 
 
 <FunctionPlot
   title="Doubling, on a log scale"
-  description="The curve y = 2 to the power x for x from 0 to 30, drawn with an up axis on which each equal step multiplies by the same factor, from 10 to the power −10 up to 10 to the power 10. It is a straight line, from 1 at x = 0 to just over 10 to the power 9 at x = 30. A slider sets a factor b, at first 0.5, and a second line shows b to the power x: it rises for b more than 1 and falls for b less than 1."
-  curves={[{ expr: "2^x", label: "B's lead, 2^x" }, { expr: "b^x", label: "b^x" }]}
+  description="The curve y = 2 to the power x for x from 0 to 30, drawn with a vertical axis on which each equal step multiplies by the same factor, from 10 to the power −10 up to 10 to the power 10. It is a straight line, from 1 at x = 0 to just over 10 to the power 9 at x = 30. A slider sets a factor b, at first 0.5, and a second line shows b to the power x: it rises for b more than 1 and falls for b less than 1."
+  curves={[{ expr: "2^x", label: "the lead, 2^x" }, { expr: "b^x", label: "b^x" }]}
   params={[{ name: "b", label: "Factor at each step, b", min: 0.1, max: 3, step: 0.1, value: 0.5 }]}
   x={[0, 30]}
   y={[1e-10, 1e10]}
@@ -42,7 +42,9 @@ On an ordinary scale most of the doubling cannot be seen. By the time the curve 
   yLabel="value"
 />
 
-A scale on which each equal step multiplies by the same factor is called a *log scale*, for a reason this phase will reach. The whole climb shows on it, from 1 to more than a thousand million. Move the slider: every factor draws a straight line, steeper for a larger factor, and falling for a factor less than 1. At 0.2 it shows A's score, which shrinks by a factor of 5 with every word.
+A scale on which each equal step multiplies by the same factor is called a *log scale*, for a reason this phase will reach. The whole climb shows on it, from 1 to more than a billion. Move the slider: every factor draws a straight line, rising for a factor more than 1 and falling for one less than 1, and 2 and 0.5, which double and halve, slope by the same amount. At 0.2 it shows A's score, which shrinks by a factor of 5 with every word.
+
+Steady change is different. A lead that gains the same amount with every word, which M1.4, on linear functions, draws as a straight line on an ordinary scale, is overtaken by doubling however fast it gains. Even a lead that gains a million with every word is passed at 25 words, 33,554,432 against 25,000,000, and falls further behind after that, because each doubling adds as much as the whole lead so far. That doubling passes every such line is taken on trust here.
 
 ## Where 2 sits
 
@@ -74,7 +76,7 @@ On a log scale, as on M1.1's line, 1 sits at the power 0 and 10 at the power 1, 
   max={4}
 />
 
-Every doubling moves the same distance along the line, so 4 sits at about 0.602 and 8 at about 0.903. M1.1 read a position like that as a power: 2 sits at about $10^{0.301}$. But what could a power that is not a whole number mean?
+Every doubling moves the same distance along the line, a little over three tenths of a power of ten; a calculator puts 2 at 0.30103. M1.1 read a position like that as a power: 2 is about $10^{0.301}$. But what could a power that is not a whole number mean?
 
 ## Powers between the whole numbers
 
@@ -86,13 +88,13 @@ M1.2 gave $a^0$ and $a^{-n}$ their meanings by asking what keeps the rule $a^m \
 
 <Reveal for="explore-half-power">
 
-In the same way, three copies of $10^{1/3}$ must multiply to $10^1$, so $10^{1/3}$ is the number whose cube is 10, about 2.15. Two numbers square to 10, about 3.16 and $-3.16$, and the positive one is chosen, as M1.3's square root chose, so that every power of a positive number is positive.
+In the same way, three copies of $10^{1/3}$ must multiply to $10^1$, so $10^{1/3}$ is the positive number whose cube is 10, about 2.15. Two numbers square to 10, about 3.16 and $-3.16$, and the positive one is chosen, as M1.3's square root chose, so that every power of a positive number is positive.
 
 The same reasoning settles $10^{3/10}$: ten copies of it multiply to $10^3 = 1{,}000$. Since $2^{10} = 1{,}024$ is a little more than 1,000, $10^{0.3}$ is a little less than 2, about 1.995. That is why 2 sits just past 0.3 on the line.
 
-Every fraction can be an exponent in this way. For a positive number $a$, $a^{1/n}$ is the positive number whose $n$th power is $a$, and $a^{m/n}$ is $(a^{1/n})^m$. Exponents that are not fractions, such as $\sqrt{2}$, are reached through fractions as close to them as you like: $10^{\sqrt 2}$ lies between $10^{1.41} \approx 25.7$ and $10^{1.42} \approx 26.3$, and closer fractions pin it down further. So $10^x$ has a meaning for every number $x$, and it rises smoothly as $x$ rises.
+Every fraction can be an exponent in this way. For a positive number $b$, $b^{1/n}$ is the positive number whose $n$th power is $b$, and $b^{m/n}$ is $(b^{1/n})^m$. Exponents that are not fractions, such as $\sqrt{2}$, are reached through fractions as close to them as you like: $10^{\sqrt 2}$ lies between $10^{1.41} \approx 25.7$ and $10^{1.42} \approx 26.3$, and closer fractions pin it down further. So $10^x$ has a meaning for every number $x$, and it rises smoothly as $x$ rises.
 
-The rules for exponents that M1.2 proved for whole numbers keep holding for all of these exponents, as long as the number raised to the power is positive. Proving that needs the idea of a limit, which a later course on calculus introduces; this lesson takes it as given.
+The rules for exponents that M1.2 proved for whole numbers keep holding for all of these exponents, as long as the number raised to the power is positive. Proving that, and that $10^x$ rises smoothly through every positive number, needs the idea of a limit, which a later course on calculus introduces. This lesson takes both as given, along with the fact that $\sqrt{2}$ is not a fraction.
 
 This is the meaning M1.1 promised. An hour, 3,600 seconds, sat at about the power 3.56 on M1.1's line, because $10^{3.56} = 10^3 \times 10^{0.56}$, and $10^{0.56}$ is about 3.6.
 
@@ -106,9 +108,9 @@ Splitting the exponent into a whole number and a part between 0 and 1 splits the
 
 ## Undoing a power
 
-The function $f(x) = 10^x$ takes a power and gives a number. A larger power always gives a larger number, so no two powers share an output, and $f$ is one-to-one. As $x$ runs through all the numbers, $10^x$ runs smoothly through all the positive numbers, from as close to 0 as you like up to as large as you like. So if its possible outputs are the positive numbers, $f$ is onto as well, and M1.3 showed that such a function has an inverse.
+The function $f(x) = 10^x$ takes a power and gives a number. A larger power always gives a larger number, so no two powers share an output, and $f$ is one-to-one. Take its possible outputs to be exactly the numbers it reaches, and it is onto as well, so M1.3 says it has an inverse.
 
-The inverse takes a positive number and gives the power of 10 that makes it. It is called the *logarithm* to base 10, written $\log_{10}$. So $\log_{10} 1{,}000 = 3$, because $10^3 = 1{,}000$, and $\log_{10} 2 \approx 0.301$. A number's position on a log scale is its logarithm, which is where the scale gets its name.
+The inverse takes an output of $10^x$ and gives the power of 10 that makes it. It is called the *logarithm* to base 10, written $\log_{10}$. So $\log_{10} 1{,}000 = 3$, because $10^3 = 1{,}000$, and $\log_{10} 2 \approx 0.301$. A number's position on a log scale is its logarithm, which is where the scale gets its name.
 
 <Exercise id="explore-which-have-logs" />
 
@@ -116,11 +118,11 @@ The inverse takes a positive number and gives the power of 10 that makes it. It 
 
 <Reveal for="explore-which-have-logs">
 
-Numbers between 0 and 1 have negative logarithms, and the closer a number is to 0, the more negative its logarithm. A probability is never more than 1, so the logarithms of the puzzle's probabilities are negative.
+So the logarithm takes exactly the positive numbers. Numbers between 0 and 1 have negative logarithms, and the closer a number is to 0, the more negative its logarithm. The puzzle's probabilities, 0.2 and 0.4, are less than 1, so their logarithms are negative.
 
-## Multiplying by adding
+## A table of logarithms
 
-Here are some logarithms to base 10, to three decimal places.
+Here are some logarithms to base 10, from a calculator, to three decimal places.
 
 | $x$ | 1 | 2 | 3 | 4 | 5 | 8 | 10 |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -144,7 +146,7 @@ For a positive number $b$, the function $f(x) = b^x$, which has a meaning for ev
 
 <Definition term="Logarithm">
 
-For a positive base $b$ other than 1, $\log_b x$ is the power of $b$ that gives $x$: $\log_b x = y$ exactly when $b^y = x$. It is the inverse of the function $b^x$, so it exists only for positive $x$. Base 10 counts powers of ten, $\log_{10} 1{,}000 = 3$, and base 2 counts doublings, $\log_2 8 = 3$. Base 1 is left out because every power of 1 is 1.
+For a positive base $b$ other than 1, $\log_b x$ is the power of $b$ that gives $x$: $\log_b x = y$ exactly when $b^y = x$. It is the inverse of the function $b^x$, so among the real numbers it exists only for positive $x$. Base 10 counts powers of ten, $\log_{10} 1{,}000 = 3$, and base 2 counts doublings, $\log_2 8 = 3$. Base 1 is left out because every power of 1 is 1.
 
 </Definition>
 

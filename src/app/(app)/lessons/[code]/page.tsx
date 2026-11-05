@@ -9,6 +9,7 @@ import { Notice } from "@/components/ui/notice";
 import { EmptyState, Page, PageHeader, Panel, Section } from "@/components/ui/page";
 import { getStore } from "@/lib/auth";
 import { loadLesson, readyLesson } from "@/lib/content/lesson";
+import { renderInline } from "@/lib/content/markdown";
 import { course, lesson as lessonMeta } from "@/lib/curriculum/data";
 import { hardPrerequisites, overview } from "@/lib/learning/service";
 import { PHASE_PURPOSE, PHASE_TITLES, lessonProgress, type PhaseState } from "@/lib/learning/state";
@@ -216,10 +217,17 @@ export default async function LessonPage({ params, searchParams }: Props) {
             {taught.map((c) => (
               <li key={c.id} className="flex flex-col gap-0.5">
                 <p className="text-base font-medium text-ink">{c.name}</p>
-                <p className="text-sm text-ink-muted">{c.summary}</p>
+                {/* What an idea says can answer the lesson's own questions, so it waits for the end. */}
+                {progress.completed ? <p className="text-sm text-ink-muted">{renderInline(c.summary)}</p> : null}
               </li>
             ))}
           </ul>
+          {progress.completed ? null : (
+            <p className="text-sm text-ink-muted">
+              What each idea says, and how this lesson connects to others, is shown here once you have finished the
+              lesson, so that nothing on this page answers a question before the lesson asks it.
+            </p>
+          )}
         </Section>
 
         {[...links.requires, ...links.buildsOn, ...links.revisits].length ||
@@ -242,7 +250,7 @@ export default async function LessonPage({ params, searchParams }: Props) {
                         <Link href={`/lessons/${l.lesson}`} className="font-medium text-accent hover:text-accent-strong">
                           {l.lesson} {lessonMeta(l.lesson)?.title ?? ""}
                         </Link>
-                        : {l.bridge}
+                        {progress.completed ? <>: {renderInline(l.bridge)}</> : null}
                       </dd>
                     ))}
                   </div>

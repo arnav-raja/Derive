@@ -13,7 +13,7 @@ Together with M1.2's rule for multiplying powers, which Explore extended to ever
 
 <Reveal for="derive-log-product">
 
-Dividing works the same way. Since $\frac{a}{b} \times b = a$, the product rule gives $\log_{10}\frac{a}{b} + \log_{10} b = \log_{10} a$, so
+Call this the *product rule*. Dividing works the same way: since $\frac{a}{b} \times b = a$, the product rule gives $\log_{10}\frac{a}{b} + \log_{10} b = \log_{10} a$, so
 
 $$
 \log_{10} \frac{a}{b} = \log_{10} a - \log_{10} b.
@@ -27,9 +27,9 @@ With $a = 1$ this says $\log_{10}\frac{1}{b} = -\log_{10} b$, because $\log_{10}
 
 <Reveal for="derive-log-tenth">
 
-With $T \approx 0.30103$, $\log_{10} 0.2 \approx -0.69897$. A's score for the whole passage is 0.2 multiplied by itself 1,000 times, so finishing the puzzle needs a rule for the logarithm of a power.
+A's score for the whole passage is 0.2 multiplied by itself 1,000 times, so finishing the puzzle needs a rule for the logarithm of a power.
 
-## Powers become multiples
+## A thousand equal factors
 
 <Exercise id="derive-log-power" />
 
@@ -49,7 +49,7 @@ Now the puzzle can be settled. A's score is $0.2^{1000}$, so its logarithm is $1
 
 B's logarithm is higher by $-397.94 - (-698.97) = 301.03$. That difference is the logarithm of B's lead, since $\log_{10}(2^{1000}) = 1{,}000\,T \approx 301.03$. So B's score is $10^{301.03}$ times A's, which is about $1.07 \times 10^{301}$, because $10^{0.03} \approx 1.07$. A whole number from $10^{301}$ up to, but not including, $10^{302}$ has 302 digits, just as one from 100 up to 1,000 has three. So the puzzle's answer is a number with 302 digits.
 
-Neither score can sensibly be written out. A's is about $1.07 \times 10^{-699}$: a decimal point, then 698 zeros, then the digits 107 and more. Their logarithms, about $-699$ and $-398$, are ordinary numbers that anyone can compare.
+Neither score can sensibly be written out. A's is about $1.07 \times 10^{-699}$: a decimal point, then 698 zeros, then the digits 107 and more. Their logarithms, about $-699$ and $-398$, are numbers of an everyday size that anyone can compare.
 
 ## Any base
 
@@ -61,13 +61,13 @@ Base 10 counts powers of ten. Other bases count other factors: base 2 counts dou
 
 <Reveal for="derive-change-of-base">
 
-Nothing in those steps needed the base to be 2. It needed only a positive base other than 1, so that its logarithm is not 0. For every such base $b$,
+Nothing in those steps needed the base to be 2. It needed only a positive base other than 1, so that its logarithm is not 0. For every such base $b$ and every positive $x$,
 
 $$
 \log_b x = \frac{\log_{10} x}{\log_{10} b}.
 $$
 
-Changing the base divides every logarithm by the same number, so logarithms to different bases are the same function drawn to different scales.
+Nothing needed base 10 underneath either. For any two positive bases $b$ and $c$ other than 1, the same steps give $\log_b x = \dfrac{\log_c x}{\log_c b}$. Changing the base divides every logarithm by the same number, so logarithms to different bases are the same function drawn to different scales.
 
 <Exercise id="derive-doublings" />
 
@@ -75,7 +75,7 @@ Changing the base divides every logarithm by the same number, so logarithms to d
 
 <Reveal for="derive-doublings">
 
-So 19 doublings fall short of a million, and 20 pass it: $2^{20} = 1{,}048{,}576$, as Explore found. Counting doublings and halvings is how programmers count steps. A search that halves the possibilities at every step finds one item among a million in 20 steps, and one among a thousand million in 30.
+So 19 doublings fall short of a million, and 20 pass it: $2^{20} = 1{,}048{,}576$, as Explore found. Counting doublings and halvings is how programmers count steps. A search that halves the possibilities at every step finds one item among a million in 20 steps, and one among a billion in 30.
 
 ## A second view: the graph of a logarithm
 
@@ -89,7 +89,7 @@ M1.3 showed that the graph of an inverse is the graph of the function folded ove
 
 <FunctionPlot
   title="A power and its logarithm"
-  description="Drawn to equal scales, from −3 to 6 in both directions: the curve y = 2 to the power x, the curve y = log to base 2 of x, and the line y = x between them. The point (1, 2) on the first curve and the point (2, 1) on the second are marked, mirror images in the line. The second curve exists only to the right of the up axis, plunges towards that axis as x shrinks towards 0, and climbs ever more slowly to the right."
+  description="Drawn to equal scales, from −3 to 6 in both directions: the curve y = 2 to the power x, the curve y = log to base 2 of x, and the line y = x between them. The point (1, 2) on the first curve and the point (2, 1) on the second are marked, mirror images in the line. The second curve exists only to the right of the vertical axis, plunges towards that axis as x shrinks towards 0, and climbs ever more slowly to the right."
   curves={[{ expr: "2^x", label: "y = 2^x" }, { expr: "log2(x)", label: "y = log₂ x" }, { expr: "x", label: "y = x" }]}
   x={[-3, 6]}
   y={[-3, 6]}
@@ -97,6 +97,6 @@ M1.3 showed that the graph of an inverse is the graph of the function folded ove
   marks={[{ x: 1, curve: 0, label: "(1, 2)" }, { x: 2, curve: 1, label: "(2, 1)" }]}
 />
 
-The picture shows the logarithm's limits at a glance: it exists only to the right of the up axis, where $2^x$ has all its outputs. It also shows why logarithms tame large numbers. Each doubling of $x$ lifts $\log_2 x$ by only 1, so the climb from 1 to a million is less than 20.
+The picture shows the logarithm's limits at a glance: it exists only to the right of the vertical axis, where $2^x$ has all its outputs. It also shows why logarithms tame large numbers. Each doubling of $x$ lifts $\log_2 x$ by only 1, so the climb from 1 to a million is less than 20.
 
 </Reveal>
