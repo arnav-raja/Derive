@@ -171,25 +171,25 @@
           "n": "9"
         },
         {
-          "n": "6"
-        },
-        {
-          "n": "9"
-        },
-        {
           "n": "2"
         },
         {
-          "n": "9"
+          "n": "4"
+        },
+        {
+          "n": "1"
+        },
+        {
+          "n": "5"
         }
       ],
       "values": [
         "7.0000000000000000000",
         "10.000000000000000000",
-        "7.0000000000000000000",
-        "10.000000000000000000",
         "3.0000000000000000000",
-        "10.000000000000000000"
+        "5.0000000000000000000",
+        "2.0000000000000000000",
+        "6.0000000000000000000"
       ]
     },
     "derive-triangle-formula": {
@@ -205,22 +205,53 @@
           "n": "1"
         },
         {
-          "n": "9"
+          "n": "7"
         },
         {
-          "n": "1"
+          "n": "5"
         },
         {
-          "n": "3"
+          "n": "4"
         }
       ],
       "values": [
         "45.000000000000000000",
         "6.0000000000000000000",
         "1.0000000000000000000",
-        "45.000000000000000000",
-        "1.0000000000000000000",
-        "6.0000000000000000000"
+        "28.000000000000000000",
+        "15.000000000000000000",
+        "10.000000000000000000"
+      ]
+    },
+    "explore-sigma-same#1": {
+      "source": "881a91229f0ffd04",
+      "points": [
+        {
+          "k": "1"
+        },
+        {
+          "k": "5"
+        },
+        {
+          "k": "2"
+        },
+        {
+          "k": "3"
+        },
+        {
+          "k": "4"
+        },
+        {
+          "k": "7"
+        }
+      ],
+      "values": [
+        "3.0000000000000000000",
+        "7.0000000000000000000",
+        "4.0000000000000000000",
+        "5.0000000000000000000",
+        "6.0000000000000000000",
+        "9.0000000000000000000"
       ]
     }
   },
@@ -282,6 +313,12 @@
           "message": null
         },
         {
+          "name": "test_no_total",
+          "description": "forever claims no total where there is none.",
+          "passed": true,
+          "message": null
+        },
+        {
           "name": "test_orderings",
           "description": "orderings is 120 at n = 5.",
           "passed": true,
@@ -309,7 +346,7 @@
           "name": "test_whole_number",
           "description": "triangle gives a whole number, an int, not a float.",
           "passed": false,
-          "message": "triangle(10) is 55.0, a float, but a count is a whole number, an int."
+          "message": "triangle(10) is 55.0: the right number, but a float, and a count is a whole number, an int."
         },
         {
           "name": "test_at_once",
@@ -321,7 +358,7 @@
           "name": "test_exact",
           "description": "triangle stays exact for a million million tokens: one more token adds that many comparisons.",
           "passed": false,
-          "message": "triangle(1000000000000) - triangle(999999999999) is 999989182464.0, not 1,000,000,000,000."
+          "message": "triangle(10 ** 12) - triangle(10 ** 12 - 1) is 999,989,182,464.0, not 1,000,000,000,000."
         }
       ],
       "error": null,

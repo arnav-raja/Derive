@@ -1,0 +1,19 @@
+Training scripts often work out the learning rate from the batch size, the number of examples a model learns from at each step. A common rule of thumb keeps the two in proportion: four times the batch, four times the learning rate. Here is the start of such a script. Later, a colleague adds line 4, which raises the batch size from 256 to 1,024, and changes nothing else.
+
+```python
+base_lr = 0.1
+batch_size = 256
+lr = base_lr * batch_size / 256
+batch_size = 1024
+print(lr)
+```
+
+<Exercise id="puzzle-learning-rate" />
+
+<Reveal for="puzzle-learning-rate">
+
+Python carries out a program exactly as it is written: one line at a time, from the top, each line once. It never guesses what a line was meant to do, and it never goes back to an earlier line by itself. That is the sense in which a program is a list of precise instructions.
+
+This lesson is about reading a program the way Python runs it: what each value is, what each name refers to, and the order in which Python works out an expression. With those three exact, you can say what a program does before you run it. On the way, it looks inside the numbers themselves, at what the computer really stores when you type `0.1`.
+
+</Reveal>

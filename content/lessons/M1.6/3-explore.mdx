@@ -6,7 +6,7 @@ Draw each comparison as a dot. Row $k$ holds the $k$ comparisons that token $k$ 
 
 <Staircase
   title="The staircase of comparisons"
-  description="Rows of dots, one row for each token. Row k has k dots, the comparisons that token k makes with itself and with every earlier token, so the rows form a staircase. Faint dots fill the rest of a square: comparisons with later tokens, which are never made. A slider sets the number of tokens, from 1 to 12, and a readout gives the count. A second staircase, turned round, can be added once the question below has been answered."
+  description="Rows of dots, one row for each token. Row k has k dots, the comparisons that token k makes with itself and with every earlier token, so the rows form a staircase. Faint dots fill the rest of a square: comparisons with later tokens, which are never made. A slider sets the number of tokens, from 1 to 12, and a readout gives the count. More can be added to the figure once the question below has been answered."
   max={12}
   initial={4}
   turnedAfter="explore-hundred-tokens"
@@ -16,7 +16,7 @@ Draw each comparison as a dot. Row $k$ holds the $k$ comparisons that token $k$ 
 
 <Reveal for="explore-hundred-tokens">
 
-Now add the second staircase on the figure. Turned round, it fits against the first, and the two together fill a rectangle one column wider than it is tall, whatever the number of tokens. For 100 tokens the rectangle has 100 rows of 101, which is 10,100 dots and squares, and each staircase holds half of them.
+Now add the second staircase on the figure. Turned round, it fits against the first, and the two together fill a rectangle one column wider than it is tall. For 100 tokens the rectangle has 100 rows of 101, which is 10,100 dots and squares, and each staircase holds half of them.
 
 A story, no doubt polished in the retelling, has the young Carl Friedrich Gauss finding this in moments, when his teacher set the class to add the numbers from 1 to 100 to keep them busy.
 
@@ -34,9 +34,9 @@ $$
 
 <Reveal for="explore-odd-squares">
 
-Every total is a square. A picture suggests why. A square of $k$ by $k$ dots is a square of $k - 1$ by $k - 1$ with an L-shaped border along two sides: $k$ dots along the bottom and $k - 1$ more up the side, $2k - 1$ in all, which is the $k$th odd number. So each odd number grows the square by one, and the first $n$ odd numbers build an $n$ by $n$ square.
+Every total is a square, and a picture shows why. Picture a square of $k$ by $k$ dots. It is a square of $k - 1$ by $k - 1$ with an L-shaped border along two sides: $k$ dots along the bottom and $k - 1$ more up the side, $2k - 1$ in all, which is the $k$th odd number. So each odd number grows the square's side by one, and the first $n$ odd numbers build an $n$ by $n$ square.
 
-Checking cases and drawing a picture is not yet a proof that the pattern never fails. Derive proves it.
+Checking cases is not a proof that the pattern never fails. The picture's argument is closer, since it works for every $k$; the Derive phase proves it again with the rules for $\Sigma$ alone.
 
 ## A short form for sums
 
@@ -66,7 +66,7 @@ Moving the counter's start, while changing the expression so that the same terms
 
 ## Rewards that count for less
 
-An agent that learns by trial and error, such as a program learning to play a game, gets a reward after each step. A reward that comes sooner counts for more, so a reward $k$ steps away is multiplied by a *discount* $r$, a number between 0 and 1, once for each step: by $r^k$. With $r = 0.9$, a reward of 1 at every step, for ever, is worth
+An agent that learns by trial and error, such as a program learning to play a game, gets a reward after each step. A reward that comes sooner counts for more. The next reward counts in full, and each one after it is multiplied by a *discount* $r$, a number between 0 and 1, once more for each step it waits, so the reward $k$ steps after the next is multiplied by $r^k$. With $r = 0.9$, a reward of 1 at every step, for ever, is worth
 
 $$
 1 + 0.9 + 0.9^2 + 0.9^3 + \dots
@@ -76,7 +76,7 @@ with no last term. Each term is 0.9 times the one before, so each is smaller tha
 
 <PartialSums
   title="Adding the discounted rewards"
-  description="A bar made of pieces laid end to end on a fixed scale from 0 to 20. The first piece is 1 long, and each later piece is r times as long as the one before, so the length of the bar is the sum of the first n terms. Sliders set the ratio r, from 0.05 to 0.95, and the number of terms n, from 1 to 100, and a readout gives the sum. A marker for where the sum is heading opens once the questions below have been answered."
+  description="A bar made of pieces laid end to end on a fixed scale from 0 to 20. The first piece is 1 long, and each later piece is r times as long as the one before, so the length of the bar is the sum of the first n terms. Sliders set the ratio r, from 0.05 to 0.95, and the number of terms n, from 1 to 100, and a readout gives the sum, cut off after four decimal places. A marker for where the sum is heading opens once the questions below have been answered."
   ratio={0.9}
   terms={5}
   maxTerms={100}
@@ -100,11 +100,11 @@ Each ratio closes in on a number of its own.
 
 <Reveal for="explore-discount-pattern">
 
-Now open the marker on the figure: for every ratio, the sum is heading for $\frac{1}{1 - r}$. The closer the ratio is to 1, the further the sum goes and the more terms it takes to get near, so a discount of 0.99 makes roughly the next hundred rewards count. Derive shows where $\frac{1}{1 - r}$ comes from.
+Now open the marker on the figure: for every ratio on the slider, the sums close in on $\frac{1}{1 - r}$. The closer the ratio is to 1, the further the sum goes and the more terms it takes to get near. With a discount of 0.99 the weights add up to 100, as much as a hundred rewards counted in full, so roughly the next hundred rewards are the ones that matter. The Derive phase shows where $\frac{1}{1 - r}$ comes from.
 
-## Products
+## Orders of tokens
 
-Sums have a partner for multiplication. How many different orders can a few tokens be put in?
+How many different orders can a few tokens be put in?
 
 <Exercise id="explore-orderings" />
 
@@ -112,7 +112,7 @@ Sums have a partner for multiplication. How many different orders can a few toke
 
 <Reveal for="explore-orderings">
 
-A product like $5 \times 4 \times 3 \times 2 \times 1$ has a short form too, with a capital Greek pi, $\Pi$, the Greek P, for "product":
+Sums have a partner for multiplication. A product like $5 \times 4 \times 3 \times 2 \times 1$ has a short form too, with a capital Greek pi, $\Pi$, the Greek P, for "product":
 
 $$
 \prod_{k=1}^{5} k = 1 \times 2 \times 3 \times 4 \times 5 = 120.
@@ -120,7 +120,7 @@ $$
 
 The product of the whole numbers from 1 to $n$ comes up so often that it has a sign of its own, $n!$, read "$n$ factorial", so $5! = 120$. In the same way, $n$ different things can be put in $n!$ different orders.
 
-Products of probabilities are everywhere in machine learning. A language model's score for a passage of $n$ tokens is the product of the probabilities it gave to the tokens that came, $p_1 \times p_2 \times \dots \times p_n = \prod_{k=1}^{n} p_k$. In M1.5, logarithms turn this product into a sum.
+Products of probabilities are everywhere in machine learning. A language model's score for a passage of $n$ tokens is the product of the probabilities it gave to the tokens that came, $p_1 \times p_2 \times \dots \times p_n = \prod_{k=1}^{n} p_k$. Logarithms, the subject of M1.5, turn this product into a sum.
 
 <Exercise id="explore-read-product" />
 
@@ -152,7 +152,7 @@ A sum whose terms go up, or down, by the same amount each time, such as $1 + 2 +
 
 <Definition term="Geometric series">
 
-A sum whose terms are each the same multiple of the one before, such as $1 + 0.9 + 0.9^2 + \dots$. The multiple is the *common ratio*. A geometric series with no last term and a ratio between 0 and 1 has a finite total, as the figure showed. Derive finds that total, and the other ratios for which there is one.
+A sum whose terms are each the same multiple of the one before, such as $1 + 0.9 + 0.9^2 + \dots$. The multiple is the *common ratio*. A geometric series with no last term and a ratio between 0 and 1 has a finite total, as the figure showed. The Derive phase finds that total, and the other ratios for which there is one.
 
 </Definition>
 

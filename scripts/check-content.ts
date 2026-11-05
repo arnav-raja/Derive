@@ -94,8 +94,10 @@ async function checkLesson(code: string, errors: string[], warnings: string[]) {
     const source = readPhaseSource(code, phase);
     if (source === null) continue;
     const file = `${code}/${PHASE_FILES[phase]}`;
-    if (/^\s*(import|export)\s/m.test(source)) errors.push(`${file} must not import or export anything.`);
-    for (const match of source.matchAll(/<([A-Z][A-Za-z0-9]*)/g)) {
+    // Fenced code is shown as written, so an `import` line in a Python example is not MDX.
+    const prose = source.replace(/^(`{3,}|~{3,})[^\n]*\n[\s\S]*?^\1[ \t]*$/gm, "");
+    if (/^\s*(import|export)\s/m.test(prose)) errors.push(`${file} must not import or export anything.`);
+    for (const match of prose.matchAll(/<([A-Z][A-Za-z0-9]*)/g)) {
       if (!ALLOWED.has(match[1]!)) errors.push(`${file} uses <${match[1]}>, which is not a Derive component.`);
     }
     for (const id of exerciseIdsInSource(source)) {
@@ -254,8 +256,14 @@ async function checkLesson(code: string, errors: string[], warnings: string[]) {
   for (const e of exercises.filter((x) => x.placement && (!x.review || x.review.variants.length < 2))) {
     errors.push(`${code}/${e.id} is a placement question but has fewer than two review variants.`);
   }
-  if (!/<MixedCheck\b/.test(readPhaseSource(code, "explain") ?? "")) {
+  const explainSource = readPhaseSource(code, "explain") ?? "";
+  if (!/<MixedCheck\b/.test(explainSource)) {
     errors.push(`${code}/${PHASE_FILES.explain} has no <MixedCheck />.`);
+  }
+  // The plan's Connect phase previews 1 to 3 later lessons.
+  const previews = explainSource.match(/<Foreshadow\b/g)?.length ?? 0;
+  if (previews < 1 || previews > 3) {
+    errors.push(`${code}/${PHASE_FILES.explain} previews ${previews} later lessons; the plan allows 1 to 3.`);
   }
 
   const recall = exercises.filter((e) => e.phase === "recall" && e.kind === "recall");

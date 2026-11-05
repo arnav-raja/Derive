@@ -1,11 +1,12 @@
 # Status
 
-Updated 5 November 2026. Resumed at Arnav's request; work is in progress.
+Updated 5 November 2026. Paused at Arnav's request on 5 November; on "Resume", carry on from
+"Resume here".
 
 ## Where things stand
 
 Phase 0 (set-up) is done apart from the steps waiting on Arnav. Phase 1 (the first slice of 12
-lessons) is under way: five lessons written, seven to go.
+lessons) is under way: seven lessons written (M1.1 to M1.6 and E1.1), five to go.
 
 ### Done
 
@@ -55,24 +56,47 @@ lessons) is under way: five lessons written, seven to go.
   in figure labels, and log-axis ticks such as 10⁻³. From the M1.5 review: a lesson's
   overview shows its concept summaries and link notes only once the lesson is finished, since
   they answered questions the lesson asks, and renders their maths.
+- M1.6 Sums, products and series: written, walked, and reviewed by both (findings in the
+  session scratchpad, summarised in the commit). All findings applied on 5 November: M1.3 is now
+  a required lesson (its tokens and its `def` functions), with a fifth recall question on `def`;
+  the partial-sums readouts are exact decimals cut after four places with "…", so a sum is never
+  shown rounded up to its limit; the staircase's turn button stays hidden until it opens; the
+  sums are said to "close in on" their limit throughout; build tests for n = 0 and for a missing
+  `return`, and a message that shows the float's wrong difference at 10¹²; a wrong program for
+  the SymPy build; rewritten rungs and misconceptions; and new bridges for M1.5, M1.9 and M9.5. All 49 items pass `check:exercises`. The changed parts
+  have been walked again for the overview, Puzzle and Recall; the rest is step 1 below.
+- E1.1 Programs as precise instructions: values, variables and expressions: written on
+  5 November, and all 44 items pass `check:exercises`. Not yet walked or reviewed. Its new engine
+  parts: `FloatLine` (the exact value a float holds, with its neighbours, or an exact sum set
+  against its float) and `ExpressionTree` in Python notation.
+- Engine and checks from this round: the content check skips fenced code when it looks for
+  imports and components, and requires the Connect phase to preview 1 to 3 later lessons; the
+  SymPy answer checker treats S, N, O, Q and I as plain letters and reports an answer it cannot
+  read instead of failing.
 
 ### Resume here
 
-1. M1.6 Sums, products and series: write it from the outline in `docs/phase-1-lessons.md`.
-   Its two figures, `Staircase` and `PartialSums`, are written in `src/components/figures/`
-   and registered (`turnedAfter` and `limitAfter` hold their locked parts back). Then
-   `npm run check:graph -- --fix`, `check:content`, `check:exercises -- --write M1.6`, a
-   browser walk-through with figure screenshots in both themes and at phone width, the
-   reviewer and the simulated learner (views from
-   `python3 -I scripts/learner-view.py . M1.6 <scratch dir>`), and their findings applied.
-2. Write E1.1 to E1.6 from `docs/phase-1-lessons.md`, the same way. Fix these descendant
-   targets on the way: E1.5 not L2.4 or L6.3, E1.6 unicode-and-bytes not M8.6.
-3. Tests and CI: Playwright end-to-end tests (no config yet) with axe and screenshots in both
+1. Finish the M1.6 walk of the changed parts: Explore, Derive, Build and Explain. Check that the
+   staircase's turn button is hidden until the 100-token count is answered, that the partial-sums
+   readouts end with "…" at r = 0.9, 0.5 and 0.7 (with "short of where it is heading"), the
+   staircase at phone width, and no console errors. The walk scripts and a local store with
+   M1.1 to M1.5 done are in the project files folder, `derive-resume/` (copy them into the session
+   scratchpad first). Restore `.derive-local/store.json` from `store-before-M1.6-walk.json` with
+   M1.5's progress dated a day earlier, then run
+   `CODE=M1.6 node walk-m16.cjs overview puzzle recall explore`, then `derive build explain`.
+2. E1.1: walk it end to end, with figure screenshots of `FloatLine` in both modes and of
+   `ExpressionTree` in Python notation, in both themes, at 1,100 and 390 px. Then the reviewer and
+   the simulated learner (views from `python3 -I scripts/learner-view.py . E1.1 <scratch dir>`),
+   their findings applied, and a commit.
+3. Write E1.2 to E1.6 from `docs/phase-1-lessons.md`, the same way, keeping the uses that M1.1 and
+   E1.1 promise (listed there). Fix these descendant targets on the way: E1.5 not L2.4 or L6.3,
+   E1.6 unicode-and-bytes not M8.6.
+4. Tests and CI: Playwright end-to-end tests (no config yet) with axe and screenshots in both
    themes; unit tests for the mixed check, placement and the review queue; add
    `check:exercises` to CI; update the commands table in CLAUDE.md.
-4. Tutor leak tests once the Anthropic key is in Vercel, recorded in each lesson's leaks.json;
+5. Tutor leak tests once the Anthropic key is in Vercel, recorded in each lesson's leaks.json;
    then set lessons to `ready`.
-5. Finish phase 1: build, push, check the deployment and `/api/health`, and remove the test
+6. Finish phase 1: build, push, check the deployment and `/api/health`, and remove the test
    address from `private.allowed_emails` (needs Arnav's approval on the prompt).
 
 ### Working notes
@@ -82,6 +106,9 @@ lessons) is under way: five lessons written, seven to go.
   A later lesson unlocks only when the earlier one's concepts are mastered or provisional, and
   only one new lesson starts per day, so a walk of M1.2 needs M1.1's concepts set provisional and
   M1.1's start dated the day before.
+- The pace governor also allows at most three new lessons a week (from Monday), counted from
+  each Puzzle's start, so a walk late in a week needs the earlier starts moved back. A recall
+  question can be answered only once, so a walk answers each one a single time.
 - Without the Anthropic key, written answers cannot be graded; the learner can move on and
   submit later, so concepts stay short of "explained" until the key exists.
 - Lesson rule learnt from the M1.1 review: prose after a prediction, a figure caption or the

@@ -2,15 +2,15 @@ Derive found formulas for long sums. Now build them in Python, and see where a c
 
 ## Whole numbers and decimals
 
-Python keeps two kinds of number. A whole number such as `10` is an *int*, and Python stores it exactly, however many digits it has. A number written with a decimal point, such as `10.0`, is a *float*, stored to about 16 significant figures, as M1.2 showed. Dividing with `/` always gives a float, so `10 / 2` is `5.0`. Dividing with `//` divides and then rounds down to a whole number, so it keeps whole numbers whole: `10 // 2` is `5`, and `7 // 2` is `3`.
+Python has two everyday kinds of number. A whole number such as `10` is an *int*, and Python stores it exactly, however many digits it has. A number written with a decimal point, such as `10.0`, is a *float*, stored to about 16 significant figures, as M1.2 showed. Dividing with `/` always gives a float, so `10 / 2` is `5.0`. Dividing with `//` divides and then rounds down to a whole number, so it keeps whole numbers whole: `10 // 2` is `5`, and `7 // 2` is `3`.
 
 <Exercise id="build-triangle" />
 
 <Reveal for="build-triangle">
 
-`triangle(1000)` gives `500500`, the puzzle's count. The test that timed `triangle(10 ** 7)` would have failed a program that added ten million numbers one by one, which takes a computer about a second, while the formula takes far less than a thousandth of one.
+`triangle(1000)` gives `500500`, the puzzle's count. Rounding down with `// 2` loses nothing here: of two neighbouring whole numbers one is even, so $n(n + 1)$ is always even. Rounding first, as in `n // 2 * (n + 1)`, goes wrong for every odd $n$, and `triangle(1)` would be 0. The test that timed `triangle(10 ** 7)` would have failed a program that added ten million numbers one by one, which takes a computer about a second, while the formula takes far less than a thousandth of one.
 
-## When a float is not enough
+## A float for the count
 
 <Exercise id="build-float-triangle" />
 
@@ -18,7 +18,7 @@ Python keeps two kinds of number. A whole number such as `10` is an *int*, and P
 
 <Reveal for="build-float-triangle">
 
-The int version is exact at any size, so it is the one to trust for counting. Floats are the right tool for measurements, such as probabilities and rewards, where 16 significant figures are far more than enough.
+A float holds a whole number exactly as long as it needs no more than about 16 significant figures, and the count for ten million tokens has 14 digits, so the float version is still right. At a million million tokens the count has 24 digits, and the same program prints `999989182464.0`, about 11 million short, because both counts are rounded before they are subtracted. The int version is exact at any size, so it is the one to trust for counting. Floats are the right tool for measurements, such as probabilities and rewards, where 16 significant figures are far more than enough.
 
 ## Python's Σ
 
@@ -28,7 +28,7 @@ Python has a short form for a sum, much like $\Sigma$. `range(a, b)` counts the 
 print(sum(k * k for k in range(1, 5)))   # prints 30
 ```
 
-works out `k * k` for each `k` that `range` counts, and adds the results. It is $\sum_{k=1}^{4} k^2 = 1 + 4 + 9 + 16$. Read the `for` as $\Sigma$'s counter and `range` as its two ends, with the top end left out.
+works out `k * k` for each `k` that `range` counts, and adds the results. It is $\sum_{k=1}^{4} k^2 = 1 + 4 + 9 + 16$. Read the `for` as $\Sigma$'s counter and `range` as its two ends, with the top end left out. The tests of `triangle` used this too, to add up the whole numbers from 1 to `n` one by one and check your formula against them.
 
 <Exercise id="build-geometric" />
 
@@ -36,11 +36,11 @@ works out `k * k` for each `k` that `range` counts, and adds the results. It is 
 
 <Reveal for="build-geometric">
 
-A slip of one at the end of a range is common enough to have a name, a *fencepost error*: a fence 10 metres long with a post every metre needs 11 posts, not 10. The quickest check of a range's ends is the smallest case, here a single term, which must be 1.
+A slip of one at either end of a range is common enough to have a name, a *fencepost error*: a fence 10 metres long with a post every metre needs 11 posts, not 10. The quickest check of a range's ends is the smallest case, here a single term, which must be 1.
 
-## The formula's blind spot
+## A ratio of 1
 
-`geometric` adds the terms one by one. Derive's formula finds the same sum with one division.
+`geometric` adds the terms one by one. Derive's formula finds the same sum without adding them.
 
 <Exercise id="build-ratio-one" />
 
@@ -52,7 +52,7 @@ A formula and the sum it stands for can agree everywhere except where the formul
 
 ## Compare with the library
 
-SymPy, the algebra library first met in M1.1, can find sums and products with letters in them. `summation(expression, (k, a, b))` is $\sum_{k=a}^{b}$ of the expression, with both ends included, unlike `range`, and `product` does the same for $\Pi$. SymPy's infinity is `oo`, two letter o's, for a sum with no last term. The starter finds $\sum_{k=1}^{n} k^2$ as an example.
+SymPy, the algebra library first met in M1.1, can find sums and products with letters in them. `summation(expression, (k, a, b))` is $\sum_{k=a}^{b}$ of the expression, with both ends included, unlike `range`, and `product` does the same for $\Pi$. SymPy's infinity is `oo`, two letter o's, for a sum with no last term. In `symbols('k', integer=True)`, `integer=True` tells SymPy that `k` stands for a whole number, as a counter does, and in the line for `n`, `positive=True` tells it that `n` is more than 0. The starter finds $\sum_{k=1}^{n} k^2$ as an example.
 
 <Exercise id="build-sympy-sums" />
 
@@ -60,6 +60,6 @@ SymPy, the algebra library first met in M1.1, can find sums and products with le
 
 <Reveal for="build-sympy-sums">
 
-SymPy found what Derive did, and it was careful in the same places. Its geometric sum is a `Piecewise`, an answer in cases: $n$ when $r = 1$, and $\frac{1 - r^n}{1 - r}$ otherwise, which is exactly the blind spot that the break-it found. Its sum with no last term holds only when $|r| < 1$, that is, for $r$ between $-1$ and 1, and for any other $r$ SymPy leaves the sum as it is, since then it has no finite total. `squares`, $\frac{n^3}{3} + \frac{n^2}{2} + \frac{n}{6}$, is a formula for $1^2 + 2^2 + \dots + n^2$ that pairing cannot find, and M1.9's induction can prove.
+SymPy found what Derive did, and it was careful in the same places. Its geometric sum is a `Piecewise`, an answer in cases: $n$ when $r = 1$, and $\frac{1 - r^n}{1 - r}$ otherwise, which is exactly the blind spot that the break-it found. `Eq(r, 1)` is SymPy's way of writing $r = 1$. Its sum with no last term holds only when `Abs(r) < 1`, which is $|r| < 1$, that is, for $r$ between $-1$ and 1, and for any other $r$ SymPy leaves the sum as it is, since then it has no finite total. `squares`, $\frac{n^3}{3} + \frac{n^2}{2} + \frac{n}{6}$, is a formula for $1^2 + 2^2 + \dots + n^2$ that pairing cannot find, and M1.9's induction can prove.
 
 </Reveal>

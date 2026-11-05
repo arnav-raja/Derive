@@ -49,7 +49,7 @@ With these, prove what Explore found with a picture: the first $n$ odd numbers a
 
 <Reveal for="derive-odd-squares">
 
-A picture, a formula and the rules for $\Sigma$ all give the same answer. A third way adds up differences. Since $k^2 - (k - 1)^2 = 2k - 1$, each odd number is the gap between two neighbouring squares, and adding the gaps climbs from $0^2$ all the way to $n^2$:
+A picture, a formula and the rules for $\Sigma$ all give the same answer. Another way adds up differences. Since $k^2 - (k - 1)^2 = 2k - 1$, each odd number is the gap between two neighbouring squares, and adding the gaps climbs from $0^2$ all the way to $n^2$:
 
 <Steps>
   <Step why="each odd number is the gap between neighbouring squares">$\sum_{k=1}^{n} (2k - 1) = \sum_{k=1}^{n} \big(k^2 - (k - 1)^2\big)$</Step>
@@ -95,17 +95,17 @@ $$
 
 At $r = 1$ the formula divides by 0 and says nothing. The sum is still there: every term is 1, and $n$ terms add to $n$.
 
-Now let $n$ grow. When $r$ is between 0 and 1, each step multiplies $r^n$ by $r$ again, and it gets as close to 0 as you like, a fact this lesson takes on trust. So $\frac{1 - r^n}{1 - r}$ closes in on $\frac{1}{1 - r}$, the pattern Explore found, and the sum with no last term is
+Now let $n$ grow. When $r$ is between 0 and 1, each step multiplies $r^n$ by $r$ again, and it gets as close to 0 as you like. For $r = 0.9$ you can see how fast: $0.9^{22} \approx 0.098$ is already less than a tenth, so every 22 more steps make $0.9^n$ at least ten times smaller, and $0.9^{132}$ is less than one millionth. Every ratio between 0 and 1 has some power below a tenth too. Write $\frac{1}{r} = 1 + h$, with $h$ positive. Multiplying out $(1 + h)^n$ gives 1, then $h$ once from each of the $n$ brackets, then other terms that are all positive, so $(1 + h)^n$ is at least $1 + nh$, which passes 10 once $n$ is more than $\frac{9}{h}$. Then $r^n = \frac{1}{(1 + h)^n}$ is below a tenth, and the argument for 0.9 works again. So $\frac{1 - r^n}{1 - r}$ closes in on $\frac{1}{1 - r}$, the pattern Explore found, and the sum with no last term is
 
 $$
 1 + r + r^2 + \dots = \frac{1}{1 - r}.
 $$
 
-The same holds for a ratio between $-1$ and 0, whose terms take turns being positive and negative: $1 - \frac{1}{2} + \frac{1}{4} - \frac{1}{8} + \dots = \frac{1}{1 + 1/2} = \frac{2}{3}$. For a ratio of 1 or more, or of $-1$ or less, the terms never shrink, and the sum never settles.
+The same holds for a ratio between $-1$ and 0, whose terms take turns being positive and negative: $1 - \frac{1}{2} + \frac{1}{4} - \frac{1}{8} + \dots = \frac{1}{1 + 1/2} = \frac{2}{3}$. For a ratio of 1 or more, or of $-1$ or less, the terms never shrink, and the sums close in on no number at all.
 
 ## A running average that starts at 0
 
-Training a model means adjusting its settings again and again, each time in the direction that a number called the *gradient* says will reduce its error. Optimisers smooth these out with a running average, so that one odd gradient does not throw them off course. At each step $t$, the average $m_t$ keeps a fraction $\beta$ of the old average and takes in $1 - \beta$ of the new gradient $g_t$:
+Training a model means adjusting its settings again and again, each time in the direction that the *gradient*, one number for each setting, says will reduce its error. Optimisers smooth the gradients with a running average, so that one odd gradient does not throw them off course. At each step $t$, the average $m_t$ keeps a fraction $\beta$ (beta, the Greek b) of the old average and takes in $1 - \beta$ of the new gradient $g_t$:
 
 $$
 m_t = \beta\, m_{t-1} + (1 - \beta)\, g_t, \qquad m_0 = 0.
@@ -137,6 +137,6 @@ is $1 + \frac{1}{k} = \frac{k + 1}{k}$.
 
 <Reveal for="derive-telescoping-product">
 
-The factors get ever closer to 1, yet the product grows without limit, like $n$ itself. Compare the geometric series, whose terms shrink towards 0 and whose sum settles. Factors close to 1 can still multiply up to anything, so a long product is not settled by how close its factors are to 1.
+The factors get ever closer to 1, yet the product grows without limit, like $n$ itself. Compare the geometric series, whose terms shrink towards 0 and whose sums close in on a number. Factors close to 1 can still multiply up to anything, so how close its factors are to 1 does not decide whether a long product stays finite.
 
 </Reveal>

@@ -45,24 +45,29 @@ concepts:
         $n! = \prod_{k=1}^{n} k$ counts the orders of $n$ different things. A product can telescope,
         cancelling down to its two ends.
       usedBy: [M1.10, M7.2]
-  used: [M1.2/field-axioms, M1.2/solving-equations, M1.2/exponent-rules]
+  used: [M1.2/field-axioms, M1.2/solving-equations, M1.2/exponent-rules, M1.3/function-as-mapping]
 links:
   requires:
     - lesson: M1.2
       bridge: >-
-        Every move in this lesson is one of M1.2's rules: reordering and regrouping a long sum,
+        The main moves in this lesson are M1.2's rules: reordering and regrouping a long sum,
         taking a common factor out of it, and solving an equation for the unknown total.
+    - lesson: M1.3
+      bridge: >-
+        M1.3's tokens are the puzzle's pieces of text, and its Python functions, written with def,
+        are how Build turns each formula into code.
   contrastsWith:
     - lesson: M1.5
       bridge: >-
-        M1.5 turned the product of a passage's probabilities into a sum of logarithms. This lesson
-        writes each with a single symbol, Π for the product and Σ for the sum, and finds the totals
-        of long sums without adding term by term.
+        M1.5 set growth by the same factor against growth by the same amount. Added up, the two
+        behave very differently: an arithmetic series grows with the square of its length, while a
+        geometric series with a ratio below 1 closes in on a finite total.
   foreshadows:
     - lesson: M1.9
       bridge: >-
-        Pairing and subtracting found this lesson's formulas. M1.9's induction proves formulas like
-        them for every n at once, one step at a time.
+        Pairing and subtracting proved this lesson's formulas, with tricks that fit one kind of sum.
+        M1.9's induction proves formulas where no such trick is to hand, such as the sum of the first
+        n squares, one step at a time.
     - lesson: M3.8
       bridge: >-
         An integral is the limit of sums of ever more, ever thinner strips, each sum written with Σ.
@@ -76,8 +81,8 @@ links:
         series whose total stays finite when γ is less than 1.
     - lesson: M9.5
       bridge: >-
-        Momentum keeps a running average of past gradients whose weights shrink geometrically, the
-        average whose slow start this lesson measures.
+        Momentum keeps a running average of past gradients whose weights shrink geometrically, so
+        how far back it remembers is a geometric series, about 1/(1 − β) steps.
     - lesson: E1.2
       bridge: >-
         A Σ is a loop that adds. E1.2 writes such loops in Python, and this lesson's formulas are a

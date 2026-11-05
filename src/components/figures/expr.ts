@@ -6,13 +6,19 @@
  * dimensions honestly.
  */
 
+/** The two-input operations. `//` and `%` are Python's floor division and remainder. */
+export type BinOp = "+" | "-" | "*" | "/" | "^" | "//" | "%";
+
 export type ExprNode =
   | { kind: "num"; value: number; text: string }
   | { kind: "var"; name: string }
   | { kind: "const"; name: "pi" | "e"; value: number }
   | { kind: "neg"; arg: ExprNode }
-  | { kind: "bin"; op: "+" | "-" | "*" | "/" | "^"; left: ExprNode; right: ExprNode }
+  | { kind: "bin"; op: BinOp; left: ExprNode; right: ExprNode }
   | { kind: "call"; fn: FnName; args: ExprNode[] };
+
+/** How an expression is written out: as on paper, or as Python writes it. */
+export type Notation = "maths" | "python";
 
 const FUNCTIONS = {
   sin: [1, Math.sin],
@@ -69,7 +75,12 @@ function tokenize(src: string): Token[] {
       i += 2;
       continue;
     }
-    if ("+-*/^".includes(c)) tokens.push({ type: "op", text: c });
+    if (src.startsWith("//", i)) {
+      tokens.push({ type: "op", text: "//" });
+      i += 2;
+      continue;
+    }
+    if ("+-*/^%".includes(c)) tokens.push({ type: "op", text: c });
     else if (c === "×" || c === "·") tokens.push({ type: "op", text: "*" });
     else if (c === "−") tokens.push({ type: "op", text: "-" });
     else if (c === "(" || c === ")" || c === ",") tokens.push({ type: c, text: c });
@@ -96,9 +107,9 @@ export function parseExpr(src: string): ExprNode {
   }
   function term(): ExprNode {
     let left = unary();
-    for (let t = peek(); t?.type === "op" && (t.text === "*" || t.text === "/"); t = peek()) {
+    for (let t = peek(); t?.type === "op" && ["*", "/", "//", "%"].includes(t.text); t = peek()) {
       take();
-      left = { kind: "bin", op: t.text as "*" | "/", left, right: unary() };
+      left = { kind: "bin", op: t.text as "*" | "/" | "//" | "%", left, right: unary() };
     }
     return left;
   }
@@ -163,11 +174,14 @@ export function parseExpr(src: string): ExprNode {
   return node;
 }
 
-function applyOp(op: "+" | "-" | "*" | "/" | "^", a: number, b: number): number {
+function applyOp(op: BinOp, a: number, b: number): number {
   if (op === "+") return a + b;
   if (op === "-") return a - b;
   if (op === "*") return a * b;
   if (op === "/") return a / b;
+  // As in Python: the quotient rounded down, and a remainder with the sign of the divisor.
+  if (op === "//") return Math.floor(a / b);
+  if (op === "%") return a - b * Math.floor(a / b);
   return a ** b;
 }
 
@@ -241,7 +255,7 @@ export function variablesOf(node: ExprNode, out = new Set<string>()): Set<string
   return out;
 }
 
-const PRECEDENCE = { "+": 1, "-": 1, "*": 2, "/": 2, "^": 3 } as const;
+const PRECEDENCE = { "+": 1, "-": 1, "*": 2, "/": 2, "//": 2, "%": 2, "^": 3 } as const;
 
 function prec(node: ExprNode): number {
   if (node.kind === "bin") return PRECEDENCE[node.op];
@@ -249,23 +263,28 @@ function prec(node: ExprNode): number {
   return 4;
 }
 
-const SHOW_OP = { "+": "+", "-": "−", "*": "×", "/": "÷", "^": "^" } as const;
+const SHOW_OP: Record<Notation, Record<BinOp, string>> = {
+  maths: { "+": "+", "-": "−", "*": "×", "/": "÷", "//": "//", "%": "%", "^": "^" },
+  python: { "+": "+", "-": "-", "*": "*", "/": "/", "//": "//", "%": "%", "^": "**" },
+};
 
 /** The expression written out, with the fewest brackets that keep its meaning. */
-export function exprText(node: ExprNode): string {
+export function exprText(node: ExprNode, notation: Notation = "maths"): string {
+  const text = (n: ExprNode) => exprText(n, notation);
+  const minus = notation === "python" ? "-" : "−";
   switch (node.kind) {
     case "num":
       return node.text;
     case "var":
       return node.name;
     case "const":
-      return node.name === "pi" ? "π" : "e";
+      return node.name === "pi" ? (notation === "python" ? "math.pi" : "π") : notation === "python" ? "math.e" : "e";
     case "neg": {
-      const inner = exprText(node.arg);
-      return prec(node.arg) < 3 ? `−(${inner})` : `−${inner}`;
+      const inner = text(node.arg);
+      return prec(node.arg) < 3 ? `${minus}(${inner})` : `${minus}${inner}`;
     }
     case "call":
-      return `${node.fn}(${node.args.map(exprText).join(", ")})`;
+      return `${node.fn}(${node.args.map(text).join(", ")})`;
     case "bin": {
       const p = PRECEDENCE[node.op];
       // The text must show the tree exactly, so brackets stay wherever they
@@ -274,9 +293,9 @@ export function exprText(node: ExprNode): string {
       // where the value would be the same without.
       const needLeft = prec(node.left) < p || (node.op === "^" && prec(node.left) === p);
       const needRight = prec(node.right) < p || (prec(node.right) === p && node.op !== "^");
-      const l = needLeft ? `(${exprText(node.left)})` : exprText(node.left);
-      const r = needRight ? `(${exprText(node.right)})` : exprText(node.right);
-      return node.op === "^" ? `${l}^${r}` : `${l} ${SHOW_OP[node.op]} ${r}`;
+      const l = needLeft ? `(${text(node.left)})` : text(node.left);
+      const r = needRight ? `(${text(node.right)})` : text(node.right);
+      return node.op === "^" && notation === "maths" ? `${l}^${r}` : `${l} ${SHOW_OP[notation][node.op]} ${r}`;
     }
   }
 }
@@ -390,8 +409,14 @@ export function unitOf(node: ExprNode, units: Record<string, Unit>, scope: Recor
                 message: `This ${n.op === "+" ? "adds" : "subtracts"} ${kindText(b.unit)} ${n.op === "+" ? "to" : "from"} ${kindText(a.unit)}, which cannot be done.`,
               };
         }
+        // A remainder is what is left of the first amount, so both must be the same kind of thing.
+        if (n.op === "%") {
+          return sameUnit(a.unit, b.unit)
+            ? { ok: true, unit: a.unit }
+            : { ok: false, message: `This takes the remainder of ${kindText(a.unit)} after dividing by ${kindText(b.unit)}, which cannot be done.` };
+        }
         if (n.op === "*") return { ok: true, unit: combine(a.unit, b.unit, 1) };
-        if (n.op === "/") return { ok: true, unit: combine(a.unit, b.unit, -1) };
+        if (n.op === "/" || n.op === "//") return { ok: true, unit: combine(a.unit, b.unit, -1) };
         // A power: the exponent must be a pure number, and a unit can only be
         // raised to a known number.
         if (Object.keys(b.unit).length) return { ok: false, message: `An exponent must be a pure number, not ${unitText(b.unit)}.` };

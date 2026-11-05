@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
 import { FigureFrame, FigureLabel, RangeControl, useWidth } from "./shell";
+import { limitText, shortText, sumText } from "./sums";
 
 /*
  * The terms 1, r, r^2, ... laid end to end on a line, so the bar's length is
@@ -28,16 +29,6 @@ function termsText(r: number, n: number) {
   if (n <= 3) return first.join(" + ");
   if (n === 4) return `${first.join(" + ")} + ${rs}^{3}`;
   return `${first.join(" + ")} + … + ${rs}^{${n - 1}}`;
-}
-
-function partialSum(r: number, n: number) {
-  let s = 0;
-  let term = 1;
-  for (let k = 0; k < n; k++) {
-    s += term;
-    term *= r;
-  }
-  return s;
 }
 
 export function PartialSums({
@@ -141,7 +132,7 @@ export function PartialSums({
               strokeLinejoin="round"
               className="tabular fill-ink stroke-surface text-[12px] font-semibold"
             >
-              sum {show(total)}
+              sum {sumText(r, n)}
             </text>
             {showLimit ? (
               <g>
@@ -163,7 +154,7 @@ export function PartialSums({
                   strokeLinejoin="round"
                   className="tabular fill-fig-gradient stroke-surface text-[12px] font-semibold"
                 >
-                  heading for {show(limit)}
+                  heading for {limitText(r)}
                 </text>
               </g>
             ) : null}
@@ -178,10 +169,14 @@ export function PartialSums({
             <span className="tabular">
               <FigureLabel text={termsText(r, n)} />
             </span>{" "}
-            = <span className="tabular font-semibold">{show(total)}</span>
+            = <span className="tabular font-semibold">{sumText(r, n)}</span>
             {showLimit ? (
               <>
-                , which is <span className="tabular">{show(limit - total)}</span> short of {show(limit)}.
+                , which is{" "}
+                <span className="tabular">
+                  <FigureLabel text={shortText(r, n)} />
+                </span>{" "}
+                short of where it is heading.
               </>
             ) : (
               "."
@@ -204,9 +199,9 @@ export function PartialSums({
         </>
       }
       table={{
-        caption: `The sum of the first n terms, for r = ${show(r)}.`,
+        caption: `The sum of the first n terms, for r = ${show(r)}, cut off after four decimal places, with … where more digits follow.`,
         columns: ["Terms, n", "Sum"],
-        rows: SUMS_AT.filter((m) => m <= maxTerms).map((m) => [m, show(partialSum(r, m))]),
+        rows: SUMS_AT.filter((m) => m <= maxTerms).map((m) => [m, sumText(r, m)]),
       }}
     />
   );

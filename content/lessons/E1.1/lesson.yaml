@@ -1,0 +1,84 @@
+code: E1.1
+title: "Programs as precise instructions: values, variables and expressions"
+course: E1
+status: review
+summary: >-
+  A training script works out its learning rate from the batch size, and a later line changes the
+  batch size. What does it print? Values and their types, names that refer to values, the exact
+  order in which Python works out an expression, and what a float really holds when you type 0.1.
+sittings: 2
+minutes:
+  puzzle: 10
+  recall: 10
+  explore: 45
+  derive: 35
+  build: 55
+  explain: 25
+concepts:
+  taught:
+    - id: E1.1/values-and-types
+      name: Values and types
+      summary: >-
+        Every value has a type, such as a whole number (int), a number with a point (float), text
+        (str) or a truth value (bool). The type decides what an operation means, so + adds numbers
+        but joins text, and a change of type is always written out, as in int("42").
+      usedBy: [E1.2, E1.6, M10.1]
+    - id: E1.1/variables-as-names
+      name: Variables as names
+      summary: >-
+        An assignment works out its right side with the values that names refer to at that
+        moment, then makes the name on the left refer to the result. A name refers to a value,
+        never to the formula that made it, so a program can be run on paper, line by line.
+      usedBy: [E1.2, E1.3, E1.4]
+    - id: E1.1/evaluation-order
+      name: How Python works out an expression
+      summary: >-
+        Python reads every expression as one tree, fixed by its rules of precedence: powers first,
+        grouped from the right, then *, /, // and %, then + and -, each grouped from the left. It
+        works the tree out from the leaves, and runs the lines of a program one at a time, from the
+        top.
+      usedBy: [E1.2, E1.8]
+    - id: E1.1/floats-are-approximate
+      name: Floats are approximate
+      summary: >-
+        A float holds the nearest number it can make as a whole number times a power of two, good
+        to about 16 significant figures. So 0.1 is stored slightly wrong, floats should be compared
+        within a tolerance, and big floats are spaced far apart. An int is exact at any size.
+      usedBy: [M10.1, M10.2]
+  used: [M1.1/powers-of-ten, M1.2/expression-trees, M1.2/field-axioms]
+links:
+  requires:
+    - lesson: M1.2
+      bridge: >-
+        M1.2 drew every expression as a tree and worked it out from the leaves up. Python does the
+        same, with a few rules of its own for powers and division, and it will show you the tree it
+        built.
+  applies:
+    - lesson: M1.1
+      bridge: >-
+        M1.1 wrote huge and tiny quantities as powers of ten. Python writes 3.15 × 10²³ as 3.15e23,
+        always a float, and this lesson finds how far apart such big floats are.
+  contrastsWith:
+    - lesson: M1.2
+      bridge: >-
+        In M1.2, x = x + 1 was an equation with no solution. In Python the same line is an
+        instruction: work out x + 1 with the value x refers to now, then make x refer to the result.
+  foreshadows:
+    - lesson: E1.2
+      bridge: >-
+        A loop runs the same lines again and again, so a line such as total = total + k changes
+        total on every pass. Reading it needs exactly this lesson's rule: the right side first, with
+        the values as they are now.
+    - lesson: E1.6
+      bridge: >-
+        Text is a value with a type of its own, str. E1.6 looks inside it, at the characters, the
+        bytes that store them and the files full of text that programs read.
+    - lesson: M10.1
+      bridge: >-
+        M10.1 opens up a float: its sign, its power of two and its 52 binary digits after the
+        point, and the smaller formats, such as bfloat16, that make training fast.
+    - lesson: M10.2
+      bridge: >-
+        M10.2 measures the error that every float operation can add, and finds the calculations,
+        such as subtracting two nearly equal numbers, that make it large.
+skills: []

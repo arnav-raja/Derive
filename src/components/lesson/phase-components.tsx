@@ -4,7 +4,7 @@ import type { MDXComponents } from "mdx/types";
 import type { ComponentProps, ReactNode } from "react";
 
 import { ExerciseCard } from "@/components/exercise/exercise-card";
-import { ExpressionTree, FunctionPlot, MappingDiagram, PartialSums, ProgramTrace, ScaleLine, Staircase } from "@/components/figures";
+import { ExpressionTree, FloatLine, FunctionPlot, MappingDiagram, PartialSums, ProgramTrace, ScaleLine, Staircase } from "@/components/figures";
 import { LockIcon } from "@/components/ui/icons";
 import { loadLesson, type LoadedLesson } from "@/lib/content/lesson";
 import { exerciseView, variantView } from "@/lib/content/views";
@@ -100,7 +100,7 @@ export function phaseComponents(ctx: PhaseContext): MDXComponents {
       <Staircase
         {...props}
         turnedLocked={turnedAfter ? !states.get(turnedAfter)?.done : false}
-        lockedNote={turnedAfter ? opensNote(turnedAfter, "The second staircase") : undefined}
+        lockedNote={turnedAfter ? opensNote(turnedAfter, "More of the figure") : undefined}
       />
     );
   }
@@ -184,5 +184,6 @@ export function phaseComponents(ctx: PhaseContext): MDXComponents {
     ProgramTrace,
     Staircase: StaircaseSlot,
     PartialSums: PartialSumsSlot,
+    FloatLine,
   };
 }

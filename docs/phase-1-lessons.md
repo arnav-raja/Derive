@@ -18,6 +18,19 @@ So M1.2, M1.5 and E1.1 list `M1.1/powers-of-ten` in `used`, M1.4 lists
 `M1.1/units-as-algebra`, and E1.4 lists `M1.1/fermi-estimation`. E1.1 and E1.4 must link to
 M1.1 (rule 6).
 
+## Uses already promised by E1.1
+
+| Concept | Used by |
+| --- | --- |
+| E1.1/values-and-types | E1.2, E1.6, M10.1 |
+| E1.1/variables-as-names | E1.2, E1.3, E1.4 |
+| E1.1/evaluation-order | E1.2, E1.8 |
+| E1.1/floats-are-approximate | M10.1, M10.2 |
+
+So E1.2 lists `E1.1/values-and-types`, `E1.1/variables-as-names` and `E1.1/evaluation-order`
+in `used`, E1.3 and E1.4 list `E1.1/variables-as-names`, and E1.6 lists
+`E1.1/values-and-types`.
+
 ## Draft concepts for the remaining lessons
 
 | Lesson | Concepts (usedBy) |
@@ -37,34 +50,9 @@ M1.1 (rule 6).
 Targets marked "not" failed the descendant check and must be replaced when that lesson is
 written; check candidates against the graph before writing `usedBy`.
 
-## M1.6 outline
-
-Puzzle: a language model compares each token with itself and every earlier token; how many
-comparisons for 1,000 tokens (choice: about 500,000; the explanation says only "a little over
-half of the 1,000 by 1,000 square"). Recall (each with a callback): factoring out
-5 × 8 + 5 × 2, regrouping a sum exactly, r × r⁶, and S − 0.9S = 2.
-
-Explore: the `Staircase` (its turned copy waits for the 100-token count, 5,050, then the
-100 by 101 rectangle and Gauss); odd numbers adding to squares (2,500); Σ read and rewritten
-with a shifted counter; an agent's discounted rewards in `PartialSums` (the marker waits for
-the pattern 1/(1 − r)); orderings of 5 tokens (120), then n! and Π, and a passage's score as
-Πp_k; then the definitions of Σ, Π, arithmetic and geometric series.
-
-Derive: S = n(n + 1)/2 (then 500,500 and the n²/2 cost); the arithmetic series (placement);
-the odd numbers proved to sum to n² as a proof with one unused rule, then telescoping as a
-second angle; S − rS = 1 − rⁿ and the geometric sum (placement); an optimiser's running average
-m_t = βm_{t−1} + (1 − β)g started at 0 gives (1 − βᵗ)g, Adam's bias correction; a telescoping
-product Π(1 + 1/k) = n + 1.
-
-Build: `triangle(n)` with `//` and a timing test; a break-it where `/` loses whole-number
-exactness at 10¹²; a fencepost debug of a geometric sum written with `range`; a break-it at
-r = 1 (ZeroDivisionError); SymPy's `summation` and `product`, including a sum with no last term.
-Explain: why the count is 500,500 and how the discounted rewards settle, covering all four
-concepts.
-
 ## Written so far
 
-M1.1 to M1.5 are written; their files in `content/lessons/` are now the source, and the
-outlines that were here have been removed. M1.4 and M1.5 carry both sides of the contrast
+M1.1 to M1.6 and E1.1 are written; their files in `content/lessons/` are now the source, and
+the outlines that were here have been removed. E1.1 still needs its walk and its reviews. M1.4 and M1.5 carry both sides of the contrast
 between linear change (the same amount each step) and exponential change (the same factor
 each step).

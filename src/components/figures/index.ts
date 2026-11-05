@@ -1,4 +1,5 @@
 export { ExpressionTree } from "./expression-tree";
+export { FloatLine } from "./float-line";
 export { FunctionPlot } from "./function-plot";
 export { MappingDiagram } from "./mapping-diagram";
 export { PartialSums } from "./partial-sums";

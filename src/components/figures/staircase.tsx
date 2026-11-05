@@ -146,28 +146,29 @@ export function Staircase({
                 Two staircases fill {n} {n === 1 ? "row" : "rows"} of {n + 1}: {n * (n + 1)} dots and squares in all, so one
                 staircase has {n * (n + 1)} ÷ 2 = <span className="tabular font-semibold">{count(n)}</span>.
               </>
+            ) : n === 1 ? (
+              <>
+                1 token makes <span className="tabular font-semibold">1</span> comparison, with itself.
+              </>
             ) : (
               <>
-                {n === 1 ? "1 token makes " : `${n} tokens make `}
-                <span className="tabular">{sumText(n)}</span> = <span className="tabular font-semibold">{count(n)}</span>{" "}
-                {count(n) === 1 ? "comparison" : "comparisons"}. The faint dots are comparisons with later tokens, which
-                are never made.
+                {n} tokens make <span className="tabular">{sumText(n)}</span> ={" "}
+                <span className="tabular font-semibold">{count(n)}</span> comparisons. The faint dots are comparisons with
+                later tokens, which are never made.
               </>
             )}
           </p>
           <div className="flex flex-wrap items-center gap-3">
-            <Button
-              size="sm"
-              variant="secondary"
-              onClick={() => setTurnedOn((t) => !t)}
-              aria-pressed={turned}
-              disabled={turnedLocked && !turned}
-            >
-              {turned ? "Take the second staircase away" : "Add a second staircase, turned round"}
-            </Button>
-            {turnedLocked ? <p className="text-sm text-ink-muted">{lockedNote ?? "The second staircase opens once you have answered the question below."}</p> : null}
+            {/* While locked, the button's own words would hint at the answer, so only the note shows. */}
+            {turnedLocked && !turned ? (
+              <p className="text-sm text-ink-muted">{lockedNote ?? "More of the figure opens once you have answered the question below."}</p>
+            ) : (
+              <Button size="sm" variant="secondary" onClick={() => setTurnedOn((t) => !t)} aria-pressed={turned}>
+                {turned ? "Take the second staircase away" : "Add a second staircase, turned round"}
+              </Button>
+            )}
             {turned ? (
-              <p className="text-sm text-ink-muted">Circles: the first staircase. Squares: the same staircase turned round.</p>
+              <p className="text-sm text-ink-muted">Dots: the first staircase. Squares: the same staircase turned round.</p>
             ) : null}
           </div>
         </>

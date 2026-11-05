@@ -363,6 +363,10 @@ def _sympy_env(symbols):
         "Rational": sympy.Rational,
     }
     names.update(table)
+    # SymPy's own one-letter names (S, N, O, Q and I) would be read as its objects. As letters they
+    # are reported like any other undeclared name, unless the exercise declares them.
+    for letter in ("S", "N", "O", "Q", "I"):
+        names.setdefault(letter, sympy.Symbol(letter))
     return table, names
 
 
@@ -409,7 +413,9 @@ def _read_as(text, names, expr):
         return sympy.latex(expr)
     # An unevaluated parse spells a leading minus as (-1) times, and 1/2 x as 1 times a half.
     shown = re.sub(r"(^|\{)\\left\(-1\\right\) ", r"\1-", shown)
-    return re.sub(r"(?<![\d.])1 \\cdot ", "", shown)
+    shown = re.sub(r"(?<![\d.])1 \\cdot ", "", shown)
+    # 1/(1 - r) comes out as 1 times a fraction, which reads like a mixed number.
+    return re.sub(r"(?<![\d.])1 \\frac\{1\}", r"\\frac{1}", shown)
 
 
 def _undefined_names(expr, table):
@@ -518,7 +524,11 @@ def check_expression(payload):
         return {"status": "unparsed",
                 "message": "That could not be read as an expression. Check the brackets and operators."}
     if not isinstance(expr, sympy.Basic):
-        expr = sympy.sympify(expr)
+        try:
+            expr = sympy.sympify(expr)
+        except Exception:  # noqa: BLE001 - a name that is not an expression, such as a function
+            return {"status": "unparsed",
+                    "message": "That could not be read as an expression. Check the brackets and operators."}
     shown = _read_as(text, names, expr)
     unknown = _undefined_names(expr, table)
     if unknown:
@@ -561,6 +571,9 @@ def fingerprint(payload):
                 p, q = rng.randint(1, 40), rng.randint(1, 7)
                 sign = 1 if spec.get("positive") else rng.choice([1, -1])
                 point[spec["name"]] = str(sympy.Rational(sign * p, q))
+        # A point drawn twice checks nothing new, so whole-number letters are checked at distinct values.
+        if point in points:
+            continue
         value = evaluate_at(expr, table, point)
         if value is None:
             continue

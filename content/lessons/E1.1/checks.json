@@ -1,0 +1,220 @@
+{
+  "version": 1,
+  "expressions": {
+    "derive-swap-x": {
+      "source": "b50f6e1047b8f6e8",
+      "points": [
+        {
+          "a": "-13/2",
+          "b": "-3"
+        },
+        {
+          "a": "11/3",
+          "b": "12"
+        },
+        {
+          "a": "20/3",
+          "b": "-28"
+        },
+        {
+          "a": "29/3",
+          "b": "-5"
+        },
+        {
+          "a": "-3/7",
+          "b": "17/4"
+        },
+        {
+          "a": "-8/7",
+          "b": "29/4"
+        }
+      ],
+      "values": [
+        "-3.0000000000000000000",
+        "12.000000000000000000",
+        "-28.000000000000000000",
+        "-5.0000000000000000000",
+        "4.2500000000000000000",
+        "7.2500000000000000000"
+      ]
+    },
+    "derive-swap-y": {
+      "source": "b3bf719aeb341b8d",
+      "points": [
+        {
+          "a": "5",
+          "b": "-11"
+        },
+        {
+          "a": "37/3",
+          "b": "-10"
+        },
+        {
+          "a": "37/3",
+          "b": "40/7"
+        },
+        {
+          "a": "39/7",
+          "b": "26/3"
+        },
+        {
+          "a": "-9/2",
+          "b": "-8"
+        },
+        {
+          "a": "-24",
+          "b": "9/5"
+        }
+      ],
+      "values": [
+        "5.0000000000000000000",
+        "12.333333333333333333",
+        "12.333333333333333333",
+        "5.5714285714285714286",
+        "-4.5000000000000000000",
+        "-24.000000000000000000"
+      ]
+    },
+    "derive-trace-square": {
+      "source": "36e49cac31e06502",
+      "points": [
+        {
+          "a": "-5/2"
+        },
+        {
+          "a": "-4"
+        },
+        {
+          "a": "7"
+        },
+        {
+          "a": "-8"
+        },
+        {
+          "a": "8"
+        },
+        {
+          "a": "9"
+        }
+      ],
+      "values": [
+        "16.000000000000000000",
+        "49.000000000000000000",
+        "225.00000000000000000",
+        "225.00000000000000000",
+        "289.00000000000000000",
+        "361.00000000000000000"
+      ]
+    }
+  },
+  "runs": {
+    "build-brackets-tree": {
+      "tests": [
+        {
+          "name": "test_bare_unchanged",
+          "description": "bare is still the expression the exercise gives.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_same_tree",
+          "description": "bracketed has exactly the same tree as bare.",
+          "passed": false,
+          "message": "The brackets change the tree. Compare the two trees that the program prints."
+        },
+        {
+          "name": "test_every_operation",
+          "description": "Every operation in bracketed sits inside a pair of brackets of its own.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": "BinOp(left=UnaryOp(op=USub(), operand=BinOp(left=Constant(value=2), op=Pow(), right=BinOp(left=Constant(value=3), op=Pow(), right=Constant(value=2)))), op=Add(), right=BinOp(left=BinOp(left=Constant(value=10), op=FloorDiv(), right=Constant(value=3)), op=Mult(), right=Constant(value=2)))\nBinOp(left=BinOp(left=UnaryOp(op=USub(), operand=Constant(value=2)), op=Pow(), right=BinOp(left=Constant(value=3), op=Pow(), right=Constant(value=2))), op=Add(), right=BinOp(left=BinOp(left=Constant(value=10), op=FloorDiv(), right=Constant(value=3)), op=Mult(), right=Constant(value=2)))\n-506 -506\n"
+    },
+    "build-check-probabilities": {
+      "tests": [
+        {
+          "name": "test_total",
+          "description": "total_ok is True, since 0.7 + 0.2 + 0.1 is 1 up to rounding.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_reordered",
+          "description": "reordered_ok is True.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_bad_total",
+          "description": "bad_total_ok is False, since 1.0001 is a real mistake, not rounding.",
+          "passed": false,
+          "message": "bad_total_ok is True, but 1.0001 is off by far more than rounding could explain."
+        },
+        {
+          "name": "test_probabilities_unchanged",
+          "description": "The three sums are as they were.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": "0.9999999999999999 True\n1.0 True\n1.0001 True\n"
+    },
+    "build-formulas": {
+      "tests": [
+        {
+          "name": "test_filled",
+          "description": "Each of the four names is given a value, not None.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_neg_square",
+          "description": "neg_square is minus the square of x, -9 for x = 3.",
+          "passed": false,
+          "message": "neg_square is 9, but minus the square of 3 is -9."
+        },
+        {
+          "name": "test_cube_root",
+          "description": "cube_root is the cube root of 27, which is 3.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_decayed_lr",
+          "description": "decayed_lr is 0.0008 at step 250 of a 1,000-step warm-up.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_step_size",
+          "description": "step_size is 100,000 when v is 0, since eps keeps the division safe.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": "9 3.0 0.0008 100000.0\n"
+    },
+    "build-read-batch": {
+      "tests": [
+        {
+          "name": "test_batch_size",
+          "description": "batch_size is the whole number 1,024, an int.",
+          "passed": false,
+          "message": "batch_size is 1024.0, a float, not an int."
+        },
+        {
+          "name": "test_learning_rate",
+          "description": "lr is 0.4 for a batch of 1,024.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": "1024\nbatch size 1024.0 learning rate 0.4\n"
+    }
+  }
+}

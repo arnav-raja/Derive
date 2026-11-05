@@ -108,3 +108,32 @@ describe("units", () => {
     expect(wrong.ok && unitText(wrong.unit)).toBe("FLOP^2/s");
   });
 });
+
+describe("Python's operations", () => {
+  it("parse floor division and remainder at the level of * and /, grouped from the left", () => {
+    expect(evaluate(parseExpr("17 // 5"), {})).toBe(3);
+    expect(evaluate(parseExpr("17 % 5"), {})).toBe(2);
+    expect(evaluate(parseExpr("-7 // 2"), {})).toBe(-4);
+    expect(evaluate(parseExpr("-7 % 2"), {})).toBe(1);
+    expect(evaluate(parseExpr("10 // 3 * 2"), {})).toBe(6);
+    expect(evaluate(parseExpr("-2 ** 4 + 17 // 5 * 3"), {})).toBe(-7);
+    expect(evaluate(parseExpr("-2 ** 3 ** 2 + 10 // 3 * 2"), {})).toBe(-506);
+  });
+
+  it("write the tree as Python does, with ** for a power", () => {
+    expect(exprText(parseExpr("2 ** 3 ** 2"), "python")).toBe("2 ** 3 ** 2");
+    expect(exprText(parseExpr("(2 ** 3) ** 2"), "python")).toBe("(2 ** 3) ** 2");
+    expect(exprText(parseExpr("-3 ** 2"), "python")).toBe("-3 ** 2");
+    expect(exprText(parseExpr("(-3) ** 2"), "python")).toBe("(-3) ** 2");
+    expect(exprText(parseExpr("10 // 3 * 2"), "python")).toBe("10 // 3 * 2");
+    expect(exprText(parseExpr("10 // (3 * 2)"), "python")).toBe("10 // (3 * 2)");
+    expect(exprText(parseExpr("17 // 5"))).toBe("17 // 5");
+  });
+
+  it("keep the units of a remainder and divide them for floor division", () => {
+    const units = { a: parseUnit("s"), b: parseUnit("s") };
+    expect(unitOf(parseExpr("a % b"), units)).toEqual({ ok: true, unit: { s: 1 } });
+    expect(unitOf(parseExpr("a // b"), units)).toEqual({ ok: true, unit: {} });
+    expect(unitOf(parseExpr("a % 2"), units).ok).toBe(false);
+  });
+});

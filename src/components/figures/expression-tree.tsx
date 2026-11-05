@@ -19,6 +19,7 @@ import {
   unitOf,
   unitText,
   type ExprNode,
+  type Notation,
   type Unit,
 } from "./expr";
 import { FigureFrame, PredictPanel, useWidth, type PredictPhase } from "./shell";
@@ -41,7 +42,10 @@ type TreeNode = {
   unit: { ok: true; unit: Unit } | { ok: false; message: string } | null;
 };
 
-const OP_LABEL = { "+": "+", "-": "−", "*": "×", "/": "÷", "^": "power" } as const;
+const OP_LABEL = {
+  maths: { "+": "+", "-": "−", "*": "×", "/": "÷", "//": "//", "%": "%", "^": "power" },
+  python: { "+": "+", "-": "-", "*": "*", "/": "/", "//": "//", "%": "%", "^": "**" },
+} as const;
 const NONE: Record<string, never> = {};
 const NODE_W = 72;
 const LEVEL_H = 84;
@@ -55,7 +59,13 @@ function prettyUnit(text: string): string {
   return text.replace(/\^(-?\d+)/g, (_, d: string) => [...d].map((c) => SUPERSCRIPT[c] ?? c).join(""));
 }
 
-function build(root: ExprNode, scope: Record<string, number>, units: Record<string, Unit> | null, sigfigs?: number) {
+function build(
+  root: ExprNode,
+  scope: Record<string, number>,
+  units: Record<string, Unit> | null,
+  sigfigs: number | undefined,
+  notation: Notation,
+) {
   let nextId = 0;
   let leaf = 0;
   const order: TreeNode[] = [];
@@ -74,7 +84,7 @@ function build(root: ExprNode, scope: Record<string, number>, units: Record<stri
       value = Number.NaN;
     }
     const label =
-      node.kind === "num" ? node.text : node.kind === "var" ? node.name : node.kind === "const" ? (node.name === "pi" ? "π" : "e") : node.kind === "neg" ? "negate" : node.kind === "call" ? node.fn : OP_LABEL[node.op];
+      node.kind === "num" ? node.text : node.kind === "var" ? node.name : node.kind === "const" ? (node.name === "pi" ? "π" : "e") : node.kind === "neg" ? "negate" : node.kind === "call" ? node.fn : OP_LABEL[notation][node.op];
     const t: TreeNode = {
       id: nextId++,
       node,
@@ -82,7 +92,7 @@ function build(root: ExprNode, scope: Record<string, number>, units: Record<stri
       children,
       depth,
       x,
-      text: exprText(node),
+      text: exprText(node, notation),
       value,
       unit: units ? unitOf(node, units, scope) : null,
     };
@@ -115,6 +125,7 @@ export function ExpressionTree({
   stepwise = false,
   sigfigs,
   predict,
+  notation = "maths",
 }: {
   title: string;
   description: string;
@@ -131,6 +142,8 @@ export function ExpressionTree({
   sigfigs?: number;
   /** Ask for the value (or the unit) at the top before showing it. */
   predict?: { prompt: string; ask?: "value" | "unit"; options?: string[] };
+  /** Write the operations as on paper, or as Python writes them (** for a power, // and %). */
+  notation?: Notation;
 }) {
   const inputId = useId();
   const [ref, width] = useWidth<HTMLDivElement>();
@@ -139,8 +152,8 @@ export function ExpressionTree({
     [units],
   );
   const { tree, order, leaves } = useMemo(
-    () => build(parseExpr(expr), values, parsedUnits, sigfigs),
-    [expr, values, parsedUnits, sigfigs],
+    () => build(parseExpr(expr), values, parsedUnits, sigfigs, notation),
+    [expr, values, parsedUnits, sigfigs, notation],
   );
   const show = (v: number) => (sigfigs ? sigText(v, sigfigs) : formatValue(v));
   const ops = order.filter((n) => n.children.length > 0);
