@@ -1,0 +1,222 @@
+misconceptions:
+  - id: test-checked-always
+    belief: A `while` loop watches its test all the time and stops the moment the test becomes `False`, even in the middle of a pass.
+    why: >-
+      Python checks the test only before each pass. A pass that starts always runs to the end of its
+      block, and the test is looked at again only when the pass is over.
+    cue: The learner expects a loop to stop part-way through its block, or to stop before the last pass's later lines run.
+  - id: off-by-one-passes
+    belief: A loop that stops when a value passes a floor makes one pass fewer, or one more, than it does.
+    why: >-
+      The loop stops at the first check where its test is `False`. Counting the passes means finding
+      the first value for which the test fails and checking the one before it.
+    cue: The learner chooses 9 or 11 in the puzzle, or is one out in explore-halve-count.
+  - id: range-includes-end
+    belief: '`range(a, b)` includes `b`.'
+    why: >-
+      The end of a range is always left out, so `range(1, 5)` is 1, 2, 3 and 4, and `range(a, b)` has
+      $b - a$ values.
+    cue: The learner says `range(3, 10)` runs 8 times, or writes `range(1, n)` to mean 1 up to `n`.
+  - id: range-starts-at-one
+    belief: '`range(n)` starts at 1.'
+    why: '`range(n)` starts at 0 and ends at $n - 1$, which is still $n$ values.'
+    cue: The learner expects `range(4)` to be 1, 2, 3 and 4.
+  - id: every-true-branch-runs
+    belief: In a chain of `if` and `elif`, every block whose test is `True` runs.
+    why: >-
+      Python runs only the block of the first test that is `True` and skips the rest of the chain,
+      even tests that would also be `True`.
+    cue: The learner chooses the option in explore-reorder that says both blocks run.
+  - id: best-fit-branch
+    belief: Python picks the test that fits a value best, such as the narrowest one.
+    why: Python tries the tests strictly from the top and takes the first that is `True`; it never compares them.
+    cue: The learner chooses `0.0005` because the narrower test fits, in explore-reorder.
+  - id: else-binds-to-all
+    belief: An `else` belongs to every `if` above it.
+    why: >-
+      An `else` belongs to the one chain it ends. A second `if` starts a new chain, so its `else` runs
+      whenever that second test is `False`, whatever the first test did.
+    cue: In build-clip, two separate `if`s with an `else` on the second, so a clipped value is undone.
+  - id: and-works-out-both
+    belief: '`and` and `or` always work out both sides.'
+    why: >-
+      `and` stops at the first `False` and `or` at the first `True`, since the answer is then known.
+      The rest is never worked out, which is what makes a guard such as `count > 0 and ...` safe.
+    cue: The learner chooses `ZeroDivisionError` in explore-short-circuit.
+  - id: and-or-left-to-right
+    belief: '`and` and `or` are worked out strictly from the left, with no order between them.'
+    why: '`and` comes before `or`, as multiplication comes before addition, so `a and b or c` is `(a and b) or c`.'
+    cue: The learner gets `1 < 2 and 2 < 1 or 3 < 4` wrong, or brackets it from the right.
+  - id: equals-in-test
+    belief: '`=` can be used in a test, as in `if x = 3:`.'
+    why: '`=` makes a name refer to a value; `==` asks whether two values are equal. Python stops with a `SyntaxError` at `if x = 3:`.'
+    cue: A `SyntaxError` on a line with `if` or `while` and a single `=`.
+  - id: indentation-decoration
+    belief: Indentation is only for looks.
+    why: >-
+      Indentation decides which lines are in a block. A line indented under a loop runs on every pass;
+      the same line without the indent runs once, after the loop.
+    cue: The learner prints inside a loop by accident, or leaves a line meant for the block unindented.
+  - id: reset-inside-loop
+    belief: An accumulator can be set to its starting value inside the loop.
+    why: Set inside the loop, it starts again on every pass and ends holding only the last pass's work. It is set once, before the loop.
+    cue: A total or count that ends as the last value only, or `steps` that ends as 1.
+  - id: no-progress
+    belief: A `while` loop will stop by itself sooner or later.
+    why: A loop stops only when its test is `False` at a check, so something in its block must move the test towards `False`.
+    cue: A `StepLimit` error, the program stopped for running too long.
+  - id: exact-float-test
+    belief: A loop can wait for a float to reach a value exactly, as in `while lr != 0.001`.
+    why: >-
+      Floats rarely land exactly on a decimal, and a loop can step over the value it waits for. A
+      test with `<`, `<=`, `>` or `>=` still stops when the value is passed.
+    cue: The learner chooses 10 or 9 in build-break-never.
+  - id: best-starts-at-zero
+    belief: The best value so far starts at 0, like a total.
+    why: For a smallest value, 0 is below every loss, so nothing ever replaces it. Start from a real value, such as the first loss.
+    cue: '`best` stays 0 in build-best-loss.'
+  - id: invariant-is-the-test
+    belief: The invariant of a loop is its test, such as `lr > 0.001`.
+    why: >-
+      The test is `True` on every pass and `False` at the end, so it changes. The invariant is true
+      before the loop, after every pass and after the loop, which is what lets it say what the loop
+      computed.
+    cue: The learner offers the loop's test as its invariant, or says the invariant is false at the end.
+
+exercises:
+  derive-halving-proof:
+    rungs:
+      - What is `lr * 2 ** halvings` before the first pass, and why does a pass leave it as it was?
+      - >-
+        Explore: an invariant is true before the loop and kept by every pass, and when the loop stops,
+        the invariant and the failed test are true together.
+      - Take only the first pass. What are `lr` and $h$ after it, and what is their product?
+      - >-
+        For each line, ask what changed since the line before. A new fact about every check comes
+        from the invariant; a line that solves for `lr`, or turns the test around, rearranges; plain
+        numbers are worked out.
+      - >-
+        For `x = 10` and `y = 0`, with each pass doing `x = x - 1` and `y = y + 1` while `x > 0`:
+        $x + y = 10$ before the loop, each pass keeps it, so it holds at every check; the loop stops
+        when $x = 0$, so then $y = 10$.
+    notes: >-
+      Citing Work it out for line 2 misses that it is the exponent rule that makes halving and
+      doubling cancel. Citing Work it out for line 4 or line 5 misses that both rearrange an equation
+      or inequality. Counting a range is never needed, since this is a `while` loop.
+  derive-decay-invariant:
+    rungs:
+      - What is `lr` before the first pass, after one pass, and after two?
+      - Explore found that `lr * 2 ** halvings` stays 1 in the halving loop. What does that make `lr` in terms of `halvings`?
+      - Take $a = 3$ and $r = \frac{1}{2}$. What is `lr` after 1, 2 and 3 passes?
+      - >-
+        Each pass multiplies `lr` by $r$ once. After $h$ passes, how many factors of $r$ has `lr`
+        been multiplied by?
+      - >-
+        A schedule that starts at $a$ and adds $d$ on every pass has $\texttt{lr} = a + d h$ at every
+        check: it is $a$ when $h = 0$, and each pass adds one more $d$.
+    notes: >-
+      $a r$ forgets that the factor is applied once per pass. $a r^{h - 1}$ or $a r^{h + 1}$ is one
+      factor out, so check the case $h = 0$, where `lr` must be $a$. $a + h r$ adds where the loop
+      multiplies.
+  derive-floor-estimate:
+    rungs:
+      - How many halvings did the puzzle's floor of 0.001, which is $10^{-3}$, take?
+      - Derive found that `lr` is $\frac{1}{2^h}$, so the loop stops at the first $h$ with $2^h \ge 10^9$.
+      - How many factors of $10^{-3}$ make $10^{-9}$?
+      - '$2^{10} = 1{,}024$ is about $10^3$. What power of two is about $10^3 \times 10^3 \times 10^3$?'
+      - >-
+        To fall to $10^{-6}$ or below, two factors of $10^{-3}$, takes about $2 \times 10 = 20$
+        halvings.
+    notes: >-
+      An answer of 10 or 9 treats $10^{-9}$ like the puzzle's floor. An answer near 1,000 or $10^9$
+      counts the shrinking factor instead of the halvings. Answers from 25 to 36 are accepted.
+  derive-sum-step:
+    rungs:
+      - What is `total` after the pass for $k$, and what does the next pass add to it?
+      - "E1.1's rule for assignment: the new `total` is the old one plus what the pass adds."
+      - Take $k = 3$. The claim gives 6, and the next pass adds 4. Does the claim with $k = 4$ give the result?
+      - >-
+        Write $\frac{k(k+1)}{2} + (k + 1)$ over the common bottom 2, then look for a factor that both
+        parts of the top share.
+      - >-
+        If after the pass for $k$ a total is $k^2$ and the next pass adds $2k + 1$, the new total is
+        $k^2 + 2k + 1 = (k + 1)^2$, the claim with $k + 1$ in place of $k$.
+    notes: >-
+      $\frac{k(k+1)}{2} + k + 1$ is right in value but is the line the step starts from, and the
+      checker asks for the factored shape. $\frac{k^2 + 3k + 2}{2}$ is also right in value but not
+      factored. $\frac{(k+1)^2}{2}$ adds $\frac{k+1}{2}$ instead of $k + 1$.
+  build-clip:
+    rungs:
+      - How many different cases are there for a gradient, and what should `clipped` be in each?
+      - Explore's warm-up schedule had three cases too, written as `if`, `elif` and `else`.
+      - >-
+        Run your script by hand for 2.5, for -3 and for 0.3. Which line sets `clipped` in each case,
+        and does every case set it?
+      - >-
+        If a test fails only for values inside the range, look at what happens when neither of the
+        first two tests is `True`. If it fails for -3, look at the test meant for values below -1.
+      - >-
+        To give `result` the word "pass" for a score of 50 or more and "fail" otherwise:
+        `if score >= 50:` with `result = "pass"` in its block, then `else:` with `result = "fail"`.
+    notes: >-
+      A `NameError` for 0.3 means there is no `else`, so `clipped` is never set inside the range.
+      `g > -1` for the lower clip turns every value inside the range into -1. Two separate `if`s with
+      an `else` on the second undo the upper clip: 2.5 ends as 2.5.
+  build-steps:
+    rungs:
+      - What should happen to `loss` and to `steps` on each step, and when should the steps stop?
+      - The puzzle's loop halved `lr` while it was above a floor, and counted the halvings as it went.
+      - Work the first three steps out by hand for a target of 3.0. What are `loss` and `steps` after each?
+      - >-
+        The two lines that make a step belong inside the loop's block, indented under the `while`
+        line, and the test belongs on the `while` line itself.
+      - >-
+        To count how many doublings take 1 past 100: `x = 1` and `count = 0`, then `while x <= 100:`
+        with `x = x * 2` and `count = count + 1` in its block. It ends with `count` at 7 and `x` at 128.
+    notes: >-
+      `steps` of 1 means an `if` in place of the `while`, or `steps = 0` inside the loop. `steps` of 0
+      for a target of 1.0 means the test is the wrong way round. A step limit for a target of 5
+      means a test that is always `True` once the loss is below the target.
+  build-best-loss:
+    rungs:
+      - Before any loss has been read, what should `best` be? And what should a pass do with each new loss?
+      - >-
+        Explore: an accumulator is set once before the loop and updated by every pass, and a count
+        changed only when a test was `True`.
+      - >-
+        Run your script by hand for the losses 1.0, 0.6, 0.9 and 0.6. What are `best` and `best_step`
+        after each one?
+      - >-
+        If the first loss is never read, or read twice, look at where the reading happens and where
+        the range starts. If the tie test fails, look at the comparison that decides when to replace
+        the best.
+      - >-
+        To find the largest of three typed numbers: `top = float(input())`, then a loop over the
+        other two that reads each into `x` and runs `top = x` only when `x > top`.
+    notes: >-
+      `best` stuck at 0 means it started at 0, which no loss beats. A tie that keeps the later step
+      means `<=`. `best_step` stuck at 1 means it is never updated. A last loss that is never read
+      means a range that stops one step early, such as `range(2, n)`. An error saying that input()
+      was called again after all the typed lines were read means the loop reads one loss too many.
+  build-sum-fencepost:
+    rungs:
+      - For `n = 4`, which numbers should be added, and which numbers does the loop add?
+      - Explore warned that running one pass too many or too few is the commonest mistake in loops, so check the last pass.
+      - Run the loop by hand for `n = 1`. Does the block run at all?
+      - >-
+        The numbers added are right except at one end. Look at the test on the `while` line: is it
+        `True` for the last number that should be added?
+      - >-
+        To print the numbers 5 to 8 with `i` starting at 5 and going up by 1, the `while` test must
+        be `True` for 8 itself and `False` for 9.
+    notes: >-
+      4,950 means `n` itself is never added. 5,151 means one pass too many. 5,149 means the pass adds
+      after moving `k` on, so it adds 2 up to `n + 1`. A total of 1 for `n = 0` means the total started
+      at 1.
+
+novice:
+  - Why does Python check the test only at the top of the loop, and not after every line?
+  - How can I tell that a `while` loop will ever stop?
+  - Why does `range(1, 5)` stop at 4 and not at 5?
+  - What is the difference between `=` and `==`?
+  - If an invariant never changes, how can it tell me what the loop computed?

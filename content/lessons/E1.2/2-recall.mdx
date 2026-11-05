@@ -1,0 +1,49 @@
+This lesson builds on E1.1's names, values and types. Four quick questions check that they are ready. Answer from memory, without running anything. A miss opens a short re-teach straight away.
+
+<Exercise id="recall-reassign" />
+
+<Reteach for="recall-reassign">
+
+<Callback lesson="E1.1">
+
+An assignment works in two moves. First Python works out the right side, using the values that the names refer to at that moment. Then it makes the name on the left refer to the result. So `x = x + 3` is not an equation: with `x` as 5, the right side is 8, and `x` now refers to 8. The next line starts from 8, so `x = x * 2` makes `x` refer to 16.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-remainder" />
+
+<Reteach for="recall-remainder">
+
+<Callback lesson="E1.1">
+
+`%` gives the remainder when one whole number is divided by another, and `//` gives the whole number of times it goes in. $1{,}050 = 10 \times 100 + 50$, so `1050 // 100` is 10 and `1050 % 100` is 50. In the same way `7 % 2` is 1, since $7 = 3 \times 2 + 1$.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-bool-type" />
+
+<Reteach for="recall-bool-type">
+
+<Callback lesson="E1.1">
+
+`==` asks whether two values are equal, and it answers with `True` or `False`, the two values of the type `bool`. Python works out the arithmetic first and compares after, so `0.5 + 0.25 == 0.75` adds, then compares, and gives `True`. Its type is `bool`, whatever the types of the numbers being compared.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-float-equal" />
+
+<Reteach for="recall-float-equal">
+
+<Callback lesson="E1.1">
+
+A float holds a whole number times a power of two. 0.1, 0.2 and 0.3 are not of that form, so each is stored as the nearest float, and the sum of the floats for 0.1 and 0.2 lands one float above the float for 0.3. `==` asks for an exact match, so `0.1 + 0.2 == 0.3` is `False`. Floats are compared within a tolerance instead, as in `math.isclose(0.1 + 0.2, 0.3)`, which is `True`.
+
+</Callback>
+
+</Reteach>

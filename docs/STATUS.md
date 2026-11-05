@@ -1,12 +1,12 @@
 # Status
 
-Updated 5 November 2026. Paused at Arnav's request on 5 November; on "Resume", carry on from
-"Resume here".
+Updated 5 November 2026, after Arnav's "Resume" of 17:47 UTC. On "Pause" or "Resume", follow
+CLAUDE.md and carry on from "Resume here".
 
 ## Where things stand
 
 Phase 0 (set-up) is done apart from the steps waiting on Arnav. Phase 1 (the first slice of 12
-lessons) is under way: seven lessons written (M1.1 to M1.6 and E1.1), five to go.
+lessons) is under way: eight lessons written (M1.1 to M1.6, E1.1 and E1.2), four to go.
 
 ### Done
 
@@ -99,9 +99,22 @@ lessons) is under way: seven lessons written (M1.1 to M1.6 and E1.1), five to go
 - E1.1 Programs as precise instructions: values, variables and expressions: written on
   5 November, and all 44 items pass `check:exercises`. Walked end to end after the redesign with
   no errors, and its figures screenshotted in both themes at 1,100 and 390 px with nothing
-  overflowing; not yet reviewed. Its new engine parts: `FloatLine` (the exact value a float
-  holds, with its neighbours, or an exact sum set against its float) and `ExpressionTree` in
-  Python notation. The program trace's last step now says "the program has finished".
+  overflowing. Its new engine parts: `FloatLine` (the exact value a float holds, with its
+  neighbours, or an exact sum set against its float) and `ExpressionTree` in Python notation.
+  The program trace's last step now says "the program has finished". The simulated learner has
+  worked through it (23 findings, in `derive-resume/review/E1.1-learner-findings.md` in the
+  project files); the independent reviewer was still reading it at the last update.
+- E1.2 Control flow: conditions and loops: written on 5 November, and all 42 items pass
+  `check:exercises`. Walked end to end with no errors, and its figures screenshotted in both
+  themes at 1,100 and 390 px with nothing overflowing. The independent reviewer and the
+  simulated learner were working through it at the last update. Its new engine parts: the
+  program trace takes `inputs` (the learner types what `input()` reads, or presses a preset, and
+  runs it again, with a note while the steps shown are from the old value), predict stops with
+  `pass` (stop on the third run of a line), and a "Jump to step" slider hidden until every stop
+  in the run is answered; backticked names in a figure's description or prompt are set in the
+  code font (in the sans font, `lr` reads as "Ir"); tests can call `rerun(*lines)` to run the
+  learner's program again with other typed lines; and `input()` called after every typed line
+  is read now says how many lines were typed.
 - Engine and checks from this round: the content check skips fenced code when it looks for
   imports and components, and requires the Connect phase to preview 1 to 3 later lessons; the
   SymPy answer checker treats S, N, O, Q and I as plain letters and reports an answer it cannot
@@ -109,23 +122,33 @@ lessons) is under way: seven lessons written (M1.1 to M1.6 and E1.1), five to go
 
 ### Resume here
 
-1. E1.1: the independent reviewer and the simulated learner (views from
-   `python3 -I scripts/learner-view.py . E1.1 <scratch dir>`), their findings applied, the
-   changed parts walked again, and a commit. The walk scripts, the store prep script and a local
-   store with M1.1 to M1.6 and E1.1 done (`store-after-E1.1-walk.json`) are in the project files
-   folder, `derive-resume/`; copy them into the session scratchpad and run them from there. A
-   walk of E1.1 starts from `store-before-E1.1-walk.json`, with M1.6 moved to the day before:
-   `python3 -I prep-store.py store-before-E1.1-walk.json .derive-local/store.json M1.6=<day>`,
-   then `node walk-e11.cjs overview puzzle recall explore` and `derive build explain`.
-2. Write E1.2 to E1.6 from `docs/phase-1-lessons.md`, the same way, keeping the uses that M1.1 and
-   E1.1 promise (listed there). Fix these descendant targets on the way: E1.5 not L3.4 or L7.3,
-   E1.6 unicode-and-bytes not M11.7. Codes are the new ones from the course update.
-3. Tests and CI: Playwright end-to-end tests (no config yet) with axe and screenshots in both
+The walk scripts, the store prep script, the local stores and the review findings are in the
+project files folder, `derive-resume/`; copy them into the session scratchpad and run them from
+there. If a review below is missing from `derive-resume/review/`, run that reviewer again (the
+learner views come from `python3 -I scripts/learner-view.py . <code> <scratch dir>`; keep the
+answer key in a separate folder).
+
+1. E1.1: apply the simulated learner's findings (`E1.1-learner-findings.md`) and the independent
+   reviewer's (`E1.1-findings.md`), and set the trace's names in backticks so they show in the
+   code font. Re-run `check:content` and `check:exercises -- --write E1.1`, walk the changed parts
+   again and commit. A walk of E1.1 starts from `store-before-E1.1-walk.json`, with M1.6 moved to
+   the day before: `python3 -I prep-store.py store-before-E1.1-walk.json .derive-local/store.json
+   M1.6=<day>`, then `node walk-e11.cjs overview puzzle recall explore` and `derive build explain`.
+2. E1.2: apply its two reviews (`E1.2-findings.md`, `E1.2-learner-findings.md`), the same way.
+   Its walk starts from `store-before-E1.2-walk.json` (E1.1 moved to the day before, and the
+   concepts of E1.1 and M1.4 to M1.6 set provisional), then `node walk-e12.cjs overview puzzle
+   recall explore` (explore runs explore2 after it; explore2 alone continues a walk whose early
+   Explore answers are saved) and `derive build explain`; `node e12figs.cjs` screenshots its
+   figures. `store-after-E1.2-walk.json` has E1.2 walked, for E1.3's walk.
+3. Write E1.3 to E1.6 from `docs/phase-1-lessons.md`, the same way, keeping the uses that M1.1,
+   E1.1 and E1.2 promise (listed there). Fix these descendant targets on the way: E1.5 not L3.4
+   or L7.3, E1.6 unicode-and-bytes not M11.7. Codes are the new ones from the course update.
+4. Tests and CI: Playwright end-to-end tests (no config yet) with axe and screenshots in both
    themes; unit tests for the mixed check, placement and the review queue; add
    `check:exercises` to CI; update the commands table in CLAUDE.md.
-4. Tutor leak tests (the Anthropic key is in Vercel; see below), recorded in each lesson's
+5. Tutor leak tests (the Anthropic key is in Vercel; see below), recorded in each lesson's
    leaks.json; then set lessons to `ready`.
-5. Finish phase 1: build, push, check the deployment and `/api/health`, and remove the test
+6. Finish phase 1: build, push, check the deployment and `/api/health`, and remove the test
    address from `private.allowed_emails` (needs Arnav's approval on the prompt).
 
 ### Working notes

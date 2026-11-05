@@ -77,9 +77,15 @@ def _describe(exc):
 
 def _fake_input(lines):
     queue = list(lines or [])
+    typed = len(queue)
 
     def fake(prompt=""):
         if not queue:
+            if typed:
+                lines_word = "line was" if typed == 1 else "lines were"
+                raise InputUnavailable(
+                    f"input() was called again after all {typed:,} typed {lines_word} read."
+                )
             raise InputUnavailable(
                 "input() has nothing to read here. Set the value in your code instead."
             )
@@ -155,9 +161,36 @@ def _test_functions(env):
     return [(name, fn) for _, name, fn in found]
 
 
-def _run_tests(ns, output, tests, max_steps):
+def _rerun_helper(code, max_steps, files):
+    """rerun(*lines) runs the learner's program again, typing these lines at its input() calls.
+
+    It returns (names, printed): the program's names and what it printed. A program that
+    stops with an error fails the test that reran it, with the error and the input named.
+    """
+
+    def rerun(*lines):
+        typed = [str(line) for line in lines]
+        tracer = sys.gettrace()
+        try:
+            again, printed, error = _execute(code, max_steps, typed, files)
+        finally:
+            sys.settrace(tracer)
+        if error:
+            shown = ", ".join(typed) if typed else "no input"
+            raise AssertionError(
+                f"Typing {shown}, the program stopped with {error['type']}: {error['message']}"
+            )
+        names = {k: v for k, v in again.items() if k not in ("__builtins__", "__name__", "input")}
+        return names, printed
+
+    return rerun
+
+
+def _run_tests(ns, output, tests, max_steps, code=None, files=None):
     env = {k: v for k, v in ns.items() if k != "__builtins__"}
     env.update({"close": close, "within_factor": within_factor, "output": output, "math": math})
+    if code is not None:
+        env["rerun"] = _rerun_helper(code, max_steps, files)
     results = []
     try:
         exec(compile(tests, TESTS_FILE, "exec"), env)
@@ -193,7 +226,7 @@ def run(payload):
     ns, output, error = _execute(code, max_steps, payload.get("stdin"), payload.get("files"))
     result = {"output": output[-20000:], "error": error, "tests": [], "passed": error is None}
     if tests and error is None:
-        result["tests"] = _run_tests(ns, output, tests, max_steps)
+        result["tests"] = _run_tests(ns, output, tests, max_steps, code, payload.get("files"))
         result["passed"] = all(t["passed"] for t in result["tests"])
     return result
 

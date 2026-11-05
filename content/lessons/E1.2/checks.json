@@ -1,0 +1,195 @@
+{
+  "version": 1,
+  "expressions": {
+    "derive-decay-invariant": {
+      "source": "cd9482fec4482055",
+      "points": [
+        {
+          "a": "8",
+          "r": "4",
+          "h": "-5"
+        },
+        {
+          "a": "37/7",
+          "r": "5/2",
+          "h": "1"
+        },
+        {
+          "a": "1/7",
+          "r": "17",
+          "h": "2"
+        },
+        {
+          "a": "8/3",
+          "r": "6",
+          "h": "-6"
+        },
+        {
+          "a": "38/3",
+          "r": "6/5",
+          "h": "-8"
+        },
+        {
+          "a": "14",
+          "r": "8/5",
+          "h": "8"
+        }
+      ],
+      "values": [
+        "0.0078125000000000000000",
+        "13.214285714285714286",
+        "41.285714285714285714",
+        "0.000057155921353452217650",
+        "2.9458618319107859574",
+        "601.29542144000000000"
+      ]
+    },
+    "derive-sum-step": {
+      "source": "9f658cd755a59c64",
+      "points": [
+        {
+          "k": "-9"
+        },
+        {
+          "k": "9"
+        },
+        {
+          "k": "2"
+        },
+        {
+          "k": "-6"
+        },
+        {
+          "k": "8"
+        },
+        {
+          "k": "-3"
+        }
+      ],
+      "values": [
+        "28.000000000000000000",
+        "55.000000000000000000",
+        "6.0000000000000000000",
+        "10.000000000000000000",
+        "45.000000000000000000",
+        "1.0000000000000000000"
+      ]
+    }
+  },
+  "runs": {
+    "build-best-loss": {
+      "tests": [
+        {
+          "name": "test_typed",
+          "description": "For the five typed losses, the best is 1.64, at step 4.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_first_is_best",
+          "description": "When the first loss is the lowest, best_step is 1.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_last_is_best",
+          "description": "When the last loss is the lowest, best_step is n.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_tie",
+          "description": "A tie keeps the earliest step.",
+          "passed": false,
+          "message": "Typing the losses 1.0, 0.6, 0.9 and 0.6, best_step is 4, but the lowest loss, 0.6, came first at step 2."
+        },
+        {
+          "name": "test_one_step",
+          "description": "With a single step, that step is the best.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": "5\n2.31\n1.87\n1.92\n1.64\n1.70\nbest loss 1.64 at step 4\n"
+    },
+    "build-clip": {
+      "tests": [
+        {
+          "name": "test_typed",
+          "description": "For a gradient of 2.5, clipped is 1.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_below",
+          "description": "For a gradient of -3, clipped is -1.",
+          "passed": false,
+          "message": "Typing -3, clipped is -3.0, but anything below -1 becomes -1."
+        },
+        {
+          "name": "test_inside",
+          "description": "A gradient between -1 and 1 is left alone.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_edges",
+          "description": "A gradient of exactly 1 or -1 is left as it is.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": "2.5\nclipped gradient: 1.0\n"
+    },
+    "build-steps": {
+      "tests": [
+        {
+          "name": "test_typed",
+          "description": "A target of 1.0 takes 14 steps.",
+          "passed": false,
+          "message": "For a target of 1.0, steps is 1, but it should be 14."
+        },
+        {
+          "name": "test_other_targets",
+          "description": "Targets of 2.0 and 0.1 take 7 and 36 steps.",
+          "passed": false,
+          "message": "Typing 2.0, steps is 1, but it should be 7."
+        },
+        {
+          "name": "test_already_there",
+          "description": "A target above 4.0 takes no steps.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": "1.0\n1 steps to a loss of 3.6\n"
+    },
+    "build-sum-fencepost": {
+      "tests": [
+        {
+          "name": "test_typed",
+          "description": "For n = 100, total is 5,050.",
+          "passed": false,
+          "message": "For n = 100, total is 4,950, but 1 + 2 + ... + 100 is 5,050."
+        },
+        {
+          "name": "test_small",
+          "description": "For n = 1 and n = 4, total is 1 and 10.",
+          "passed": false,
+          "message": "Typing 1, total is 0, but it should be 1."
+        },
+        {
+          "name": "test_zero",
+          "description": "For n = 0 there is nothing to add, so total is 0.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": "100\nthe loop's total: 4950\nPython's sum:     5050\n"
+    }
+  }
+}

@@ -68,11 +68,32 @@ export function FigureFrame({
         <div className="min-w-0">{picture({ titleId, descId })}</div>
         {controls ? <div className="flex flex-col gap-3 rounded-lg bg-inset/60 px-4 py-3">{controls}</div> : null}
         <figcaption id={descId} className="text-sm leading-relaxed text-ink-muted">
-          {description}
+          <CodeText text={description} />
         </figcaption>
         {table ? <NumbersTable table={table} /> : null}
       </div>
     </figure>
+  );
+}
+
+/**
+ * A figure's sentence, in which `name` is set in the code font, as inline code is in a lesson's
+ * prose. In the sans font, a name such as lr reads as Ir.
+ */
+export function CodeText({ text }: { text: string }) {
+  const parts = text.split(/`([^`]+)`/);
+  return (
+    <>
+      {parts.map((p, i) =>
+        i % 2 ? (
+          <code key={i} className="font-mono">
+            {p}
+          </code>
+        ) : (
+          p
+        ),
+      )}
+    </>
   );
 }
 
@@ -173,7 +194,7 @@ export function PredictPanel({
     >
       <p className="text-sm text-ink">
         <span className="font-semibold">Predict first. </span>
-        {prompt}
+        <CodeText text={prompt} />
       </p>
       {phase !== "revealed" && input ? <div>{input}</div> : null}
       <div className="flex flex-wrap items-center gap-2">

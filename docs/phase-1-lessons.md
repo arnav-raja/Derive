@@ -52,7 +52,11 @@ written; check candidates against the graph before writing `usedBy`.
 
 ## Written so far
 
-M1.1 to M1.6 and E1.1 are written; their files in `content/lessons/` are now the source, and
-the outlines that were here have been removed. E1.1 still needs its walk and its reviews. M1.4 and M1.5 carry both sides of the contrast
+M1.1 to M1.6, E1.1 and E1.2 are written; their files in `content/lessons/` are now the source,
+and the outlines that were here have been removed. E1.1 and E1.2 still need their review
+findings applied. E1.2 kept the draft concepts and later uses above, and its foreshadows are
+E1.3, M4.1 and E1.10. So E1.3 lists `E1.2/conditions` and `E1.2/loops` in `used`, E1.4 lists
+`E1.2/loops` and `E1.2/accumulator-pattern`, E1.5 lists `E1.2/conditions`, and E1.6 lists
+`E1.2/accumulator-pattern`. M1.4 and M1.5 carry both sides of the contrast
 between linear change (the same amount each step) and exponential change (the same factor
 each step).

@@ -1,0 +1,22 @@
+Training often starts with a large learning rate and makes it smaller as the model improves. One simple schedule halves the rate, again and again, until it is no longer above a floor. Here it is as a program, starting from 1.0 with a floor of 0.001.
+
+One word is new. `while` checks the test after it, `lr > 0.001`. If the test is `True`, Python runs the two indented lines below, then goes back and checks again. It keeps going until the check is `False`, and then moves on to `print`.
+
+```python
+lr = 1.0
+halvings = 0
+while lr > 0.001:
+    lr = lr / 2
+    halvings = halvings + 1
+print(halvings)
+```
+
+<Exercise id="puzzle-halvings" />
+
+<Reveal for="puzzle-halvings">
+
+It prints 10. After 9 halvings `lr` is about 0.00195, still above the floor, so the check is `True` and the loop runs once more. After 10 it is about 0.000977, the check is `False` at last, and Python moves on to `print`. The loop never needed `lr` to land exactly on 0.001: it stops as soon as `lr` is no longer above it.
+
+Until now, every program ran each of its lines once, from the top. Real programs also choose, running some lines only when something is true, and repeat, running lines again and again until a job is done. This lesson is about those two powers: *conditions*, which choose, and *loops*, which repeat. It ends with a way to be sure what a loop computes without running it, by finding a statement that every pass of the loop keeps true.
+
+</Reveal>

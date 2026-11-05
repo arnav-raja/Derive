@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { inputClasses } from "@/components/ui/field";
 import { python, type TraceResult, type TraceStep } from "@/lib/python/client";
 
-import { FigureFrame, PredictPanel, RangeControl, type PredictPhase } from "./shell";
+import { CodeText, FigureFrame, PredictPanel, RangeControl, type PredictPhase } from "./shell";
 
 /*
  * A program run one line at a time by real Python in the browser. Each step
@@ -15,7 +15,11 @@ import { FigureFrame, PredictPanel, RangeControl, type PredictPhase } from "./sh
  * printed so far, so the learner can predict a value before seeing it.
  */
 
-type Stop = { line: number; variable: string; prompt?: string };
+/** A pause before a line runs, the first time or the given time it is reached, to ask for a value. */
+type Stop = { line: number; variable: string; prompt?: string; pass?: number };
+
+/** A value the program reads with input(), which the learner can change and run again. */
+type TraceInput = { label: string; value: string; presets?: string[] };
 
 function topVariables(step: TraceStep | undefined): Record<string, string> {
   return step?.stack.at(-1)?.variables ?? {};
@@ -41,6 +45,7 @@ export function ProgramTrace({
   stdin,
   predict = [],
   predictOutput,
+  inputs,
   syms = {},
   maxSteps = 400,
 }: {
@@ -48,8 +53,10 @@ export function ProgramTrace({
   description: string;
   code: string;
   stdin?: string[];
-  /** Pauses before these lines run (the first time) to ask for a variable's next value. */
+  /** Pauses before these lines run (the first time, or the time `pass` names) to ask for a variable's next value. */
   predict?: Stop[];
+  /** Values typed at the program's input() calls, in order, which the learner can change. */
+  inputs?: TraceInput[];
   /** Asks what the whole program prints before it runs. */
   predictOutput?: string;
   /** Links variables to the same symbol elsewhere in the lesson. */
@@ -68,6 +75,8 @@ export function ProgramTrace({
   const [results, setResults] = useState<{ stop: Stop; said: string; actual: string }[]>([]);
   const [outPhase, setOutPhase] = useState<PredictPhase>("asking");
   const [outGuess, setOutGuess] = useState("");
+  const [typed, setTyped] = useState<string[]>(() => (inputs ?? []).map((i) => i.value));
+  const [ranWith, setRanWith] = useState<string[] | null>(null);
 
   const steps = trace?.steps ?? [];
   const current = steps[step];
@@ -77,8 +86,10 @@ export function ProgramTrace({
     setRunning(true);
     setError(null);
     try {
-      const t = await python().trace({ code, stdin, maxEvents: maxSteps });
+      const typedLines = inputs ? typed.map((t) => t.trim()) : stdin;
+      const t = await python().trace({ code, stdin: typedLines, maxEvents: maxSteps });
       setTrace(t);
+      setRanWith(inputs ? [...typed] : null);
       setStep(0);
       setAsked(new Set());
       setResults([]);
@@ -92,7 +103,10 @@ export function ProgramTrace({
   function forward() {
     if (!trace || step >= steps.length - 1) return;
     const s = steps[step]!;
-    const stopIndex = predict.findIndex((p, i) => !asked.has(i) && s.event === "line" && s.line === p.line);
+    const reached = (line: number) => steps.slice(0, step + 1).filter((t) => t.event === "line" && t.line === line).length;
+    const stopIndex = predict.findIndex(
+      (p, i) => !asked.has(i) && s.event === "line" && s.line === p.line && reached(p.line) === (p.pass ?? 1),
+    );
     if (stopIndex >= 0 && !question) {
       setQuestion({ stop: predict[stopIndex]!, at: stopIndex });
       setAnswer("");
@@ -117,6 +131,12 @@ export function ProgramTrace({
   const blocked = Boolean(predictOutput) && outPhase === "asking";
 
   const changed = (name: string) => previous !== undefined && before[name] !== vars[name];
+
+  // A stop still to come, in this run: until every one has been answered, the learner steps
+  // line by line, so a jump cannot carry them past a question.
+  const stopsLeft = predict.some(
+    (p, i) => !asked.has(i) && steps.filter((t) => t.event === "line" && t.line === p.line).length >= (p.pass ?? 1),
+  );
 
   return (
     <FigureFrame
@@ -250,6 +270,50 @@ export function ProgramTrace({
       )}
       controls={
         <>
+          {inputs?.length ? (
+            <div className="flex flex-col gap-3">
+              {inputs.map((input, i) => (
+                <div key={input.label} className="flex flex-col gap-1">
+                  <label htmlFor={`${uid}-in-${i}`} className="text-sm font-medium text-ink">
+                    {input.label}
+                  </label>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <input
+                      id={`${uid}-in-${i}`}
+                      value={typed[i] ?? ""}
+                      onChange={(e) => setTyped((t) => t.map((v, j) => (j === i ? e.target.value : v)))}
+                      autoComplete="off"
+                      spellCheck={false}
+                      className={clsx(inputClasses, "h-9 w-32 font-mono")}
+                    />
+                    {input.presets?.length ? (
+                      <div className="flex flex-wrap gap-2" role="group" aria-label={`${input.label}: values to try`}>
+                        {input.presets.map((p) => (
+                          <Button
+                            key={p}
+                            size="sm"
+                            variant={p === (typed[i] ?? "").trim() ? "primary" : "secondary"}
+                            aria-pressed={p === (typed[i] ?? "").trim()}
+                            onClick={() => setTyped((t) => t.map((v, j) => (j === i ? p : v)))}
+                          >
+                            <span className="font-mono">{p}</span>
+                          </Button>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+              ))}
+              {trace && ranWith && ranWith.some((v, i) => v !== typed[i]) ? (
+                <div className="flex flex-wrap items-center gap-3">
+                  <Button size="sm" onClick={() => void run()} disabled={running}>
+                    {running ? "Running" : "Run it again with these values"}
+                  </Button>
+                  <p className="text-sm text-ink-muted">The steps below are still from {ranWith.join(", ")}.</p>
+                </div>
+              ) : null}
+            </div>
+          ) : null}
           {!trace ? (
             <div className="flex flex-wrap items-center gap-3">
               <Button size="sm" onClick={() => void run()} disabled={running || blocked}>
@@ -263,7 +327,7 @@ export function ProgramTrace({
                 <div className="flex flex-col gap-2 rounded-md border border-accent/40 bg-accent-soft px-3 py-3">
                   <label htmlFor={`${uid}-stop`} className="text-sm text-ink">
                     <span className="font-semibold">Predict first. </span>
-                    {question.stop.prompt ?? `Line ${question.stop.line} is about to run. What will ${question.stop.variable} be afterwards?`}
+                    <CodeText text={question.stop.prompt ?? `Line ${question.stop.line} is about to run. What will \`${question.stop.variable}\` be afterwards?`} />
                   </label>
                   <div className="flex flex-wrap items-center gap-2">
                     <input
@@ -286,7 +350,7 @@ export function ProgramTrace({
               {lastResult ? (
                 <p role="status" className={clsx("text-sm", normalise(lastResult.said) === normalise(lastResult.actual) ? "text-correct" : "text-ink")}>
                   {normalise(lastResult.said) === normalise(lastResult.actual) ? "Right: " : "Not quite: "}
-                  you said <code className="font-mono">{lastResult.said}</code>, and {lastResult.stop.variable} is{" "}
+                  you said <code className="font-mono">{lastResult.said}</code>, and <code className="font-mono">{lastResult.stop.variable}</code> is{" "}
                   <code className="font-mono">{lastResult.actual}</code>.
                 </p>
               ) : null}
@@ -311,7 +375,7 @@ export function ProgramTrace({
                     : ""}
                 </p>
               </div>
-              {predict.length === 0 ? (
+              {!stopsLeft ? (
                 <RangeControl label="Jump to step" min={0} max={Math.max(0, steps.length - 1)} step={1} value={step} onChange={setStep} display={`${step + 1}`} />
               ) : null}
               {trace.error ? (

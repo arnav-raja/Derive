@@ -1,0 +1,89 @@
+code: E1.2
+title: "Control flow: conditions and loops"
+course: E1
+status: review
+summary: >-
+  A schedule halves the learning rate again and again until it is no longer above 0.001. How many
+  halvings does that take? Conditions that choose which lines run, loops that run lines again and
+  again, totals built up one pass at a time, and the one statement that every pass keeps true,
+  which proves what a loop computes without running it.
+sittings: 2
+minutes:
+  puzzle: 10
+  recall: 10
+  explore: 45
+  derive: 35
+  build: 60
+  explain: 25
+concepts:
+  taught:
+    - id: E1.2/conditions
+      name: Conditions
+      summary: >-
+        A comparison such as step < 1000 gives a bool, and and, or and not join bools, stopping as
+        soon as the answer is known. An if statement runs its indented block only when its
+        condition is True. In a chain of if, elif and else exactly one block runs, the first whose
+        test is True, so when the tests overlap their order is part of the meaning.
+      usedBy: [E1.3, E1.5, M4.1]
+    - id: E1.2/loops
+      name: Loops
+      summary: >-
+        A while loop checks its test before every pass, and only there, and stops at the first
+        check where the test is False, so each pass must move it towards False. A for loop runs
+        its block once for each value of a range, and range(a, b) runs from a up to b - 1, which is
+        b - a values.
+      usedBy: [E1.3, E1.4, M4.1]
+    - id: E1.2/loop-invariants
+      name: Loop invariants
+      summary: >-
+        An invariant of a loop is a statement that is true before the loop starts and that every
+        pass keeps true, so it holds at every check. When the loop stops, the invariant and the
+        failed test are true together, and together they say exactly what the loop computed.
+      usedBy: [E1.10, E1.9]
+    - id: E1.2/accumulator-pattern
+      name: Accumulators
+      summary: >-
+        A name set once before a loop and updated on every pass, such as a running total, a count
+        or the best value so far, holds after the loop the result over every pass. Set inside the
+        loop instead, it starts again on every pass.
+      usedBy: [E1.4, E1.6, M4.11]
+  used:
+    - E1.1/values-and-types
+    - E1.1/variables-as-names
+    - E1.1/evaluation-order
+    - E1.1/floats-are-approximate
+    - M1.2/exponent-rules
+links:
+  requires:
+    - lesson: E1.1
+      bridge: >-
+        E1.1 read a program the way Python runs it, one line at a time, from the top. Conditions
+        and loops change only which line runs next: a line may be skipped or run again, but each
+        line still works with the values as they are when it runs.
+  applies:
+    - lesson: M1.2
+      bridge: >-
+        The halving loop keeps lr × 2^h at 1 because halving and doubling cancel:
+        (lr / 2) × 2^(h + 1) = lr × 2^h, which is M1.2's exponent rule 2^(h + 1) = 2 × 2^h.
+  anotherViewOf:
+    - lesson: M1.6
+      bridge: >-
+        M1.6 added 1 + 2 + ... + n in one stroke and found n(n + 1)/2. A for loop with a running
+        total adds the same numbers one at a time, and its invariant proves the same formula.
+  foreshadows:
+    - lesson: E1.3
+      bridge: >-
+        A loop and its tests often make up one job, such as counting the halvings down to any
+        floor. E1.3 gives such a job a name of its own, a function, so that it is written once and
+        used anywhere: a floor goes in, a count comes out.
+    - lesson: M4.1
+      bridge: >-
+        A loop that runs a random experiment a million times and counts how often something
+        happens estimates its probability. M4.1 does exactly that, then checks the counts against
+        probabilities worked out exactly.
+    - lesson: E1.10
+      bridge: >-
+        Binary search halves the stretch it is searching on every pass, as the puzzle halved the
+        learning rate, and an invariant, that what it seeks is still inside the stretch, proves
+        that it finds it.
+skills: []
