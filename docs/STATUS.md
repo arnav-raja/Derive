@@ -21,7 +21,8 @@ lessons) is under way: seven lessons written (M1.1 to M1.6 and E1.1), five to go
   merges, and stage hours of 80, 175, 315, 280 and 465 (about 1,315). Most lesson codes after
   M1 and E1 changed; `docs/course-update.md` maps every old code to its new one. The written
   lessons' links and `docs/phase-1-lessons.md` now use the new codes, and the course artwork
-  follows the new course codes, with drawings for the five new courses.
+  follows the new course codes, with drawings for the five new courses. The approved plan's
+  Plan and Lessons tabs follow the new curriculum.
 - App: design tokens, app shell, sign-in, Today, Curriculum, Review, Notebook, Progress,
   Settings and the health route. Vercel project `derive` (bom1) at https://derive-tan.vercel.app.
   CI runs the type check, lint, unit tests, graph and content checks, and the build.
@@ -122,8 +123,8 @@ lessons) is under way: seven lessons written (M1.1 to M1.6 and E1.1), five to go
 3. Tests and CI: Playwright end-to-end tests (no config yet) with axe and screenshots in both
    themes; unit tests for the mixed check, placement and the review queue; add
    `check:exercises` to CI; update the commands table in CLAUDE.md.
-4. Tutor leak tests once the Anthropic key is in Vercel, recorded in each lesson's leaks.json;
-   then set lessons to `ready`.
+4. Tutor leak tests (the Anthropic key is in Vercel; see below), recorded in each lesson's
+   leaks.json; then set lessons to `ready`.
 5. Finish phase 1: build, push, check the deployment and `/api/health`, and remove the test
    address from `private.allowed_emails` (needs Arnav's approval on the prompt).
 
@@ -156,12 +157,10 @@ lessons) is under way: seven lessons written (M1.1 to M1.6 and E1.1), five to go
 
 ## Waiting on Arnav
 
-Asked on 4 November 2026, in this order:
-
-1. Switch off "Confirm email" in Supabase (Authentication, Sign In / Providers, Email).
-2. Create his account at https://derive-tan.vercel.app/sign-in?mode=create.
-3. Create an Anthropic API key in the Default workspace and add it in Vercel as
-   `ANTHROPIC_API_KEY` (Production, Sensitive). The next push redeploys with it.
+Nothing. The three set-up steps asked on 4 November are done or no longer needed. Checked on
+5 November: Arnav's account exists and is confirmed (created on 4 November), and `/api/health`
+on production reports the tutor key configured. "Confirm email" is still on in Supabase, which
+no longer matters now that the one account exists.
 
 ## Notes
 
