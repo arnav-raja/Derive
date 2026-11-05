@@ -252,8 +252,10 @@ export type Overview = {
   unlocked: Set<string>;
   /** The next lesson to begin, in study order, if any is ready and unlocked. */
   nextLesson: string | null;
-  /** The lesson in progress, if any. */
+  /** The lesson in progress that was worked on most recently, if any. */
   current: string | null;
+  /** When each begun lesson was last worked on. */
+  touched: Map<string, string>;
   written: string[];
 };
 
@@ -325,7 +327,11 @@ export async function overview(store: Store, now = new Date()): Promise<Overview
   ]);
   const grouped = groupProgress(rows);
   const progress = new Map<string, LessonProgress>();
-  for (const [code, list] of grouped) progress.set(code, lessonProgress(list));
+  const touched = new Map<string, string>();
+  for (const [code, list] of grouped) {
+    progress.set(code, lessonProgress(list));
+    touched.set(code, list.reduce((m, r) => (r.updatedAt > m ? r.updatedAt : m), ""));
+  }
   const concepts = new Map(conceptList.map((c) => [c.conceptId, c]));
 
   const today = localDate(now, TIME_ZONE);
@@ -371,7 +377,10 @@ export async function overview(store: Store, now = new Date()): Promise<Overview
     status.set(l.code, s);
   }
 
-  const inProgress = studyOrder([...status].filter(([, s]) => s === "in-progress").map(([c]) => c));
+  // Most recently worked on first; the sort is stable, so ties keep study order.
+  const inProgress = studyOrder([...status].filter(([, s]) => s === "in-progress").map(([c]) => c)).sort((a, b) =>
+    (touched.get(b) ?? "").localeCompare(touched.get(a) ?? ""),
+  );
   const available = studyOrder([...status].filter(([, s]) => s === "available").map(([c]) => c));
   return {
     now,
@@ -387,6 +396,7 @@ export async function overview(store: Store, now = new Date()): Promise<Overview
     unlocked,
     nextLesson: available[0] ?? null,
     current: inProgress[0] ?? null,
+    touched,
     written,
   };
 }

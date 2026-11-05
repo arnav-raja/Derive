@@ -14,9 +14,30 @@ lessons) is under way: seven lessons written (M1.1 to M1.6 and E1.1), five to go
 - Supabase project `spivlvrkjsqxjeonnmvd` (Mumbai) with the schema, row-level security and a
   sign-up guard that admits exactly one allow-listed account.
 - Curriculum graph for 282 lessons, 29 courses and 9 capstones, with the graph rules.
-- App: design tokens, app shell, sign-in, Today, Map, Review, Notebook, Progress, Settings and
-  the health route. Vercel project `derive` (bom1) at https://derive-tan.vercel.app. CI runs
-  the type check, lint, unit tests, graph and content checks, and the build.
+- App: design tokens, app shell, sign-in, Today, Curriculum, Review, Notebook, Progress,
+  Settings and the health route. Vercel project `derive` (bom1) at https://derive-tan.vercel.app.
+  CI runs the type check, lint, unit tests, graph and content checks, and the build.
+- Redesign, 5 November, at Arnav's request that Derive look and work like a professional
+  learning product, close to Codecademy and DataCamp in how it works but entirely Derive's own:
+  - Design system: a cool neutral palette with one accent (Derive indigo), a mark colour for
+    each curriculum, dark workbench colours for code, Inter, Source Serif and JetBrains Mono, and
+    new parts (badges, progress bars and rings, tabs, breadcrumbs, stat strips, course artwork).
+    `data-preview="light"` or `"dark"` gives an element that theme's tokens (the theme cards in
+    Settings use it).
+  - Shell: a sidebar with a "Continue learning" card, and a tab bar on phones.
+  - Curriculum at `/curriculum` (the old `/map` redirects there): the stage path, course cards by
+    curriculum, capstones and the lesson map. A page per course at `/courses/[code]`, and a
+    lesson overview with a phase timeline.
+  - The lesson workspace: phases open full screen from `src/app/(workspace)/`, with a phase
+    stepper, an outline drawer, the tutor docked on the right (a sheet on phones) and a footer
+    with progress and the next step. Code exercises sit in a dark workbench with file tabs, a
+    console and test results, and open in a full-screen split editor.
+  - Today, Review, Notebook, Progress (an activity calendar and weekly recall against the 85%
+    floor), Settings (sections, a live pace preview, theme cards), Placement, sign-in (a split
+    page with our own drawing of gradient descent), not-found, error and loading screens.
+  - `Store.activity(since)` reads answers in pages for the activity calendar; no schema change.
+  - Lesson MDX components and their props are unchanged, so lesson writing carries on as before.
+    The one visible change for lessons: a `Stated` link now opens `/lessons/{code}`.
 - Phase 1 engine (commit 1ffbbac): six-phase lessons, in-browser Python and SymPy, five figure
   components, reviews with FSRS, mastery, the pace governor, placement, and the tutor with its
   hint ladder and guard.
@@ -103,6 +124,13 @@ lessons) is under way: seven lessons written (M1.1 to M1.6 and E1.1), five to go
 
 - Local walk-through: `DERIVE_LOCAL_STORE=1 DERIVE_SHOW_DRAFTS=1 npx next dev -p 3100`, driven
   with Playwright (Chromium is preinstalled). Learner data is in `.derive-local/store.json`.
+  Since the redesign, phase pages keep their addresses but render full screen. "Start {phase}",
+  "Finish {phase}" and "Finish the lesson" keep their labels (the finish button is now in the
+  footer), and exercise cards keep `data-exercise`. At 1,280 px and wider the outline is an
+  `<aside>` as well, so a walk that reads `aside` text should narrow it to the reading.
+- Turbopack's development server sometimes keeps an old module after an edit (a page shows the
+  previous version, or a new Store method is "not a function"). Restart it when a change does not
+  show.
   A later lesson unlocks only when the earlier one's concepts are mastered or provisional, and
   only one new lesson starts per day, so a walk of M1.2 needs M1.1's concepts set provisional and
   M1.1's start dated the day before.

@@ -55,7 +55,9 @@ It is for development and tests only and refuses to run on Vercel.
 
 | Path | Holds |
 | --- | --- |
-| `src/app/(app)/` | Signed-in pages: Today, Map, Review, Notebook, Progress, Settings, lessons |
+| `src/app/(app)/` | Signed-in pages: Today, Curriculum, courses, Review, Notebook, Progress, Settings, Placement, lesson overviews |
+| `src/app/(workspace)/` | The full-screen lesson workspace, one phase at a time |
+| `src/components/` | UI parts (`ui/`), the shell, lessons, exercises, the code workbench, figures, the tutor |
 | `src/app/(auth)/` | Sign-in and account creation (server actions) |
 | `src/lib/store/` | The `Store` interface, `SupabaseStore` (production) and `FileStore` (local) |
 | `src/lib/curriculum/` | The compiled curriculum graph and the graph rules |

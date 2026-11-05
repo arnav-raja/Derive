@@ -5,7 +5,8 @@ import { describe, expect, it } from "vitest";
 
 /*
  * Checks the colour tokens in globals.css against WCAG 2.2 AA: every text
- * token on every surface at 4.5:1, and figure colours at 3:1.
+ * token on every surface at 4.5:1, figure colours at 3:1, each subject's
+ * mark as text, and the code editor's colours on its own background.
  */
 
 const css = readFileSync(path.join(process.cwd(), "src/app/globals.css"), "utf8");
@@ -53,9 +54,11 @@ const themes = {
 };
 
 const surfaces = ["paper", "surface", "inset"];
-const text = ["ink", "ink-muted", "ink-faint", "accent", "correct", "incorrect", "hint", "warning"];
-const states = ["accent", "correct", "incorrect", "hint", "warning"];
+const text = ["ink", "ink-muted", "ink-faint", "accent", "correct", "incorrect", "hint", "warning", "subject-m", "subject-l", "subject-e"];
+const states = ["accent", "correct", "incorrect", "hint", "warning", "subject-m", "subject-l", "subject-e"];
 const figures = ["fig-vector", "fig-gradient", "fig-mass", "fig-point", "fig-axis"];
+const code = ["code-ink", "code-muted", "code-keyword", "code-string", "code-number", "code-function", "code-operator", "code-correct", "code-incorrect", "code-warning"];
+const codeGrounds = ["code-bg", "code-chrome", "code-active"];
 
 describe.each(Object.entries(themes))("%s theme", (_name, t) => {
   it.each(text.flatMap((fg) => surfaces.map((bg) => [fg, bg])))(
@@ -75,6 +78,16 @@ describe.each(Object.entries(themes))("%s theme", (_name, t) => {
 
   it.each(figures)("%s on the surface meets 3:1", (f) => {
     expect(contrast(t[f]!, t.surface!)).toBeGreaterThanOrEqual(3);
+  });
+
+  // The editor keeps its colours in both themes; only its grounds change.
+  const c = { ...themes.light, ...t };
+  it.each(code.flatMap((fg) => codeGrounds.map((bg) => [fg, bg])))("%s on %s meets 4.5:1", (fg, bg) => {
+    expect(contrast(c[fg]!, c[bg]!)).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it("text on a changed line meets 4.5:1", () => {
+    expect(contrast(c["code-ink"]!, c["code-changed"]!)).toBeGreaterThanOrEqual(4.5);
   });
 });
 

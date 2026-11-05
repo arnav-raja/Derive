@@ -17,37 +17,34 @@ export function NoteForm() {
 
   return (
     <form ref={formRef} action={action} className="flex flex-col gap-4">
+      <fieldset className="flex flex-col gap-2">
+        <legend className="mb-2 text-sm font-semibold text-ink">Kind of note</legend>
+        <div className="grid grid-cols-3 gap-1 rounded-lg bg-inset p-1">
+          {(
+            [
+              ["gap", "A gap"],
+              ["question", "A question"],
+              ["explanation", "My own explanation"],
+            ] as const
+          ).map(([value, label], i) => (
+            <label key={value} className="relative flex cursor-pointer">
+              <input type="radio" name="kind" value={value} defaultChecked={i === 0} className="peer sr-only" />
+              <span className="flex w-full items-center justify-center rounded-md px-2 py-1.5 text-center text-xs font-semibold text-ink-muted transition-colors peer-checked:bg-surface peer-checked:text-ink peer-checked:shadow-xs peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-focus hover:text-ink">
+                {label}
+              </span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
       <TextAreaField
         label="Something you do not understand yet"
         name="body"
         required
         maxLength={4000}
-        hint="Write it as a question. Derive brings it back until it is resolved."
         error={state?.error}
       />
-      <fieldset className="flex flex-wrap items-center gap-x-5 gap-y-2">
-        <legend className="sr-only">Kind of note</legend>
-        {(
-          [
-            ["gap", "A gap"],
-            ["question", "A question"],
-            ["explanation", "My own explanation"],
-          ] as const
-        ).map(([value, label], i) => (
-          <label key={value} className="flex items-center gap-2 text-sm text-ink">
-            <input
-              type="radio"
-              name="kind"
-              value={value}
-              defaultChecked={i === 0}
-              className="size-4 accent-accent"
-            />
-            {label}
-          </label>
-        ))}
-      </fieldset>
       <div>
-        <Button type="submit" disabled={pending}>
+        <Button type="submit" disabled={pending} className="w-full">
           {pending ? "Saving" : "Add to notebook"}
         </Button>
       </div>

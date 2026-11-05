@@ -55,7 +55,7 @@ export function SignInForm({ mode, next, canCreate }: Props) {
         error={state?.fieldErrors?.password}
       />
 
-      <Button type="submit" disabled={pending} className="w-full">
+      <Button type="submit" size="lg" disabled={pending} className="w-full">
         {pending
           ? mode === "create"
             ? "Creating your account"
