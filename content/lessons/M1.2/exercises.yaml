@@ -1,0 +1,884 @@
+exercises:
+  # Puzzle ---------------------------------------------------------------------
+  - id: puzzle-grouping
+    phase: puzzle
+    kind: predict
+    concept: M1.2/field-axioms
+    title: Two groupings of one sum
+    prompt: >-
+      What does Python answer when it compares the two groupings? Go with your instinct. This is a
+      prediction, not a test.
+    answer:
+      type: choice
+      options:
+        - { id: equal, label: '`True`: the two results are equal' }
+        - { id: not-equal, label: '`False`: the two results differ' }
+        - { id: error, label: 'Python stops with an error' }
+      correct: [not-equal]
+    explanation: >-
+      Python answers `False`. The two groupings differ in the sixteenth significant figure, and the
+      rest of this lesson explains why that can happen, and why it does not break algebra.
+
+  # Recall ---------------------------------------------------------------------
+  - id: recall-order
+    phase: recall
+    kind: recall
+    concept: M1.2/expression-trees
+    title: Order of operations
+    prompt: What is $3 + 4 \times 2$?
+    answer:
+      type: number
+      value: 11
+    explanation: >-
+      Multiplication comes before addition, so $4 \times 2 = 8$ first, then $3 + 8 = 11$.
+
+  - id: recall-power-quotient
+    phase: recall
+    kind: recall
+    concept: M1.1/powers-of-ten
+    title: Dividing powers of ten
+    prompt: What is $10^5 \div 10^2$?
+    answer:
+      type: number
+      value: 1000
+    explanation: >-
+      Dividing powers of ten subtracts the exponents, so $10^5 \div 10^2 = 10^{5-2} = 10^3 = 1000$.
+
+  - id: recall-negatives
+    phase: recall
+    kind: recall
+    concept: M1.2/field-axioms
+    title: Two negatives
+    prompt: What is $(-3) \times (-4)$?
+    answer:
+      type: number
+      value: 12
+    explanation: A negative times a negative is positive, so $(-3) \times (-4) = 12$.
+
+  - id: recall-distribute
+    phase: recall
+    kind: recall
+    concept: M1.2/field-axioms
+    title: Seven times ninety-eight
+    prompt: Work out $7 \times 98$ in your head. There is a quick way.
+    answer:
+      type: number
+      value: 686
+    explanation: >-
+      Split 98 as $100 - 2$: $7 \times 98 = 7 \times 100 - 7 \times 2 = 700 - 14 = 686$.
+
+  # Explore --------------------------------------------------------------------
+  - id: explore-subtract-chain
+    phase: explore
+    kind: predict
+    concept: M1.2/expression-trees
+    title: A chain of subtractions
+    prompt: What is $8 - 3 - 2$?
+    answer:
+      type: number
+      value: 3
+    explanation: >-
+      Working from the left, $8 - 3 = 5$ and then $5 - 2 = 3$. Grouped the other way, as $8 - (3 -
+      2)$, the answer would be 7.
+    review:
+      variants:
+        - prompt: What is $16 \div 4 \div 2$?
+          answer:
+            type: number
+            value: 2
+          explanation: >-
+            Work from the left: $16 \div 4 = 4$, then $4 \div 2 = 2$. The other grouping, $16 \div (4
+            \div 2)$, is a different tree and gives 8.
+        - prompt: What is $2 \times 3^2$?
+          answer:
+            type: number
+            value: 18
+          explanation: >-
+            A power sits below a multiplication in the tree, so it is done first: $3^2 = 9$, then $2
+            \times 9 = 18$. The tree for $(2 \times 3)^2$ is different and gives 36.
+        - prompt: What is $10 - 2 \times 3 + 1$?
+          answer:
+            type: number
+            value: 5
+          explanation: >-
+            The multiplication is done first, $2 \times 3 = 6$. Then the chain of subtraction and
+            addition is worked from the left: $10 - 6 = 4$, and $4 + 1 = 5$.
+
+  - id: explore-which-group
+    phase: explore
+    kind: predict
+    concept: M1.2/field-axioms
+    title: Which operations ignore grouping
+    prompt: >-
+      For which operations does the grouping of a chain of three numbers never change the answer?
+      Try a few numbers in your head before you choose.
+    answer:
+      type: choice
+      multiple: true
+      options:
+        - { id: addition, label: 'Addition' }
+        - { id: subtraction, label: 'Subtraction' }
+        - { id: multiplication, label: 'Multiplication' }
+        - { id: division, label: 'Division' }
+      correct: [addition, multiplication]
+    explanation: >-
+      Addition and multiplication: $(a + b) + c = a + (b + c)$ and $(a \times b) \times c = a \times
+      (b \times c)$ for every three numbers. Subtraction and division fail, as $8 - 3 - 2$ showed.
+    placement: true
+    review:
+      variants:
+        - prompt: Which rule justifies $3(x + 4) = 3x + 12$?
+          answer:
+            type: choice
+            options:
+              - { id: commutativity, label: 'Commutativity' }
+              - { id: associativity, label: 'Associativity' }
+              - { id: distributivity, label: 'Distributivity' }
+              - { id: identity, label: 'Adding 0 changes nothing' }
+            correct: [distributivity]
+          explanation: >-
+            Multiplying out a bracket is distributivity, $a(b + c) = ab + ac$: the 3 multiplies both
+            terms inside.
+        - prompt: Which of these holds for every number $a$?
+          answer:
+            type: choice
+            options:
+              - { id: divide-self, label: '$a \div a = 1$' }
+              - { id: swap-minus, label: '$a - 0 = 0 - a$' }
+              - { id: double, label: '$a + a = a$' }
+              - { id: times-zero, label: '$a \times 0 = 0$' }
+            correct: [times-zero]
+          explanation: >-
+            $a \times 0 = 0$ follows from the rules for every number, as M1.2 proved. $a \div a = 1$
+            fails at $a = 0$, where the division has no meaning, and the other two fail for every $a$
+            except 0.
+        - prompt: >-
+            A calculator rounds every result to three significant figures. Which of these can it
+            break?
+          answer:
+            type: choice
+            options:
+              - { id: commute, label: '$a + b = b + a$' }
+              - { id: associate, label: '$(a + b) + c = a + (b + c)$' }
+              - { id: both, label: 'Both of them' }
+              - { id: neither, label: 'Neither of them' }
+            correct: [associate]
+          explanation: >-
+            Only the grouping rule. Each sum is rounded from its exact value, and $a + b$ and $b + a$
+            have the same exact value, so they round alike. The two groupings round different
+            intermediate sums, so they can differ.
+
+  - id: explore-distribute
+    phase: explore
+    kind: predict
+    concept: M1.2/field-axioms
+    title: Multiplying out a bracket
+    prompt: Which expression is equal to $3(x + 4)$ for every value of $x$?
+    answer:
+      type: choice
+      options:
+        - { id: first-only, label: '$3x + 4$' }
+        - { id: every-term, label: '$3x + 12$' }
+        - { id: added, label: '$3x + 7$' }
+        - { id: merged, label: '$12x$' }
+      correct: [every-term]
+    explanation: >-
+      The 3 multiplies everything inside the bracket: $3 \times x + 3 \times 4 = 3x + 12$.
+
+  - id: explore-round-first
+    phase: explore
+    kind: predict
+    concept: M1.2/field-axioms
+    title: A calculator that keeps three figures
+    prompt: >-
+      A calculator keeps only three significant figures, and rounds every result before the next step
+      uses it. What does it show for $(1 + 0.004) + 0.004$?
+    answer:
+      type: number
+      value: 1
+      tolerance: { abs: 0.000001 }
+    explanation: >-
+      It shows 1.00. The first sum, 1.004, rounds to 1.00, so the first 0.004 is lost. Adding the
+      second 0.004 gives 1.004 again, which rounds to 1.00 once more.
+
+  - id: explore-commute-round
+    phase: explore
+    kind: predict
+    concept: M1.2/field-axioms
+    title: Swapping instead of regrouping
+    prompt: >-
+      Could the same three-figure calculator ever give different answers for $a + b$ and $b + a$?
+    answer:
+      type: choice
+      options:
+        - { id: sometimes, label: 'Yes, for some pairs of numbers' }
+        - { id: lopsided, label: 'Only when one number is much smaller than the other' }
+        - { id: never, label: 'No, never' }
+      correct: [never]
+    explanation: >-
+      Never. The calculator rounds the exact result, and $a + b$ and $b + a$ have the same exact
+      result, so they round to the same value.
+
+  # Derive ---------------------------------------------------------------------
+  - id: derive-minus-one
+    phase: derive
+    kind: proof
+    concept: M1.2/field-axioms
+    title: A negative times a negative
+    prompt: >-
+      Choose the rule that justifies each line of the chain. Each line uses exactly one rule.
+    answer:
+      type: steps
+      rules:
+        - { id: times-one, name: Times one, label: 'Multiplying by 1 changes nothing: $a \times 1 = a$.' }
+        - { id: distributive, name: Distributive, label: 'A common factor can be taken out: $ab + ac = a(b + c)$.' }
+        - { id: swap, name: Swap, label: 'The order of a sum can be swapped: $a + b = b + a$.' }
+        - { id: negative, name: Negative, label: 'A number plus its negative is 0: $a + (-a) = 0$.' }
+        - { id: times-zero, name: Times zero, label: 'Anything times 0 is 0, as proved above.' }
+      start: '(-1)(-1) + (-1)'
+      lines:
+        - math: '= (-1)(-1) + (-1)(1)'
+          rule: times-one
+        - math: '= (-1)\big((-1) + 1\big)'
+          rule: distributive
+        - math: '= (-1)\big(1 + (-1)\big)'
+          rule: swap
+        - math: '= (-1)(0)'
+          rule: negative
+        - math: '= 0'
+          rule: times-zero
+    explanation: >-
+      In order: times one, distributive, swap, negative and times zero. So $(-1)(-1) + (-1) = 0$, and
+      adding 1 to both sides gives $(-1)(-1) = 1$.
+
+  - id: derive-expand
+    phase: derive
+    kind: step
+    concept: M1.2/equivalence
+    covers: [M1.2/field-axioms]
+    title: Multiplying out a square
+    prompt: >-
+      Multiply out $(a + b)^2$ and collect like terms, so that no brackets are left. Type a power
+      with `^` or `**`, and put `*` in every product, for example `5*x^2 + 2*x*y`.
+    answer:
+      type: expression
+      symbols:
+        - { name: a }
+        - { name: b }
+      lhs: '(a + b)^2 ='
+      reference: a**2 + 2*a*b + b**2
+      accept: ['a^2 + 2*a*b + b^2', 'b**2 + 2*b*a + a**2', 'a*a + a*b + b*a + b*b']
+      reject: ['a^2 + b^2', '(a + b)*(a + b)', '(a + b)^2', 'a^2 + a*b + b^2', 'a^2 + 2*a*b', 'a^2 + 4*a*b + b^2']
+      form:
+        expanded: true
+        message: That is equal, but it still has a bracket in it. Multiply every bracket out.
+    explanation: >-
+      $(a + b)(a + b) = a^2 + ab + ba + b^2 = a^2 + 2ab + b^2$. Each term of the first bracket
+      multiplies each term of the second, and the two copies of $ab$ are collected.
+
+  - id: derive-counterexample
+    phase: derive
+    kind: predict
+    concept: M1.2/equivalence
+    title: Settling a slip
+    prompt: Which of these settles whether $(a + b)^2$ and $a^2 + b^2$ are equivalent?
+    answer:
+      type: choice
+      options:
+        - { id: zero-five, label: '$a = 0$, $b = 5$: both give 25, so they are equivalent' }
+        - { id: one-one, label: '$a = 1$, $b = 1$: they give 4 and 2, so they are not equivalent' }
+        - { id: three-zero, label: '$a = 3$, $b = 0$: both give 9, so they are equivalent' }
+        - { id: unsettled, label: 'No pair of values can settle it either way' }
+      correct: [one-one]
+    explanation: >-
+      One pair of values where the two disagree is enough to show that they are not equivalent, and
+      $a = b = 1$ is such a pair. Agreement at a pair proves nothing: both pairs that agree have a 0
+      in them, which hides the missing $2ab$.
+    placement: true
+    review:
+      variants:
+        - prompt: Are $(x - 1)(x + 1)$ and $x^2 - 1$ equivalent?
+          answer:
+            type: choice
+            options:
+              - { id: differ-zero, label: 'No: they differ at $x = 0$' }
+              - { id: differ-one, label: 'No: they differ at $x = 1$' }
+              - { id: equivalent, label: 'Yes: multiplying out the first gives the second' }
+              - { id: undecidable, label: 'It cannot be decided' }
+            correct: [equivalent]
+          explanation: >-
+            Multiplying out, $(x - 1)(x + 1) = x^2 + x - x - 1 = x^2 - 1$. Every step is one of the
+            rules, so the two agree for every $x$. At $x = 0$ both give $-1$, and at $x = 1$ both
+            give 0.
+        - prompt: $x^2$ and $2x$ agree at $x = 0$ and at $x = 2$. Are they equivalent?
+          answer:
+            type: choice
+            options:
+              - { id: two-agreements, label: 'Yes: they agree at two values' }
+              - { id: differ-one, label: 'No: at $x = 1$ one gives 1 and the other 2' }
+              - { id: whole-numbers, label: 'Only for whole numbers' }
+              - { id: undecidable, label: 'It cannot be decided' }
+            correct: [differ-one]
+          explanation: >-
+            At $x = 1$, $x^2 = 1$ but $2x = 2$, so they are not equivalent. Agreeing at some values
+            never shows equivalence on its own, and one disagreement refutes it.
+        - prompt: What shows that two expressions are equivalent?
+          answer:
+            type: choice
+            options:
+              - { id: three-values, label: 'They agree at three different values' }
+              - { id: chain, label: 'A chain of steps from one to the other, each step one of the rules' }
+              - { id: look, label: 'They use the same letters and numbers' }
+              - { id: calculator, label: 'A calculator gives the same value for both at $x = 0.5$' }
+            correct: [chain]
+          explanation: >-
+            Only a chain of steps, each justified by a rule, covers every value at once. Agreeing at
+            any number of values is evidence, and one value where they disagree is proof that they
+            are not equivalent.
+
+  - id: derive-three-agreements
+    phase: derive
+    kind: predict
+    concept: M1.2/equivalence
+    title: Three agreements
+    prompt: >-
+      The expressions $x$ and $x(x - 1)(x - 2) + x$ agree at $x = 0$, $x = 1$ and $x = 2$. Check one
+      of them if you like. What does $x(x - 1)(x - 2) + x$ give at $x = 3$?
+    answer:
+      type: number
+      value: 9
+    explanation: >-
+      $3 \times 2 \times 1 + 3 = 9$, while $x$ itself is 3. The two agree at three values and are
+      still not equivalent.
+
+  - id: derive-power-of-power
+    phase: derive
+    kind: step
+    concept: M1.2/exponent-rules
+    title: A power of a power
+    prompt: >-
+      $(a^m)^n$ means $n$ copies of $a^m$ multiplied together, where $m$ and $n$ are whole numbers.
+      Write the exponent $k$ for which $(a^m)^n = a^k$. Put `*` in every product, for example `2*m`.
+    answer:
+      type: expression
+      symbols:
+        - { name: m, positive: true, integer: true }
+        - { name: n, positive: true, integer: true }
+      lhs: 'k ='
+      reference: m*n
+      accept: ['n*m', 'm n', '(m)*(n)']
+      reject: ['m + n', 'm^n', 'n^m', 'm', 'n', 'm*n + 1']
+    explanation: >-
+      There are $n$ groups of $m$ copies of $a$, which is $mn$ copies in all, so $(a^m)^n = a^{mn}$.
+    placement: true
+    review:
+      variants:
+        - prompt: What is $3^{-2}$? Give a fraction or a decimal.
+          answer:
+            type: number
+            value: 0.111111111111
+            tolerance: { rel: 0.005 }
+          explanation: >-
+            $3^{-2} \times 3^{2}$ must be $3^{0} = 1$, so $3^{-2} = 1/3^2 = 1/9$, about 0.111.
+        - prompt: Write $x^7 \div x^3$ as a single power of $x$. What is its exponent?
+          answer:
+            type: number
+            value: 4
+          explanation: >-
+            Seven copies of $x$ divided by three copies leaves four, so $x^7 \div x^3 = x^{7 - 3} =
+            x^4$. Dividing powers of the same number subtracts the exponents.
+        - prompt: What is $5^{0} \times 5^{2}$?
+          answer:
+            type: number
+            value: 25
+          explanation: >-
+            $5^0 = 1$, so the product is $5^2 = 25$. Adding the exponents gives the same answer,
+            $5^{0 + 2} = 25$, which is why $5^0$ has to be 1.
+
+  - id: derive-negative-power
+    phase: derive
+    kind: predict
+    concept: M1.2/exponent-rules
+    title: A negative exponent
+    prompt: >-
+      If $a^m \times a^n = a^{m+n}$ is to hold for negative exponents too, what must $2^{-3}$ be?
+      Give a decimal or a fraction.
+    answer:
+      type: number
+      value: 0.125
+    explanation: >-
+      $2^{-3} \times 2^{3} = 2^{0} = 1$, so $2^{-3}$ is the number that multiplies 8 to give 1, which
+      is $1/8 = 0.125$.
+
+  - id: derive-solve-for-speed
+    phase: derive
+    kind: step
+    concept: M1.2/solving-equations
+    title: The speed a chip needs
+    prompt: >-
+      Solve $T = \dfrac{C}{RY}$ for $R$, the chip speed that finishes $C$ FLOP in $T$ years. All
+      four letters stand for positive numbers. Type a fraction with `/`, for example `A/(B*D)`.
+    answer:
+      type: expression
+      symbols:
+        - { name: C, positive: true }
+        - { name: T, positive: true }
+        - { name: Y, positive: true }
+      lhs: 'R ='
+      reference: C/(T*Y)
+      accept: ['C/T/Y', 'C/(Y*T)', '(C/T)/Y', 'C*(T*Y)**(-1)']
+      reject: ['T*Y/C', 'C*T*Y', 'C/T', 'C*T/Y', 'T/(C*Y)', 'C*Y/T']
+    explanation: >-
+      Multiply both sides by $R$ to get $RT = C/Y$, then divide both sides by $T$: $R = C/(TY)$.
+    placement: true
+    review:
+      variants:
+        - prompt: Solve $d = vt$ for $t$, where $v$ is not 0.
+          answer:
+            type: expression
+            symbols:
+              - { name: d, positive: true }
+              - { name: v, positive: true }
+            lhs: 't ='
+            reference: d/v
+            reject: ['v/d', 'd*v', 'd - v']
+          explanation: >-
+            Divide both sides by $v$, a step that can be undone because $v$ is not 0, so $t = d/v$.
+        - prompt: Solve $y = 3x + 2$ for $x$.
+          answer:
+            type: expression
+            symbols:
+              - { name: y }
+            lhs: 'x ='
+            reference: (y - 2)/3
+            accept: ['y/3 - 2/3']
+            reject: ['y/3 - 2', '(y + 2)/3', '3*y + 2', 'y - 2/3']
+          explanation: >-
+            Subtract 2 from both sides, $y - 2 = 3x$, then divide both sides by 3, so $x = (y -
+            2)/3$. The operations are undone in the reverse of the order they were done to $x$.
+        - prompt: How many solutions does $x^2 = 4x$ have?
+          answer:
+            type: number
+            value: 2
+          explanation: >-
+            Two. Bring everything to one side and take out the common factor: $x^2 - 4x = x(x - 4) =
+            0$, so $x = 0$ or $x = 4$. Dividing both sides by $x$ would have lost $x = 0$.
+
+  - id: derive-lost-solution
+    phase: derive
+    kind: predict
+    concept: M1.2/solving-equations
+    title: A lost solution
+    prompt: >-
+      Someone solves $x^2 = 5x$ by dividing both sides by $x$, which gives $x = 5$. That is a
+      solution, but the division lost another one. Which value of $x$ was lost?
+    answer:
+      type: number
+      value: 0
+      tolerance: { abs: 0.000001 }
+    explanation: >-
+      $x = 0$, where both sides are 0. Dividing by $x$ is only safe when $x$ is not 0.
+
+  # Build ----------------------------------------------------------------------
+  - id: build-average-bug
+    phase: build
+    kind: debug
+    concept: M1.2/expression-trees
+    title: An average that is too large
+    prompt: >-
+      This program should print the average of three scores, but its answer is too large. Run it,
+      find the mistake, and fix the one line that is wrong.
+    answer:
+      type: code
+      starter: |
+        # The average of three scores: add them, then divide by 3.
+        first = 72
+        second = 85
+        third = 90
+
+        average = first + second + third / 3
+        print(average)
+      tests: |
+        def test_average():
+            """average is the mean of the three scores."""
+            assert close(average, 82.33333333333333), f"average is {average}, which is not the mean of 72, 85 and 90."
+
+        def test_scores():
+            """The three scores are unchanged."""
+            assert (first, second, third) == (72, 85, 90), "Change only the line for average."
+      reference: |
+        first = 72
+        second = 85
+        third = 90
+
+        average = (first + second + third) / 3
+        print(average)
+      wrong:
+        - code: |
+            first = 72
+            second = 85
+            third = 90
+
+            average = first + second + third / 3
+            print(average)
+          why: Division comes before addition, so only the third score is divided by 3.
+        - code: |
+            first = 72
+            second = 85
+            third = 90
+
+            average = first + (second + third) / 3
+            print(average)
+          why: The brackets group only two of the scores, so the first is still added whole.
+        - code: |
+            first = 72
+            second = 85
+            third = 90
+
+            average = (first + second + third) / 2
+            print(average)
+          why: Divides by 2, though there are three scores.
+    explanation: >-
+      In `first + second + third / 3` the division sits below the additions in the tree, so only
+      `third` is divided. Brackets put the additions underneath: `(first + second + third) / 3` gives
+      about 82.33.
+
+  - id: build-break-associativity
+    phase: build
+    kind: build
+    concept: M1.2/field-axioms
+    covers: [M1.2/expression-trees]
+    title: Break associativity on purpose
+    prompt: >-
+      The starter uses Explore's numbers, for which the two groupings differ by only 0.01. Choose new
+      values of `a`, `b` and `c` so that the groupings differ by at least 1. Each number must have at
+      most three significant figures, so that the calculator can hold it exactly.
+    answer:
+      type: code
+      starter: |
+        # r rounds a number to three significant figures,
+        # like the calculator in Explore. Use it as it is.
+        def r(x):
+            return float(f"{x:.3g}")
+
+        # Choose a, b and c, each with at most three
+        # significant figures, such as 25.6 or 0.007.
+        a = 1
+        b = 0.004
+        c = 0.004
+
+        left = r(r(a + b) + c)    # (a + b) + c, rounding each result
+        right = r(a + r(b + c))   # a + (b + c), rounding each result
+
+        print(left, right)
+      tests: |
+        def test_three_figures():
+            """a, b and c each have at most three significant figures."""
+            for name, value in (("a", a), ("b", b), ("c", c)):
+                assert float(f"{value:.3g}") == value, f"{name} is {value}, which needs more than three significant figures."
+
+        def test_differ():
+            """The two groupings give different answers."""
+            assert left != right, f"Both groupings give {left}."
+
+        def test_gap():
+            """The two groupings differ by at least 1."""
+            gap = abs(left - right)
+            assert gap >= 1, f"The groupings differ by {gap:.3g}. Make the gap at least 1."
+
+        def test_as_written():
+            """left and right are still worked out as the starter wrote them."""
+            assert left == r(r(a + b) + c) and right == r(a + r(b + c)), "Change only a, b and c, not the lines for left and right."
+      reference: |
+        def r(x):
+            return float(f"{x:.3g}")
+
+        a = 100
+        b = 0.4
+        c = 0.4
+
+        left = r(r(a + b) + c)
+        right = r(a + r(b + c))
+
+        print(left, right)
+      wrong:
+        - code: |
+            def r(x):
+                return float(f"{x:.3g}")
+
+            a = 1
+            b = 0.004
+            c = 0.004
+
+            left = r(r(a + b) + c)
+            right = r(a + r(b + c))
+
+            print(left, right)
+          why: Explore's numbers break associativity, but the gap is only 0.01.
+        - code: |
+            def r(x):
+                return float(f"{x:.3g}")
+
+            a = 1
+            b = 2
+            c = 3
+
+            left = r(r(a + b) + c)
+            right = r(a + r(b + c))
+
+            print(left, right)
+          why: Small whole numbers lose nothing to rounding, so the two groupings agree.
+        - code: |
+            def r(x):
+                return float(f"{x:.3g}")
+
+            a = 1000
+            b = 0.4
+            c = 0.4
+
+            left = r(r(a + b) + c)
+            right = r(a + r(b + c))
+
+            print(left, right)
+          why: Near 1,000 the calculator's steps are 10 wide, so even 0.8 is lost in both groupings.
+        - code: |
+            def r(x):
+                return float(f"{x:.3g}")
+
+            a = 100.4
+            b = 0.4
+            c = 0.4
+
+            left = r(r(a + b) + c)
+            right = r(a + r(b + c))
+
+            print(left, right)
+          why: 100.4 needs four significant figures, so the calculator cannot hold it.
+        - code: |
+            def r(x):
+                return float(f"{x:.3g}")
+
+            a = 1
+            b = 0.004
+            c = 0.004
+
+            left = r(r(a + b) + c)
+            right = r(a + r(b + c)) + 1
+
+            print(left, right)
+          why: Widens the gap by changing the line for right instead of choosing new numbers.
+    explanation: >-
+      Near 100 the calculator's steps are 1 wide, so amounts just under half a step vanish when added
+      one at a time but survive when added together first. With $a = 100$ and $b = c = 0.4$, the
+      groupings give 100 and 101.
+
+  - id: build-commute-float
+    phase: build
+    kind: breakit
+    concept: M1.2/field-axioms
+    title: Swapping two numbers
+    prompt: Predict what happens to `left` after the change, then run both versions to see.
+    answer:
+      type: breakit
+      code: |
+        left = (0.1 + 0.2) + 0.3
+        right = 0.1 + (0.2 + 0.3)
+        print(left, right, left == right)
+      broken: |
+        left = (0.2 + 0.1) + 0.3
+        right = 0.1 + (0.2 + 0.3)
+        print(left, right, left == right)
+      change: >-
+        In the line for `left`, `0.1 + 0.2` becomes `0.2 + 0.1`: the same two numbers, swapped.
+      options:
+        - { id: now-equal, label: '`left` changes, and now equals `right`', when: "left != base['left'] and left == right" }
+        - { id: still-differs, label: '`left` changes, but still differs from `right`', when: "left != base['left'] and left != right" }
+        - { id: unchanged, label: '`left` is unchanged', when: "left == base['left']" }
+        - { id: error, label: 'Python stops with an error', when: 'error is not None' }
+    explanation: >-
+      `left` is unchanged. A single addition is rounded once, from its exact sum, and $0.1 + 0.2$ and
+      $0.2 + 0.1$ have the same exact sum. Swapping cannot change a rounded result; regrouping can,
+      because it changes which sums are rounded.
+
+  - id: build-sympy-check
+    phase: build
+    kind: build
+    concept: M1.2/equivalence
+    title: Equivalence by machine
+    prompt: >-
+      Replace each `None` with the difference of the two expressions in its comment, multiplied out
+      by `expand`, as in the example.
+    answer:
+      type: code
+      starter: |
+        from sympy import symbols, expand
+
+        x = symbols("x")
+
+        # expand multiplies out every bracket and collects like terms.
+        # Two expressions are equivalent when their difference expands to 0.
+        example = expand((x - 1)*(x + 1) - (x**2 - 1))
+        print("example:", example)
+
+        # Replace each None. In Python, x^2 is written x**2, and every
+        # product needs a *, so 3(x + 4) is 3*(x + 4).
+        trees = None   # 3(x + 4) and 3x + 12
+        slip = None    # (x + 1)^2 and x^2 + 1
+        built = None   # x(x - 1)(x - 2) + x and x
+
+        print("trees:", trees)
+        print("slip:", slip)
+        print("built:", built)
+      tests: |
+        def test_trees():
+            """trees is the difference of 3(x + 4) and 3x + 12, multiplied out."""
+            assert trees is not None, "Replace None with expand(...) of the difference."
+            want = expand(3*(x + 4) - (3*x + 12))
+            assert trees == want or trees == -want, f"trees is {trees}, which is not that difference multiplied out."
+
+        def test_slip():
+            """slip is the difference of (x + 1)^2 and x^2 + 1, multiplied out."""
+            assert slip is not None, "Replace None with expand(...) of the difference."
+            want = expand((x + 1)**2 - (x**2 + 1))
+            assert slip == want or slip == -want, f"slip is {slip}, which is not that difference multiplied out."
+
+        def test_built():
+            """built is the difference of x(x - 1)(x - 2) + x and x, multiplied out."""
+            assert built is not None, "Replace None with expand(...) of the difference."
+            want = expand(x*(x - 1)*(x - 2) + x - x)
+            assert built == want or built == -want, f"built is {built}, which is not that difference multiplied out."
+      reference: |
+        from sympy import symbols, expand
+
+        x = symbols("x")
+
+        example = expand((x - 1)*(x + 1) - (x**2 - 1))
+        print("example:", example)
+
+        trees = expand(3*(x + 4) - (3*x + 12))
+        slip = expand((x + 1)**2 - (x**2 + 1))
+        built = expand(x*(x - 1)*(x - 2) + x - x)
+
+        print("trees:", trees)
+        print("slip:", slip)
+        print("built:", built)
+      wrong:
+        - code: |
+            from sympy import symbols, expand
+
+            x = symbols("x")
+
+            example = expand((x - 1)*(x + 1) - (x**2 - 1))
+            print("example:", example)
+
+            trees = expand(3*(x + 4) - (3*x + 12))
+            slip = (x + 1)**2 - (x**2 + 1)
+            built = expand(x*(x - 1)*(x - 2) + x - x)
+
+            print("trees:", trees)
+            print("slip:", slip)
+            print("built:", built)
+          why: Leaves the difference for slip unexpanded, so it is not yet visibly 0 or not 0.
+        - code: |
+            from sympy import symbols, expand
+
+            x = symbols("x")
+
+            example = expand((x - 1)*(x + 1) - (x**2 - 1))
+            print("example:", example)
+
+            trees = expand(3*(x + 4) - 3*x + 12)
+            slip = expand((x + 1)**2 - (x**2 + 1))
+            built = expand(x*(x - 1)*(x - 2) + x - x)
+
+            print("trees:", trees)
+            print("slip:", slip)
+            print("built:", built)
+          why: Without brackets round 3x + 12, only 3x is subtracted and the 12 is added, giving 24.
+        - code: |
+            from sympy import symbols, expand
+
+            x = symbols("x")
+
+            example = expand((x - 1)*(x + 1) - (x**2 - 1))
+            print("example:", example)
+
+            trees = expand(3*(x + 4) - (3*x + 12))
+            slip = expand((x + 1)**2 - (x**2 + 1))
+            built = expand(x*(x - 1)*(x - 2) - x)
+
+            print("trees:", trees)
+            print("slip:", slip)
+            print("built:", built)
+          why: Drops the + x from the first expression, so it compares the product with x rather than 0.
+    explanation: >-
+      `trees` is 0, `slip` is $2x$ and `built` is $x^3 - 3x^2 + 2x$. Only the first pair is
+      equivalent. SymPy reached each answer by applying the rules, so each is a proof, not a check
+      at a few values.
+
+  # Explain --------------------------------------------------------------------
+  - id: explain-rules-not-conventions
+    phase: explain
+    kind: explain
+    concept: M1.2/field-axioms
+    covers: [M1.2/expression-trees, M1.2/equivalence, M1.2/solving-equations, M1.2/exponent-rules]
+    title: Explain it to a friend
+    prompt: >-
+      A friend says: "The rules of algebra are just conventions. A negative times a negative is
+      positive, and $2^0 = 1$, because someone decided so. And the computer's `False` shows the rules
+      are not even true." Explain to your friend what an expression really is and which few rules
+      algebra rests on. Show why $(-1)(-1) = 1$ and $2^0 = 1$ are not arbitrary, and say what the
+      computer's `False` really shows. Then say what makes two expressions the same, and what makes a
+      step in solving an equation safe.
+    answer:
+      type: text
+      rubric:
+        - id: trees
+          criterion: >-
+            Describes an expression as a tree whose shape is fixed by the order of operations and
+            brackets, with evaluation working up from the leaves.
+        - id: forced
+          criterion: >-
+            Shows that $(-1)(-1) = 1$ follows from the rules, for example from $(-1)(-1) + (-1) =
+            (-1)\big((-1) + 1\big) = 0$, and that $2^0 = 1$ is the only value that keeps $a^m \times
+            a^n = a^{m+n}$ true.
+        - id: computer
+          criterion: >-
+            Explains that the computer rounds after every operation, which can break the grouping rule
+            but never the order rule, so the `False` is about rounded numbers, not ordinary ones.
+        - id: same
+          criterion: >-
+            Says that two expressions are the same when they agree for every value of their letters,
+            that one disagreement refutes this, and that only a chain of rules proves it.
+        - id: safe
+          criterion: >-
+            Says that a step in solving is safe when it can be undone, and names one that is not, such
+            as squaring both sides or dividing by something that might be 0.
+        - id: plain
+          criterion: >-
+            Is simple enough for the friend to follow, and explains any term such as "associativity"
+            the first time it is used.
+      reference: >-
+        An expression is not just a string of symbols: it has a shape, a tree. In $3 + 4 \times 2$ the
+        multiplication sits below the addition, so it is done first, and brackets change the tree and
+        with it the value. Algebra rests on a few rules about adding and multiplying. The order of two
+        numbers in a sum or product does not matter (commutativity), nor does the grouping of a chain
+        (associativity); a bracket can be multiplied out (distributivity); adding 0 or multiplying by
+        1 changes nothing; and every number has a negative that cancels it. Every step of algebra has
+        to be one of these, which is why its results hold for every number. $(-1)(-1) = 1$ is not a
+        convention, because the rules force it: $(-1)(-1) + (-1) = (-1)(-1) + (-1)(1) =
+        (-1)\big((-1) + 1\big) = (-1)(0) = 0$, and adding 1 to both sides gives $(-1)(-1) = 1$. Any
+        other answer would break the distributive law. $2^0 = 1$ is a definition, but the only one
+        that works: multiplying powers adds their exponents, so $2^0 \times 2^3 = 2^3$, and only 1
+        leaves $2^3$ unchanged. The computer's `False` is real, but it is about rounded numbers. A
+        computer keeps about 16 significant figures and rounds after every operation, so the two
+        groupings round different intermediate results. That can break associativity but never
+        commutativity, because $a + b$ and $b + a$ have the same exact sum and so round to the same
+        value. Ordinary numbers obey the rules exactly. Two expressions are the same when they agree
+        for every value of their letters. One value where they disagree, such as $a = b = 1$ for
+        $(a + b)^2$ and $a^2 + b^2$, disproves it; agreeing values only suggest it; a chain of rules
+        proves it. A step in solving an equation is safe when it can be undone, such as adding the
+        same number to both sides. Squaring both sides can add solutions, and dividing by $x$ can lose
+        the solution $x = 0$.
+      minWords: 100
+      maxWords: 450

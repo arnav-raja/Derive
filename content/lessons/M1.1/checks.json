@@ -2,31 +2,31 @@
   "version": 1,
   "expressions": {
     "derive-geomean": {
-      "source": "78b7642847770b09",
+      "source": "dbef02a55accb5da",
       "points": [
         {
-          "L": "32/5",
-          "H": "8"
+          "a": "32/5",
+          "b": "8"
         },
         {
-          "L": "28/5",
-          "H": "13/2"
+          "a": "28/5",
+          "b": "13/2"
         },
         {
-          "L": "2/3",
-          "H": "9/5"
+          "a": "2/3",
+          "b": "9/5"
         },
         {
-          "L": "17/3",
-          "H": "39/5"
+          "a": "17/3",
+          "b": "39/5"
         },
         {
-          "L": "17",
-          "H": "3/7"
+          "a": "17",
+          "b": "3/7"
         },
         {
-          "L": "9/2",
-          "H": "20/3"
+          "a": "9/2",
+          "b": "20/3"
         }
       ],
       "values": [
@@ -39,37 +39,37 @@
       ]
     },
     "derive-pendulum-period": {
-      "source": "0d64b6aaef24aafb",
+      "source": "48c1e928f1fbb8d4",
       "points": [
         {
           "L": "11/3",
           "g": "24/5",
-          "m": "36/7"
+          "M": "36/7"
         },
         {
           "L": "9/2",
           "g": "27/7",
-          "m": "21/4"
+          "M": "21/4"
         },
         {
           "L": "15/4",
           "g": "8/7",
-          "m": "34/3"
+          "M": "34/3"
         },
         {
           "L": "28/5",
           "g": "2/7",
-          "m": "33/7"
+          "M": "33/7"
         },
         {
           "L": "8",
           "g": "25",
-          "m": "11"
+          "M": "11"
         },
         {
           "L": "7",
           "g": "5",
-          "m": "5"
+          "M": "5"
         }
       ],
       "values": [
@@ -82,37 +82,37 @@
       ]
     },
     "derive-pendulum-square": {
-      "source": "3a996d20ec77b152",
+      "source": "f92e33c9df1bfa71",
       "points": [
         {
           "L": "3/2",
           "g": "1",
-          "m": "12"
+          "M": "12"
         },
         {
           "L": "13/3",
           "g": "4/7",
-          "m": "22/7"
+          "M": "22/7"
         },
         {
           "L": "18/7",
           "g": "19/3",
-          "m": "21/2"
+          "M": "21/2"
         },
         {
           "L": "13",
           "g": "20",
-          "m": "27/7"
+          "M": "27/7"
         },
         {
           "L": "12/5",
           "g": "9/2",
-          "m": "6"
+          "M": "6"
         },
         {
           "L": "25/4",
           "g": "17/4",
-          "m": "10"
+          "M": "10"
         }
       ],
       "values": [
@@ -206,6 +206,24 @@
     }
   },
   "runs": {
+    "build-sympy-years": {
+      "tests": [
+        {
+          "name": "test_in_julian_years",
+          "description": "library_years is a quantity measured in julian_year.",
+          "passed": false,
+          "message": "library_years is 3150000000.00000, which is not measured in julian_year."
+        },
+        {
+          "name": "test_agrees",
+          "description": "SymPy's answer agrees with your own years.",
+          "passed": false,
+          "message": "TypeError: Cannot convert expression to float"
+        }
+      ],
+      "error": null,
+      "output": "99.8174766141912\n3150000000.00000\n"
+    },
     "build-training-years": {
       "tests": [
         {

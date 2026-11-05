@@ -1,7 +1,7 @@
 import "server-only";
 
 import type { MDXComponents } from "mdx/types";
-import type { ReactNode } from "react";
+import type { ComponentProps, ReactNode } from "react";
 
 import { ExerciseCard } from "@/components/exercise/exercise-card";
 import { ExpressionTree, FunctionPlot, MappingDiagram, ProgramTrace, ScaleLine } from "@/components/figures";
@@ -77,6 +77,14 @@ export function phaseComponents(ctx: PhaseContext): MDXComponents {
     );
   }
 
+  /** A scale line whose ordinary-scale view waits for an exercise, so the view cannot answer it. */
+  function ScaleLineSlot({ linearAfter, ...props }: ComponentProps<typeof ScaleLine> & { linearAfter?: string }) {
+    if (linearAfter && !lesson.byId.has(linearAfter)) {
+      return <Problem>a scale line waits for {linearAfter}, which does not exist.</Problem>;
+    }
+    return <ScaleLine {...props} linearLocked={linearAfter ? !states.get(linearAfter)?.done : false} />;
+  }
+
   function MixedCheck() {
     if (phase !== "explain") return <Problem>the mixed check belongs in the Explain phase.</Problem>;
     const items = ctx.check?.items ?? [];
@@ -135,7 +143,7 @@ export function phaseComponents(ctx: PhaseContext): MDXComponents {
     Steps,
     Step,
     Figure,
-    ScaleLine,
+    ScaleLine: ScaleLineSlot,
     FunctionPlot,
     ExpressionTree,
     MappingDiagram,

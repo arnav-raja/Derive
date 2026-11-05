@@ -7,12 +7,15 @@ import { Button } from "@/components/ui/button";
 import { inputClasses } from "@/components/ui/field";
 
 import {
+  combineValues,
   evaluate,
   exprText,
   formatValue,
   parseExpr,
   parseLooseNumber,
   parseUnit,
+  roundSig,
+  sigText,
   unitOf,
   unitText,
   type ExprNode,
@@ -52,7 +55,7 @@ function prettyUnit(text: string): string {
   return text.replace(/\^(-?\d+)/g, (_, d: string) => [...d].map((c) => SUPERSCRIPT[c] ?? c).join(""));
 }
 
-function build(root: ExprNode, scope: Record<string, number>, units: Record<string, Unit> | null) {
+function build(root: ExprNode, scope: Record<string, number>, units: Record<string, Unit> | null, sigfigs?: number) {
   let nextId = 0;
   let leaf = 0;
   const order: TreeNode[] = [];
@@ -63,7 +66,10 @@ function build(root: ExprNode, scope: Record<string, number>, units: Record<stri
     const x = children.length ? children.reduce((s, c) => s + c.x, 0) / children.length : leaf++;
     let value = Number.NaN;
     try {
-      value = evaluate(node, scope);
+      // A rounding calculator rounds every result before the next operation uses it.
+      value = sigfigs
+        ? roundSig(combineValues(node, children.map((c) => c.value), scope), sigfigs)
+        : evaluate(node, scope);
     } catch {
       value = Number.NaN;
     }
@@ -107,6 +113,7 @@ export function ExpressionTree({
   units,
   syms = NONE,
   stepwise = false,
+  sigfigs,
   predict,
 }: {
   title: string;
@@ -120,6 +127,8 @@ export function ExpressionTree({
   syms?: Record<string, string>;
   /** Reveal values one operation at a time. */
   stepwise?: boolean;
+  /** Act as a calculator that keeps this many significant figures, rounding every result. */
+  sigfigs?: number;
   /** Ask for the value (or the unit) at the top before showing it. */
   predict?: { prompt: string; ask?: "value" | "unit"; options?: string[] };
 }) {
@@ -129,7 +138,11 @@ export function ExpressionTree({
     () => (units ? Object.fromEntries(Object.entries(units).map(([k, v]) => [k, parseUnit(v)])) : null),
     [units],
   );
-  const { tree, order, leaves } = useMemo(() => build(parseExpr(expr), values, parsedUnits), [expr, values, parsedUnits]);
+  const { tree, order, leaves } = useMemo(
+    () => build(parseExpr(expr), values, parsedUnits, sigfigs),
+    [expr, values, parsedUnits, sigfigs],
+  );
+  const show = (v: number) => (sigfigs ? sigText(v, sigfigs) : formatValue(v));
   const ops = order.filter((n) => n.children.length > 0);
   const [step, setStep] = useState(stepwise ? 0 : ops.length);
   const [hover, setHover] = useState<number | null>(null);
@@ -147,7 +160,17 @@ export function ExpressionTree({
   // is as wide as the longest line any node will show, so nothing spills out.
   const unitLine = (n: TreeNode) =>
     n.unit?.ok && Object.keys(n.unit.unit).length ? prettyUnit(unitText(n.unit.unit)) : "";
-  const valueLine = (n: TreeNode) => (n.unit && !n.unit.ok ? "units clash" : formatValue(n.value, 3));
+  const rawValueLine = (n: TreeNode) =>
+    n.unit && !n.unit.ok
+      ? "units clash"
+      : sigfigs && n.node.kind === "num" && Number(n.node.text) === n.value
+        ? n.node.text
+        : sigfigs
+          ? sigText(n.value, sigfigs)
+          : formatValue(n.value, 3);
+  // A number at a leaf that reads the same as its value is written once.
+  const plainLeaf = (n: TreeNode) => n.node.kind === "num" && !unitLine(n) && rawValueLine(n) === n.label;
+  const valueLine = (n: TreeNode) => (plainLeaf(n) ? "" : rawValueLine(n));
   const nodeW = Math.max(
     NODE_W,
     ...all.map((n) => Math.max(n.label.length * 7.8, valueLine(n).length * 6.4, unitLine(n).length * 6.4) + 16),
@@ -168,7 +191,7 @@ export function ExpressionTree({
 
   const describe = (n: TreeNode) => {
     const u = n.unit ? (n.unit.ok ? `, unit ${unitText(n.unit.unit)}` : `. Units do not match: ${n.unit.message}`) : "";
-    return `${n.text} = ${isShown(n) ? formatValue(n.value) : "?"}${isShown(n) ? u : ""}`;
+    return `${n.text} = ${isShown(n) ? show(n.value) : "?"}${isShown(n) ? u : ""}`;
   };
 
   return (
@@ -203,7 +226,7 @@ export function ExpressionTree({
                     readOnly={phase !== "asking"}
                     inputMode="decimal"
                     autoComplete="off"
-                    placeholder="for example 3e23"
+                    placeholder={sigfigs ? "for example 2.50" : "for example 3e23"}
                     className={clsx(inputClasses, "tabular h-9 max-w-xs font-mono")}
                   />
                 </div>
@@ -226,7 +249,12 @@ export function ExpressionTree({
               )
             }
             verdict={
-              ask === "value" ? (
+              ask === "value" && sigfigs ? (
+                <p>
+                  The calculator shows <span className="tabular font-semibold">{show(tree.value)}</span>. You predicted {answer.trim()}
+                  {Number.isFinite(guess) && roundSig(guess, sigfigs) === tree.value ? ", which is right." : "."}
+                </p>
+              ) : ask === "value" ? (
                 <p>
                   The value is <span className="tabular font-semibold">{formatValue(tree.value)}</span>. You predicted {formatValue(guess)}
                   {Number.isFinite(guess) && tree.value !== 0
@@ -286,12 +314,19 @@ export function ExpressionTree({
                     )}
                     strokeWidth={lit || (bad && shown) ? 2 : 1}
                   />
-                  <text x={px(n)} y={py(n) - 7} textAnchor="middle" className={clsx("text-[13px]", leaf ? "fill-ink font-mono" : "fill-ink font-semibold")}>
+                  <text
+                    x={px(n)}
+                    y={plainLeaf(n) ? py(n) + 5 : py(n) - 7}
+                    textAnchor="middle"
+                    className={clsx("text-[13px]", leaf ? "fill-ink font-mono" : "fill-ink font-semibold")}
+                  >
                     {n.label}
                   </text>
-                  <text x={px(n)} y={py(n) + 8} textAnchor="middle" className={clsx("text-[11px]", bad && shown ? "fill-warning font-semibold" : "fill-ink-muted")}>
-                    {shown ? valueLine(n) : "?"}
-                  </text>
+                  {plainLeaf(n) ? null : (
+                    <text x={px(n)} y={py(n) + 8} textAnchor="middle" className={clsx("text-[11px]", bad && shown ? "fill-warning font-semibold" : "fill-ink-muted")}>
+                      {shown ? valueLine(n) : "?"}
+                    </text>
+                  )}
                   {shown && unitLine(n) ? (
                     <text x={px(n)} y={py(n) + 21} textAnchor="middle" className="fill-ink-muted text-[11px]">
                       {unitLine(n)}
@@ -306,7 +341,7 @@ export function ExpressionTree({
       controls={
         <>
           <p className="min-h-5 text-sm text-ink" aria-live="polite">
-            {focus ? describe(focus) : <span className="text-ink-muted">Point at a node to see what it computes.</span>}
+            {focus ? describe(focus) : <span className="text-ink-muted">Point at a box to see what it computes.</span>}
           </p>
           {stepwise && !concealed ? (
             <div className="flex flex-wrap items-center gap-2">
@@ -325,12 +360,17 @@ export function ExpressionTree({
       }
       table={{
         columns: ["Step", "Expression", "Value", ...(units ? ["Unit"] : [])],
-        rows: ops.map((n, i) => [
-          i + 1,
-          n.text,
-          isShown(n) ? formatValue(n.value) : "after you predict",
-          ...(units ? [n.unit ? (n.unit.ok ? unitText(n.unit.unit) : `clash: ${n.unit.message}`) : ""] : []),
-        ]),
+        rows: ops.map((n, i) => {
+          const hidden = concealed ? "after you predict" : "not worked out yet";
+          return [
+            i + 1,
+            n.text,
+            isShown(n) ? show(n.value) : hidden,
+            ...(units
+              ? [isShown(n) ? (n.unit ? (n.unit.ok ? unitText(n.unit.unit) : `clash: ${n.unit.message}`) : "") : hidden]
+              : []),
+          ];
+        }),
       }}
     />
   );

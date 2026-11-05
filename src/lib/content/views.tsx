@@ -128,7 +128,7 @@ export function formatNumber(value: number): string {
     const m = Number(mantissa).toString();
     return `$${m} \\times 10^{${Number(exponent)}}$`;
   }
-  return value.toLocaleString("en-IN", { maximumFractionDigits: 6 });
+  return value.toLocaleString("en-GB", { maximumFractionDigits: 6 });
 }
 
 function revealFor(ex: Exercise, state: ExerciseState | undefined) {

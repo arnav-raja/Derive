@@ -1,0 +1,211 @@
+misconceptions:
+  - id: left-to-right
+    belief: An expression is always worked strictly from left to right.
+    why: >-
+      The order of operations and brackets fix the tree, and the tree decides the order. Only a chain
+      of the same kind of operation, such as subtractions, is worked from the left.
+    cue: An answer of 14 for $3 + 4 \times 2$, or of 7 for $8 - 3 - 2$.
+  - id: brackets-are-decoration
+    belief: Brackets only make an expression easier to read and can be dropped.
+    why: >-
+      Brackets change the tree, and with it the value. They can be dropped only where associativity
+      says the grouping does not matter, which holds for chains of additions or of multiplications.
+    cue: The learner treats $(3 + 4) \times 2$ and $3 + 4 \times 2$ as the same, or drops the bracket in $8 - (3 - 2)$.
+  - id: rules-are-conventions
+    belief: Results such as $(-1)(-1) = 1$ are conventions that someone chose.
+    why: >-
+      Given the distributive law and the fact that $-1$ cancels 1, the value of $(-1)(-1)$ is forced:
+      any other value contradicts a rule already in use.
+    cue: The learner justifies a result with "that is the rule" rather than deriving it.
+  - id: partial-distribution
+    belief: $3(x + 4) = 3x + 4$.
+    why: The 3 sits above the whole bracket in the tree, so it multiplies every term inside.
+    cue: Multiplies only the first term inside a bracket.
+  - id: square-of-sum
+    belief: $(a + b)^2 = a^2 + b^2$.
+    why: >-
+      $(a + b)(a + b)$ multiplies out to four products, two of which are $ab$. Writing $a^2 + b^2$
+      drops them, and $a = b = 1$ shows the difference.
+    cue: An answer of $a^2 + b^2$, or a choice that calls them equivalent because they agree when one letter is 0.
+  - id: checking-proves
+    belief: If two expressions agree at a few values, they are equivalent.
+    why: >-
+      An expression can be built to agree with another at any list of values and differ elsewhere,
+      as $x(x - 1)(x - 2) + x$ and $x$ do. Agreement is evidence; a chain of rules is proof.
+    cue: The learner checks one or two values and declares two expressions equivalent.
+  - id: every-step-safe
+    belief: Anything done to both sides of an equation is a safe step.
+    why: >-
+      A step is safe only when it can be undone. Squaring cannot be undone, so it can add solutions;
+      dividing by something that might be 0 can lose them.
+    cue: Divides by $x$ without asking whether $x$ could be 0, or squares both sides without checking the answers.
+  - id: zero-power-is-zero
+    belief: $a^0 = 0$, because zero copies of $a$ leaves nothing.
+    why: >-
+      For $a^m \times a^n = a^{m+n}$ to keep holding, $a^0 \times a^n$ must equal $a^n$, and only 1
+      does that.
+    cue: An answer of 0 for $5^0 \times 5^2$, or of 0 for $5^0$.
+  - id: negative-power-is-negative
+    belief: A negative exponent makes the number negative.
+    why: $a^{-n} = 1/a^n$, which is small but positive when $a$ is positive.
+    cue: Answers such as $-8$ or $-6$ for $2^{-3}$.
+  - id: power-of-power-adds
+    belief: $(a^m)^n = a^{m+n}$.
+    why: $(a^m)^n$ is $n$ groups of $m$ copies each, so the copies are counted by multiplying.
+    cue: An exponent of $m + n$ for a power of a power.
+  - id: computer-is-broken
+    belief: The puzzle's `False` means Python has a bug, or that algebra is wrong.
+    why: >-
+      The computer rounds after every operation by design. Grouping changes which results are
+      rounded, so it can break associativity, while commutativity always survives. The rules hold
+      exactly for ordinary numbers.
+    cue: The learner says Python is wrong or broken, or that the rules of algebra fail.
+
+exercises:
+  derive-minus-one:
+    rungs:
+      - >-
+        For each line, ask what changed from the line above it. Did a number become a product, did a
+        bracket form, did two terms swap places, or did something become 0?
+      - >-
+        Earlier in this phase, the proof that $a \times 0 = 0$ used the distributive law to turn $a
+        \times (0 + 0)$ into two products. Which line here makes the same move, read the other way?
+      - >-
+        Look only at the first line. The final $(-1)$ has become $(-1)(1)$, and nothing else has
+        changed. Which rule says that is allowed?
+      - >-
+        Two lines change only what is inside the bracket and leave the $(-1)$ in front alone. In one,
+        the terms trade places; in the other, the bracket becomes a single number. Sort out those two
+        first.
+      - >-
+        A parallel chain, for $4 + 4 \times 0$: it equals $4 \times 1 + 4 \times 0$, because $4 = 4
+        \times 1$; then $4(1 + 0)$, by taking out the common factor; then $4 \times 1$, because adding
+        0 changes nothing; then 4. Name the rule behind each move there, then look for the same kinds
+        of move in your chain.
+    notes: >-
+      The checker reports how many lines cite the right rule. The usual mix-up is between swap and
+      negative on lines 3 and 4; a hint can ask which of the two lines turns the bracket into a single
+      number, without naming the rule.
+  derive-expand:
+    rungs:
+      - What does squaring something mean, written as a product of two things?
+      - >-
+        In Explore, multiplying out $3(x + 4)$ multiplied the 3 by every term inside the bracket.
+        When you multiply out $(a + b)(a + b)$, what plays the part of the 3?
+      - >-
+        Try numbers first. With $a = 2$ and $b = 3$, $(a + b)^2 = 25$. Put the same numbers into your
+        answer: does it give 25 too?
+      - >-
+        Count your products. A bracket of two terms times another bracket of two terms gives four
+        products before anything is collected. Check that none of the four is missing.
+      - >-
+        A parallel example: $(x + 3)(x + 5) = x(x + 5) + 3(x + 5) = x^2 + 5x + 3x + 15 = x^2 + 8x +
+        15$. Each term of the first bracket multiplies each term of the second, then like terms are
+        collected.
+    notes: >-
+      An answer of $a^2 + b^2$ is the square-of-sum misconception; ask the learner to test it at $a =
+      b = 1$. A "form" diagnosis means the value is right but a bracket remains.
+  derive-power-of-power:
+    rungs:
+      - How many copies of $a^m$ are multiplied together in $(a^m)^n$, and how many copies of $a$ is each one?
+      - >-
+        Earlier in this phase, $a^m \times a^n$ was $m$ copies followed by $n$ more, so the exponents
+        added. Here every group is the same size. How do you count several equal groups quickly?
+      - >-
+        Try a small case. $(a^2)^3 = a^2 \times a^2 \times a^2$. Write it out letter by letter and
+        count the copies of $a$.
+      - >-
+        Test your exponent on two easy cases. When $n = 1$, $(a^m)^1$ is just $a^m$; when $m = 1$,
+        $(a^1)^n$ is just $a^n$. Does your exponent give $m$ in the first case and $n$ in the second?
+      - >-
+        A parallel example: a box holds 4 rows of 6 eggs, and a crate holds 5 boxes. A crate holds 5
+        groups of $4 \times 6 = 24$ eggs, which is $5 \times 24 = 120$ eggs.
+    notes: >-
+      An answer of $m + n$ is the power-of-power-adds misconception; send the learner to the small
+      case rather than to the rule. An "unknown names" diagnosis with "mn" means the * was left out.
+  derive-solve-for-speed:
+    rungs:
+      - Where is $R$ in the equation now, and what is being done to it?
+      - >-
+        In M1.1 the units built $T = C/(RY)$ by dividing. Solving for $R$ undoes that. Which operation
+        undoes dividing by $R$?
+      - >-
+        Solve a simpler equation first: $T = C/R$ for $R$. Once that works, bring the $Y$ back and do
+        the same again.
+      - >-
+        Your first move should get $R$ out of the bottom of the fraction. If your answer still has $R$
+        in it, or has $C$ underneath, look again at that first move.
+      - >-
+        A parallel example: a tank of $V$ litres empties through $k$ identical pipes in $t$ minutes,
+        so $t = V/(kf)$, where $f$ is the flow through one pipe. To find the flow needed for a given
+        time, multiply both sides by $f$ to get $tf = V/k$, and then divide both sides by $t$.
+    notes: >-
+      Answers with $T \times Y$ on top usually come from multiplying instead of dividing at the last
+      step; ask the learner to check the answer by putting it back into the original equation.
+  build-average-bug:
+    rungs:
+      - Which operation does Python do first in `first + second + third / 3`?
+      - >-
+        In Explore, $3 + 4 \times 2$ had the multiplication below the addition in its tree, so it was
+        done first. Draw the tree for the line that sets `average`.
+      - >-
+        Try it with small numbers. If all three scores were 3, the average should be 3. What does the
+        line give for 3, 3 and 3?
+      - >-
+        The operators in that line are the right ones. What is wrong is which of them sits at the top
+        of the tree, and on paper brackets are how you change that.
+      - >-
+        A parallel example: four friends share a 300-rupee meal and a 60-rupee tip. `cost = 300 + 60 /
+        4` gives 315, because only the tip is divided, while `cost = (300 + 60) / 4` gives 90 each.
+    notes: >-
+      A learner who types the number 82.33 directly passes the average test; ask them to build it
+      from the three names, so it would still be right for other scores.
+  build-break-associativity:
+    rungs:
+      - >-
+        Run the starter as it is. Why does the left grouping lose both of the 0.004s, while the right
+        grouping keeps them?
+      - >-
+        In Explore, the calculator kept three significant figures. Near 1, what is the smallest change
+        it can show? What is the smallest change near 100?
+      - >-
+        The gap with Explore's numbers is 0.01, one step of the calculator near 1. What would the gap
+        be if your largest number sat where the steps are bigger?
+      - >-
+        To make the gap at least 1, your largest number must sit where the calculator's steps are 1
+        wide. Then each small number must be lost on its own but not when the two are added together.
+      - >-
+        A parallel example with a two-figure calculator, which keeps only two significant figures:
+        with 10, 0.4 and 0.4, the left grouping gives 10 and the right gives 11, because 10.4 rounds
+        to 10 but 10.8 rounds to 11.
+    notes: >-
+      Two traps: near 1,000 the steps are 10 wide, so 0.4 and 0.8 are both lost; and Python rounds an
+      exact half to the even neighbour, so $b = c = 0.25$ gives 100.5, which rounds to 100, and the
+      groupings agree.
+  build-sympy-check:
+    rungs:
+      - What does `expand` do to an expression, and what does it give for two expressions that are equivalent?
+      - >-
+        In Derive, two expressions were equivalent when a chain of rules led from one to the other.
+        The starter's example subtracts one expression from the other inside `expand`. What does it
+        print, and why?
+      - >-
+        Do the smallest one first. `trees` compares $3(x + 4)$ with $3x + 12$. Written in Python, the
+        first is `3*(x + 4)`. Write the second, then combine the two the way the example does.
+      - >-
+        Python needs * for every product, so $x(x - 1)$ is `x*(x - 1)`. Check your products, check
+        that the second expression is in brackets, and check that the whole difference sits inside
+        `expand(...)`.
+      - >-
+        A parallel example: to compare $(x + 2)(x + 3)$ with $x^2 + 6$, write `expand((x + 2)*(x + 3) -
+        (x**2 + 6))`. It prints `5*x`, so the two are not equivalent: they differ by $5x$.
+    notes: >-
+      The tests accept either order of subtraction. A result of 24 for `trees` means the brackets
+      round $3x + 12$ were left out; an unexpanded result means `expand` was not used.
+
+novice:
+  - If nobody proves the rules themselves, why should I believe them?
+  - Why can't the computer just keep more figures and get it exactly right?
+  - Is 0 to the power 0 equal to 1 as well?
+  - If agreeing at three values proves nothing, how can a calculator check anything?
+  - If squaring both sides can add answers, why is it allowed at all?

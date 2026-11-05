@@ -1,0 +1,264 @@
+{
+  "version": 1,
+  "expressions": {
+    "derive-expand": {
+      "source": "484ff94b3b25f69d",
+      "points": [
+        {
+          "a": "-35/2",
+          "b": "13"
+        },
+        {
+          "a": "11/7",
+          "b": "39/2"
+        },
+        {
+          "a": "26/3",
+          "b": "-5/2"
+        },
+        {
+          "a": "37/3",
+          "b": "-29/7"
+        },
+        {
+          "a": "29/3",
+          "b": "6"
+        },
+        {
+          "a": "11/2",
+          "b": "-32/3"
+        }
+      ],
+      "values": [
+        "20.250000000000000000",
+        "444.00510204081632653",
+        "38.027777777777777778",
+        "67.083900226757369615",
+        "245.44444444444444444",
+        "26.694444444444444444"
+      ]
+    },
+    "derive-power-of-power": {
+      "source": "4d1238d40b0b1400",
+      "points": [
+        {
+          "m": "4",
+          "n": "6"
+        },
+        {
+          "m": "9",
+          "n": "9"
+        },
+        {
+          "m": "9",
+          "n": "5"
+        },
+        {
+          "m": "9",
+          "n": "2"
+        },
+        {
+          "m": "3",
+          "n": "7"
+        },
+        {
+          "m": "4",
+          "n": "3"
+        }
+      ],
+      "values": [
+        "24.000000000000000000",
+        "81.000000000000000000",
+        "45.000000000000000000",
+        "18.000000000000000000",
+        "21.000000000000000000",
+        "12.000000000000000000"
+      ]
+    },
+    "derive-solve-for-speed": {
+      "source": "5c703d4fa9f90112",
+      "points": [
+        {
+          "C": "1",
+          "T": "26/3",
+          "Y": "8"
+        },
+        {
+          "C": "11/7",
+          "T": "39/2",
+          "Y": "17/6"
+        },
+        {
+          "C": "4",
+          "T": "8/3",
+          "Y": "35/4"
+        },
+        {
+          "C": "23",
+          "T": "15",
+          "Y": "7"
+        },
+        {
+          "C": "30/7",
+          "T": "1/7",
+          "Y": "5"
+        },
+        {
+          "C": "37/6",
+          "T": "6",
+          "Y": "33/4"
+        }
+      ],
+      "values": [
+        "0.014423076923076923077",
+        "0.028442146089204912734",
+        "0.17142857142857142857",
+        "0.21904761904761904762",
+        "6.0000000000000000000",
+        "0.12457912457912457912"
+      ]
+    },
+    "derive-solve-for-speed#0": {
+      "source": "28bbcc8634c27f55",
+      "points": [
+        {
+          "d": "1",
+          "v": "3"
+        },
+        {
+          "d": "31/5",
+          "v": "7"
+        },
+        {
+          "d": "10",
+          "v": "21/5"
+        },
+        {
+          "d": "15",
+          "v": "5/6"
+        },
+        {
+          "d": "36/7",
+          "v": "26/7"
+        },
+        {
+          "d": "3",
+          "v": "2/3"
+        }
+      ],
+      "values": [
+        "0.33333333333333333333",
+        "0.88571428571428571429",
+        "2.3809523809523809524",
+        "18.000000000000000000",
+        "1.3846153846153846154",
+        "4.5000000000000000000"
+      ]
+    },
+    "derive-solve-for-speed#1": {
+      "source": "b0a41ad5b80bd24f",
+      "points": [
+        {
+          "y": "-1"
+        },
+        {
+          "y": "-3"
+        },
+        {
+          "y": "-26"
+        },
+        {
+          "y": "-6"
+        },
+        {
+          "y": "1"
+        },
+        {
+          "y": "-3/2"
+        }
+      ],
+      "values": [
+        "-1.0000000000000000000",
+        "-1.6666666666666666667",
+        "-9.3333333333333333333",
+        "-2.6666666666666666667",
+        "-0.33333333333333333333",
+        "-1.1666666666666666667"
+      ]
+    }
+  },
+  "runs": {
+    "build-average-bug": {
+      "tests": [
+        {
+          "name": "test_average",
+          "description": "average is the mean of the three scores.",
+          "passed": false,
+          "message": "average is 187.0, which is not the mean of 72, 85 and 90."
+        },
+        {
+          "name": "test_scores",
+          "description": "The three scores are unchanged.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": "187.0\n"
+    },
+    "build-break-associativity": {
+      "tests": [
+        {
+          "name": "test_three_figures",
+          "description": "a, b and c each have at most three significant figures.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_differ",
+          "description": "The two groupings give different answers.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_gap",
+          "description": "The two groupings differ by at least 1.",
+          "passed": false,
+          "message": "The groupings differ by 0.01. Make the gap at least 1."
+        },
+        {
+          "name": "test_as_written",
+          "description": "left and right are still worked out as the starter wrote them.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": "1.0 1.01\n"
+    },
+    "build-sympy-check": {
+      "tests": [
+        {
+          "name": "test_trees",
+          "description": "trees is the difference of 3(x + 4) and 3x + 12, multiplied out.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_slip",
+          "description": "slip is the difference of (x + 1)^2 and x^2 + 1, multiplied out.",
+          "passed": false,
+          "message": "slip is -x**2 + (x + 1)**2 - 1, which is not that difference multiplied out."
+        },
+        {
+          "name": "test_built",
+          "description": "built is the difference of x(x - 1)(x - 2) + x and x, multiplied out.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": "example: 0\ntrees: 0\nslip: -x**2 + (x + 1)**2 - 1\nbuilt: x**3 - 3*x**2 + 2*x\n"
+    }
+  }
+}

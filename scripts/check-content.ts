@@ -115,6 +115,11 @@ async function checkLesson(code: string, errors: string[], warnings: string[]) {
         errors.push(`${file} re-teaches after ${m[2]}, which is not a recall question.`);
       }
     }
+    for (const m of source.matchAll(/\blinearAfter="([a-z0-9-]+)"/g)) {
+      const ex = byId.get(m[1]!);
+      if (!ex) errors.push(`${file} has a scale line waiting for ${m[1]}, which does not exist.`);
+      else if (ex.phase !== phase) errors.push(`${file} has a scale line waiting for ${m[1]}, which is in another phase.`);
+    }
     try {
       await compile(source, { remarkPlugins: [remarkGfm, remarkMath], outputFormat: "function-body" });
     } catch (error) {
@@ -176,6 +181,20 @@ async function checkLesson(code: string, errors: string[], warnings: string[]) {
         errors.push(`${code}/${ex.id}: its reference expression appears in the lesson text outside a <Reveal>.`);
       }
     }
+  }
+
+  // Options are shown in the order written, so a learner soon notices if the first is usually right.
+  const positions: number[] = [];
+  for (const ex of exercises) {
+    for (const a of [ex.answer, ...(ex.review?.variants.map((v) => v.answer) ?? [])]) {
+      if (a.type === "choice" && a.correct.length === 1) positions.push(a.options.findIndex((o) => o.id === a.correct[0]));
+    }
+  }
+  const firstRight = positions.filter((p) => p === 0).length;
+  if (positions.length >= 4 && firstRight * 3 > positions.length) {
+    warnings.push(
+      `${code}: the first option is the right one in ${firstRight} of ${positions.length} single-answer choice items; spread the right answers across positions.`,
+    );
   }
 
   // Rule 7: a derivation, a build and an explain-back; about five new concepts.

@@ -1,0 +1,160 @@
+Algebra is a language, and like any language it has a grammar. Before asking why its rules hold, look at what an expression really is.
+
+## An expression is a tree
+
+When you write $3 + 4 \times 2$, you mean: multiply 4 by 2, then add 3. The order of operations is a convention, but once it is agreed, every expression has exactly one shape. Draw that shape as a tree. Numbers sit at the bottom as leaves, each operation joins the values beneath it, and the value of the whole expression appears at the top.
+
+<ExpressionTree
+  title="3 + 4 × 2 as a tree"
+  description="The multiplication 4 × 2 sits below the addition, so it is done first: 4 × 2 = 8, then 3 + 8 = 11 at the top."
+  expr="3 + 4*2"
+  stepwise
+/>
+
+Step through it. Evaluating an expression means working up from the leaves, one operation at a time, which is exactly what a computer does. Brackets change the shape, and with it the value:
+
+<ExpressionTree
+  title="(3 + 4) × 2 as a tree"
+  description="The brackets put the addition below the multiplication: 3 + 4 = 7, then 7 × 2 = 14 at the top."
+  expr="(3 + 4)*2"
+/>
+
+Same numbers, same operations, different tree, different value. Reading an expression means finding its tree.
+
+## When the grouping matters
+
+A chain of one operation hides a choice of tree. Try this one.
+
+<Exercise id="explore-subtract-chain" />
+
+<Reveal for="explore-subtract-chain">
+
+The convention is to work from the left, so $8 - 3 - 2$ means $(8 - 3) - 2 = 3$. The other grouping is a different tree with a different value:
+
+<ExpressionTree
+  title="Grouped from the left"
+  description="8 − 3 = 5 is done first, then 5 − 2 = 3 at the top."
+  expr="(8 - 3) - 2"
+/>
+
+<ExpressionTree
+  title="Grouped from the right"
+  description="3 − 2 = 1 is done first, then 8 − 1 = 7 at the top."
+  expr="8 - (3 - 2)"
+/>
+
+For subtraction, the grouping changes the answer. Now find out which operations behave better.
+
+<Exercise id="explore-which-group" />
+
+</Reveal>
+
+<Reveal for="explore-which-group">
+
+Addition and multiplication. Whatever three numbers you try, $(a + b) + c = a + (b + c)$ and $(a \times b) \times c = a \times (b \times c)$. That is why $2 + 3 + 4$ can be written without brackets: both trees give 9. Subtraction and division fail: $16 \div 4 \div 2$ is 2, but $16 \div (4 \div 2)$ is 8.
+
+The order of two numbers is a separate question with the same answer. Swapping them never changes a sum or a product, $a + b = b + a$ and $a \times b = b \times a$, while $8 - 3$ and $3 - 8$ differ, and so do $8 \div 2$ and $2 \div 8$.
+
+## Multiplying out a bracket
+
+In the Recall phase you worked out $7 \times 98$. The quick way splits 98 as $100 - 2$ and works out $7 \times 100 - 7 \times 2$ instead. The two expressions have different trees but the same value:
+
+<ExpressionTree
+  title="7 × (100 − 2)"
+  description="One multiplication at the top: 100 − 2 = 98, then 7 × 98 = 686."
+  expr="7*(100 - 2)"
+/>
+
+<ExpressionTree
+  title="7 × 100 − 7 × 2"
+  description="Two multiplications, 7 × 100 = 700 and 7 × 2 = 14, joined by a subtraction at the top: 700 − 14 = 686."
+  expr="7*100 - 7*2"
+/>
+
+Multiplying out a bracket turns one multiplication into two and moves the subtraction to the top. This is the only rule that connects addition with multiplication, so almost every step that changes the shape of an expression uses it.
+
+<Exercise id="explore-distribute" />
+
+</Reveal>
+
+<Reveal for="explore-distribute">
+
+The 3 multiplies everything inside the bracket: $3(x + 4) = 3x + 3 \times 4 = 3x + 12$. Forgetting to multiply the 4 is the most common slip in all of algebra, and the tree shows why it is wrong: the 3 sits above the whole bracket, not only above the $x$.
+
+## A calculator that rounds
+
+Now the puzzle. A computer keeps about 16 significant figures and rounds after every operation. A calculator that keeps only three makes the same effect easy to see.
+
+<Exercise id="explore-round-first" />
+
+</Reveal>
+
+<Reveal for="explore-round-first">
+
+Step through it to see where each 0.004 goes.
+
+<ExpressionTree
+  title="A three-figure calculator: (1 + 0.004) + 0.004"
+  description="1 + 0.004 is 1.004, which three figures round to 1.00. Then 1.00 + 0.004 is 1.004 again, which rounds to 1.00 at the top."
+  expr="(1 + 0.004) + 0.004"
+  sigfigs={3}
+  stepwise
+/>
+
+And grouped the other way:
+
+<ExpressionTree
+  title="The same calculator: 1 + (0.004 + 0.004)"
+  description="0.004 + 0.004 is 0.008, which three figures hold exactly. Then 1 + 0.008 is 1.008, which rounds to 1.01 at the top."
+  expr="1 + (0.004 + 0.004)"
+  sigfigs={3}
+  stepwise
+/>
+
+Computed exactly, both sums are 1.008. In the first grouping each 0.004 is added to 1 on its own, and each time the rounding throws it away. In the second, the two small amounts are added first, and 0.008 is large enough to survive: 1.008 rounds to 1.01. Associativity holds for exact numbers. A calculator that rounds breaks it, and that is all the puzzle was.
+
+<Exercise id="explore-commute-round" />
+
+</Reveal>
+
+<Reveal for="explore-commute-round">
+
+Never. The calculator rounds the exact result of each operation, and $a + b$ and $b + a$ have the same exact result, so they round to the same value. Commutativity survives rounding. Associativity does not, because the two groupings round different intermediate results.
+
+## The names
+
+Here are the names of the rules you have just found, with the two that make 0 and 1 special.
+
+<Definition term="Expression tree">
+
+The shape of an expression: leaves are numbers or letters, and each operation combines the values beneath it. The order of operations and brackets decide the shape, and evaluation works up from the leaves.
+
+</Definition>
+
+<Definition term="Commutativity">
+
+The order of two numbers does not matter: $a + b = b + a$ and $ab = ba$. It holds for addition and multiplication, not for subtraction or division.
+
+</Definition>
+
+<Definition term="Associativity">
+
+The grouping of a chain does not matter: $(a + b) + c = a + (b + c)$ and $(ab)c = a(bc)$. Again it holds for addition and multiplication only.
+
+</Definition>
+
+<Definition term="Distributivity">
+
+Multiplication spreads over addition: $a(b + c) = ab + ac$. It is the one rule that links the two operations.
+
+</Definition>
+
+<Definition term="Identities and inverses">
+
+Adding 0 and multiplying by 1 change nothing: $a + 0 = a$ and $a \times 1 = a$. Every number $a$ has a negative with $a + (-a) = 0$, and every number except 0 has a reciprocal with $a \times \tfrac{1}{a} = 1$.
+
+</Definition>
+
+A number system that obeys all of these rules is called a *field*, and the rules are the *field axioms*. The ordinary numbers form a field. A computer's rounded numbers do not, quite, as the puzzle showed.
+
+</Reveal>

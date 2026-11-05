@@ -143,20 +143,23 @@ export function ExerciseCard({ view }: { view: ExerciseView }) {
     startedAt.current = Date.now();
   }, []);
 
-  // Start Python when a card that needs it comes into view.
+  // Start Python when a card that needs it comes into view. Expressions are checked with SymPy,
+  // and some programs import it as the library version, so those warm it up too.
   const needsPython = a.type === "code" || a.type === "breakit" || a.type === "expression";
+  const sympySource = a.type === "code" ? `${a.starter}\n${a.tests}` : a.type === "breakit" ? `${a.code}\n${a.broken}` : "";
+  const needsSympy = a.type === "expression" || /\b(?:import|from)\s+sympy\b/.test(sympySource);
   useEffect(() => {
     if (!needsPython || !card.current || locked) return;
     const el = card.current;
     const io = new IntersectionObserver((entries) => {
       if (entries.some((e) => e.isIntersecting)) {
-        void python().warm({ sympy: a.type === "expression" });
+        void python().warm({ sympy: needsSympy });
         io.disconnect();
       }
     });
     io.observe(el);
     return () => io.disconnect();
-  }, [needsPython, locked, a.type]);
+  }, [needsPython, needsSympy, locked]);
 
   // The tutor reads the learner's current work with a hint request.
   const readWork = (): string | null => {
@@ -409,8 +412,9 @@ export function ExerciseCard({ view }: { view: ExerciseView }) {
             />
           </div>
           <p className="text-xs text-ink-muted">
-            Write it as you would in Python: <code className="font-mono">*</code> to multiply, <code className="font-mono">^</code> or{" "}
-            <code className="font-mono">**</code> for powers, <code className="font-mono">sqrt( )</code>, <code className="font-mono">log10( )</code>.
+            Type <code className="font-mono">*</code> to multiply, <code className="font-mono">/</code> to divide,{" "}
+            <code className="font-mono">^</code> or <code className="font-mono">**</code> for a power, and functions such as{" "}
+            <code className="font-mono">sqrt( )</code> for a square root.
             {a.symbols.length ? ` Symbols: ${a.symbols.map((s) => s.name).join(", ")}.` : ""}
           </p>
           {exprResult?.latex ? (

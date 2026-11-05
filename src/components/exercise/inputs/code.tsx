@@ -6,6 +6,7 @@ import { CodeEditor } from "@/components/code/editor";
 import { CheckIcon, CrossIcon } from "@/components/ui/icons";
 import type { BreakitResult, PyError, RunResult } from "@/lib/python/client";
 
+import { changedLines } from "../diff";
 import type { BreakitView, CodeView } from "../types";
 
 /* Code, break-it and their results. Python runs in the browser. */
@@ -100,23 +101,6 @@ export function CodeInput({
       </div>
     </div>
   );
-}
-
-/** Lines of `broken` that differ from `code`: whatever lies between their common start and end. */
-export function changedLines(code: string, broken: string): Set<number> {
-  const a = code.trimEnd().split("\n");
-  const b = broken.trimEnd().split("\n");
-  let start = 0;
-  while (start < a.length && start < b.length && a[start] === b[start]) start += 1;
-  let endA = a.length - 1;
-  let endB = b.length - 1;
-  while (endA >= start && endB >= start && a[endA] === b[endB]) {
-    endA -= 1;
-    endB -= 1;
-  }
-  const changed = new Set<number>();
-  for (let i = start; i <= endB; i += 1) changed.add(i);
-  return changed;
 }
 
 export function BreakitInput({

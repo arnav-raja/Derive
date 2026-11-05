@@ -1,0 +1,76 @@
+code: M1.2
+title: "Algebra as a language: why the rules hold"
+course: M1
+status: review
+summary: >-
+  Does a computer agree that (0.1 + 0.2) + 0.3 is the same as 0.1 + (0.2 + 0.3)? Expressions as
+  trees, the few rules that every step of algebra rests on, what makes two expressions the same,
+  and how to solve an equation without losing or gaining answers.
+sittings: 2
+minutes:
+  puzzle: 10
+  recall: 10
+  explore: 35
+  derive: 45
+  build: 40
+  explain: 25
+concepts:
+  taught:
+    - id: M1.2/expression-trees
+      name: Expressions as trees
+      summary: >-
+        Every expression has a shape: a tree in which each operation combines the values beneath
+        it. The order of operations and brackets fix the shape, and evaluation works up from the
+        leaves.
+      usedBy: [E1.1, M5.6]
+    - id: M1.2/field-axioms
+      name: The rules of arithmetic
+      summary: >-
+        A short list of rules about adding and multiplying, from which every step of algebra follows.
+        They hold exactly for ordinary numbers; a calculator that rounds keeps some of them and not
+        others.
+      usedBy: [M1.6, M2.5, M10.2]
+    - id: M1.2/equivalence
+      name: Equivalent expressions
+      summary: >-
+        Deciding whether two expressions are equivalent, which means they agree for every allowed
+        value of their letters, and what kind of argument settles it either way.
+      usedBy: [M1.8, E1.9]
+    - id: M1.2/solving-equations
+      name: Solving equations
+      summary: >-
+        Solving an equation by replacing it with simpler ones that have the same solutions, and
+        spotting the steps that can quietly add solutions or lose them.
+      usedBy: [M1.3, M1.4, M2.6]
+    - id: M1.2/exponent-rules
+      name: Exponent rules
+      summary: >-
+        The rules for powers, derived from what a power means, and the meanings of zero and negative
+        exponents that those rules force.
+      usedBy: [M1.5, M3.5]
+  used: [M1.1/powers-of-ten]
+links:
+  requires:
+    - lesson: M1.1
+      bridge: >-
+        M1.1 multiplied powers of ten by adding exponents and let units cancel like symbols; this
+        lesson asks why such moves are allowed at all.
+  contrastsWith:
+    - lesson: E1.1
+      bridge: >-
+        In algebra, x = x + 1 is an equation with no solution. In Python the same line is an
+        instruction: work out x + 1, then give that value the name x.
+  foreshadows:
+    - lesson: E1.1
+      bridge: >-
+        Python reads every expression as exactly these trees and evaluates it from the leaves up,
+        so the order of operations is a question you can ask the computer.
+    - lesson: M10.2
+      bridge: >-
+        Rounding after every operation is how computers really calculate. M10.2 measures how much
+        error that adds, and which calculations make it large.
+    - lesson: M1.8
+      bridge: >-
+        The proof that (−1) × (−1) = 1 is a direct proof from the rules. M1.8 makes such proofs a
+        habit, and adds proof by contradiction.
+skills: []

@@ -57,7 +57,7 @@ export default async function ProgressPage() {
           <Panel>
             <p className="text-sm text-ink-muted">Planned study</p>
             <p className="tabular mt-1 text-3xl font-semibold text-ink">
-              {totalHours.toLocaleString("en-IN")} h
+              {totalHours.toLocaleString("en-GB")} h
             </p>
           </Panel>
         </div>

@@ -2,7 +2,7 @@ You have derived the formula and checked it two ways. Now make a computer carry 
 
 ## Python as a careful calculator
 
-You will meet Python properly in E1.1. For this lesson you only need it as a calculator that remembers names, and four things are enough:
+You will meet Python properly in a later lesson on programs as precise instructions, E1.1. For this lesson you only need it as a calculator that remembers names, and four things are enough:
 
 - `*` multiplies, `/` divides, `+` and `-` add and subtract, and brackets group as usual;
 - `3.15e23` is how Python writes $3.15 \times 10^{23}$, and `1e14` is $10^{14}$;
@@ -27,5 +27,31 @@ Run your code as often as you like. The checks below the editor say which parts 
 A program you understand is one whose failures you can predict. Here is a working version of your program, and one deliberate change to it. Predict what the change does before you run it.
 
 <Exercise id="build-break-multiply" />
+
+</Reveal>
+
+<Reveal for="build-break-multiply">
+
+## Compare with the library
+
+You built the conversion yourself, so you know what is inside it. Now check it against a library that knows units. SymPy, a Python library for algebra, can attach a unit to a number and convert between units. A number times a unit, such as `2 * day`, is a quantity, and `convert_to(quantity, unit)` rewrites the quantity in another unit. The first line below brings in the names it needs from SymPy:
+
+```python
+from sympy.physics.units import convert_to, second, day
+
+print(convert_to(2 * day, second))   # shows 172800*second
+```
+
+SymPy knows several kinds of year. Its `julian_year` is exactly 365.25 days, the year you used. The first run takes a few seconds while SymPy loads.
+
+<Exercise id="build-sympy-years" />
+
+</Reveal>
+
+<Reveal for="build-sympy-years">
+
+SymPy agrees with you, and its answer carries its unit, which a plain Python number never does. SymPy also knows a slightly shorter year, the tropical year, which raises a fair question about the year you chose.
+
+<Exercise id="build-tropical-year" />
 
 </Reveal>

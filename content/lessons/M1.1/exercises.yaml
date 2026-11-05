@@ -18,7 +18,7 @@ exercises:
       correct: [century]
     explanation: >-
       Close to 100 years of non-stop work, which is longer than a human lifetime. In the Derive phase
-      you will reach this yourself in three lines.
+      you will reach it yourself, letting the units choose the formula.
 
   # Recall ---------------------------------------------------------------------
   - id: recall-seconds-hour
@@ -56,10 +56,10 @@ exercises:
     answer:
       type: choice
       options:
-        - { id: add, label: '$10^{7}$' }
         - { id: times, label: '$10^{12}$' }
-        - { id: hundred, label: '$100^{7}$' }
         - { id: digits, label: '$10^{34}$' }
+        - { id: add, label: '$10^{7}$' }
+        - { id: hundred, label: '$100^{7}$' }
       correct: [add]
     explanation: Three tens times four tens is seven tens multiplied together, $10^{3+4} = 10^{7}$.
 
@@ -72,10 +72,10 @@ exercises:
     answer:
       type: choice
       options:
-        - { id: negative-exponent, label: '$10^{-3}$' }
         - { id: positive, label: '$10^{3}$' }
         - { id: negative-number, label: '$-10^{3}$' }
         - { id: root, label: '$10^{1/3}$' }
+        - { id: negative-exponent, label: '$10^{-3}$' }
       correct: [negative-exponent]
     explanation: $10^{-3} = 1/10^{3} = 1/1000 = 0.001$. A negative exponent means "one divided by".
 
@@ -107,7 +107,8 @@ exercises:
     title: Seconds on one chip
     prompt: >-
       The chip needs $3.15 \times 10^{23}$ FLOP divided by $10^{14}$ FLOP per second. Without a
-      calculator, how many seconds is that? You can type an answer such as 3.15e9 or 3.15 × 10^9.
+      calculator, how many seconds is that? You can type a power of ten in either of two ways:
+      `2.5e7` and `2.5 × 10^7` both mean $2.5 \times 10^{7}$.
     answer:
       type: number
       value: 3.15e9
@@ -201,8 +202,28 @@ exercises:
       Halving the speed doubles the time, whatever the other numbers are. An error in one input of a
       chain of multiplications and divisions passes straight through as the same factor. That is why
       estimates are judged by the factor they are off by, not the difference: 5,000 years against a
-      truth of 10,000 is off by a factor of 2, a good estimate, while 50 years would be off by a
+      truth of 10,000 is off by a factor of 2, a good estimate, while 100 years would be off by a
       factor of 100.
+    review:
+      variants:
+        - prompt: >-
+            An estimate multiplies three factors, and each might be off by a factor of 2 in the same
+            direction. In that worst case, by what factor is the product off?
+          answer:
+            type: number
+            value: 8
+          explanation: >-
+            Factors multiply: $2 \times 2 \times 2 = 8$. When the errors point different ways they
+            partly cancel, which is why careful estimates usually do better than this worst case.
+        - prompt: >-
+            An estimate multiplies two factors. The first is guessed at twice its true value, and the
+            second at half its true value. By what factor is the product off?
+          answer:
+            type: number
+            value: 1
+          explanation: >-
+            The errors cancel: $2 \times \tfrac{1}{2} = 1$, so the product is right although both
+            guesses were wrong. Errors that point different ways partly undo each other.
 
   # Derive ---------------------------------------------------------------------
   - id: derive-time-formula
@@ -213,7 +234,7 @@ exercises:
     title: The time, in years
     prompt: >-
       Write the training time $T$, in years, using $C$, $R$ and $Y$. Choose the arrangement whose
-      units come out in years. Type it as you would on a calculator, for example C*R or C/R.
+      units come out in years. Type it as you would on a calculator, for example `C*R` or `C/R`.
     answer:
       type: expression
       symbols:
@@ -233,10 +254,10 @@ exercises:
           answer:
             type: choice
             options:
-              - { id: ratio, label: '$d / v$' }
               - { id: product, label: '$d \times v$' }
               - { id: inverse, label: '$v / d$' }
               - { id: sum, label: '$d + v$' }
+              - { id: ratio, label: '$d / v$' }
             correct: [ratio]
           explanation: >-
             Metres divided by metres per second leaves seconds. $d \times v$ has units m²/s, $v/d$ has
@@ -281,7 +302,7 @@ exercises:
       type: steps
       rules:
         - { id: reciprocal, name: Reciprocal, label: Dividing by a fraction is multiplying by its reciprocal. }
-        - { id: regroup, name: Regroup, label: The factors of a product can be reordered and grouped. }
+        - { id: regroup, name: Regroup, label: 'The factors of a product, on the top or the bottom of a fraction, can be reordered and grouped.' }
         - { id: cancel, name: Cancel, label: A unit divided by the same unit is 1. }
         - { id: exponents, name: Exponents, label: 'Dividing powers of ten subtracts their exponents, $10^a \div 10^b = 10^{a-b}$.' }
         - { id: convert, name: Convert, label: 'Multiplying by a conversion factor, which is equal to 1, changes the unit and not the quantity.' }
@@ -294,23 +315,25 @@ exercises:
           rule: regroup
         - math: '= \dfrac{3.15 \times 10^{23}}{10^{14}}\ \text{s}'
           rule: cancel
+        - math: '= 3.15 \times \dfrac{10^{23}}{10^{14}}\ \text{s}'
+          rule: regroup
         - math: '= 3.15 \times 10^{9}\ \text{s}'
           rule: exponents
-        - math: '= 3.15 \times 10^{9}\ \text{s} \times \dfrac{1\ \text{year}}{3.156 \times 10^{7}\ \text{s}}'
+        - math: '= 3.15 \times 10^{9}\ \text{s} \times \dfrac{1\ \text{year}}{3.15576 \times 10^{7}\ \text{s}}'
           rule: convert
-        - math: '= \dfrac{3.15 \times 10^{9}}{3.156 \times 10^{7}} \times \dfrac{\text{s}}{\text{s}} \times \text{year}'
+        - math: '= \dfrac{3.15 \times 10^{9}}{3.15576 \times 10^{7}} \times \dfrac{\text{s}}{\text{s}} \times \text{year}'
           rule: regroup
-        - math: '= \dfrac{3.15 \times 10^{9}}{3.156 \times 10^{7}}\ \text{year}'
+        - math: '= \dfrac{3.15 \times 10^{9}}{3.15576 \times 10^{7}}\ \text{year}'
           rule: cancel
-        - math: '= \dfrac{3.15}{3.156} \times \dfrac{10^{9}}{10^{7}}\ \text{year}'
+        - math: '= \dfrac{3.15}{3.15576} \times \dfrac{10^{9}}{10^{7}}\ \text{year}'
           rule: regroup
-        - math: '= \dfrac{3.15}{3.156} \times 10^{2}\ \text{year}'
+        - math: '= \dfrac{3.15}{3.15576} \times 10^{2}\ \text{year}'
           rule: exponents
-        - math: '\approx 1.0 \times 10^{2}\ \text{years}'
+        - math: '\approx 99.8\ \text{years}'
           rule: arithmetic
     explanation: >-
-      In order: reciprocal, regroup, cancel, exponents, convert, regroup, cancel, regroup, exponents
-      and arithmetic. The same few rules carry the numbers and the units together.
+      In order: reciprocal, regroup, cancel, regroup, exponents, convert, regroup, cancel, regroup,
+      exponents and arithmetic. The same few rules carry the numbers and the units together.
 
   - id: derive-units-six
     phase: derive
@@ -319,7 +342,8 @@ exercises:
     title: The unit of the 6
     prompt: >-
       In $C \approx 6ND$, $C$ is in FLOP, $N$ is a number of parameters and $D$ is a number of tokens.
-      For the units to match on both sides, what unit must the 6 carry?
+      Treat parameters and tokens as units, the way FLOP is one: a count of things carries the name
+      of the thing. For the units to match on both sides, what unit must the 6 carry?
     answer:
       type: choice
       options:
@@ -370,18 +394,18 @@ exercises:
     concept: M1.1/dimensional-analysis
     title: A pendulum, squared
     prompt: >-
-      Find a combination of $L$ (in m) and $g$ (in m/s²) whose unit is seconds squared, s². Use each
-      letter once, with no number in front.
+      Find a combination of $L$ (in m) and $g$ (in m/s²) whose unit is seconds squared, s². Use $L$
+      and $g$ once each, with no number in front.
     answer:
       type: expression
       symbols:
         - { name: L, positive: true }
         - { name: g, positive: true }
-        - { name: m, positive: true }
+        - { name: M, positive: true }
       lhs: 'T^2 \propto'
       reference: L/g
       accept: ['L*g**(-1)', '1/g*L']
-      reject: ['g/L', 'L*g', 'L/g**2', 'L**2/g', 'L*m/g']
+      reject: ['g/L', 'L*g', 'L/g**2', 'L**2/g', 'L*M/g']
     explanation: >-
       Metres divided by metres per second squared: $\text{m} \div \tfrac{\text{m}}{\text{s}^2} =
       \text{s}^2$. So $L/g$ has units of seconds squared.
@@ -399,11 +423,11 @@ exercises:
       symbols:
         - { name: L, positive: true }
         - { name: g, positive: true }
-        - { name: m, positive: true }
+        - { name: M, positive: true }
       lhs: 'T \propto'
       reference: sqrt(L/g)
       accept: ['(L/g)**(1/2)', 'sqrt(L)/sqrt(g)', 'L**0.5/g**0.5']
-      reject: ['L/g', 'sqrt(g/L)', '(L/g)**2', '2*pi*sqrt(L/g)', 'sqrt(L*m/g)']
+      reject: ['L/g', 'sqrt(g/L)', '(L/g)**2', '2*pi*sqrt(L/g)', 'sqrt(L*M/g)']
     explanation: The square root of seconds squared is seconds, so $T \propto \sqrt{L/g}$.
 
   - id: derive-geomean
@@ -412,19 +436,19 @@ exercises:
     concept: M1.1/fermi-estimation
     title: The middle between two bounds
     prompt: >-
-      You are sure the answer is more than $L$ and less than $H$. Your guess $g$ should be the same
-      factor above $L$ as it is below $H$, which says $g / L = H / g$. Solve this for
-      $g$, taking the positive answer.
+      You are sure the answer is more than $a$ and less than $b$. Your guess $x$ should be the same
+      factor above $a$ as it is below $b$, which says $x / a = b / x$. Solve this for $x$, taking the
+      positive answer.
     answer:
       type: expression
       symbols:
-        - { name: L, positive: true }
-        - { name: H, positive: true }
-      lhs: 'g ='
-      reference: sqrt(L*H)
-      accept: ['(L*H)**(1/2)', 'sqrt(L)*sqrt(H)', '(H*L)**0.5']
-      reject: ['(L+H)/2', 'L*H', 'sqrt(L+H)', 'H/L', 'sqrt(H/L)']
-    explanation: Multiply both sides by $gL$ to get $g^2 = LH$, so $g = \sqrt{LH}$.
+        - { name: a, positive: true }
+        - { name: b, positive: true }
+      lhs: 'x ='
+      reference: sqrt(a*b)
+      accept: ['(a*b)**(1/2)', 'sqrt(a)*sqrt(b)', '(b*a)**0.5']
+      reject: ['(a+b)/2', 'a*b', 'sqrt(a+b)', 'b/a', 'sqrt(b/a)']
+    explanation: Multiply both sides by $ax$ to get $x^2 = ab$, so $x = \sqrt{ab}$.
     review:
       variants:
         - prompt: >-
@@ -439,23 +463,25 @@ exercises:
           answer:
             type: choice
             options:
-              - { id: sixty, label: About 60 }
-              - { id: thousand, label: 'About 1,000' }
-              - { id: two-hundred, label: About 200 }
               - { id: twenty, label: About 20 }
+              - { id: sixty, label: About 60 }
+              - { id: two-hundred, label: About 200 }
+              - { id: thousand, label: 'About 1,000' }
             correct: [sixty]
           explanation: >-
             $\sqrt{2 \times 2000} = \sqrt{4000} \approx 63$, a factor of about 32 from each bound. The
             ordinary average, about 1,000, is a factor of 2 from the top and 500 from the bottom.
         - prompt: >-
-            An estimate multiplies three factors, and each might be off by a factor of 2 in the same
-            direction. In that worst case, by what factor is the product off?
+            A chip's sustained speed is surely more than $2 \times 10^{13}$ and less than $2 \times
+            10^{15}$ FLOP per second. Which single guess is the same factor from both bounds?
           answer:
             type: number
-            value: 8
+            value: 2e14
+            unit: FLOP/s
           explanation: >-
-            Factors multiply: $2 \times 2 \times 2 = 8$. When the errors point different ways they
-            partly cancel, which is why careful estimates usually do better than this worst case.
+            $\sqrt{2 \times 10^{13} \times 2 \times 10^{15}} = \sqrt{4 \times 10^{28}} = 2 \times
+            10^{14}$ FLOP per second, a factor of 10 from each bound. Averaging the exponents of the
+            powers of ten, 13 and 15, gives the same 14.
 
   - id: derive-chips-month
     phase: derive
@@ -486,8 +512,9 @@ exercises:
     title: Training time in Python
     prompt: >-
       Replace each 0 so that `seconds_per_year`, `seconds` and `years` hold the right values. Build
-      each one from the names above it rather than typing a number you worked out elsewhere, so the
-      program would still be right for a different chip or model.
+      `seconds_per_year` from days, hours, minutes and seconds, and build `seconds` and `years` from
+      the names above them, rather than typing numbers you worked out elsewhere. Then the program
+      would still be right for a different chip or model.
     answer:
       type: code
       starter: |
@@ -515,7 +542,7 @@ exercises:
 
         def test_years():
             """years is the same time in years: about 99.8."""
-            assert close(years, 3.15e9 / 31557600), f"years is {years}, expected about 99.8."
+            assert close(years, 99.8174766141912), f"years is {years}, expected about 99.8."
       reference: |
         flop = 3.15e23
         flop_per_second = 1e14
@@ -591,15 +618,153 @@ exercises:
         In the line for `years`, the first `/` becomes `*`, so the program multiplies by the chip's
         speed instead of dividing by it.
       options:
-        - { id: huge, label: '`years` comes out near $10^{30}$, absurdly large', when: 'years > 1e29' }
-        - { id: tiny, label: '`years` comes out near $10^{-5}$, absurdly small', when: 'years < 1e-4' }
+        - { id: tiny, label: '`years` comes out near $10^{-26}$, absurdly small', when: 'years < 1e-20' }
         - { id: same, label: '`years` is unchanged', when: "math.isclose(years, base['years'], rel_tol=1e-9)" }
+        - { id: huge, label: '`years` comes out near $10^{30}$, absurdly large', when: 'years > 1e29' }
         - { id: error, label: Python stops with an error, when: 'error is not None' }
     explanation: >-
       Multiplying by $10^{14}$ instead of dividing by it changes the answer by a factor of $10^{28}$,
       to about $10^{30}$ years, far longer than the age of the universe. The units said so first: FLOP
       times FLOP per second is not a time. Python does not track units, so the mistake runs without
       complaint, which is why you keep track of them yourself.
+
+  - id: build-sympy-years
+    phase: build
+    kind: build
+    concept: M1.1/units-as-algebra
+    title: The same answer from SymPy
+    prompt: >-
+      Replace `None` so that `library_years` is SymPy's answer: the training time, given its unit of
+      seconds, converted into Julian years. Then compare it with your own `years`.
+    answer:
+      type: code
+      starter: |
+        from sympy.physics.units import convert_to, second, julian_year
+
+        flop = 3.15e23
+        flop_per_second = 1e14
+        seconds_per_year = 365.25 * 24 * 60 * 60
+
+        seconds = flop / flop_per_second
+        years = seconds / seconds_per_year    # your own conversion
+
+        # Replace None: give seconds its unit, then let SymPy convert it.
+        library_years = None
+
+        print(years)
+        print(library_years)
+      tests: |
+        from sympy.physics.units import julian_year
+
+        def test_in_julian_years():
+            """library_years is a quantity measured in julian_year."""
+            assert library_years is not None, "library_years is still None."
+            assert hasattr(library_years, "has") and library_years.has(julian_year), f"library_years is {library_years}, which is not measured in julian_year."
+
+        def test_agrees():
+            """SymPy's answer agrees with your own years."""
+            value = float(library_years / julian_year)
+            assert close(value, years), f"SymPy gives {value} Julian years, but your years is {years}."
+      reference: |
+        from sympy.physics.units import convert_to, second, julian_year
+
+        flop = 3.15e23
+        flop_per_second = 1e14
+        seconds_per_year = 365.25 * 24 * 60 * 60
+
+        seconds = flop / flop_per_second
+        years = seconds / seconds_per_year
+
+        library_years = convert_to(seconds * second, julian_year)
+
+        print(years)
+        print(library_years)
+      wrong:
+        - code: |
+            from sympy.physics.units import convert_to, second, julian_year
+
+            flop = 3.15e23
+            flop_per_second = 1e14
+            seconds_per_year = 365.25 * 24 * 60 * 60
+
+            seconds = flop / flop_per_second
+            years = seconds / seconds_per_year
+
+            library_years = convert_to(seconds, julian_year)
+
+            print(years)
+            print(library_years)
+          why: >-
+            Converts a bare number. With no unit attached, SymPy has nothing to convert, and the
+            number comes back unchanged.
+        - code: |
+            from sympy.physics.units import convert_to, second, julian_year
+
+            flop = 3.15e23
+            flop_per_second = 1e14
+            seconds_per_year = 365.25 * 24 * 60 * 60
+
+            seconds = flop / flop_per_second
+            years = seconds / seconds_per_year
+
+            library_years = convert_to(seconds * second, second)
+
+            print(years)
+            print(library_years)
+          why: Converts into seconds rather than Julian years, so the answer is still measured in seconds.
+        - code: |
+            from sympy.physics.units import convert_to, second, julian_year
+
+            flop = 3.15e23
+            flop_per_second = 1e14
+            seconds_per_year = 365.25 * 24 * 60 * 60
+
+            seconds = flop / flop_per_second
+            years = seconds / seconds_per_year
+
+            library_years = convert_to(flop * second, julian_year)
+
+            print(years)
+            print(library_years)
+          why: Treats the FLOP count as a number of seconds, which is $10^{14}$ times too many.
+    explanation: >-
+      SymPy agrees with your conversion: about 99.8 Julian years. Because it keeps each unit with its
+      number, its answer says what it is measured in, which a plain Python number never does.
+
+  - id: build-tropical-year
+    phase: build
+    kind: breakit
+    concept: M1.1/fermi-estimation
+    title: Which year?
+    prompt: Predict what happens to `years` after the change, then run both versions to see.
+    answer:
+      type: breakit
+      code: |
+        from sympy.physics.units import convert_to, second, julian_year
+
+        seconds = 3.15e23 / 1e14
+        in_years = convert_to(seconds * second, julian_year)
+        years = float(in_years / julian_year)
+        print(in_years)
+      broken: |
+        from sympy.physics.units import convert_to, second, year
+
+        seconds = 3.15e23 / 1e14
+        in_years = convert_to(seconds * second, year)
+        years = float(in_years / year)
+        print(in_years)
+      change: >-
+        `julian_year`, exactly 365.25 days, becomes SymPy's `year`, the tropical year of 365.24219
+        days: the time from one spring to the next.
+      options:
+        - { id: more, label: '`years` changes by more than 0.1%', when: 'abs(years / base["years"] - 1) > 0.001' }
+        - { id: less, label: '`years` changes, but by less than 0.1%', when: '0 < abs(years / base["years"] - 1) <= 0.001' }
+        - { id: same, label: '`years` stays exactly the same', when: 'years == base["years"]' }
+        - { id: error, label: Python stops with an error, when: 'error is not None' }
+    explanation: >-
+      It changes by about 0.002%, from 99.8175 to 99.8196 years, because the two years differ by
+      about 11 minutes. Next to a chip speed known only to within a factor of 2, that difference does
+      not matter at all. Part of estimating well is knowing which differences are too small to matter.
 
   # Explain --------------------------------------------------------------------
   - id: explain-training-time
@@ -633,8 +798,13 @@ exercises:
           criterion: >-
             Judges the answer by the factor it might be off by, and names the least certain input, such
             as the speed the chip really sustains.
+        - id: plain
+          criterion: >-
+            Writes plainly for a friend who has never met these ideas, and says what a FLOP is before
+            relying on it.
       reference: >-
-        Units behave like letters in algebra, so you can multiply, divide and cancel them. Multiplying
+        A FLOP is one arithmetic operation, such as one multiplication of two numbers, and training
+        GPT-3 takes about $3.15 \times 10^{23}$ of them. Units behave like letters in algebra, so you can multiply, divide and cancel them. Multiplying
         FLOP by FLOP per second gives FLOP squared per second, which is not a length of time, so the
         multiplication cannot be right whatever the numbers are. To get seconds, the FLOP must cancel:
         divide the compute by the speed. FLOP divided by FLOP per second is FLOP times seconds per FLOP,

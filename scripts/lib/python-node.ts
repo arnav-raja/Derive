@@ -46,8 +46,11 @@ export async function startPython() {
   let sympyLoaded = false;
   const call = <T>(name: string, payload: unknown): T =>
     JSON.parse(harness[name]!(JSON.stringify(payload))) as T;
+  // As in the browser worker: SymPy is loaded only when learner code imports it.
+  const needsSympy = (p: { code?: string; broken?: string; tests?: string }) =>
+    /\b(?:import|from)\s+sympy\b/.test(`${p.code ?? ""}\n${p.broken ?? ""}\n${p.tests ?? ""}`);
 
-  return {
+  const api = {
     loadSympy() {
       if (sympyLoaded) return;
       const site = py.runPython("import site\nsite.getsitepackages()[0]") as string;
@@ -60,12 +63,18 @@ export async function startPython() {
       py.runPython("import sympy");
       sympyLoaded = true;
     },
-    run: (payload: { code: string; tests?: string; maxSteps?: number; stdin?: string[]; files?: Record<string, string> }) =>
-      call<RunResult>("run_json", payload),
-    breakit: (payload: { code: string; broken: string; options: { id: string; when: string }[]; maxSteps?: number }) =>
-      call<BreakitResult>("breakit_json", payload),
-    trace: (payload: { code: string; maxEvents?: number; stdin?: string[] }) =>
-      call<TraceResult>("trace_json", payload),
+    run: (payload: { code: string; tests?: string; maxSteps?: number; stdin?: string[]; files?: Record<string, string> }) => {
+      if (needsSympy(payload)) api.loadSympy();
+      return call<RunResult>("run_json", payload);
+    },
+    breakit: (payload: { code: string; broken: string; options: { id: string; when: string }[]; maxSteps?: number }) => {
+      if (needsSympy(payload)) api.loadSympy();
+      return call<BreakitResult>("breakit_json", payload);
+    },
+    trace: (payload: { code: string; maxEvents?: number; stdin?: string[] }) => {
+      if (needsSympy(payload)) api.loadSympy();
+      return call<TraceResult>("trace_json", payload);
+    },
     checkExpression: (payload: {
       input: string;
       symbols: { name: string; positive?: boolean; integer?: boolean }[];
@@ -81,4 +90,5 @@ export async function startPython() {
       count?: number;
     }) => call<FingerprintResult>("fingerprint_json", payload),
   };
+  return api;
 }

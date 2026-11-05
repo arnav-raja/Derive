@@ -123,9 +123,12 @@ export function Steps({ children }: { children: ReactNode }) {
 
 export function Step({ why, children }: { why?: string; children: ReactNode }) {
   return (
-    <li className="grid grid-cols-1 gap-1 rounded-md border border-rule bg-surface px-4 py-2 sm:grid-cols-[1fr_auto] sm:items-center sm:gap-4">
-      <div className="overflow-x-auto text-base text-ink">{children}</div>
-      {why ? <p className="text-sm text-ink-muted">{why}</p> : null}
+    // The mathematics keeps its natural width and never breaks across lines. The reason sits beside
+    // it when there is room and moves below it when there is not, so a long reason never squeezes
+    // the mathematics; a step wider than the page scrolls within its own row.
+    <li className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1 rounded-md border border-rule bg-surface px-4 py-2">
+      <div className="max-w-full overflow-x-auto py-1 text-base whitespace-nowrap text-ink">{children}</div>
+      {why ? <p className="min-w-48 flex-1 text-sm text-ink-muted sm:text-right">{why}</p> : null}
     </li>
   );
 }

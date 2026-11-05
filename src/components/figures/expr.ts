@@ -192,6 +192,39 @@ export function evaluate(node: ExprNode, scope: Record<string, number>): number 
   }
 }
 
+/**
+ * A node's value from its children's values, for evaluators that change each value on the way
+ * up, such as a calculator that rounds every result.
+ */
+export function combineValues(node: ExprNode, kids: number[], scope: Record<string, number>): number {
+  switch (node.kind) {
+    case "bin":
+      return applyOp(node.op, kids[0]!, kids[1]!);
+    case "neg":
+      return -kids[0]!;
+    case "call": {
+      const [, f] = FUNCTIONS[node.fn];
+      return (f as (...a: number[]) => number)(...kids);
+    }
+    default:
+      return evaluate(node, scope);
+  }
+}
+
+/** Rounds to a number of significant figures, as a calculator that keeps only that many digits does. */
+export function roundSig(v: number, figures: number): number {
+  return Number.isFinite(v) && v !== 0 ? Number(v.toPrecision(figures)) : v;
+}
+
+/** A value as such a calculator shows it, trailing zeros included: "1.00", "0.00800". */
+export function sigText(v: number, figures: number): string {
+  if (!Number.isFinite(v)) return formatValue(v);
+  if (v === 0) return "0";
+  const abs = Math.abs(v);
+  if (abs >= 1e6 || abs < 1e-3) return formatValue(v, figures);
+  return v.toPrecision(figures);
+}
+
 /** A compiled expression: parse once, evaluate many times. */
 export function compileExpr(src: string): (scope: Record<string, number>) => number {
   const node = parseExpr(src);
@@ -235,10 +268,12 @@ export function exprText(node: ExprNode): string {
       return `${node.fn}(${node.args.map(exprText).join(", ")})`;
     case "bin": {
       const p = PRECEDENCE[node.op];
-      // ^ groups to the right, so (a^b)^c keeps its brackets; - and / do not
-      // regroup, so a − (b − c) keeps them too.
+      // The text must show the tree exactly, so brackets stay wherever they
+      // change the shape: ^ groups to the right, so (a^b)^c keeps them, and the
+      // others group to the left, so a + (b + c) and a − (b − c) keep them, even
+      // where the value would be the same without.
       const needLeft = prec(node.left) < p || (node.op === "^" && prec(node.left) === p);
-      const needRight = prec(node.right) < p || (prec(node.right) === p && (node.op === "-" || node.op === "/"));
+      const needRight = prec(node.right) < p || (prec(node.right) === p && node.op !== "^");
       const l = needLeft ? `(${exprText(node.left)})` : exprText(node.left);
       const r = needRight ? `(${exprText(node.right)})` : exprText(node.right);
       return node.op === "^" ? `${l}^${r}` : `${l} ${SHOW_OP[node.op]} ${r}`;
@@ -399,7 +434,8 @@ export function formatValue(v: number, digits = 3): string {
     }
     return `${Number(mantissa.toPrecision(digits))} × 10${superscript(exp)}`;
   }
-  return Number(v.toPrecision(Math.max(digits, Math.floor(Math.log10(abs)) + 1))).toLocaleString("en-IN", {
+  // Digits are grouped in threes, as in the lesson text and scientific writing: 31,557,600.
+  return Number(v.toPrecision(Math.max(digits, Math.floor(Math.log10(abs)) + 1))).toLocaleString("en-GB", {
     maximumFractionDigits: 6,
   });
 }

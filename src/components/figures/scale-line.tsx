@@ -60,6 +60,7 @@ export function ScaleLine({
   max,
   predict,
   span,
+  linearLocked = false,
 }: {
   title: string;
   description: string;
@@ -72,6 +73,8 @@ export function ScaleLine({
   predict?: { prompt: string; label: string; value: number; sym?: string };
   /** Two labels to bracket, with the factor between them. */
   span?: { from: string; to: string };
+  /** Keeps the ordinary scale closed until the prediction that goes with the figure is answered. */
+  linearLocked?: boolean;
 }) {
   const [ref, width] = useWidth<HTMLDivElement>();
   const values = [...items.map((i) => i.value), ...(predict ? [predict.value] : [])].filter((v) => v > 0);
@@ -257,9 +260,18 @@ export function ScaleLine({
             )}
           </p>
           <div className="flex flex-wrap items-center gap-3">
-            <Button size="sm" variant="secondary" onClick={() => setLinear((l) => !l)} aria-pressed={linear}>
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => setLinear((l) => !l)}
+              aria-pressed={linear}
+              disabled={linearLocked && !linear}
+            >
               {linear ? "Back to powers of ten" : "See it on an ordinary scale"}
             </Button>
+            {linearLocked && !linear ? (
+              <p className="text-sm text-ink-muted">The ordinary scale opens once you have made the prediction about it.</p>
+            ) : null}
             {linear ? (
               <p className="text-sm text-ink-muted">
                 On an ordinary scale, {crowded} of the {items.length} points sit within 1% of zero.

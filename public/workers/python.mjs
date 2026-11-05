@@ -63,6 +63,12 @@ async function ensureSympy() {
   }
 }
 
+// Learner code may import SymPy, the library version of symbolic algebra; load it only then.
+const SYMPY_IMPORT = /\b(?:import|from)\s+sympy\b/;
+function needsSympy(payload) {
+  return SYMPY_IMPORT.test(`${payload?.code ?? ""}\n${payload?.broken ?? ""}\n${payload?.tests ?? ""}`);
+}
+
 function call(name, payload) {
   return JSON.parse(harness[name](JSON.stringify(payload)));
 }
@@ -78,12 +84,15 @@ self.onmessage = async (event) => {
         result = { ready: true };
         break;
       case "run":
+        if (needsSympy(payload)) await ensureSympy();
         result = call("run_json", payload);
         break;
       case "breakit":
+        if (needsSympy(payload)) await ensureSympy();
         result = call("breakit_json", payload);
         break;
       case "trace":
+        if (needsSympy(payload)) await ensureSympy();
         result = call("trace_json", payload);
         break;
       case "expression":

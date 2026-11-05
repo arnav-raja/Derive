@@ -1,0 +1,59 @@
+Derive proved the rules for ordinary numbers. Now take them to the computer, where you can watch them work, and break one of them on purpose.
+
+## Python reads trees too
+
+Python follows the same order of operations as paper, so every line of Python has a tree:
+
+- `**` is a power and is done first, then `*` and `/`, then `+` and `-`;
+- a chain of `+` and `-`, or of `*` and `/`, is worked from the left;
+- brackets change the shape, just as on paper.
+
+One warning. In Python code a power is written `**`, and `^` means something else entirely, so keep `^` for the answer boxes in Derive, where it does mean a power.
+
+Here is a program whose tree is wrong.
+
+<Exercise id="build-average-bug" />
+
+<Reveal for="build-average-bug">
+
+In `first + second + third / 3` the division sits below the additions in the tree, so only the third score was divided by 3. Brackets move the additions underneath the division: `(first + second + third) / 3`. Python did exactly what the tree said, which is why reading the tree is how you find a mistake like this.
+
+## Break a rule on purpose
+
+Explore's calculator kept three significant figures. Here it is in Python, as a ready-made function called `r`: `r(x)` gives `x` rounded to three significant figures. You do not need to know how it works yet; a later lesson on functions, E1.3, shows how to write your own. For example, `r(1.004)` gives `1.0` and `r(1.008)` gives `1.01`. Python shows `1.0` rather than `1.00` because it drops zeros at the end.
+
+To round after every operation, wrap each operation in `r(...)`. The tree for $(a + b) + c$ has one addition inside another, so its line has one call of `r` inside another.
+
+<Exercise id="build-break-associativity" />
+
+</Reveal>
+
+<Reveal for="build-break-associativity">
+
+Between 1 and 10 the calculator's values go up in steps of 0.01, so an amount smaller than half a step, such as 0.004, is lost when it is added on its own. Near 100 the steps are 1 wide, so the same trick needs amounts about 100 times larger. With $a = 100$ and $b = c = 0.4$, the left grouping loses each 0.4 in turn and stays at 100, while the right grouping adds them first, to 0.8, which pushes $100.8$ up to 101. A real computer's 16 figures fail in exactly the same way, at a much finer scale, and that is what the puzzle showed.
+
+Now the rule that might survive rounding.
+
+<Exercise id="build-commute-float" />
+
+</Reveal>
+
+<Reveal for="build-commute-float">
+
+Swapping the two numbers changed nothing. A single addition is rounded once, from its exact sum, and $0.1 + 0.2$ and $0.2 + 0.1$ have the same exact sum. Regrouping is different, because it changes which sums get rounded on the way.
+
+## Compare with the library
+
+You have been doing algebra by hand. SymPy, a Python library for algebra with letters, does it by machine, with the same rules. Its `expand` multiplies out every bracket and collects like terms. For expressions built from letters and numbers with $+$, $-$, $\times$ and whole-number powers, which is all you need here, two expressions are equivalent exactly when their difference expands to 0.
+
+<Exercise id="build-sympy-check" />
+
+</Reveal>
+
+<Reveal for="build-sympy-check">
+
+`trees` is 0, so $3(x + 4)$ and $3x + 12$ are equivalent. `slip` is $2x$, or $-2x$ if you subtracted the other way round, which is 0 only when $x$ is 0: the slip is wrong for every other $x$. `built` is $x^3 - 3x^2 + 2x$, the product $x(x - 1)(x - 2)$ multiplied out. It is 0 at 0, 1 and 2 and nowhere else, which is exactly the trap from Derive.
+
+What SymPy did was not a check at a few values. It applied distributivity, commutativity and associativity, the same chain of rules you used, until the answer was either 0 or plainly not 0. For harder expressions, with sines or logarithms in them, SymPy has a more ambitious tool, `simplify`, which tries many rules and usually succeeds. Usually is the right word: for expressions built from functions like the sine, it has been proved that no program can settle every equivalence. When `simplify` fails to reach 0, the two expressions may still be equivalent.
+
+</Reveal>

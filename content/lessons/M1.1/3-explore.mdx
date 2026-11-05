@@ -1,6 +1,24 @@
-The puzzle's answer, about a century, is roughly $3 \times 10^9$ seconds. Is that a lot of seconds? Seconds suit a heartbeat and suit a century badly. To see why, put several spans of time on one line.
+The puzzle's answer, about a century, comes from dividing one enormous number by another and keeping track of what the result is measured in. This phase builds the tools for both, starting with the arithmetic.
+
+## Arithmetic with powers of ten
+
+In the Recall phase, $10^3 \times 10^4 = 10^7$: multiplying powers of ten adds the exponents, because it counts how many tens are multiplied together. Division runs the other way.
+
+<Exercise id="explore-divide" />
+
+<Reveal for="explore-divide">
+
+Write $10^{23}$ as 23 tens multiplied together and $10^{14}$ as 14 tens. Dividing cancels 14 of the tens on top against the 14 underneath, and 9 are left:
+
+$$
+\frac{3.15 \times 10^{23}}{10^{14}} = 3.15 \times 10^{23-14} = 3.15 \times 10^{9}.
+$$
+
+Dividing powers of ten subtracts the exponents. The leading number, 3.15, comes along unchanged. Written this way, a number keeps its size in plain sight: the exponent says roughly how big it is, and the leading digits say the rest.
 
 ## Numbers too large to picture
+
+So one chip would need $3.15 \times 10^9$ seconds. Is that a lot of seconds? Seconds suit a heartbeat and suit a century badly. To see why, put several spans of time on one line.
 
 The line below grows by a factor of ten at each tick mark, so the marks read 1 second, 10 seconds, 100 seconds, and so on. Click a point to see its value.
 
@@ -18,11 +36,16 @@ The line below grows by a factor of ten at each tick mark, so the marks read 1 s
     { label: "The age of the universe", value: 435494880000000000 }
   ]}
   predict={{ prompt: "Before the year appears: where on this line does one year fall? Set your guess, lock it in, then reveal.", label: "One year", value: 31557600 }}
+  linearAfter="explore-linear"
 />
 
-GPT-3 on one chip sits just past a whole human lifetime. The figure has a second view, an ordinary scale on which equal distances mean equal amounts of time, like a ruler.
+Clicking a point also gives its place on the line as a power of ten. An hour, 3,600 seconds, shows as 10 to the power 3.56, because it sits a little over halfway from the 1,000 mark to the 10,000 mark. A power of ten that is not a whole number needs a meaning of its own, which a later lesson on exponentials and logarithms, M1.5, gives it. For now, read it as a position on this line.
+
+GPT-3 on one chip sits just past a whole human lifetime. The figure has a second view, an ordinary scale on which equal distances mean equal amounts of time, like a ruler. It opens once you have made this prediction.
 
 <Exercise id="explore-linear" />
+
+</Reveal>
 
 <Reveal for="explore-linear">
 
@@ -30,29 +53,9 @@ Now switch the figure to the ordinary scale and look. Everything except the age 
 
 On the first view, every power of ten gets the same room. The distance between two points there shows how many *times* larger one is, not how much larger. A lifetime is about 80 times a year, and a year is about 365 times a day, so those gaps look similar in size. This is the natural way to look at quantities that range over many powers of ten, and most of the quantities in machine learning do.
 
-</Reveal>
-
-## Arithmetic with powers of ten
-
-In the recall phase, $10^3 \times 10^4 = 10^7$: multiplying powers of ten adds the exponents, because it counts how many tens are multiplied together. Division runs the other way.
-
-<Exercise id="explore-divide" />
-
-<Reveal for="explore-divide">
-
-Write $10^{23}$ as 23 tens multiplied together and $10^{14}$ as 14 tens. Dividing cancels 14 of the tens on top against the 14 underneath, and 9 are left:
-
-$$
-\frac{3.15 \times 10^{23}}{10^{14}} = 3.15 \times 10^{23-14} = 3.15 \times 10^{9}.
-$$
-
-Dividing powers of ten subtracts the exponents. The leading number, 3.15, comes along unchanged. A few digits times a power of ten keeps a number's size in plain sight: the exponent says roughly how big it is, and the leading digits say the rest.
-
-</Reveal>
-
 ## Units that cancel
 
-The numbers divided, and so did the units: FLOP divided by FLOP per second left seconds. Here is that calculation as a tree. The leaves at the bottom are the quantities, each with its unit, and the box above them is the operation. Hover over or tab to a box to see what it holds.
+The numbers divided. The units take part too. Call the compute $\sym{C}{C}$, measured in FLOP, and the chip's speed $\sym{R}{R}$, measured in FLOP per second. Here is the division as a tree. The leaves at the bottom are the quantities, each with its unit, and the box above them is the operation. Point at a box to see what it computes, or choose Show the numbers below the figure.
 
 <ExpressionTree
   title="The time on one chip, with its units"
@@ -63,15 +66,21 @@ The numbers divided, and so did the units: FLOP divided by FLOP per second left 
   predict={{ prompt: "Before you look: what unit comes out at the top of the tree?", ask: "unit", options: ["FLOP", "s", "FLOP·s", "1/s"] }}
 />
 
-The unit at the top came from treating FLOP and s exactly like symbols in algebra. Dividing by a fraction multiplies by its upside-down version, and then the FLOP cancel:
+Once you have seen the top of the tree, try the opposite operation.
+
+<Exercise id="explore-flip" />
+
+</Reveal>
+
+<Reveal for="explore-flip">
+
+Both units come from treating FLOP and s exactly like symbols in algebra. Dividing by a fraction multiplies by its upside-down version, and then the FLOP cancel:
 
 $$
 \text{FLOP} \div \frac{\text{FLOP}}{\text{s}} = \text{FLOP} \times \frac{\text{s}}{\text{FLOP}} = \text{s}.
 $$
 
-<Exercise id="explore-flip" />
-
-<Reveal for="explore-flip">
+Multiplying leaves nothing to cancel, so the FLOP pile up instead:
 
 <ExpressionTree
   title="The same quantities, multiplied"
@@ -83,6 +92,14 @@ $$
 
 The number at the top, about $3 \times 10^{37}$, means nothing, and the unit says so before you even look at the number: FLOP squared per second cannot be a length of time. So the formula "time = compute × speed" is wrong, and you can tell without doing any arithmetic.
 
+Units also convert. A year averages 365.25 days, because every fourth year has an extra day, and a day has $24 \times 60 \times 60 = 86{,}400$ seconds. So the number of seconds in a year, $\sym{Y}{Y}$, is
+
+$$
+Y = 365.25 \times 86{,}400 = 31{,}557{,}600 \ \text{s/year} \approx 3.16 \times 10^{7}\ \text{s/year}.
+$$
+
+Since 1 year and 31,557,600 s are the same span of time, the fraction $\dfrac{1\ \text{year}}{31{,}557{,}600\ \text{s}}$ is equal to 1. Multiplying a quantity by it changes the unit and not the quantity: the seconds cancel and years are left. That is all converting a unit means, and the Derive phase uses it to turn the chip's seconds into years.
+
 Adding is stricter still. You can multiply any two units, even if the result is meaningless, but you can only add quantities of the same kind. Three hours plus twenty minutes is fine once both are in minutes. Three hours plus twenty kilograms is not a quantity at all. Here is an attempt to add seconds to seconds per year:
 
 <ExpressionTree
@@ -93,13 +110,13 @@ Adding is stricter still. You can multiply any two units, even if the result is 
   units={{ C: "FLOP", R: "FLOP/s", Y: "s/year" }}
 />
 
-</Reveal>
-
 ## Guessing well
 
-Not every quantity comes with its numbers handed to you. Enrico Fermi, a physicist, was known for answering questions such as "how many piano tuners are there in Chicago?" in his head, to within a small factor, by breaking them into pieces he could guess. Try one about GPT-3.
+Not every quantity comes with its numbers handed to you. Enrico Fermi, a physicist, was famous for estimates of this kind, and he set his students questions such as "how many piano tuners are there in Chicago?", to be answered within a small factor by breaking them into pieces they could guess. Try one about GPT-3.
 
 <Exercise id="explore-reading" />
+
+</Reveal>
 
 <Reveal for="explore-reading">
 
@@ -107,10 +124,10 @@ Here is one way to break it down, with every unit written in. Step through the b
 
 <ExpressionTree
   title="Years to read GPT-3's training text"
-  description="A tree that divides the 300 billion tokens by the tokens read in a year, built from words per minute, minutes per hour, hours per day, days per year and words per token."
-  expr="D/(w*m*h*d/k)"
-  values={{ D: 3e11, w: 250, m: 60, h: 8, d: 365, k: 0.75 }}
-  units={{ D: "token", w: "word/min", m: "min/h", h: "h/day", d: "day/year", k: "word/token" }}
+  description="A tree that divides the 300 billion tokens, D, by the tokens read in a year, built from w words per minute, a minutes per hour, b hours per day, c days per year and k words per token."
+  expr="D/(w*a*b*c/k)"
+  values={{ D: 3e11, w: 250, a: 60, b: 8, c: 365, k: 0.75 }}
+  units={{ D: "token", w: "word/min", a: "min/h", b: "h/day", c: "day/year", k: "word/token" }}
   stepwise
 />
 
@@ -120,25 +137,29 @@ With 250 words a minute it comes to about 5,000 years: GPT-3 learnt from more te
 
 </Reveal>
 
+<Reveal for="explore-factor">
+
+So a good estimate is one that lands within a small factor of the truth, and says how large that factor might be.
+
 ## The names
 
 You have used four ideas in this phase. Here are their names.
 
 <Definition term="Units as algebra">
 
-A quantity is a number times a unit, such as $3.15 \times 10^9$ s. Units multiply, divide and cancel exactly as symbols do in algebra, so FLOP ÷ (FLOP/s) = s.
+A quantity is a number times a unit, such as $3.15 \times 10^9$ s. Units multiply, divide and cancel exactly as symbols do in algebra, so FLOP ÷ (FLOP/s) = s. Converting a unit means multiplying by a fraction equal to 1, such as $\dfrac{1\ \text{year}}{31{,}557{,}600\ \text{s}}$.
 
 </Definition>
 
 <Definition term="Powers of ten">
 
-Writing a number as a few digits times a power of ten, such as $3.15 \times 10^{23}$, is called *scientific notation*. The power of ten gives the number's *order of magnitude*, its size to the nearest factor of ten or so. Multiplying adds exponents and dividing subtracts them.
+Writing a number as a number from 1 up to, but not including, 10, times a power of ten, such as $3.15 \times 10^{23}$, is called *scientific notation*. The power of ten gives the number's *order of magnitude*, its size to the nearest factor of ten or so. Multiplying adds exponents and dividing subtracts them.
 
 </Definition>
 
 <Definition term="Dimensional analysis">
 
-Checking a formula by checking that its units come out right. If the units are wrong, the formula is wrong. In the Derive phase you will see that it can also find formulas.
+Checking a formula by checking that its units come out right. If the units do not match, the formula is wrong. In the Derive phase you will see that the units can also find formulas.
 
 </Definition>
 
@@ -147,3 +168,5 @@ Checking a formula by checking that its units come out right. If the units are w
 Estimating a quantity by breaking it into factors you can guess or look up, and judging the answer by the factor it might be off by.
 
 </Definition>
+
+</Reveal>

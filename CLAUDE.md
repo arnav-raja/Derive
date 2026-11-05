@@ -19,7 +19,10 @@ before you stop.
   then stop. "Resume": read docs/STATUS.md and carry on from its next step.
 - Writing: Indian English (for example "colour", "optimise", and "practise" as the
   verb), no emojis, no images in messages, no em dashes, no exclamation marks, no hype.
-  Feedback names what is right before what is wrong.
+  Feedback names what is right before what is wrong. Numbers group their digits in threes
+  (500,050), in prose and in figures alike.
+- Lessons never show an answer before it is asked for: anything that gives away a prediction or
+  an exercise (later prose, a figure's caption, the names section) sits inside a `<Reveal>` for it.
 - Visualisations are drawn for Derive only, from our own code. Never embed others' figures.
 - The tutor gives hints, never solutions (see the plan's AI tutor section).
 - Compute: always the lowest total cost option; B200, B300 and H200 are never used.

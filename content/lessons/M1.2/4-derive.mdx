@@ -1,0 +1,170 @@
+Explore found the rules by trying numbers. That is how rules are discovered, but it cannot be how they are proved, because no list of examples covers every number. So turn it around. Take the rules as the starting point and allow nothing else: every step must be one of them. Whatever follows is then true for every number, with nothing left to check.
+
+## Why anything times zero is zero
+
+You have always used $a \times 0 = 0$. It is not on the list of rules, so either it is an extra rule or it follows from the others. It follows. Start by writing 0 as $0 + 0$, which adding 0 allows, and multiply out:
+
+<Steps>
+  <Step why="0 + 0 = 0, because adding 0 changes nothing">$a \times 0 = a \times (0 + 0)$</Step>
+  <Step why="distributivity">$a \times 0 = a \times 0 + a \times 0$</Step>
+</Steps>
+
+Give $a \times 0$ a short name, $z$. The last line says $z = z + z$. Now add $-z$, the negative of $z$, to both sides. Doing the same thing to both sides of an equation keeps them equal.
+
+<Steps>
+  <Step why="add −z to both sides">$z + (-z) = (z + z) + (-z)$</Step>
+  <Step why="on the left, a number plus its negative is 0; on the right, regroup by associativity">$0 = z + \big(z + (-z)\big)$</Step>
+  <Step why="a number plus its negative is 0">$0 = z + 0$</Step>
+  <Step why="adding 0 changes nothing">$0 = z$</Step>
+</Steps>
+
+So $a \times 0 = 0$. The argument never used the value of $a$, so it covers every number at once. That is what a proof gives you and examples cannot.
+
+## Why a negative times a negative is positive
+
+In the Recall phase, $(-3) \times (-4) = 12$ was a rule to remember. Now it can be derived. The key case is $(-1) \times (-1)$, and the chain below shows that $(-1)(-1) + (-1)$ is 0. Each line uses exactly one rule.
+
+<Exercise id="derive-minus-one" />
+
+<Reveal for="derive-minus-one">
+
+In order: times one, distributive, swap, negative, times zero. So $(-1)(-1) + (-1) = 0$. Now add 1 to both sides. On the left, $(-1) + 1$ is 0 and drops out, which leaves
+
+$$
+(-1) \times (-1) = 1.
+$$
+
+Look at what kind of argument that was. Nobody chose this answer. Once you accept the distributive law, and that $-1$ is the number that cancels 1, the value of $(-1)(-1)$ is forced: any other value would break a rule you already trust. A similar short argument shows that $-3 = (-1) \times 3$, and then reordering the factors gives $(-3)(-4) = (-1)(-1) \times 3 \times 4 = 12$.
+
+A second angle, for intuition. Multiply $-1$ by 3, 2, 1 and 0 in turn: the answers are $-3$, $-2$, $-1$ and 0. Each time the multiplier goes down by 1, the answer goes up by 1. One more step, to a multiplier of $-1$, gives 1. The pattern only suggests the answer. The rules prove it, and the two agree.
+
+</Reveal>
+
+## When are two expressions the same?
+
+Most of algebra is rewriting: an expression is replaced by another that is easier to use. That is only safe when the two are *equivalent*, which means they give the same value for every value of their letters. The two trees for $7 \times 98$ in Explore were equivalent, and the distributive law is the reason. Each rule turns an expression into an equivalent one, so a chain of rules does too.
+
+<Exercise id="derive-expand" />
+
+<Reveal for="derive-expand">
+
+<Steps>
+  <Step why="a square is a number multiplied by itself">$(a + b)^2 = (a + b)(a + b)$</Step>
+  <Step why="distributivity, splitting the first bracket">$= a(a + b) + b(a + b)$</Step>
+  <Step why="distributivity again, on each part">$= a^2 + ab + ba + b^2$</Step>
+  <Step why="ba = ab by commutativity, then two copies of ab make 2ab">$= a^2 + 2ab + b^2$</Step>
+</Steps>
+
+Every line is equivalent to the one before, so the first and the last are equivalent, for every $a$ and $b$.
+
+Many people, at least once, write $(a + b)^2$ as $a^2 + b^2$. The two look alike. Are they equivalent, and what would settle it?
+
+<Exercise id="derive-counterexample" />
+
+</Reveal>
+
+<Reveal for="derive-counterexample">
+
+At $a = b = 1$ the first is $(1 + 1)^2 = 4$ and the second is $1^2 + 1^2 = 2$. One pair of values where they disagree settles it: they are not equivalent. The piece the slip leaves out is $2ab$, which is 0 whenever $a$ or $b$ is 0. That is why the pairs with a 0 in them could not tell the two apart.
+
+So one disagreement is enough to show that two expressions are not equivalent. Is agreement at a few values enough to show that they are?
+
+<Exercise id="derive-three-agreements" />
+
+</Reveal>
+
+<Reveal for="derive-three-agreements">
+
+At $x = 3$ the second expression is $3 \times 2 \times 1 + 3 = 9$, while $x$ is 3. The extra part, $x(x - 1)(x - 2)$, is 0 when $x$ is 0, 1 or 2, because one of its brackets is 0, and at no other value. The three agreements were built in.
+
+The same trick defeats any list of checks: add a product of brackets that is 0 at every value you checked. So agreeing values are only evidence. One disagreement disproves an equivalence, and only a chain of rules proves one.
+
+<Note>
+
+Derive's checker works on evidence, and says so. When you type an expression, it compares your answer with the expected one at several values chosen in advance. A wrong answer that agrees at all of them is possible in principle and very unlikely by accident, which is the difference between strong evidence and a proof.
+
+</Note>
+
+</Reveal>
+
+## Powers, and what a zero exponent must mean
+
+<Callback lesson="M1.1">
+
+You multiplied powers of ten by adding exponents, $10^3 \times 10^4 = 10^7$, because three tens multiplied together, then four more, is seven tens multiplied together.
+
+</Callback>
+
+The same holds for any number $a$. A power counts copies multiplied together, $a^3 = a \times a \times a$, so $a^m \times a^n$ is $m$ copies of $a$ followed by $n$ more. Associativity says the grouping of a product does not matter, so the line between the two groups can go, which leaves $m + n$ copies:
+
+$$
+a^m \times a^n = a^{m+n}.
+$$
+
+<Exercise id="derive-power-of-power" />
+
+<Reveal for="derive-power-of-power">
+
+$(a^m)^n$ is $n$ groups of $m$ copies each, which is $mn$ copies, so $(a^m)^n = a^{mn}$. For example, $(2^3)^2 = 8^2 = 64 = 2^6$.
+
+Both rules came from counting copies, so far an exponent has to be a whole number, 1 or more. What could $a^0$ mean? You cannot multiply zero copies of $a$ together. But suppose the first rule is to keep working. Then
+
+$$
+a^0 \times a^n = a^{0 + n} = a^n,
+$$
+
+so $a^0$ must be a number that multiplies $a^n$ and leaves it unchanged. When $a$ is not 0, the only such number is 1, so $a^0 = 1$. (When $a$ is 0 the argument says nothing, because every number times 0 is 0.)
+
+This is a definition, but not an arbitrary one: it is the only value that keeps the rule true. Negative exponents are settled the same way.
+
+<Exercise id="derive-negative-power" />
+
+</Reveal>
+
+<Reveal for="derive-negative-power">
+
+For the rule to hold, $2^{-3} \times 2^{3} = 2^{0} = 1$, so $2^{-3}$ is the number that multiplies 8 to give 1, which is $\tfrac{1}{8} = 0.125$. In general $a^{-n} = 1/a^n$. That is the meaning $10^{-3} = 0.001$ had in M1.1, and now you know where it comes from.
+
+</Reveal>
+
+## Solving an equation without losing answers
+
+An equation claims that two expressions are equal, and its solutions are the values of the letter that make the claim true. Solving means replacing the equation with simpler ones that have exactly the same solutions, until the solutions can be read off.
+
+Doing the same thing to both sides keeps two equal things equal, but that alone does not make a step safe. A step is safe when it can also be undone, because then no solution can be gained or lost on the way. Adding a number is undone by subtracting it. Multiplying by a number is undone by dividing by it, provided the number is not 0.
+
+In M1.1 the units found the training time in years, $T = C/(RY)$, from the compute $C$, the chip's speed $R$ and the seconds in a year $Y$. Turn the question around: the lab knows how long it can wait and wants the chip speed that will do.
+
+<Exercise id="derive-solve-for-speed" />
+
+<Reveal for="derive-solve-for-speed">
+
+Multiply both sides by $R$, then divide both sides by $T$. Each step can be undone, since none of the letters is 0:
+
+$$
+T = \frac{C}{RY} \quad\Longrightarrow\quad RT = \frac{C}{Y} \quad\Longrightarrow\quad R = \frac{C}{TY}.
+$$
+
+A check is cheap. Put the answer back into the original: $C \big/ \big(\tfrac{C}{TY} \times Y\big) = C \times \tfrac{T}{C} = T$, as it should be.
+
+</Reveal>
+
+Now the steps that cannot be undone. The equation $x = 3$ has one solution. Square both sides and you get $x^2 = 9$, which has two, 3 and $-3$. Squaring cannot be undone, because 3 and $-3$ have the same square, so it let in an answer the first equation did not have. After squaring, check every answer in the original equation.
+
+Dividing can go wrong the other way.
+
+<Exercise id="derive-lost-solution" />
+
+<Reveal for="derive-lost-solution">
+
+The lost solution is $x = 0$, where both sides of $x^2 = 5x$ are 0. Dividing by $x$ is only safe when $x$ is not 0, and whether $x$ is 0 was part of the question. The safe route is to bring everything to one side and use the distributive law backwards, taking out the common factor:
+
+$$
+x^2 - 5x = 0 \quad\Longrightarrow\quad x(x - 5) = 0.
+$$
+
+A product is 0 only when one of its factors is 0: if $x$ is not 0, multiplying both sides of $x(x - 5) = 0$ by $1/x$ leaves $x - 5 = 0$. So $x = 0$ or $x = 5$, and nothing is lost.
+
+Some equations have no solution at all. Subtract $x$ from both sides of $x = x + 1$ and you get $0 = 1$, which no value of $x$ makes true. Remember this one. In Python, which E1.1 introduces properly, the same line is an instruction, and a useful one.
+
+</Reveal>

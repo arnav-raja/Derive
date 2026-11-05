@@ -20,31 +20,51 @@ import yaml
 PHASES = ["1-puzzle", "2-recall", "3-explore", "4-derive", "5-build", "6-explain"]
 
 
-def answer_shape(ans):
+LETTERS = "abcdefghijklmnopqrstuvwxyz"
+
+
+def lettered(options):
+    """Options as the learner sees them: labels only, never the ids, which can name the answer."""
+    return "\n".join(f"   ({LETTERS[i]}) {o['label']}" for i, o in enumerate(options))
+
+
+def letters_of(options, ids):
+    return ", ".join(f"({LETTERS[i]})" for i, o in enumerate(options) if o["id"] in ids)
+
+
+def test_docstrings(tests):
+    """The UI shows each test's docstring, and its failure message when it fails, not the test code."""
+    found = re.findall(r'def (test_\w+)\([^)]*\):\s*\n\s*"""(.*?)"""', tests, re.S)
+    return "\n".join(f"   - {doc.strip()}" for _, doc in found) or "   (no described checks)"
+
+
+def answer_shape(ans, kind=None):
     t = ans.get("type")
     if t == "choice":
         many = "Choose all that apply" if ans.get("multiple") else "Choose one"
-        opts = "\n".join(f"   ({o['id']}) {o['label']}" for o in ans["options"])
-        return f"{many}:\n{opts}"
+        return f"{many}:\n{lettered(ans['options'])}"
     if t == "number":
-        unit = f" in {ans['unit']}" if ans.get("unit") else ""
-        return f"Type a number{unit}."
+        unit = f" The unit printed after the box is: {ans['unit']}." if ans.get("unit") else ""
+        factor = (ans.get("tolerance") or {}).get("factor")
+        est = f" Under the box: an estimate within a factor of {factor} either way counts." if kind == "estimate" and factor else ""
+        return f"Type a number in the box (its placeholder reads: for example 3e23 or 3 × 10^23).{unit}{est}"
     if t == "expression":
         syms = ", ".join(s["name"] for s in ans.get("symbols", []))
-        lhs = f" after '{ans['lhs']}'" if ans.get("lhs") else ""
-        return f"Type an expression{lhs} in Python syntax, using the symbols {syms}."
+        lhs = f" The box follows: {ans['lhs']}" if ans.get("lhs") else ""
+        return (f"Type an expression in the box.{lhs}\nUnder the box: Type * to multiply, / to divide, ^ or ** for a "
+                f"power, and functions such as sqrt( ) for a square root. Symbols: {syms}. As you type, the box "
+                "shows how it reads your expression.")
     if t == "code":
-        return ("Edit this starter program so its tests pass (the tests are shown to the learner too):\n"
-                f"```python\n{ans['starter']}```\nTests:\n```python\n{ans['tests']}```")
+        return ("Edit this starter program in the editor, run it, and submit when its checks pass:\n"
+                f"```python\n{ans['starter']}```\nThe checks, as the page describes them:\n{test_docstrings(ans['tests'])}")
     if t == "breakit":
-        opts = "\n".join(f"   ({o['id']}) {o['label']}" for o in ans["options"])
         return (f"Working program:\n```python\n{ans['code']}```\nAfter the change:\n```python\n{ans['broken']}```\n"
-                f"{ans['change']}\nPredict what happens:\n{opts}")
+                f"{ans['change']}\nPredict what happens:\n{lettered(ans['options'])}")
     if t == "text":
         rub = "\n".join(f"   - {r['criterion']}" for r in ans["rubric"])
         return f"Write {ans['minWords']} to {ans['maxWords']} words. What a good answer shows:\n{rub}"
     if t == "steps":
-        rules = "\n".join(f"   ({r['id']}) {r.get('name', '')} {r['label']}" for r in ans["rules"])
+        rules = "\n".join(f"   - {r.get('name', '')}: {r['label']}" for r in ans["rules"])
         lines = "\n".join(f"   Line {i + 1}: {l['math']}" for i, l in enumerate(ans["lines"]))
         return f"Rules:\n{rules}\nStart: {ans['start']}\n{lines}\nChoose the rule that justifies each line."
     return f"(answer type {t})"
@@ -53,21 +73,32 @@ def answer_shape(ans):
 def answer_key(ans):
     t = ans.get("type")
     if t == "choice":
-        return f"correct: {', '.join(ans['correct'])}"
+        return f"correct: {letters_of(ans['options'], ans['correct'])}"
     if t == "number":
-        tol = f", within a factor of {ans['factor']}" if ans.get("factor") else (f", relative tolerance {ans['rel']}" if ans.get("rel") else "")
-        return f"{ans['value']} {ans.get('unit', '')}{tol}"
+        tol = ans.get("tolerance") or {}
+        extra = f", within a factor of {tol['factor']}" if tol.get("factor") else (
+            f", relative tolerance {tol['rel']}" if tol.get("rel") else "")
+        return f"{ans['value']} {ans.get('unit', '')}{extra}"
     if t == "expression":
         return f"{ans['reference']} (also accepted: {ans.get('accept', [])})"
     if t == "code":
         return f"reference solution:\n```python\n{ans['reference']}```"
     if t == "breakit":
-        return "the option whose condition holds: " + "; ".join(f"{o['id']} when {o['when']}" for o in ans["options"])
+        return "the option whose condition holds: " + "; ".join(
+            f"({LETTERS[i]}) when {o['when']}" for i, o in enumerate(ans["options"]))
     if t == "steps":
-        return "rules in order: " + ", ".join(l["rule"] for l in ans["lines"])
+        names = {r["id"]: r.get("name", r["id"]) for r in ans["rules"]}
+        return "rules in order: " + ", ".join(names[l["rule"]] for l in ans["lines"])
     if t == "text":
         return "graded against the rubric"
     return ""
+
+
+def hide_figure_answers(text):
+    """A figure's predict holds the value the learner is asked to guess; the page never shows it first."""
+    def strip(m):
+        return re.sub(r",\s*value:\s*[^,}]+", "", m.group(0))
+    return re.sub(r"predict=\{\{.*?\}\}", strip, text, flags=re.S)
 
 
 def main():
@@ -86,8 +117,9 @@ def main():
             if not e:
                 return f"[missing exercise {m.group(1)}]"
             return (f"\n> EXERCISE {e['id']} ({e['kind']}): {e.get('title', '')}\n> {e['prompt'].strip()}\n\n"
-                    f"{answer_shape(e['answer'])}\n")
+                    f"{answer_shape(e['answer'], e['kind'])}\n")
 
+        text = hide_figure_answers(text)
         text = re.sub(r'<Exercise id="([^"]+)"\s*/>', exercise, text)
         text = re.sub(r'<Reveal for="([^"]+)">',
                       lambda m: f"\n[THE TEXT BELOW APPEARS ONLY AFTER YOU ANSWER {m.group(1)}]\n", text)

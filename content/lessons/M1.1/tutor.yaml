@@ -26,7 +26,7 @@ misconceptions:
     why: >-
       When the uncertainty spans factors, the ordinary average sits close to the upper bound. The
       geometric mean is the same factor from each bound.
-    cue: An answer of $(L+H)/2$, or a guess of about 1,000 between bounds of 2 and 2,000.
+    cue: An answer of $(a+b)/2$, or a guess of about 1,000 between bounds of 2 and 2,000.
   - id: exact-or-wrong
     belief: An estimate is wrong unless it matches the careful answer.
     why: >-
@@ -43,7 +43,9 @@ misconceptions:
 exercises:
   derive-time-formula:
     rungs:
-      - Which unit do you want to end with, and which of the three quantities already carries FLOP?
+      - >-
+        Which unit do you want to end with? Two of the three quantities carry FLOP: what has to happen
+        to the FLOP before you can reach a time?
       - >-
         In Explore, the tree for $C \div R$ came out in seconds. What did dividing by $R$ do to the
         FLOP, and what would you need to do to seconds to reach years?
@@ -56,7 +58,7 @@ exercises:
       - >-
         A parallel example with the same shape: a recipe needs 1,200 g of flour, a scoop holds 300 g,
         and a bag holds 2 scoops. Then 1,200 g ÷ (300 g per scoop) = 4 scoops, and 4 scoops ÷ (2
-        scoops per bag) = 2 bags. So bags = flour ÷ (grams per scoop × scoops per bag).
+        scoops per bag) = 2 bags.
     notes: >-
       The usual slips are multiplying by $R$ or by $Y$. Both still type-check as algebra, so the hint
       should send the learner to the units of the final operation, never to the corrected expression.
@@ -64,8 +66,8 @@ exercises:
     rungs:
       - For each line, ask what changed from the line above it. The numbers, the units, or only how they are grouped?
       - >-
-        In the recall phase, dividing powers of ten subtracted the exponents. Which lines change an
-        exponent and nothing else?
+        In Explore, dividing powers of ten subtracted the exponents. Which lines change an exponent
+        and nothing else?
       - Look only at the first line. Dividing by a fraction $\tfrac{a}{b}$ is the same as multiplying by what?
       - >-
         The lines where a unit disappears all use the same rule. Find those lines first, then sort out
@@ -82,10 +84,12 @@ exercises:
     rungs:
       - Which of the three quantities has seconds anywhere in its unit?
       - >-
-        In the puzzle, dividing FLOP by FLOP per second cancelled the FLOP. Which unit here would you
+        In Explore, dividing FLOP by FLOP per second cancelled the FLOP. Which unit here would you
         want to cancel, and against which quantity?
-      - Write out the unit of $g$ in full. What do you get if you divide metres by it?
-      - The mass is a distraction for this step, since nothing else carries kilograms. Work with $L$ and $g$ only.
+      - The unit of $g$ has $1/\text{s}^2$ in it. What operation would turn $1/\text{s}^2$ into $\text{s}^2$?
+      - >-
+        Seconds appear only in $g$, and they sit on the bottom of its unit. To bring them to the top,
+        where must $g$ go in your combination?
       - >-
         A parallel case: a speed $v$ in m/s and an acceleration $a$ in m/s². Their ratio $v/a$ has
         units (m/s) ÷ (m/s²) = s. Here you want s² instead, from a length and an acceleration.
@@ -101,24 +105,25 @@ exercises:
         Your answer needs one operation applied to the whole combination from the last step. Check
         that it applies to all of it and not to one letter.
       - >-
-        A parallel example: an area $A$ is in m². The side of a square with that area is found by one
-        operation on $A$, and its unit is metres. The same move works on any unit squared.
+        A parallel example: a square of area $9\ \text{m}^2$ has a side of $\sqrt{9\ \text{m}^2} = 3$ m.
+        The square root acts on the number and on the unit together, and the same move works on any
+        unit squared.
     notes: >-
       Learners who know $2\pi\sqrt{L/g}$ often type it; the checker rejects it because the prompt asks
       for no number in front. Say so without supplying the expression.
   derive-geomean:
     rungs:
-      - The condition is $g/L = H/g$. What could you multiply both sides by to clear both fractions?
+      - The condition is $x/a = b/x$. What could you multiply both sides by to clear both fractions?
       - >-
         In Explore, estimates were judged by factors. Here "the same factor from each bound" is the
-        equation $g/L = H/g$, and you only need to rearrange it.
-      - Try numbers first. If $L = 1$ and $H = 100$, which $g$ makes $g/1 = 100/g$ true?
-      - Once the fractions are cleared you have $g^2$ on one side. What one step is left?
+        equation $x/a = b/x$, and you only need to rearrange it.
+      - Try numbers first. If $a = 1$ and $b = 100$, which $x$ makes $x/1 = 100/x$ true?
+      - Once the fractions are cleared you have $x^2$ on one side. What one step is left?
       - >-
         A parallel example: a rectangle has sides 4 and 9. The square with the same area has side $s$,
         where $s^2 = 4 \times 9 = 36$, so $s = 6$. Notice that 6 is the same factor, 1.5, above 4 as it
         is below 9.
-    notes: An answer of $(L+H)/2$ is the arithmetic-mean misconception; ask what factor it sits from each bound.
+    notes: An answer of $(a+b)/2$ is the arithmetic-mean misconception; ask what factor it sits from each bound.
   derive-chips-month:
     rungs:
       - How much work, in FLOP, does one chip do in 30 days?
@@ -130,13 +135,18 @@ exercises:
       - >-
         A parallel example: a wall needs 600 bricks and one builder lays 20 bricks an hour. To finish in
         5 hours you need 600 ÷ (20 × 5) = 6 builders.
-    notes: Answers near 1.2 or near 100,000 usually mean a missing or doubled conversion between days and seconds.
+    notes: >-
+      The right answer is about 1,215 chips. The usual slips each give a recognisable number: leaving
+      the 30 days unconverted gives about $1.05 \times 10^{8}$; leaving out one factor of 60 gives
+      about 72,917; leaving out the 24 gives about 29,167; an extra factor of 60 gives about 20; and
+      using a year instead of 30 days gives about 100. Point at the conversion from days to seconds
+      without doing it.
   explore-reading:
     rungs:
       - What do you know for certain, and what do you have to guess? Start with how many words 300 billion tokens is.
       - >-
-        In the puzzle you divided the total work by the work done per second. What is the total here,
-        and what is the reading done per year?
+        Earlier in Explore you divided the total work by the work done per second. What is the total
+        here, and what is the reading done per year?
       - Start smaller. How many words would you read in one hour at your guessed speed?
       - >-
         Check the units at each step: words per minute times minutes per hour gives words per hour.
@@ -163,8 +173,30 @@ exercises:
         A parallel example: to find the hours to drive 300 km at 60 km/h, and then the days at 10 hours
         of driving a day, write `hours = 300 / 60` and then `days = hours / 10`.
     notes: >-
-      The diagnosis lists which tests failed. A failing seconds check with years passing is impossible
-      unless years was typed in by hand; ask the learner to build each name from the ones above it.
+      The diagnosis lists which tests failed. If the years check passes while the seconds check fails,
+      the learner may have built years straight from flop, flop_per_second and seconds_per_year and
+      left seconds at 0, which is sound arithmetic; ask them to fill in seconds and build years from
+      it. If a value was typed in by hand, ask them to build each name from the ones above it.
+  build-sympy-years:
+    rungs:
+      - What does `convert_to` need to know about `seconds` before it can turn it into years?
+      - >-
+        In the Derive phase you multiplied by a fraction equal to 1 to turn seconds into years. SymPy
+        does that step for you, but only for a quantity that carries a unit. How do you attach the
+        unit `second` to a number?
+      - >-
+        Look at the example above the exercise: `2 * day` is a quantity. Which quantity here plays the
+        part of `2 * day`, and which unit plays the part of `second`?
+      - >-
+        Print `library_years` and read its unit. If no unit shows, or the unit is not `julian_year`,
+        check each of the two things you passed to `convert_to`.
+      - >-
+        A parallel example: `convert_to(90 * minute, hour)` shows `3*hour/2`, an hour and a half. The
+        first argument is a number times its unit, and the second is the unit you want.
+    notes: >-
+      The usual slips are converting the bare number `seconds`, which comes back unchanged with no
+      unit; converting into `second` instead of `julian_year`; and attaching the unit to `flop`
+      instead of `seconds`. Point at the unit the printed result shows, without writing the call.
 
 novice:
   - Why are you allowed to cancel FLOP against FLOP? They are not numbers.

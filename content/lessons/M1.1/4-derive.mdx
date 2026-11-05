@@ -6,7 +6,7 @@ You have three quantities:
 
 - $\sym{C}{C}$, the compute, in FLOP;
 - $\sym{R}{R}$, the chip's speed, in FLOP per second;
-- $\sym{Y}{Y}$, the length of a year, in seconds per year.
+- $\sym{Y}{Y}$, the number of seconds in a year, in seconds per year.
 
 <Exercise id="derive-time-formula" />
 
@@ -18,9 +18,7 @@ $$
 T = \frac{C}{R\,Y}, \qquad \frac{\text{FLOP}}{\dfrac{\text{FLOP}}{\text{s}} \times \dfrac{\text{s}}{\text{year}}} = \text{year}.
 $$
 
-Try any other arrangement of the three and the units come out wrong. The units did not merely check the formula; they chose it.
-
-</Reveal>
+Try any other arrangement of the three and the units come out wrong. The units did not merely check the formula; they chose it from among the ways of arranging $C$, $R$ and $Y$. What they cannot choose is a pure number in front, as you will see later in this phase.
 
 ## Every step, justified
 
@@ -28,37 +26,44 @@ Now put the numbers in and follow both the numbers and the units to the end. Eac
 
 <Exercise id="derive-cancel-chain" />
 
+</Reveal>
+
 <Reveal for="derive-cancel-chain">
 
 Every rule in that chain is a rule of ordinary algebra. Nothing special was needed for units: FLOP and s behaved exactly like the letters $a$ and $b$ would. That is the whole content of "units as algebra", and it is why a calculation that keeps its units checks itself as it goes.
 
-</Reveal>
-
 ## A second angle: in your head
 
-A result worth trusting should survive being reached another way. Here is the same answer from rough numbers, with no calculator. A useful fact: a year is very nearly $\pi \times 10^7$ seconds, so about $3 \times 10^7$.
+A result worth trusting should survive being reached another way. This time, ask first how much one chip does in a year, then how many such chip-years GPT-3 needs. Use rough numbers and no calculator. A useful fact: a year is very nearly $\pi \times 10^7$ seconds, so about $3 \times 10^7$.
 
 <Steps>
-  <Step why="round 3.15 to 3, then subtract exponents">$C \div R \approx 3 \times 10^{23} \div 10^{14} = 3 \times 10^{9}$ s</Step>
-  <Step why="a year is about π × 10^7 s">$1 \text{ year} \approx 3 \times 10^{7}$ s</Step>
-  <Step why="divide the leading numbers, subtract the exponents">$3 \times 10^{9} \div (3 \times 10^{7}) = 10^{2}$ years</Step>
+  <Step why="a year is about π × 10⁷ s">$1\ \text{year} \approx 3 \times 10^{7}\ \text{s}$</Step>
+  <Step why="one chip's work in a year: its speed times the seconds in a year">$10^{14}\ \text{FLOP/s} \times 3 \times 10^{7}\ \text{s/year}$</Step>
+  <Step why="multiply the leading numbers and add the exponents; the seconds cancel">$= 3 \times 10^{21}\ \text{FLOP/year}$</Step>
+  <Step why="divide the leading numbers and subtract the exponents; the FLOP cancel">$\dfrac{3 \times 10^{23}\ \text{FLOP}}{3 \times 10^{21}\ \text{FLOP/year}} = 10^{2}\ \text{years}$</Step>
 </Steps>
 
-About a century again, by a route you can carry in your head. When two routes agree, a slip in either one would have shown.
+One chip does about $3 \times 10^{21}$ FLOP in a year, and GPT-3 needs about a hundred of those chip-years: about a century again, by a route you can carry in your head. Both routes rest on the same formula, $T = C/(RY)$, so their agreement checks the arithmetic, not the formula. The units checked the formula.
 
 Units sit even on numbers that look bare. Look again at the formula from the puzzle.
 
 <Exercise id="derive-units-six" />
 
+</Reveal>
+
 ## Finding a formula you did not know
 
-So far the units have checked formulas, or chosen between a few. They can also find a formula from nothing.
+So far the units have checked formulas, or chosen between a few. They can also find a formula from the list of quantities it depends on.
 
-A pendulum is a weight on a string, swinging back and forth. How long does one swing take? Its period $T$, in seconds, could depend on three things: the string's length $L$ in metres, the strength of gravity $g$ in metres per second squared (m/s²), and the mass $m$ of the weight in kilograms. Only one way of combining them gives seconds. Find it in two steps.
+A pendulum is a weight on a string, swinging back and forth. Its period $T$ is the time for one full swing, out and back again, in seconds. It could depend on three things: the string's length $L$ in metres, the strength of gravity $g$ in metres per second squared (m/s²), and the mass $M$ of the weight in kilograms. Only one way of combining them gives seconds.
+
+The units cannot see a pure number in front, such as 2 or π, so look for the period only up to such a number. The sign $\propto$, read "is proportional to", says exactly that: $T \propto x$ means that $T$ is $x$ times some pure number. Find the combination in two steps.
 
 <Exercise id="derive-pendulum-square" />
 
 <Reveal for="derive-pendulum-square">
+
+A square root undoes a square: $\sqrt{9} = 3$, because $3^2 = 9$.
 
 <Exercise id="derive-pendulum-period" />
 
@@ -70,7 +75,7 @@ Two things fall out that are easy to miss.
 
 First, the mass cannot appear at all. Nothing else in the problem carries kilograms to cancel it, so a heavy weight and a light one on the same string swing with the same period. Experiments confirm it.
 
-Second, the units cannot give the whole answer. The full physics gives $T = 2\pi\sqrt{L/g}$ for small swings, and the $2\pi$ is a pure number with no unit, invisible to dimensional analysis. So dimensional analysis can rule a formula out, and can find how a quantity scales, but it cannot prove a formula right.
+Second, the units cannot give the whole answer. The full physics gives $T = 2\pi\sqrt{L/g}$, and the $2\pi$ is a pure number with no unit, invisible to dimensional analysis. The angle the swing starts from is a pure number too, so the units cannot say how it matters either: the formula holds for small swings, and wide ones take a little longer. So dimensional analysis can rule out a formula whose units do not match, and can find how a quantity scales, but it cannot prove a formula right.
 
 </Reveal>
 
@@ -82,7 +87,9 @@ Fermi estimates often start from bounds. You may not know how many words a perso
 
 <Reveal for="derive-geomean">
 
-The guess $g = \sqrt{LH}$ is called the *geometric mean* of the bounds. It is the right middle when your uncertainty is about factors. Compare it with the ordinary average, $(L + H)/2$, for bounds of 100 and 1,000,000:
+The guess $x = \sqrt{ab}$ is called the *geometric mean* of the bounds. It is the right middle when your uncertainty is about factors. For the reading speed, between 100 and 1,000 words a minute, it is $\sqrt{100 \times 1000} = \sqrt{100{,}000} \approx 316$, so guess about 300.
+
+Compare it with the ordinary average, $(a + b)/2$, for bounds of 100 and 1,000,000:
 
 <ScaleLine
   title="Two middles between the same bounds"
