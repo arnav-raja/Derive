@@ -4,7 +4,7 @@ course: E1
 status: review
 summary: >-
   A training script works out its learning rate from the batch size, and a later line changes the
-  batch size. What does it print? Values and their types, names that refer to values, the exact
+  batch size. What does it print? Values and their types, how names work, the exact
   order in which Python works out an expression, and what a float really holds when you type 0.1.
 sittings: 2
 minutes:
@@ -21,8 +21,9 @@ concepts:
       summary: >-
         Every value has a type, such as a whole number (int), a number with a point (float), text
         (str) or a truth value (bool). The type decides what an operation means, so + adds numbers
-        but joins text, and a change of type is always written out, as in int("42").
-      usedBy: [E1.2, E1.6, M13.1]
+        but joins text, and a change between text and numbers is always written out, as in
+        int("42").
+      usedBy: [E1.2, E1.6, E2.1, M13.1]
     - id: E1.1/variables-as-names
       name: Variables as names
       summary: >-
@@ -33,19 +34,20 @@ concepts:
     - id: E1.1/evaluation-order
       name: How Python works out an expression
       summary: >-
-        Python reads every expression as one tree, fixed by its rules of precedence: powers first,
-        grouped from the right, then *, /, // and %, then + and -, each grouped from the left. It
-        works the tree out from the leaves, and runs the lines of a program one at a time, from the
-        top.
+        Python reads every expression as one tree, fixed by its rules of precedence: brackets first,
+        then powers, grouped from the right, then a minus sign in front, then *, /, // and %, then +
+        and -, each of the last two levels grouped from the left. It works the tree out from the
+        leaves, and runs the lines of a program one at a time, from the top.
       usedBy: [E1.2, E1.8]
     - id: E1.1/floats-are-approximate
-      name: Floats are approximate
+      name: What a float holds
       summary: >-
-        A float holds the nearest number it can make as a whole number times a power of two, good
-        to about 16 significant figures. So 0.1 is stored slightly wrong, floats should be compared
-        within a tolerance, and big floats are spaced far apart. An int is exact at any size.
-      usedBy: [M13.1, M13.2]
-  used: [M1.1/powers-of-ten, M1.2/expression-trees, M1.2/field-axioms]
+        A float is a whole number of at most 53 binary digits times a power of two, good to about 16
+        significant figures. Any other number, such as 0.1, is stored as the nearest float, so
+        floats should be compared within a tolerance, and big floats are far apart. An int is exact
+        at any size.
+      usedBy: [E1.2, E1.9, E2.1, M13.1, M13.2]
+  used: [M1.1/powers-of-ten, M1.2/expression-trees, M1.2/field-axioms, M1.2/exponent-rules]
 links:
   requires:
     - lesson: M1.2
@@ -56,8 +58,8 @@ links:
   applies:
     - lesson: M1.1
       bridge: >-
-        M1.1 wrote huge and tiny quantities as powers of ten. Python writes 3.15 × 10²³ as 3.15e23,
-        always a float, and this lesson finds how far apart such big floats are.
+        M1.1 wrote huge and tiny quantities as powers of ten. In Python, 3.15 × 10²³ is typed as
+        3.15e23, always a float, and this lesson finds how far apart such big floats are.
   contrastsWith:
     - lesson: M1.2
       bridge: >-
@@ -75,8 +77,8 @@ links:
         bytes that store them and the files full of text that programs read.
     - lesson: M13.1
       bridge: >-
-        M13.1 opens up a float: its sign, its power of two and its 52 binary digits after the
-        point, and the smaller formats, such as bfloat16, that make training fast.
+        M13.1 opens up a float: its sign, its power of two, and the 52 binary digits it stores after
+        the point, which with the 1 before the point make this lesson's 53.
     - lesson: M13.2
       bridge: >-
         M13.2 measures the error that every float operation can add, and finds the calculations,

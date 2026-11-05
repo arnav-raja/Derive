@@ -130,7 +130,7 @@
         }
       ],
       "error": null,
-      "output": "BinOp(left=UnaryOp(op=USub(), operand=BinOp(left=Constant(value=2), op=Pow(), right=BinOp(left=Constant(value=3), op=Pow(), right=Constant(value=2)))), op=Add(), right=BinOp(left=BinOp(left=Constant(value=10), op=FloorDiv(), right=Constant(value=3)), op=Mult(), right=Constant(value=2)))\nBinOp(left=BinOp(left=UnaryOp(op=USub(), operand=Constant(value=2)), op=Pow(), right=BinOp(left=Constant(value=3), op=Pow(), right=Constant(value=2))), op=Add(), right=BinOp(left=BinOp(left=Constant(value=10), op=FloorDiv(), right=Constant(value=3)), op=Mult(), right=Constant(value=2)))\n-506 -506\n"
+      "output": "BinOp(\n  left=UnaryOp(\n    op=USub(),\n    operand=BinOp(\n      left=Constant(value=2),\n      op=Pow(),\n      right=BinOp(\n        left=Constant(value=2),\n        op=Pow(),\n        right=Constant(value=3)))),\n  op=Add(),\n  right=BinOp(\n    left=BinOp(\n      left=Constant(value=10),\n      op=FloorDiv(),\n      right=Constant(value=3)),\n    op=Mult(),\n    right=Constant(value=2)))\nBinOp(\n  left=BinOp(\n    left=UnaryOp(\n      op=USub(),\n      operand=Constant(value=2)),\n    op=Pow(),\n    right=BinOp(\n      left=Constant(value=2),\n      op=Pow(),\n      right=Constant(value=3))),\n  op=Add(),\n  right=BinOp(\n    left=BinOp(\n      left=Constant(value=10),\n      op=FloorDiv(),\n      right=Constant(value=3)),\n    op=Mult(),\n    right=Constant(value=2)))\n-250 262\n"
     },
     "build-check-probabilities": {
       "tests": [
@@ -153,14 +153,20 @@
           "message": "bad_total_ok is True, but 1.0001 is off by far more than rounding could explain."
         },
         {
+          "name": "test_low_total",
+          "description": "low_total_ok is False, since 0.9999 is a real mistake too.",
+          "passed": false,
+          "message": "low_total_ok is True, but 0.9999 is off by far more than rounding could explain."
+        },
+        {
           "name": "test_probabilities_unchanged",
-          "description": "The three sums are as they were.",
+          "description": "The four sums are as they were.",
           "passed": true,
           "message": null
         }
       ],
       "error": null,
-      "output": "0.9999999999999999 True\n1.0 True\n1.0001 True\n"
+      "output": "0.9999999999999999 True\n1.0 True\n1.0001 True\n0.9998999999999999 True\n"
     },
     "build-formulas": {
       "tests": [
@@ -184,19 +190,19 @@
         },
         {
           "name": "test_decayed_lr",
-          "description": "decayed_lr is 0.0008 at step 250 of a 1,000-step warm-up.",
+          "description": "decayed_lr is 0.0008 at step 250, when decay_steps is 1,000.",
           "passed": true,
           "message": null
         },
         {
           "name": "test_step_size",
-          "description": "step_size is 100,000 when v is 0, since eps keeps the division safe.",
+          "description": "step_size is just under 0.5 when v is 4e-6, whose square root is 0.002.",
           "passed": true,
           "message": null
         }
       ],
       "error": null,
-      "output": "9 3.0 0.0008 100000.0\n"
+      "output": "9 3.0 0.0008 0.49999750001249993\n"
     },
     "build-read-batch": {
       "tests": [
@@ -209,6 +215,12 @@
         {
           "name": "test_learning_rate",
           "description": "lr is 0.4 for a batch of 1,024.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_reads_what_is_typed",
+          "description": "lr follows whatever batch size the person types.",
           "passed": true,
           "message": null
         }

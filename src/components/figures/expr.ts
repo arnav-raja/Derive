@@ -451,14 +451,10 @@ export function formatValue(v: number, digits = 3): string {
   if (v === 0) return "0";
   const abs = Math.abs(v);
   if (abs >= 1e6 || abs < 1e-3) {
-    const exp = Math.floor(Math.log10(abs));
-    let mantissa = v / 10 ** exp;
-    // Rounding can carry the mantissa to 10.
-    if (Math.abs(Number(mantissa.toPrecision(digits))) >= 10) {
-      mantissa /= 10;
-      return `${Number(mantissa.toPrecision(digits))} × 10${superscript(exp + 1)}`;
-    }
-    return `${Number(mantissa.toPrecision(digits))} × 10${superscript(exp)}`;
+    // toExponential rounds and carries for us, and works down to the tiniest floats, where 10 ** exp
+    // would underflow to 0.
+    const [m = "", e = "0"] = v.toExponential(digits - 1).split("e");
+    return `${Number(m)} × 10${superscript(Number(e))}`;
   }
   // Digits are grouped in threes, as in the lesson text and scientific writing: 31,557,600.
   return Number(v.toPrecision(Math.max(digits, Math.floor(Math.log10(abs)) + 1))).toLocaleString("en-GB", {
@@ -471,9 +467,8 @@ export function spokenValue(v: number, digits = 3): string {
   if (!Number.isFinite(v) || v === 0) return formatValue(v, digits);
   const abs = Math.abs(v);
   if (abs >= 1e6 || abs < 1e-3) {
-    const exp = Math.floor(Math.log10(abs));
-    const mantissa = Number((v / 10 ** exp).toPrecision(digits));
-    return `${mantissa} times 10 to the ${exp}`;
+    const [m = "", e = "0"] = v.toExponential(digits - 1).split("e");
+    return `${Number(m)} times 10 to the ${Number(e)}`;
   }
   return formatValue(v, digits);
 }

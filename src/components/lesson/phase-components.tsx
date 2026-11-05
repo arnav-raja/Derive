@@ -134,6 +134,20 @@ export function phaseComponents(ctx: PhaseContext): MDXComponents {
     );
   }
 
+  /** A float line whose typing waits for an exercise, so a typed number cannot answer it. */
+  function FloatLineSlot({ typingAfter, ...props }: ComponentProps<typeof FloatLine> & { typingAfter?: string }) {
+    if (typingAfter && !lesson.byId.has(typingAfter)) {
+      return <Problem>a float line waits for {typingAfter}, which does not exist.</Problem>;
+    }
+    return (
+      <FloatLine
+        {...props}
+        typingLocked={typingAfter ? !states.get(typingAfter)?.done : false}
+        lockedNote={typingAfter ? opensNote(typingAfter, "Typing your own number") : undefined}
+      />
+    );
+  }
+
   function MixedCheck() {
     if (phase !== "explain") return <Problem>the mixed check belongs in the Explain phase.</Problem>;
     const items = ctx.check?.items ?? [];
@@ -202,6 +216,6 @@ export function phaseComponents(ctx: PhaseContext): MDXComponents {
     ProgramTrace,
     Staircase: StaircaseSlot,
     PartialSums: PartialSumsSlot,
-    FloatLine,
+    FloatLine: FloatLineSlot,
   };
 }

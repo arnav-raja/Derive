@@ -40,13 +40,37 @@ const AXIS_Y = 76;
 
 type Reading = { ok: true; text: string; value: Ratio; float: number } | { ok: false; message: string };
 
+const TOO_BIG = "That is too big for a float: Python gives inf, short for infinity.";
+const TOO_SMALL = "That is too small for a float: Python stores 0.0.";
+
 function read(text: string): Reading {
+  const clean = text.trim().replaceAll("_", "");
   const value = parseLiteral(text);
-  if (!value) return { ok: false, message: "Type one number, as Python writes it, such as 0.1, 2.5e-3 or 1e16." };
-  const float = Number(text.trim().replaceAll("_", ""));
-  if (!Number.isFinite(float)) return { ok: false, message: "That is too big for a float: Python gives inf, short for infinity." };
-  if (float === 0 && value.num !== 0n) return { ok: false, message: "That is too small for a float: Python stores 0.0." };
+  const float = Number(clean);
+  if (!value) {
+    // parseLiteral leaves out powers of ten beyond ±400, which Python still reads, as inf or 0.0.
+    if (/^[+-]?(\d+\.?\d*|\.\d+)[eE][+-]?\d+$/.test(clean) && !Number.isNaN(float)) {
+      if (!Number.isFinite(float)) return { ok: false, message: TOO_BIG };
+      if (/[1-9]/.test(clean.split(/[eE]/)[0]!)) return { ok: false, message: TOO_SMALL };
+      return { ok: true, text: text.trim(), value: { num: 0n, den: 1n }, float: 0 };
+    }
+    return { ok: false, message: "Type one number, as Python writes it, such as 0.1, 2.5e-3 or 1e16." };
+  }
+  if (!Number.isFinite(float)) return { ok: false, message: TOO_BIG };
+  if (float === 0 && value.num !== 0n) return { ok: false, message: TOO_SMALL };
+  if (!Number.isFinite(nextUp(float))) {
+    return { ok: false, message: "That is the largest float there is, so there are no floats above it to show." };
+  }
   return { ok: true, text: text.trim(), value, float };
+}
+
+/**
+ * The gap between neighbouring floats, which is always a power of two: written out exactly when
+ * that is short, and otherwise as the power of two with its size.
+ */
+function gapText(gap: number): string {
+  if (gap >= 1e-3 && gap < 1e6) return groupDecimal(exactDecimal(exactValue(gap)));
+  return `2${superscript(Math.round(Math.log2(gap)))}, about ${formatValue(gap)}`;
 }
 
 /** A whole number with its digits grouped, or a fraction over a power of two: 3,602,879,701,896,397 / 2⁵⁵. */
@@ -228,6 +252,8 @@ export function FloatLine({
   presets = [],
   sum,
   compare: compareTo,
+  typingLocked = false,
+  lockedNote,
 }: {
   title: string;
   description: string;
@@ -239,6 +265,10 @@ export function FloatLine({
   sum?: [string, string];
   /** With a sum, the decimal that the result is compared with. */
   compare?: string;
+  /** Typing a number of one's own waits for an exercise; the buttons still work. */
+  typingLocked?: boolean;
+  /** What the locked typing waits for, shown in its place. */
+  lockedNote?: string;
 }) {
   const uid = useId();
   const [ref, width] = useWidth<HTMLDivElement>();
@@ -258,7 +288,7 @@ export function FloatLine({
     if (!problem && a.ok && b.ok && c.ok) {
       const exactSum = add(exactValue(a.float), exactValue(b.float));
       const result = a.float + b.float;
-      if (!Number.isFinite(result)) {
+      if (!Number.isFinite(result) || !Number.isFinite(nextUp(result))) {
         words = <p>The sum is too big for a float, so Python gives inf.</p>;
       } else {
         const { gap, ticks } = neighbours(result);
@@ -287,8 +317,11 @@ export function FloatLine({
               <span className="font-mono break-words">{longDecimal(exactSum)}</span>
               {rounded ? (
                 <>
-                  , which is not a float. Python stores the nearest float
-                  {tie || tieUp ? ", and this sum lies exactly halfway between two, so it takes the one whose last binary digit is 0" : ""}:{" "}
+                  , which is not a float.{" "}
+                  {tie || tieUp
+                    ? "Python rounds to the nearest float; this sum lies exactly halfway between two, so it takes the one whose 53-digit whole number is even"
+                    : "Python stores the nearest float"}
+                  :{" "}
                   <span className="font-mono break-words">{longDecimal(exactValue(result))}</span>.
                 </>
               ) : (
@@ -385,6 +418,9 @@ export function FloatLine({
     const stored = exactValue(r.float);
     const exact = compare(stored, r.value) === 0;
     const { gap, ticks } = neighbours(r.float);
+    // Below a power of two the floats are half as far apart as above it.
+    const below = r.float - nextDown(r.float);
+    const changes = below !== gap;
     const writtenAt = placeOf(r.value, r.float, gap);
     const off = toNumber(subtract(stored, r.value));
     const isInt = !/[.eE]/.test(r.text);
@@ -394,7 +430,7 @@ export function FloatLine({
         { at: writtenAt, label: exact ? `${r.text} as written, held exactly` : `${r.text} as written`, kind: "written" },
         { at: 0, label: "the float Python stores", kind: "float" },
       ],
-      gapLabel: `neighbouring floats: ${formatValue(gap)} apart`,
+      gapLabel: changes ? `gap above: ${formatValue(gap)}` : `neighbouring floats: ${formatValue(gap)} apart`,
     };
     words = (
       <>
@@ -411,7 +447,9 @@ export function FloatLine({
               than {r.text}.
             </>
           )}{" "}
-          Neighbouring floats here are {formatValue(gap)} apart.
+          {changes
+            ? `The gap changes here, at a power of two: neighbouring floats are ${gapText(gap)} apart above this float and ${gapText(below)} apart below it.`
+            : `Neighbouring floats here are ${gapText(gap)} apart.`}
         </p>
         <p>
           <code className="font-mono">print({r.text})</code> shows <code className="font-mono">{pythonRepr(r.float)}</code>
@@ -452,13 +490,22 @@ export function FloatLine({
             <input
               id={`${uid}-in`}
               value={text}
-              onChange={(e) => setText(e.target.value)}
+              onChange={(e) => {
+                if (!typingLocked) setText(e.target.value);
+              }}
+              readOnly={typingLocked}
+              aria-describedby={typingLocked && lockedNote ? `${uid}-locked` : undefined}
               inputMode="decimal"
               autoComplete="off"
               spellCheck={false}
               aria-invalid={!r.ok}
-              className={clsx(inputClasses, "h-9 max-w-xs font-mono")}
+              className={clsx(inputClasses, "h-9 max-w-xs font-mono", typingLocked && "cursor-not-allowed opacity-70")}
             />
+            {typingLocked && lockedNote ? (
+              <p id={`${uid}-locked`} className="text-sm text-ink-muted">
+                {lockedNote} Until then, choose one of the numbers below.
+              </p>
+            ) : null}
           </div>
           {presets.length ? (
             <div className="flex flex-wrap gap-2" role="group" aria-label="Numbers to try">

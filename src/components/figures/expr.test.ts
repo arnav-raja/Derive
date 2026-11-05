@@ -82,6 +82,11 @@ describe("formatValue", () => {
     expect(formatValue(31557600)).toBe("3.16 × 10⁷");
     expect(formatValue(0.25)).toBe("0.25");
     expect(formatValue(3.15e23)).toBe("3.15 × 10²³");
+    // A carry, the tiniest float and the smallest normal one.
+    expect(formatValue(9996000)).toBe("1 × 10⁷");
+    expect(formatValue(5e-324)).toBe("4.94 × 10⁻³²⁴");
+    expect(formatValue(2.2250738585072014e-308)).toBe("2.23 × 10⁻³⁰⁸");
+    expect(formatValue(-0.000123)).toBe("-1.23 × 10⁻⁴");
   });
 });
 

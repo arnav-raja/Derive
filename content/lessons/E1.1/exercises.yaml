@@ -10,7 +10,7 @@ exercises:
       type: choice
       options:
         - { id: point-four, label: '`0.4`, since the batch size is now four times as large' }
-        - { id: point-one, label: '`0.1`' }
+        - { id: point-one, label: '`0.1`, since line 4 changes only `batch_size`' }
         - { id: error, label: 'An error, since `lr` was worked out from the old batch size' }
       correct: [point-one]
     explanation: >-
@@ -23,8 +23,15 @@ exercises:
     phase: recall
     kind: recall
     concept: M1.1/powers-of-ten
-    prompt: Python writes $2.5 \times 10^{-3}$ as `2.5e-3`. What is it as an ordinary decimal?
-    answer: { type: number, value: 0.0025, tolerance: { rel: 1e-9 } }
+    prompt: In Python, $2.5 \times 10^{-3}$ can be typed as `2.5e-3`. Which ordinary decimal is it?
+    answer:
+      type: choice
+      options:
+        - { id: hundredths, label: '0.025' }
+        - { id: thousandths, label: '0.0025' }
+        - { id: ten-thousandths, label: '0.00025' }
+        - { id: thousands, label: '2,500' }
+      correct: [thousandths]
     explanation: >-
       $10^{-3} = 0.001$, so $2.5 \times 10^{-3} = 0.0025$: the point moves three places to the left.
 
@@ -38,8 +45,8 @@ exercises:
       options:
         - { id: power, label: 'The power, $4^2$' }
         - { id: times, label: 'The multiplication' }
-        - { id: plus, label: 'The addition' }
         - { id: together, label: 'All three, side by side' }
+        - { id: plus, label: 'The addition' }
       correct: [plus]
     explanation: >-
       The power is worked out first and the addition last, $2 + 48 = 50$. The operation done last
@@ -62,8 +69,8 @@ exercises:
       it show for $(1.00 + 0.004) + 0.004$?
     answer: { type: number, value: 1, tolerance: { abs: 0.001 } }
     explanation: >-
-      $1.00 + 0.004 = 1.004$, which rounds to 1.00, and adding the second 0.004 is lost in the same
-      way, so it shows 1.00.
+      $1.00 + 0.004 = 1.004$, which rounds to 1.00, and the second 0.004 is lost in the same way, so
+      it shows 1.00.
 
   # Explore --------------------------------------------------------------------
   - id: explore-fix-order
@@ -158,18 +165,18 @@ exercises:
             options:
               - { id: ten-six, label: '`10 6`' }
               - { id: twelve-thirteen, label: '`12 13`' }
-              - { id: twelve-six, label: '`12 6`' }
               - { id: six-twelve, label: '`6 12`' }
+              - { id: twelve-six, label: '`12 6`' }
             correct: [twelve-six]
           explanation: >-
-            `b` refers to $5 + 1 = 6$, then `a` to $6 \times 2 = 12$. Changing `a` does not change
-            `b`, which keeps 6, so the program prints `12 6`.
+            `b` refers to $5 + 1 = 6$, then `a` to $6 \times 2 = 12$. Giving `a` a new value leaves
+            `b` alone, so `b` keeps 6, and the program prints `12 6`.
 
   - id: explore-plus-means
     phase: explore
     kind: predict
     concept: E1.1/values-and-types
-    title: Plus, for text
+    title: Plus, with quotes
     prompt: What does `print("3" + "4")` show?
     answer:
       type: choice
@@ -184,13 +191,13 @@ exercises:
       one, `"34"`. `print` shows a string without its quotes.
     review:
       variants:
-        - prompt: What does `print("ab" * 3)` show?
+        - prompt: What does `print("ha" * 4)` show?
           answer:
             type: choice
             options:
-              - { id: ab-three, label: '`ab3`' }
-              - { id: spaced, label: '`ab ab ab`' }
-              - { id: repeated, label: '`ababab`' }
+              - { id: ha-four, label: '`ha4`' }
+              - { id: repeated, label: '`hahahaha`' }
+              - { id: spaced, label: '`ha ha ha ha`' }
               - { id: error, label: 'Python stops with an error' }
             correct: [repeated]
           explanation: >-
@@ -228,9 +235,9 @@ exercises:
     answer:
       type: choice
       options:
+        - { id: error, label: 'Python stops with an error' }
         - { id: seven, label: '`7`' }
         - { id: thirty-four, label: '`34`' }
-        - { id: error, label: 'Python stops with an error' }
       correct: [error]
     explanation: >-
       Python stops with `TypeError: can only concatenate str (not "int") to str`. It could join two
@@ -238,31 +245,31 @@ exercises:
       guesses.
     review:
       variants:
-        - prompt: What does `print(int("3") + 4)` show?
-          answer: { type: number, value: 7, tolerance: { abs: 0 } }
-          explanation: '`int("3")` converts the string to the whole number 3, so the `+` adds: 7.'
-        - prompt: What does `print("3" + str(4))` show?
+        - prompt: What does `print(int("12") + 3)` show?
+          answer: { type: number, value: 15, tolerance: { abs: 0 } }
+          explanation: '`int("12")` converts the string to the whole number 12, so the `+` adds: 15.'
+        - prompt: What does `print("12" + str(3))` show?
           answer:
             type: choice
             options:
-              - { id: seven, label: '`7`' }
-              - { id: spaced, label: '`3 4`' }
-              - { id: thirty-four, label: '`34`' }
+              - { id: fifteen, label: '`15`' }
+              - { id: spaced, label: '`12 3`' }
+              - { id: joined, label: '`123`' }
               - { id: error, label: 'Python stops with an error' }
-            correct: [thirty-four]
-          explanation: '`str(4)` converts the number to the string `"4"`, so the `+` joins: `"34"`.'
+            correct: [joined]
+          explanation: '`str(3)` converts the number to the string `"3"`, so the `+` joins: `"123"`.'
         - prompt: What does `print(float("2.5") * 2)` show?
           answer:
             type: choice
             options:
               - { id: five, label: '`5`' }
-              - { id: repeated, label: '`2.52.5`' }
               - { id: five-float, label: '`5.0`' }
+              - { id: repeated, label: '`2.52.5`' }
               - { id: error, label: 'Python stops with an error' }
             correct: [five-float]
           explanation: >-
-            `float("2.5")` converts the string to the float 2.5, and a float times 2 is a float,
-            which `print` shows with its point: `5.0`.
+            `float("2.5")` converts the string to the float 2.5, and arithmetic that mixes a float
+            with an int gives a float, which `print` shows with its point: `5.0`.
 
   - id: explore-floor-divide
     phase: explore
@@ -284,11 +291,11 @@ exercises:
         - prompt: What is `17 % 5`?
           answer: { type: number, value: 2, tolerance: { abs: 0 } }
           explanation: '$17 = 3 \times 5 + 2$, so the remainder, `17 % 5`, is 2.'
-        - prompt: What is `-7 // 2`?
-          answer: { type: number, value: -4, tolerance: { abs: 0 } }
+        - prompt: What is `-9 // 4`?
+          answer: { type: number, value: -3, tolerance: { abs: 0 } }
           explanation: >-
-            $-7 / 2 = -3.5$, and `//` always rounds down, towards minus infinity, so it gives $-4$,
-            not $-3$.
+            $-9 / 4 = -2.25$, and `//` always rounds down, towards minus infinity, so it gives $-3$,
+            not $-2$.
 
   - id: explore-power-chain
     phase: explore
@@ -303,9 +310,11 @@ exercises:
       which is $2^9 = 512$. Grouped from the left, it would be $8^2 = 64$.
     review:
       variants:
-        - prompt: What is `-2 ** 2`?
-          answer: { type: number, value: -4, tolerance: { abs: 0 } }
-          explanation: The power comes before the minus sign in front, so it is `-(2 ** 2)`, which is $-4$.
+        - prompt: What is `2 ** 2 ** 3`?
+          answer: { type: number, value: 256, tolerance: { abs: 0 } }
+          explanation: >-
+            A chain of powers is grouped from the right: `2 ** (2 ** 3)` is $2^8 = 256$. Grouped from
+            the left it would be $4^3 = 64$.
         - prompt: What is `2 * 3 ** 2`?
           answer: { type: number, value: 18, tolerance: { abs: 0 } }
           explanation: The power comes first, `3 ** 2` is 9, then $2 \times 9 = 18$.
@@ -342,8 +351,8 @@ exercises:
       options:
         - { id: both, label: 'Both' }
         - { id: neither, label: 'Neither' }
-        - { id: first, label: 'Only `0.5 + 0.25 == 0.75`' }
         - { id: second, label: 'Only `0.1 + 0.2 == 0.3`' }
+        - { id: first, label: 'Only `0.5 + 0.25 == 0.75`' }
       correct: [first]
     explanation: >-
       0.5, 0.25 and 0.75 are held exactly, so their sum is exact. 0.1, 0.2 and 0.3 are not: each is
@@ -391,8 +400,8 @@ exercises:
     concept: E1.1/floats-are-approximate
     title: Which are exact
     prompt: >-
-      Which of these can a float hold exactly? Decide from the pattern before trying them in the
-      figure.
+      Which of these can a float hold exactly? Decide from the pattern in the six numbers on the
+      buttons.
     answer:
       type: choice
       multiple: true
@@ -415,8 +424,7 @@ exercises:
     title: Floats near 1e16
     prompt: >-
       `1e16` is $10^{16} = 10{,}000{,}000{,}000{,}000{,}000$, which lies between $2^{53}$ and
-      $2^{54}$. How far apart are neighbouring floats there? Answer before typing `1e16` into the
-      figure.
+      $2^{54}$. How far apart are neighbouring floats there?
     answer: { type: number, value: 2, tolerance: { abs: 0 } }
     explanation: >-
       From $2^{53}$ to $2^{54}$ a whole number has 54 binary digits, one more than a float keeps, so
@@ -453,7 +461,7 @@ exercises:
     phase: derive
     kind: step
     concept: E1.1/variables-as-names
-    title: The swap, line 4
+    title: Line 4, on paper
     prompt: >-
       What does `y` refer to once line 4, `y = x - y`, has run? Write it in terms of $a$ and $b$.
     answer:
@@ -473,7 +481,7 @@ exercises:
     phase: derive
     kind: step
     concept: E1.1/variables-as-names
-    title: The swap, line 5
+    title: Line 5, on paper
     prompt: >-
       What does `x` refer to once line 5, `x = x - y`, has run? Write it in terms of $a$ and $b$.
     answer:
@@ -555,7 +563,7 @@ exercises:
 
       - `neg_square` is $-x^2$, minus the square of $x$.
       - `cube_root` is $27^{1/3}$, the cube root of 27.
-      - `decayed_lr` is $\dfrac{\texttt{peak\_lr}}{1 + \dfrac{\texttt{step}}{\texttt{warmup}}}$, a learning rate that shrinks as training goes on.
+      - `decayed_lr` is $\dfrac{\texttt{peak\_lr}}{1 + \dfrac{\texttt{step}}{\texttt{decay\_steps}}}$, a learning rate that shrinks as training goes on.
       - `step_size` is $\dfrac{\texttt{peak\_lr}}{\sqrt{\texttt{v}} + \texttt{eps}}$, the size of one step of an optimiser, where the tiny `eps` keeps the division safe.
     answer:
       type: code
@@ -563,8 +571,8 @@ exercises:
         x = 3
         peak_lr = 0.001
         step = 250
-        warmup = 1000
-        v = 0
+        decay_steps = 1000
+        v = 4e-6
         eps = 1e-8
 
         neg_square = None    # minus x squared
@@ -574,6 +582,8 @@ exercises:
 
         print(neg_square, cube_root, decayed_lr, step_size)
       tests: |
+        # close(a, b) is True when a and b agree to about 9 significant figures.
+
         def test_filled():
             """Each of the four names is given a value, not None."""
             for name in ["neg_square", "cube_root", "decayed_lr", "step_size"]:
@@ -588,23 +598,23 @@ exercises:
             assert close(cube_root, 3), f"cube_root is {cube_root}, but the cube root of 27 is 3."
 
         def test_decayed_lr():
-            """decayed_lr is 0.0008 at step 250 of a 1,000-step warm-up."""
+            """decayed_lr is 0.0008 at step 250, when decay_steps is 1,000."""
             assert close(decayed_lr, 0.0008), f"decayed_lr is {decayed_lr}, but at step 250 it should be 0.0008."
 
         def test_step_size():
-            """step_size is 100,000 when v is 0, since eps keeps the division safe."""
-            assert close(step_size, 1e5), f"step_size is {step_size}, but with v = 0 it should be 0.001 / 0.00000001, which is 100000.0."
+            """step_size is just under 0.5 when v is 4e-6, whose square root is 0.002."""
+            assert close(step_size, 0.49999750001249993), f"step_size is {step_size}, but with v = 4e-6 it should be just under 0.5, about 0.4999975."
       reference: |
         x = 3
         peak_lr = 0.001
         step = 250
-        warmup = 1000
-        v = 0
+        decay_steps = 1000
+        v = 4e-6
         eps = 1e-8
 
         neg_square = -x ** 2
         cube_root = 27 ** (1 / 3)
-        decayed_lr = peak_lr / (1 + step / warmup)
+        decayed_lr = peak_lr / (1 + step / decay_steps)
         step_size = peak_lr / (v ** 0.5 + eps)
 
         print(neg_square, cube_root, decayed_lr, step_size)
@@ -613,77 +623,107 @@ exercises:
             x = 3
             peak_lr = 0.001
             step = 250
-            warmup = 1000
-            v = 0
+            decay_steps = 1000
+            v = 4e-6
             eps = 1e-8
 
             neg_square = (-x) ** 2
             cube_root = 27 ** (1 / 3)
-            decayed_lr = peak_lr / (1 + step / warmup)
+            decayed_lr = peak_lr / (1 + step / decay_steps)
             step_size = peak_lr / (v ** 0.5 + eps)
 
             print(neg_square, cube_root, decayed_lr, step_size)
-          why: Squares minus 3, giving 9, where $-x^2$ is minus the square of 3.
+          why: 'Squares minus 3, giving 9, where $-x^2$ is minus the square of 3.'
         - code: |
             x = 3
             peak_lr = 0.001
             step = 250
-            warmup = 1000
-            v = 0
+            decay_steps = 1000
+            v = 4e-6
             eps = 1e-8
 
             neg_square = -x ** 2
             cube_root = 27 ** 1 / 3
-            decayed_lr = peak_lr / (1 + step / warmup)
+            decayed_lr = peak_lr / (1 + step / decay_steps)
             step_size = peak_lr / (v ** 0.5 + eps)
 
             print(neg_square, cube_root, decayed_lr, step_size)
-          why: Raises 27 to the power 1 and then divides by 3, since the power comes before the division.
+          why: 'Raises 27 to the power 1 and then divides by 3, since the power comes before the division.'
         - code: |
             x = 3
             peak_lr = 0.001
             step = 250
-            warmup = 1000
-            v = 0
+            decay_steps = 1000
+            v = 4e-6
             eps = 1e-8
 
             neg_square = -x ** 2
             cube_root = 27 ** (1 / 3)
-            decayed_lr = peak_lr / 1 + step / warmup
+            decayed_lr = peak_lr / 1 + step / decay_steps
             step_size = peak_lr / (v ** 0.5 + eps)
 
             print(neg_square, cube_root, decayed_lr, step_size)
-          why: Divides by 1 only and then adds `step / warmup`, since division comes before addition.
+          why: 'Divides by 1 only and then adds `step / decay_steps`, since division comes before addition.'
         - code: |
             x = 3
             peak_lr = 0.001
             step = 250
-            warmup = 1000
-            v = 0
+            decay_steps = 1000
+            v = 4e-6
             eps = 1e-8
 
             neg_square = -x ** 2
             cube_root = 27 ** (1 / 3)
-            decayed_lr = peak_lr / (1 + step / warmup)
+            decayed_lr = peak_lr / (1 + step / decay_steps)
             step_size = peak_lr / v ** 0.5 + eps
 
             print(neg_square, cube_root, decayed_lr, step_size)
-          why: Divides by the square root of `v`, which is 0, before adding `eps`, so Python stops with a ZeroDivisionError.
+          why: 'Divides by the square root of `v` before adding `eps`, giving 0.50000001; with `v = 0` this would stop with a ZeroDivisionError.'
         - code: |
             x = 3
             peak_lr = 0.001
             step = 250
-            warmup = 1000
-            v = 0
+            decay_steps = 1000
+            v = 4e-6
             eps = 1e-8
 
             neg_square = -x ** 2
             cube_root = 27 ** (1 / 3)
-            decayed_lr = peak_lr / (1 + step / warmup)
+            decayed_lr = peak_lr / (1 + step / decay_steps)
             step_size = peak_lr / (v + eps) ** 0.5
 
             print(neg_square, cube_root, decayed_lr, step_size)
-          why: Takes the square root of `v + eps` instead of adding `eps` to the square root of `v`.
+          why: 'Takes the square root of `v + eps` instead of adding `eps` to the square root of `v`.'
+        - code: |
+            x = 3
+            peak_lr = 0.001
+            step = 250
+            decay_steps = 1000
+            v = 4e-6
+            eps = 1e-8
+
+            neg_square = -x ** 2
+            cube_root = 27 ** (1 / 3)
+            decayed_lr = peak_lr / (1 + step / decay_steps)
+            step_size = peak_lr / (v + eps)
+
+            print(neg_square, cube_root, decayed_lr, step_size)
+          why: 'Leaves out the square root of `v`.'
+        - code: |
+            x = 3
+            peak_lr = 0.001
+            step = 250
+            decay_steps = 1000
+            v = 4e-6
+            eps = 1e-8
+
+            neg_square = -x ** 2
+            cube_root = 27 ** (1 / 3)
+            decayed_lr = peak_lr / (1 + step / decay_steps)
+            step_size = peak_lr / (v ** 1/2 + eps)
+
+            print(neg_square, cube_root, decayed_lr, step_size)
+          why: 'Raises `v` to the power 1 and then halves it, since the power comes before the division.'
     explanation: >-
       `-x ** 2` needs no brackets, since the power comes before the minus sign. The other three each
       need brackets around a group that the layout on paper groups by itself: the exponent in
@@ -703,12 +743,12 @@ exercises:
       starter: |
         import ast
 
-        bare = "-2 ** 3 ** 2 + 10 // 3 * 2"
-        bracketed = "-2 ** 3 ** 2 + 10 // 3 * 2"    # put in a pair of brackets for every operation
+        bare = "-2 ** 2 ** 3 + 10 // 3 * 2"
+        bracketed = "-2 ** 2 ** 3 + 10 // 3 * 2"    # put in a pair of brackets for every operation
 
-        print(ast.dump(ast.parse(bare, mode="eval").body))
-        print(ast.dump(ast.parse(bracketed, mode="eval").body))
-        print(eval(bare), eval(bracketed))
+        print(ast.dump(ast.parse(bare, mode="eval").body, indent=2))
+        print(ast.dump(ast.parse(bracketed, mode="eval").body, indent=2))
+        print(eval(bare), eval(bracketed))    # eval works out the expression written in a string
       tests: |
         import ast
 
@@ -717,7 +757,7 @@ exercises:
 
         def test_bare_unchanged():
             """bare is still the expression the exercise gives."""
-            assert bare == "-2 ** 3 ** 2 + 10 // 3 * 2", "Leave bare as it is, and put the brackets into bracketed."
+            assert bare == "-2 ** 2 ** 3 + 10 // 3 * 2", "Leave bare as it is, and put the brackets into bracketed."
 
         def test_same_tree():
             """bracketed has exactly the same tree as bare."""
@@ -725,75 +765,77 @@ exercises:
 
         def test_every_operation():
             """Every operation in bracketed sits inside a pair of brackets of its own."""
-            for node in ast.walk(ast.parse(bracketed, mode="eval")):
-                if isinstance(node, (ast.BinOp, ast.UnaryOp)):
-                    start, end = node.col_offset, node.end_col_offset
-                    piece = bracketed[start:end]
-                    assert bracketed[start - 1:start] == "(" and bracketed[end:end + 1] == ")", f"{piece} needs a pair of brackets around it."
+            ops = [n for n in ast.walk(ast.parse(bracketed, mode="eval")) if isinstance(n, (ast.BinOp, ast.UnaryOp))]
+
+            def has_pair(n):
+                return bracketed[:n.col_offset].rstrip().endswith("(") and bracketed[n.end_col_offset:].lstrip().startswith(")")
+
+            missing = sum(1 for n in ops if not has_pair(n))
+            assert missing == 0, f"Operations still without a pair of brackets of their own: {missing} of {len(ops)}. Find each one in the tree that the program prints."
       reference: |
         import ast
 
-        bare = "-2 ** 3 ** 2 + 10 // 3 * 2"
-        bracketed = "((-(2 ** (3 ** 2))) + ((10 // 3) * 2))"
+        bare = "-2 ** 2 ** 3 + 10 // 3 * 2"
+        bracketed = "((-(2 ** (2 ** 3))) + ((10 // 3) * 2))"
 
-        print(ast.dump(ast.parse(bare, mode="eval").body))
-        print(ast.dump(ast.parse(bracketed, mode="eval").body))
-        print(eval(bare), eval(bracketed))
+        print(ast.dump(ast.parse(bare, mode="eval").body, indent=2))
+        print(ast.dump(ast.parse(bracketed, mode="eval").body, indent=2))
+        print(eval(bare), eval(bracketed))    # eval works out the expression written in a string
       wrong:
         - code: |
             import ast
 
-            bare = "-2 ** 3 ** 2 + 10 // 3 * 2"
-            bracketed = "(((-2) ** (3 ** 2)) + ((10 // 3) * 2))"
+            bare = "-2 ** 2 ** 3 + 10 // 3 * 2"
+            bracketed = "(((-2) ** (2 ** 3)) + ((10 // 3) * 2))"
 
-            print(ast.dump(ast.parse(bare, mode="eval").body))
-            print(ast.dump(ast.parse(bracketed, mode="eval").body))
-            print(eval(bare), eval(bracketed))
-          why: Puts the minus sign inside the power, raising $-2$ to the power 9. The value happens to be the same, but the tree is not.
+            print(ast.dump(ast.parse(bare, mode="eval").body, indent=2))
+            print(ast.dump(ast.parse(bracketed, mode="eval").body, indent=2))
+            print(eval(bare), eval(bracketed))    # eval works out the expression written in a string
+          why: 'Puts the minus sign inside the power, raising $-2$ to the power 8, which gives 262 where the expression is worth $-250$.'
         - code: |
             import ast
 
-            bare = "-2 ** 3 ** 2 + 10 // 3 * 2"
-            bracketed = "((-((2 ** 3) ** 2)) + ((10 // 3) * 2))"
+            bare = "-2 ** 2 ** 3 + 10 // 3 * 2"
+            bracketed = "((-((2 ** 2) ** 3)) + ((10 // 3) * 2))"
 
-            print(ast.dump(ast.parse(bare, mode="eval").body))
-            print(ast.dump(ast.parse(bracketed, mode="eval").body))
-            print(eval(bare), eval(bracketed))
-          why: Groups the chain of powers from the left.
+            print(ast.dump(ast.parse(bare, mode="eval").body, indent=2))
+            print(ast.dump(ast.parse(bracketed, mode="eval").body, indent=2))
+            print(eval(bare), eval(bracketed))    # eval works out the expression written in a string
+          why: 'Groups the chain of powers from the left.'
         - code: |
             import ast
 
-            bare = "-2 ** 3 ** 2 + 10 // 3 * 2"
-            bracketed = "((-(2 ** (3 ** 2))) + (10 // (3 * 2)))"
+            bare = "-2 ** 2 ** 3 + 10 // 3 * 2"
+            bracketed = "((-(2 ** (2 ** 3))) + (10 // (3 * 2)))"
 
-            print(ast.dump(ast.parse(bare, mode="eval").body))
-            print(ast.dump(ast.parse(bracketed, mode="eval").body))
-            print(eval(bare), eval(bracketed))
-          why: Groups `3 * 2` first, but `//` and `*` are grouped from the left.
+            print(ast.dump(ast.parse(bare, mode="eval").body, indent=2))
+            print(ast.dump(ast.parse(bracketed, mode="eval").body, indent=2))
+            print(eval(bare), eval(bracketed))    # eval works out the expression written in a string
+          why: 'Groups `3 * 2` first, but `//` and `*` are grouped from the left.'
         - code: |
             import ast
 
-            bare = "-2 ** 3 ** 2 + 10 // 3 * 2"
-            bracketed = "(-(2 ** (3 ** 2))) + ((10 // 3) * 2)"
+            bare = "-2 ** 2 ** 3 + 10 // 3 * 2"
+            bracketed = "(-(2 ** (2 ** 3))) + ((10 // 3) * 2)"
 
-            print(ast.dump(ast.parse(bare, mode="eval").body))
-            print(ast.dump(ast.parse(bracketed, mode="eval").body))
-            print(eval(bare), eval(bracketed))
-          why: Leaves the operation done last, the addition, without brackets of its own.
+            print(ast.dump(ast.parse(bare, mode="eval").body, indent=2))
+            print(ast.dump(ast.parse(bracketed, mode="eval").body, indent=2))
+            print(eval(bare), eval(bracketed))    # eval works out the expression written in a string
+          why: 'Leaves the operation done last, the addition, without brackets of its own.'
         - code: |
             import ast
 
-            bare = "-2 ** 3 ** 2 + 10 // 3 * 2"
-            bracketed = "-2 ** 3 ** 2 + 10 // 3 * 2"
+            bare = "-2 ** 2 ** 3 + 10 // 3 * 2"
+            bracketed = "-2 ** 2 ** 3 + 10 // 3 * 2"
 
-            print(ast.dump(ast.parse(bare, mode="eval").body))
-            print(ast.dump(ast.parse(bracketed, mode="eval").body))
-            print(eval(bare), eval(bracketed))
-          why: Adds no brackets.
+            print(ast.dump(ast.parse(bare, mode="eval").body, indent=2))
+            print(ast.dump(ast.parse(bracketed, mode="eval").body, indent=2))
+            print(eval(bare), eval(bracketed))    # eval works out the expression written in a string
+          why: 'Adds no brackets.'
     explanation: >-
       The addition is done last, so its brackets hold everything. On its left, the minus sign holds
-      the power, which holds `3 ** 2`; on its right, the multiplication holds `10 // 3`. Spelled out,
-      the expression is worth $-512 + 6 = -506$, the same as without the brackets.
+      the power, which holds `2 ** 3`; on its right, the multiplication holds `10 // 3`. Spelled out,
+      the expression is worth $-256 + 6 = -250$, the same as without the brackets.
 
   - id: build-read-batch
     phase: build
@@ -801,7 +843,7 @@ exercises:
     concept: E1.1/values-and-types
     title: A batch size read in
     prompt: >-
-      This script asks whoever runs it for the batch size, and they type 1024. Run it, read the
+      This script asks whoever runs it for the batch size, and they type `1024`. Run it, read the
       error, and fix the script so that it prints a learning rate of 0.4.
     answer:
       type: code
@@ -813,14 +855,21 @@ exercises:
         lr = base_lr * scale
         print("batch size", batch_size, "learning rate", lr)
       tests: |
+        # close(a, b) is True when a and b agree to about 9 significant figures.
+
         def test_batch_size():
             """batch_size is the whole number 1,024, an int."""
             assert type(batch_size) is int, f"batch_size is {batch_size!r}, a {type(batch_size).__name__}, not an int."
-            assert batch_size == 1024, f"batch_size is {batch_size}, not 1024."
+            assert batch_size == 1024, f"batch_size is {batch_size}, not 1,024."
 
         def test_learning_rate():
             """lr is 0.4 for a batch of 1,024."""
             assert close(lr, 0.4), f"lr is {lr}, but a batch four times as large should give 0.4."
+
+        def test_reads_what_is_typed():
+            """lr follows whatever batch size the person types."""
+            names, printed = rerun("512")
+            assert close(names.get("lr", 0), 0.2), f"When the person types 512, lr is {names.get('lr')}, but half the batch should give 0.2. The batch size must come from what is typed."
       reference: |
         base_lr = 0.1
         batch_size = int(input())    # the person types 1024
@@ -834,23 +883,31 @@ exercises:
             scale = batch_size / 256
             lr = base_lr * scale
             print("batch size", batch_size, "learning rate", lr)
-          why: Converts to a float, but a batch size is a whole number, an int.
+          why: 'Converts to a float, but a batch size is a whole number, an int.'
         - code: |
             base_lr = 0.1
             batch_size = input()    # the person types 1024
             scale = int(batch_size) / 256
             lr = base_lr * scale
             print("batch size", batch_size, "learning rate", lr)
-          why: Converts only where the value is used, so `batch_size` is still a string for every other line.
+          why: 'Converts only where the value is used, so `batch_size` is still a string for every other line.'
         - code: |
             base_lr = 0.1
             batch_size = str(input())    # the person types 1024
             scale = batch_size / 256
             lr = base_lr * scale
             print("batch size", batch_size, "learning rate", lr)
-          why: Converts to a string, which is what `input` gave already.
+          why: 'Converts to a string, which is what `input` gave already.'
+        - code: |
+            base_lr = 0.1
+            batch_size = 1024    # the batch size, typed into the program
+            scale = batch_size / 256
+            lr = base_lr * scale
+            print("batch size", batch_size, "learning rate", lr)
+          why: 'Ignores what the person types and fixes the batch size at 1,024.'
     explanation: >-
-      `input()` always gives a string, here `"1024"`, and a string cannot be divided by 256.
+      `input()` always gives a string, here `"1024"`, and a string cannot be divided by 256, so
+      Python stops with `TypeError: unsupported operand type(s) for /: 'str' and 'int'`.
       Converting once, where the text comes in, with `int(input())`, gives `batch_size` the right
       type for every line after it.
 
@@ -863,16 +920,16 @@ exercises:
     answer:
       type: breakit
       code: |
-        flop = 10 ** 17    # an int
+        flop = 10 ** 15    # an int
         one_more = flop + 1
         added = one_more - flop
         print(added)
       broken: |
-        flop = 1e17    # a float
+        flop = 1e15    # a float
         one_more = flop + 1
         added = one_more - flop
         print(added)
-      change: '`10 ** 17` becomes `1e17`, the same number written as a float.'
+      change: '`10 ** 15` becomes `1e15`, the same number written as a float.'
       options:
         - { id: one, label: 'It still prints `1`', when: "output.strip() == '1'" }
         - { id: one-float, label: 'It prints `1.0`, the same 1 as a float', when: "output.strip() == '1.0'" }
@@ -880,8 +937,9 @@ exercises:
         - { id: other, label: 'It prints some other number', when: "error is None and output.strip() not in ('1', '1.0', '0.0')" }
         - { id: error, label: 'Python stops with an error', when: 'error is not None' }
     explanation: >-
-      Near $10^{17}$ neighbouring floats are 16 apart, so `1e17 + 1` rounds straight back to `1e17`,
-      and the difference is `0.0`. The int version is exact at any size and prints 1.
+      $10^{15}$ is below $2^{53}$, about $9.0 \times 10^{15}$, so `1e15 + 1` is a whole number that a
+      float holds exactly, and the difference is exactly 1. It is worked out from floats, so it is
+      the float `1.0`, while the int version prints `1`.
 
   - id: build-check-probabilities
     phase: build
@@ -890,23 +948,26 @@ exercises:
     title: Probabilities that add to 1
     prompt: >-
       A model gives three probabilities, which must add up to 1, and the script checks them with
-      `==`. Run it: the first check fails although nothing is wrong. Fix the three checks, and only
-      the checks, so that the first two are `True` and the third, a real mistake that adds up to
-      1.0001, is `False`.
+      `==`. Run it: the first check fails although nothing is wrong. Fix the four checks, and only
+      the checks, so that the first two are `True`, and the last two, real mistakes that add up to
+      1.0001 and 0.9999, are `False`.
     answer:
       type: code
       starter: |
         total = 0.7 + 0.2 + 0.1          # three probabilities that should add to 1
         reordered = 0.1 + 0.2 + 0.7      # the same three, added in another order
         bad_total = 0.7 + 0.2 + 0.1001   # a real mistake: these add to 1.0001
+        low_total = 0.7 + 0.2 + 0.0999   # another mistake: these add to 0.9999
 
         total_ok = total == 1
         reordered_ok = reordered == 1
         bad_total_ok = bad_total == 1
+        low_total_ok = low_total == 1
 
         print(total, total_ok)
         print(reordered, reordered_ok)
         print(bad_total, bad_total_ok)
+        print(low_total, low_total_ok)
       tests: |
         def test_total():
             """total_ok is True, since 0.7 + 0.2 + 0.1 is 1 up to rounding."""
@@ -920,81 +981,121 @@ exercises:
             """bad_total_ok is False, since 1.0001 is a real mistake, not rounding."""
             assert bad_total_ok is False, f"bad_total_ok is {bad_total_ok!r}, but 1.0001 is off by far more than rounding could explain."
 
+        def test_low_total():
+            """low_total_ok is False, since 0.9999 is a real mistake too."""
+            assert low_total_ok is False, f"low_total_ok is {low_total_ok!r}, but 0.9999 is off by far more than rounding could explain."
+
         def test_probabilities_unchanged():
-            """The three sums are as they were."""
-            same = total == 0.7 + 0.2 + 0.1 and reordered == 0.1 + 0.2 + 0.7 and bad_total == 0.7 + 0.2 + 0.1001
-            assert same, "Leave the three sums as they are, and change only the checks."
+            """The four sums are as they were."""
+            same = (
+                total == 0.7 + 0.2 + 0.1
+                and reordered == 0.1 + 0.2 + 0.7
+                and bad_total == 0.7 + 0.2 + 0.1001
+                and low_total == 0.7 + 0.2 + 0.0999
+            )
+            assert same, "Leave the four sums as they are, and change only the checks."
       reference: |
         import math
 
         total = 0.7 + 0.2 + 0.1          # three probabilities that should add to 1
         reordered = 0.1 + 0.2 + 0.7      # the same three, added in another order
         bad_total = 0.7 + 0.2 + 0.1001   # a real mistake: these add to 1.0001
+        low_total = 0.7 + 0.2 + 0.0999   # another mistake: these add to 0.9999
 
         total_ok = math.isclose(total, 1)
         reordered_ok = math.isclose(reordered, 1)
         bad_total_ok = math.isclose(bad_total, 1)
+        low_total_ok = math.isclose(low_total, 1)
 
         print(total, total_ok)
         print(reordered, reordered_ok)
         print(bad_total, bad_total_ok)
+        print(low_total, low_total_ok)
       wrong:
         - code: |
             total = 0.7 + 0.2 + 0.1          # three probabilities that should add to 1
             reordered = 0.1 + 0.2 + 0.7      # the same three, added in another order
             bad_total = 0.7 + 0.2 + 0.1001   # a real mistake: these add to 1.0001
+            low_total = 0.7 + 0.2 + 0.0999   # another mistake: these add to 0.9999
 
             total_ok = round(total, 2) == 1
             reordered_ok = round(reordered, 2) == 1
             bad_total_ok = round(bad_total, 2) == 1
+            low_total_ok = round(low_total, 2) == 1
 
             print(total, total_ok)
             print(reordered, reordered_ok)
             print(bad_total, bad_total_ok)
-          why: Rounds to two places, which hides the real mistake in `bad_total` as well as the rounding.
+            print(low_total, low_total_ok)
+          why: 'Rounds to two places, which hides the real mistakes as well as the rounding.'
         - code: |
             total = 0.7 + 0.2 + 0.1          # three probabilities that should add to 1
             reordered = 0.1 + 0.2 + 0.7      # the same three, added in another order
             bad_total = 0.7 + 0.2 + 0.1001   # a real mistake: these add to 1.0001
+            low_total = 0.7 + 0.2 + 0.0999   # another mistake: these add to 0.9999
 
             total_ok = abs(total - 1) < 0.01
             reordered_ok = abs(reordered - 1) < 0.01
             bad_total_ok = abs(bad_total - 1) < 0.01
+            low_total_ok = abs(low_total - 1) < 0.01
 
             print(total, total_ok)
             print(reordered, reordered_ok)
             print(bad_total, bad_total_ok)
-          why: Allows a difference of 0.01, far more than rounding makes, so the mistake of 0.0001 passes.
-        - code: |
-            total = 0.1 + 0.2 + 0.7          # three probabilities that should add to 1
-            reordered = 0.1 + 0.2 + 0.7      # the same three, added in another order
-            bad_total = 0.7 + 0.2 + 0.1001   # a real mistake: these add to 1.0001
-
-            total_ok = total == 1
-            reordered_ok = reordered == 1
-            bad_total_ok = bad_total == 1
-
-            print(total, total_ok)
-            print(reordered, reordered_ok)
-            print(bad_total, bad_total_ok)
-          why: Reorders the first sum so that it happens to come out as exactly 1.0, which hides the problem instead of fixing the check.
+            print(low_total, low_total_ok)
+          why: 'Allows a difference of 0.01, far more than rounding makes, so the mistakes of 0.0001 pass.'
         - code: |
             total = 0.7 + 0.2 + 0.1          # three probabilities that should add to 1
             reordered = 0.1 + 0.2 + 0.7      # the same three, added in another order
             bad_total = 0.7 + 0.2 + 0.1001   # a real mistake: these add to 1.0001
+            low_total = 0.7 + 0.2 + 0.0999   # another mistake: these add to 0.9999
 
-            total_ok = total == 1
-            reordered_ok = reordered == 1
-            bad_total_ok = bad_total == 1
+            total_ok = total - 1 < 1e-9
+            reordered_ok = reordered - 1 < 1e-9
+            bad_total_ok = bad_total - 1 < 1e-9
+            low_total_ok = low_total - 1 < 1e-9
 
             print(total, total_ok)
             print(reordered, reordered_ok)
             print(bad_total, bad_total_ok)
-          why: Still asks for an exact match.
+            print(low_total, low_total_ok)
+          why: 'Measures the difference on one side only: a total below 1 gives a negative difference, which is less than any tolerance, so 0.9999 passes.'
+        - code: |
+            total = 0.1 + 0.2 + 0.7          # three probabilities that should add to 1
+            reordered = 0.1 + 0.2 + 0.7      # the same three, added in another order
+            bad_total = 0.7 + 0.2 + 0.1001   # a real mistake: these add to 1.0001
+            low_total = 0.7 + 0.2 + 0.0999   # another mistake: these add to 0.9999
+
+            total_ok = total == 1
+            reordered_ok = reordered == 1
+            bad_total_ok = bad_total == 1
+            low_total_ok = low_total == 1
+
+            print(total, total_ok)
+            print(reordered, reordered_ok)
+            print(bad_total, bad_total_ok)
+            print(low_total, low_total_ok)
+          why: 'Reorders the first sum so that it happens to come out as exactly 1.0, which hides the problem instead of fixing the check.'
+        - code: |
+            total = 0.7 + 0.2 + 0.1          # three probabilities that should add to 1
+            reordered = 0.1 + 0.2 + 0.7      # the same three, added in another order
+            bad_total = 0.7 + 0.2 + 0.1001   # a real mistake: these add to 1.0001
+            low_total = 0.7 + 0.2 + 0.0999   # another mistake: these add to 0.9999
+
+            total_ok = total == 1
+            reordered_ok = reordered == 1
+            bad_total_ok = bad_total == 1
+            low_total_ok = low_total == 1
+
+            print(total, total_ok)
+            print(reordered, reordered_ok)
+            print(bad_total, bad_total_ok)
+            print(low_total, low_total_ok)
+          why: 'Still asks for an exact match.'
     explanation: >-
       `math.isclose(total, 1)` asks whether the two agree to about 9 significant figures, which
-      forgives the rounding in `0.7 + 0.2 + 0.1` but not a mistake of 0.0001. Near 1,
-      `abs(total - 1) < 1e-9` does the same job.
+      forgives the rounding in `0.7 + 0.2 + 0.1` but not a mistake of 0.0001 either way. Near 1,
+      `abs(total - 1) < 1e-9` does the same job; the `abs` is what catches a total below 1.
 
   # Explain --------------------------------------------------------------------
   - id: explain-learning-rate
@@ -1013,22 +1114,22 @@ exercises:
         - { id: names, criterion: 'Says that a name refers to a value, never to the formula that made it, and that an assignment works out its right side with the values as they are when it runs.' }
         - { id: order, criterion: 'Explains that Python runs each line once, from the top, so changing `batch_size` after `lr` was worked out leaves `lr` at 0.1, and says how the script could be fixed.' }
         - { id: types, criterion: 'Says that every value has a type, such as int, float or str, that decides what an operation means, with an example such as `+` adding numbers but joining strings.' }
-        - { id: precedence, criterion: 'Gives the order for `-x ** 2 + y / 2`: the power first, then the minus sign, then the division, and the addition last.' }
-        - { id: floats, criterion: 'Explains that a float can hold only a whole number times a power of two, so 0.1, 0.2 and 0.3 are stored slightly wrong and the sum lands on a different float, and that floats should be compared within a tolerance.' }
+        - { id: precedence, criterion: 'Gives the tree for `-x ** 2 + y / 2`: the addition is done last, joining minus the square of x, where the power comes before the minus sign, and y / 2.' }
+        - { id: floats, criterion: 'Explains that a float holds exactly only a whole number of limited size times a power of two, so 0.1, 0.2 and 0.3 are stored as the nearest floats and the sum lands on a different float, and that floats should be compared within a tolerance.' }
       reference: >-
         Python runs a script one line at a time, from the top, and each line once. An assignment such
         as lr = base_lr * batch_size / 256 works out the right side with the values the names refer
         to at that moment, 0.1 and 256, and makes lr refer to the result, 0.1. lr keeps only that
-        number, not the formula, so when line 4 makes batch_size refer to 1024, lr is unchanged and
+        number, not the formula, so when line 4 makes batch_size refer to 1,024, lr is unchanged and
         the script prints 0.1. To make it print 0.4, change the batch size before working out lr, or
         work out lr again afterwards. Every value also has a type. 1024 is an int, a whole number
         held exactly; 0.1 is a float; "1024" in quotes is a str, text. The type decides what an
         operation means: + adds two numbers but joins two strings, so "3" + "4" is "34", and
         "3" + 4 is an error, because Python never guesses which you meant. Python reads every
-        expression as a tree, with fixed rules. In -x ** 2 + y / 2 the power comes first, then the
-        minus sign in front, so -x ** 2 is minus the square of x; then the division; and the
-        addition last. Finally, a float can hold only a whole number times a power of two, with
-        about 16 significant figures. 0.1 is one tenth, which has a 5 in its denominator, so it is
+        expression as a tree, with fixed rules. In -x ** 2 + y / 2 the addition is done last: it
+        joins -x ** 2, where the power comes before the minus sign, so it is minus the square of x,
+        and y / 2. Finally, a float holds exactly only a whole number of at most 53 binary digits
+        times a power of two, which gives about 16 significant figures. 0.1 is one tenth, which has a 5 in its denominator, so it is
         stored as the nearest float, slightly more than 0.1, and the same is true of 0.2 and 0.3.
         Adding the floats for 0.1 and 0.2 lands on the float just above the one for 0.3, so == says
         False. So floats should be compared within a tolerance, for example with math.isclose,

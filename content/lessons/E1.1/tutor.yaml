@@ -14,8 +14,8 @@ misconceptions:
   - id: swap-in-two-lines
     belief: '`a = b` followed by `b = a` swaps two values.'
     why: >-
-      After `a = b`, nothing refers to `a`'s old value, so `b = a` copies the new one back and both
-      end the same.
+      After `a = b`, nothing refers to `a`'s old value, so `b = a` makes `b` refer to the new one,
+      and both end the same.
     cue: The learner chooses `2 1` in explore-swap.
   - id: quotes-dont-matter
     belief: '`"3"` and `3` are the same value.'
@@ -32,8 +32,9 @@ misconceptions:
   - id: python-guesses-types
     belief: Python converts between text and numbers whenever it needs to.
     why: >-
-      Python never guesses: `"3" + 4` stops with a `TypeError`, and a conversion such as `int("3")`
-      is always written out. The one change of type it makes by itself is that `/` gives a float.
+      Python never guesses between text and numbers: `"3" + 4` stops with a `TypeError`, and a
+      conversion such as `int("3")` is always written out. Only between kinds of number does it
+      convert by itself: an int mixed with a float gives a float, and `/` always gives a float.
     cue: The learner predicts `7` or `34` for `"3" + 4`, or leaves `input()` unconverted in build-read-batch.
   - id: slash-gives-int
     belief: '`/` between two whole numbers gives a whole number when the division comes out exactly.'
@@ -58,8 +59,9 @@ misconceptions:
   - id: floats-exact
     belief: A float holds a decimal such as 0.1 exactly.
     why: >-
-      A float is a whole number times a power of two. $0.1 = \frac{1}{10}$ has a factor 5 below the
-      line, so it is stored as the nearest float, slightly more than 0.1.
+      A float is a whole number of at most 53 binary digits times a power of two. $0.1 =
+      \frac{1}{10}$ has a factor 5 below the line, so it is stored as the nearest float, slightly
+      more than 0.1.
     cue: The learner expects `0.1 + 0.2 == 0.3` to be `True`, or chooses 0.6 or 0.05 in explore-which-exact.
   - id: print-shows-all
     belief: '`print` shows every digit that a float holds.'
@@ -74,11 +76,30 @@ misconceptions:
       tolerance of 0.01, or rounding to two places, lets a mistake of 0.0001 through.
     cue: The learner uses `round(x, 2) == 1` or `abs(x - 1) < 0.01` in build-check-probabilities.
   - id: floats-and-ints-alike
-    belief: '`1e17` and `10 ** 17` are the same in every way.'
+    belief: '`1e15` and `10 ** 15` are the same in every way.'
     why: >-
-      `1e17` is a float, and near $10^{17}$ floats are 16 apart, so adding 1 is lost. `10 ** 17` is an
-      int, exact at any size.
-    cue: The learner predicts `1` or `1.0` in build-break-big.
+      `1e15` is a float, so arithmetic with it gives a float, which `print` shows with its point:
+      `1.0`, not `1`. `10 ** 15` is an int, exact at any size.
+    cue: The learner predicts that the float version still prints `1` in build-break-big.
+  - id: big-floats-always-lose
+    belief: Adding 1 to any big float is lost, as it is for `1e16`.
+    why: >-
+      Every whole number below $2^{53}$, about $9.0 \times 10^{15}$, is a float exactly, so
+      `1e15 + 1` is exact. Only beyond $2^{53}$ are neighbouring floats more than 1 apart.
+    cue: The learner predicts `0.0` in build-break-big.
+  - id: floats-never-exact
+    belief: No float is ever exact, so even `0.5 + 0.25 == 0.75` is `False`.
+    why: >-
+      A float holds exactly every number that is a whole number of at most 53 binary digits times
+      a power of two, such as 0.5, 0.25 and 0.75, and every whole number up to $2^{53}$. When the
+      exact answer is one of these, the arithmetic is exact too.
+    cue: The learner chooses Neither in explore-exact-sums, or leaves out 0.625, 0.125 or 0.875 in explore-which-exact.
+  - id: one-sided-tolerance
+    belief: '`total - 1 < 1e-9` checks that `total` is close to 1.'
+    why: >-
+      A total below 1 gives a negative difference, which is less than any tolerance, so the check
+      passes 0.9999 and even 0.5. The distance is `abs(total - 1)`.
+    cue: The learner writes `total - 1 < 1e-9` in build-check-probabilities.
   - id: input-gives-number
     belief: '`input()` gives a number when the person types a number.'
     why: >-
@@ -95,11 +116,12 @@ exercises:
         when it runs, and only then gives the name on the left its new value.
       - Put `a = 1` at the top and run the four lines in your head. What is `x` at the end?
       - >-
-        Line 4 is `x = x * x`. Both `x`s on its right side stand for the value that line 3 gave
-        `x`. What was that value, in terms of $a$?
+        If you have $2a + 1$ after line 3, that much is right. If your answer does not use that
+        whole expression for both `x`s in `x * x`, look again at which value `x` refers to as line 4
+        starts.
       - >-
-        For `x = a`, then `x = x - 1`, then `x = 3 * x`, `x` refers to $a$, then $a - 1$, and finally
-        $3(a - 1)$.
+        For `x = a`, then `x = x - 1`, then `x = x * x`, `x` refers to $a$, then $a - 1$, and finally
+        $(a - 1)(a - 1) = a^2 - 2a + 1$.
     notes: >-
       $4a^2 + 1$ or $(2a)^2 + 1$ squares before adding 1, so lines 3 and 4 were taken in the wrong
       order. $2a + 1$ leaves out the last line, and $a^2$ squares the first value of `x` instead of
@@ -108,19 +130,32 @@ exercises:
     rungs:
       - What does `x` refer to once line 3 has run?
       - As in Explore's swap, a line uses the values that the names refer to when it runs, not their first values.
-      - Run the five lines with `a = 1` and `b = 2`. What does `y` refer to after line 4?
-      - On line 4's right side, `x` holds what line 3 gave it, while `y` has not changed since line 2.
-      - If `x` refers to $2p$ and `y` to $p$, then `y = x - y` makes `y` refer to $2p - p = p$.
+      - Run the first four lines with `a = 1` and `b = 2`. What does `y` refer to after line 4?
+      - >-
+        If you have `x` as $a + b$ after line 3, that is right. If your answer for line 4 uses $a$
+        for `x`, look again at which line last gave `x` a value; if it uses anything but $b$ for
+        `y`, ask which lines before line 4 changed `y`.
+      - >-
+        A different program: `p = c`, `q = d`, `p = p * q`, `q = p / q`. Line 3 makes `p` refer to
+        $cd$, so line 4 makes `q` refer to $\frac{cd}{d} = c$, as long as $d$ is not 0.
     notes: >-
       $a - b$ uses the first value of `x`, $a$, on line 4. $b$ assumes that line 4 leaves `y` as it
       was, and $a + b$ copies `x` without the subtraction.
   derive-swap-x:
     rungs:
       - What do `x` and `y` each refer to just before line 5 runs?
-      - Line 4 changed `y`. Which line last gave `x` a value, and what was it?
+      - >-
+        Explore's rule: a name refers to the value it was given last, and each line uses the values
+        its names refer to when it runs. The step before this one found the value line 4 gave `y`.
       - Run all five lines with `a = 1` and `b = 2`. What does `x` refer to at the end?
-      - On line 5's right side, `y` holds what line 4 just gave it, and `x` holds what line 3 gave it.
-      - If `x` refers to $3p$ and `y` to $p$, then `x = x - y` makes `x` refer to $3p - p = 2p$.
+      - >-
+        If you have `y` as $a$ after line 4, that is right, and line 5 uses it. If your answer for
+        `x` is not worked out from what `x` and `y` refer to just before line 5, check which value
+        each name was given last: line 4 changed only `y`.
+      - >-
+        In the program `p = c`, `q = d`, `p = p * q`, `q = p / q`, `p = p / q`, after line 4 `p`
+        refers to $cd$ and `q` to $c$, so line 5 makes `p` refer to $\frac{cd}{c} = d$, as long as
+        $c$ is not 0.
     notes: >-
       $a$ takes `x` back to its first value. $a - b$ or $b - a$ uses `y`'s first value, $b$, instead of
       the value line 4 gave it.
@@ -132,9 +167,9 @@ exercises:
         and `%`, from the left; `+` and `-`, from the left.
       - In `-3 ** 2` on its own, which comes first, the power or the minus sign?
       - >-
-        Compare each line with the one before it and ask what changed. New brackets come from a rule
-        of precedence. A number where an operation stood means part of the tree was worked out, and
-        two of the rules work things out.
+        Your rules for the lines that only add brackets are right if each is a rule of precedence.
+        If a line where part of the tree became a number is marked wrong, look at which operation
+        disappeared on that line, and find the rule that names it.
       - >-
         For `10 - 8 // 3`: `10 - (8 // 3)` comes from the rule that `-` is done last, then
         `10 - 2` from floor division, then 8 from working it out.
@@ -149,76 +184,90 @@ exercises:
         float keeps, so only even numbers are floats there.
       - How far apart are floats between $2^{54}$ and $2^{55}$, where whole numbers have 55 binary digits?
       - >-
-        How many times larger is $10^{20}$ than $10^{16}$, and roughly how many doublings is that?
-        $2^{10}$ is about $10^3$.
+        If you have the gap doubling each time the numbers pass a power of two, that is the right
+        idea. Then count the powers of two between $10^{16}$ and $10^{20}$; that $2^{10}$ is about
+        $10^3$ helps.
       - >-
         If a kind of number were 1 apart near 1,000 and its gaps grew in proportion to the numbers,
         near 1,000,000, a thousand times further up, it would be about 1,000 apart.
     notes: >-
-      An answer of 2 or 4 assumes the gap hardly grows. An answer near $10^{4}$ to $10^{5}$ comes from
-      the right idea, the gap growing in proportion to the numbers, and is accepted within a factor
+      An answer of 2 or 4 assumes the gap hardly grows. About 20,000, from the gap growing in
+      proportion to the numbers, is accepted, since anything from 8,192 to 32,768 is within a factor
       of 2 of 16,384.
   build-formulas:
     rungs:
       - Run the program and compare each printed value with the one you work out by hand. Which ones disagree?
       - Explore's order puts powers before the minus sign and before `*` and `/`, and `/` before `+`.
       - >-
-        Work each formula out by hand with the given numbers first: what should `neg_square`,
-        `cube_root`, `decayed_lr` and `step_size` each come to?
+        Try a smaller formula first: write $\frac{12}{2 + 4}$ in Python and check that it prints
+        2.0. What does it print without the brackets?
       - >-
-        On paper, a fraction bar groups its whole top and its whole bottom, and an exponent groups
-        everything raised up. In Python each such group needs brackets. Which of the four formulas
-        have a group like that?
+        Compare each printed value with the one you worked out by hand; those that match are right.
+        For one that does not, find the group the formula makes on paper, a whole exponent or a
+        whole denominator, and check that your line gives the whole group brackets of its own. If it
+        is `neg_square`, ask instead which comes first in $-x^2$, the square or the minus sign.
       - >-
-        $\frac{a}{b + c}$ is `a / (b + c)` and $2^{a + b}$ is `2 ** (a + b)`. Without the brackets,
-        Python reads `a / b + c` as $\frac{a}{b} + c$.
+        The average $\frac{p + q + r}{3}$ for $p = 1$, $q = 2$ and $r = 6$: the fraction bar groups
+        the whole top, so in Python it is `(p + q + r) / 3`, which gives 3.0. Without the brackets,
+        `p + q + r / 3` divides only `r` by 3 and gives 5.0.
     notes: >-
       `neg_square` of 9 means minus 3 was squared. `cube_root` of 9.0 means the exponent was not
-      bracketed. `decayed_lr` of 0.251 means the denominator was not bracketed. A ZeroDivisionError
-      means `step_size` divides by the square root of 0 before adding `eps`, and 10.0 means `eps` went
-      under the square root.
+      bracketed. `decayed_lr` of 0.251 means the denominator was not bracketed. `step_size` of
+      0.50000001 means it divides by the square root of `v` before adding `eps`, 0.4993761694389224
+      means `eps` went under the square root, 249.38 means the square root is missing, and 497.51
+      means `v ** 1/2` halved `v`.
   build-brackets-tree:
     rungs:
       - Which operation in the bare expression does Python carry out last? Its brackets hold everything.
       - The Derive phase bracketed `-2 ** 4 + 17 // 5 * 3` one level at a time. The same steps work here.
       - Bracket `-2 ** 2` fully first. Does the minus sign go inside the power's brackets or outside them?
       - >-
-        If the trees differ, find the first place where the two printed trees disagree. It names the
+        If test_same_tree passes, your tree is already right and only a pair of brackets is missing.
+        If it fails, find the first place where the two printed trees disagree: it names the
         operation whose brackets are in the wrong place.
       - >-
         `1 - 2 * 3 ** 2`, fully bracketed, is `(1 - (2 * (3 ** 2)))`. The operation done last holds
         everything, and each operation inside it gets a pair of its own.
     notes: >-
-      `(-2) ** ...` gives the same value but a different tree, with the minus sign inside the power.
-      Brackets around `(2 ** 3)` group the powers from the left. `10 // (3 * 2)` groups from the
-      right. A failing test_every_operation with test_same_tree passing means only a pair is missing,
-      most often the outer pair.
+      `(-2) ** ...` puts the minus sign inside the power: the value line shows 262 against $-250$.
+      Brackets around `(2 ** 2)` group the powers from the left, giving $-58$. `10 // (3 * 2)` groups
+      from the right, giving $-255$. A failing test_every_operation with test_same_tree passing means
+      only a pair is missing, most often the outer pair.
   build-read-batch:
     rungs:
       - What type is `batch_size` after line 2? Add `print(type(batch_size))` to find out.
       - Explore found that Python never converts between text and numbers by itself, and that `int("3")` turns text into a whole number.
-      - What does `"1024" / 256` do on its own? And `int("1024") / 256`?
-      - The error is reported on line 3, but it starts on line 2, with what `input()` gives back.
+      - >-
+        Add `print(batch_size * 2)` just after line 2 and run it. What does it show, and what does
+        that tell you about `batch_size`?
+      - >-
+        Lines 3 to 5 are right for a number. If Python still stops on line 3, or a check says
+        `batch_size` is not an int, the trouble is on line 2: compare the type that `input()` gives
+        back with the type a batch size should have.
       - >-
         A program that asks for a price and needs a number with a point reads it as
         `price = float(input())`, converting the text as soon as it arrives.
     notes: >-
       `float(input())` passes the learning rate but makes the batch size a float. Converting inside
-      line 3 leaves `batch_size` a string, which test_batch_size reports.
+      line 3 leaves `batch_size` a string, which test_batch_size reports. Typing `batch_size = 1024`
+      into the program passes the first two checks but fails test_reads_what_is_typed.
   build-check-probabilities:
     rungs:
       - What does `print(total)` show, and why is it not exactly 1?
-      - Explore found that a float is the nearest whole number times a power of two, so two sums that should be equal can differ in their last digits.
+      - Explore found that most decimals, such as 0.1, are stored as the nearest float, so two sums that should be equal can differ in their last digits.
       - Print `abs(total - 1)` and `abs(bad_total - 1)`. How big is each difference?
       - >-
-        A good check allows a difference as large as rounding makes, about $10^{-16}$ near 1, but far
-        smaller than the real mistake of 0.0001. Which tolerance sits between the two?
+        If your checks give `True` for `total` and `reordered`, they already forgive rounding. If one
+        also gives `True` for a real mistake, its tolerance is wider than 0.0001, or it looks at one
+        side only; if it gives `False` for `total`, it is narrower than the rounding, about
+        $10^{-16}$ near 1.
       - >-
         To check that a length measured in metres is 2.5 to within a millimetre, ask whether
         `abs(length - 2.5) < 0.001`, not whether `length == 2.5`.
     notes: >-
-      `round(x, 2) == 1` and `abs(x - 1) < 0.01` pass the first two checks but also pass the mistake,
-      which test_bad_total reports. Reordering `total` so that `==` happens to hold fails
+      `round(x, 2) == 1` and `abs(x - 1) < 0.01` pass the first two checks but also pass the
+      mistakes, which test_bad_total and test_low_total report. `x - 1 < 1e-9` without `abs` passes
+      0.9999, which test_low_total reports. Reordering `total` so that `==` happens to hold fails
       test_probabilities_unchanged.
 
 novice:

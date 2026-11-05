@@ -14,11 +14,11 @@ Line 1 makes `x` refer to $a$. Line 2 works out `x + 3` with `x` as it is now, $
 
 <Reveal for="derive-trace-square">
 
-`x` refers to $a$, then $2a$, then $2a + 1$, and the last line multiplies that by itself, so the program ends with $(2a + 1)^2 = 4a^2 + 4a + 1$. Check with a number: after `a = 3`, Python ends with `x` as 49, and $(2 \times 3 + 1)^2 = 49$. The order of the lines matters as much as the lines themselves. Move the squaring up, to just after `x = a`, and the same four lines end with $2a^2 + 1$.
+Check with a number: after `a = 3`, Python ends with `x` as 49, and $(2 \times 3 + 1)^2 = 49$. The order of the lines matters as much as the lines themselves. Move the squaring up, to just after `x = a`, and the same four lines end with $2a^2 + 1$.
 
-## A swap with no third name
+## Two names and some arithmetic
 
-Explore's swap lost a value. This program swaps two numbers with no third name, using arithmetic instead:
+Explore's swap lost a value. This program also has only two names, and does some arithmetic with them:
 
 ```python
 x = a
@@ -36,7 +36,7 @@ Run it on paper, line by line, with the letters.
 
 <Reveal for="derive-swap-y">
 
-After line 3, `x` refers to $a + b$, so line 4 gives `y` the value $(a + b) - b = a$: the old value of `x` has reached `y`. Now the last line.
+Now the last line, where `y` is no longer $b$.
 
 <Exercise id="derive-swap-x" />
 
@@ -44,7 +44,7 @@ After line 3, `x` refers to $a + b$, so line 4 gives `y` the value $(a + b) - b 
 
 <Reveal for="derive-swap-x">
 
-Line 5 works out $(a + b) - a = b$, so the program ends with `x` as $b$ and `y` as $a$: swapped, with no third name. On paper, with exact numbers, the algebra is airtight. With floats it is not. Run it with `a = 0.1` and `b = 1e16`. Line 3 works out $0.1 + 10^{16}$, and near $10^{16}$ floats are 2 apart, so the sum rounds to `1e16` and the 0.1 is lost for good. The program ends with `x` as `1e+16` and `y` as `0.0`. Algebra describes exact numbers, and floats only come close to them.
+So the program ends with `x` as $b$ and `y` as $a$: the two values have swapped, with no third name. On paper, with exact numbers, the algebra is airtight. With floats it is not. Run it with `a = 0.1` and `b = 1e16`. Line 3 works out $0.1 + 10^{16}$, and near $10^{16}$ floats are 2 apart, so the sum rounds to `1e16` and the 0.1 is lost for good. The program ends with `x` as `1e+16` and `y` as `0.0`. Algebra describes exact numbers, and floats only come close to them.
 
 Python has a swap that loses nothing: `x, y = y, x`. It works out both values on the right first, then gives them to the names on the left, so neither is overwritten before it is used.
 
@@ -58,7 +58,7 @@ Explore found Python's order one rule at a time. Now use all of it at once on a 
 
 <Reveal for="derive-precedence">
 
-The `+` is done last, so it joins the two largest pieces. On the left the power comes before the minus sign, and on the right `//` and `*` are grouped from the left. Working up from the leaves gives $-16 + 9 = -7$, which is what Python prints for `-2 ** 4 + 17 // 5 * 3`. The Build phase asks Python to show the tree it builds, so you can check a bracketing like this one against it.
+Python agrees: `print(-2 ** 4 + 17 // 5 * 3)` shows `-7`. The Build phase asks Python to show the tree it builds, so you can check a bracketing like this one against it.
 
 ## How far apart big floats are
 
@@ -70,7 +70,7 @@ Explore found that near $10^{16}$ neighbouring floats are 2 apart, because a who
 
 <Reveal for="derive-gap-estimate">
 
-They are 16,384 apart, which is $2^{14}$. Each time the numbers pass a power of two, they gain a binary digit that a float cannot keep, so the gap doubles: 2 from $2^{53}$, 4 from $2^{54}$, and so on, up to $2^{14}$ from $2^{66}$, about $7.4 \times 10^{19}$, to $2^{67}$, about $1.5 \times 10^{20}$. So the gap grows roughly in proportion to the numbers, and a quick estimate comes close: from $10^{16}$ to $10^{20}$ the numbers grow by a factor of $10^4$, so the gap grows from 2 to about 20,000. Everywhere, the gap is between about $1.1 \times 10^{-16}$ and $2.2 \times 10^{-16}$ of the number itself, which is the exact meaning of "about 16 significant figures".
+So the gap grows roughly in proportion to the numbers. Across almost the whole range of floats, the gap is between about $1.1 \times 10^{-16}$ and $2.2 \times 10^{-16}$ of the number itself, that is, between $2^{-53}$ and $2^{-52}$ of it, which is what "about 16 significant figures" means.
 
 A gap of 16,384 means that `1e20 + 1000 == 1e20` is `True`: 1,000 is less than half a gap, so the sum rounds straight back. A long run of small numbers added one at a time to a huge float total can vanish entirely in this way, which is why M13.2 measures such errors with care.
 

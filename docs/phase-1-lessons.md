@@ -22,14 +22,15 @@ M1.1 (rule 6).
 
 | Concept | Used by |
 | --- | --- |
-| E1.1/values-and-types | E1.2, E1.6, M13.1 |
+| E1.1/values-and-types | E1.2, E1.6, E2.1, M13.1 |
 | E1.1/variables-as-names | E1.2, E1.3, E1.4 |
 | E1.1/evaluation-order | E1.2, E1.8 |
-| E1.1/floats-are-approximate | M13.1, M13.2 |
+| E1.1/floats-are-approximate | E1.2, E1.9, E2.1, M13.1, M13.2 |
 
-So E1.2 lists `E1.1/values-and-types`, `E1.1/variables-as-names` and `E1.1/evaluation-order`
-in `used`, E1.3 and E1.4 list `E1.1/variables-as-names`, and E1.6 lists
-`E1.1/values-and-types`.
+So E1.2 lists `E1.1/values-and-types`, `E1.1/variables-as-names`, `E1.1/evaluation-order` and
+`E1.1/floats-are-approximate` in `used`, E1.3 and E1.4 list `E1.1/variables-as-names`, E1.6
+lists `E1.1/values-and-types`, E1.9 (floats compared within a tolerance in tests) lists
+`E1.1/floats-are-approximate`, and E2.1 (dtypes) lists both.
 
 ## Draft concepts for the remaining lessons
 
@@ -40,7 +41,7 @@ in `used`, E1.3 and E1.4 list `E1.1/variables-as-names`, and E1.6 lists
 | M1.4 | linear-functions (M2.6, L1.2, M3.1); average-rate-of-change (M3.1, M3.8); quadratics (M3.7, M10.4); completing-the-square (M3.7, M4.9, M3.12) |
 | M1.5 | exponential-growth (M3.6, L6.2, M1.12); logarithms (M11.1, M13.3, M3.6); log-rules (M11.1, M13.3, L1.6, M9.2); log-scales (L6.2, M13.1) |
 | M1.6 | sigma-notation (M4.6, M3.9, M1.9); arithmetic-series (M1.9, M1.10); geometric-series (L7.3, M14.2); product-notation (M1.10, M9.2) |
-| E1.1 | values-and-types (E1.2, E1.6, M13.1); variables-as-names (E1.2, E1.3, E1.4); evaluation-order (E1.2, E1.8); floats-are-approximate (M13.1, M13.2) |
+| E1.1 | values-and-types (E1.2, E1.6, E2.1, M13.1); variables-as-names (E1.2, E1.3, E1.4); evaluation-order (E1.2, E1.8); floats-are-approximate (E1.2, E1.9, E2.1, M13.1, M13.2) |
 | E1.2 | conditions (E1.3, E1.5, M4.1); loops (E1.3, E1.4, M4.1); loop-invariants (E1.10, E1.9); accumulator-pattern (E1.4, E1.6, M4.11) |
 | E1.3 | defining-functions (E1.4, E1.5, E1.7, L1.1); scope (E1.5, E1.7); pure-functions (E1.9, E5.10); abstraction (E1.7, E1.12, E3.4) |
 | E1.4 | lists (E1.6, E1.10, E2.1); dicts-and-sets (E1.6, E1.10, E9.3); aliasing-and-mutation (E2.3, E5.2); cost-of-operations (E1.10, E2.7) |
