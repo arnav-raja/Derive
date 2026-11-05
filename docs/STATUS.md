@@ -97,10 +97,10 @@ lessons) is under way: eight lessons written (M1.1 to M1.6, E1.1 and E1.2), four
   All 49 items pass `check:exercises`, and the lesson was walked again end to end after the
   redesign, with its figures checked in both themes and at phone width.
 - E1.1 Programs as precise instructions: values, variables and expressions: written on
-  5 November, and all 44 items pass `check:exercises`. Walked end to end after the redesign with
-  no errors, and its figures screenshotted in both themes at 1,100 and 390 px with nothing
-  overflowing. Its new engine parts: `FloatLine` (the exact value a float holds, with its
-  neighbours, or an exact sum set against its float) and `ExpressionTree` in Python notation.
+  5 November and walked end to end after the redesign with no errors, with its figures
+  screenshotted in both themes at 1,100 and 390 px and nothing overflowing. Its new engine
+  parts: `FloatLine` (the exact value a float holds, with its neighbours, or an exact sum set
+  against its float) and `ExpressionTree` in Python notation.
   The program trace's last step now says "the program has finished". Reviewed by both (findings
   in `derive-resume/review/` in the project files), and every finding applied in commit 28120ba:
   a second swap trace that uses a third name, int and float mixing, e notation and how print
@@ -117,8 +117,9 @@ lessons) is under way: eight lessons written (M1.1 to M1.6, E1.1 and E1.2), four
   `check:exercises`. Walked end to end with no errors, and its figures screenshotted in both
   themes at 1,100 and 390 px with nothing overflowing. The simulated learner worked through all
   of it (24 of 24 right, 12 findings, in `derive-resume/review/E1.2-learner-findings.md`). The
-  independent reviewer was asked at the pause to stop and write what it had found so far, with a
-  "Not yet covered" section, to `derive-resume/review/E1.2-findings.md`. Its new engine parts: the
+  independent reviewer stopped early at the pause, after its main pass, and wrote 4 blockers, 10
+  should-fix findings and nits to `derive-resume/review/E1.2-findings.md`, with what it did not
+  reach under "Not yet covered" and its probes in `review/e12rev/`. Its new engine parts: the
   program trace takes `inputs` (the learner types what `input()` reads, or presses a preset, and
   runs it again, with a note while the steps shown are from the old value), predict stops with
   `pass` (stop on the third run of a line), and a "Jump to step" slider hidden until every stop
@@ -151,17 +152,21 @@ in `derive-resume/review/prompts/`; change the lesson and the paths in them for 
    1e-400, the largest float and 1e20 each get the right words. Then update `e11figs.cjs` for the
    new trace and the typing lock, screenshot the figures in both themes at 1,100 and 390 px, and
    save the walked store as a new `store-after-E1.1-walk.json`.
-2. E1.2: apply its two reviews. The simulated learner's 12 findings are in
-   `E1.2-learner-findings.md`. The independent reviewer's are in `E1.2-findings.md`; if that file
-   is missing, or its "Not yet covered" section lists parts it did not reach, first run the
-   reviewer on those parts only (brief in `review/prompts/E1.2-reviewer-prompt.md`). One fix is
-   already known: `3-explore.mdx` line 3 says "E1.1 used one of them, `==`", but E1.1 now shows
-   `<` and the other three comparisons, so it must change. Re-run `check:content` and
+2. E1.2: apply its two reviews, `E1.2-learner-findings.md` (12 findings) and `E1.2-findings.md`.
+   The reviewer's blockers come first: the trace's "Show the numbers" table answers the predict
+   stops and puts each change on the wrong row (an engine fix in `program-trace.tsx`; E1.1's
+   traces have the same table, so look at them again after it), titles and prose that answer two
+   Explore items and the break-it, and 0.001 said to be exact. Both reviews found the same
+   give-aways and the out-of-date "E1.1 used one of them, `==`" at `3-explore.mdx` line 3. Most
+   of the reviewer's "Not yet covered" is what the walk does anyway (the browser, both themes,
+   phone width); check the rest while applying: type equivalent forms into derive-decay-invariant
+   and derive-sum-step, try the number forms for explore-boundary's first variant, and mark a
+   weak and a strong sample answer against the explain-back rubric. Re-run `check:content` and
    `check:exercises -- --write E1.2`, walk the changed parts and commit. Its walk starts from
-   `store-before-E1.2-walk.json` (E1.1 moved to the day before, and the concepts of E1.1 and
-   M1.4 to M1.6 set provisional), then `node walk-e12.cjs overview puzzle recall explore`
-   (explore runs explore2 after it; explore2 alone continues a walk whose early Explore answers
-   are saved) and `derive build explain`; `node e12figs.cjs` screenshots its figures.
+   `store-before-E1.2-walk.json` (E1.1 moved to the day before, and the concepts of E1.1 and M1.4
+   to M1.6 set provisional), then `node walk-e12.cjs overview puzzle recall explore` (explore
+   runs explore2 after it; explore2 alone continues a walk whose early Explore answers are saved)
+   and `derive build explain`; `node e12figs.cjs` screenshots its figures.
    `store-after-E1.2-walk.json` has E1.2 walked, for E1.3's walk.
 3. Write E1.3 to E1.6 from `docs/phase-1-lessons.md`, the same way, keeping the uses that M1.1,
    E1.1 and E1.2 promise (listed there). Fix these descendant targets on the way: E1.5 not L3.4
