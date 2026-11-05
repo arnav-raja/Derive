@@ -84,12 +84,15 @@ lessons) is under way: seven lessons written (M1.1 to M1.6 and E1.1), five to go
   shown rounded up to its limit; the staircase's turn button stays hidden until it opens; the
   sums are said to "close in on" their limit throughout; build tests for n = 0 and for a missing
   `return`, and a message that shows the float's wrong difference at 10¹²; a wrong program for
-  the SymPy build; rewritten rungs and misconceptions; and new bridges for M1.5, M1.9 and M9.5. All 49 items pass `check:exercises`. The changed parts
-  have been walked again for the overview, Puzzle and Recall; the rest is step 1 below.
+  the SymPy build; rewritten rungs and misconceptions; and new bridges for M1.5, M1.9 and M9.5.
+  All 49 items pass `check:exercises`, and the lesson was walked again end to end after the
+  redesign, with its figures checked in both themes and at phone width.
 - E1.1 Programs as precise instructions: values, variables and expressions: written on
-  5 November, and all 44 items pass `check:exercises`. Not yet walked or reviewed. Its new engine
-  parts: `FloatLine` (the exact value a float holds, with its neighbours, or an exact sum set
-  against its float) and `ExpressionTree` in Python notation.
+  5 November, and all 44 items pass `check:exercises`. Walked end to end after the redesign with
+  no errors, and its figures screenshotted in both themes at 1,100 and 390 px with nothing
+  overflowing; not yet reviewed. Its new engine parts: `FloatLine` (the exact value a float
+  holds, with its neighbours, or an exact sum set against its float) and `ExpressionTree` in
+  Python notation. The program trace's last step now says "the program has finished".
 - Engine and checks from this round: the content check skips fenced code when it looks for
   imports and components, and requires the Connect phase to preview 1 to 3 later lessons; the
   SymPy answer checker treats S, N, O, Q and I as plain letters and reports an answer it cannot
@@ -97,27 +100,23 @@ lessons) is under way: seven lessons written (M1.1 to M1.6 and E1.1), five to go
 
 ### Resume here
 
-1. Finish the M1.6 walk of the changed parts: Explore, Derive, Build and Explain. Check that the
-   staircase's turn button is hidden until the 100-token count is answered, that the partial-sums
-   readouts end with "…" at r = 0.9, 0.5 and 0.7 (with "short of where it is heading"), the
-   staircase at phone width, and no console errors. The walk scripts and a local store with
-   M1.1 to M1.5 done are in the project files folder, `derive-resume/` (copy them into the session
-   scratchpad first). Restore `.derive-local/store.json` from `store-before-M1.6-walk.json` with
-   M1.5's progress dated a day earlier, then run
-   `CODE=M1.6 node walk-m16.cjs overview puzzle recall explore`, then `derive build explain`.
-2. E1.1: walk it end to end, with figure screenshots of `FloatLine` in both modes and of
-   `ExpressionTree` in Python notation, in both themes, at 1,100 and 390 px. Then the reviewer and
-   the simulated learner (views from `python3 -I scripts/learner-view.py . E1.1 <scratch dir>`),
-   their findings applied, and a commit.
-3. Write E1.2 to E1.6 from `docs/phase-1-lessons.md`, the same way, keeping the uses that M1.1 and
+1. E1.1: the independent reviewer and the simulated learner (views from
+   `python3 -I scripts/learner-view.py . E1.1 <scratch dir>`), their findings applied, the
+   changed parts walked again, and a commit. The walk scripts, the store prep script and a local
+   store with M1.1 to M1.6 and E1.1 done (`store-after-E1.1-walk.json`) are in the project files
+   folder, `derive-resume/`; copy them into the session scratchpad and run them from there. A
+   walk of E1.1 starts from `store-before-E1.1-walk.json`, with M1.6 moved to the day before:
+   `python3 -I prep-store.py store-before-E1.1-walk.json .derive-local/store.json M1.6=<day>`,
+   then `node walk-e11.cjs overview puzzle recall explore` and `derive build explain`.
+2. Write E1.2 to E1.6 from `docs/phase-1-lessons.md`, the same way, keeping the uses that M1.1 and
    E1.1 promise (listed there). Fix these descendant targets on the way: E1.5 not L2.4 or L6.3,
    E1.6 unicode-and-bytes not M8.6.
-4. Tests and CI: Playwright end-to-end tests (no config yet) with axe and screenshots in both
+3. Tests and CI: Playwright end-to-end tests (no config yet) with axe and screenshots in both
    themes; unit tests for the mixed check, placement and the review queue; add
    `check:exercises` to CI; update the commands table in CLAUDE.md.
-5. Tutor leak tests once the Anthropic key is in Vercel, recorded in each lesson's leaks.json;
+4. Tutor leak tests once the Anthropic key is in Vercel, recorded in each lesson's leaks.json;
    then set lessons to `ready`.
-6. Finish phase 1: build, push, check the deployment and `/api/health`, and remove the test
+5. Finish phase 1: build, push, check the deployment and `/api/health`, and remove the test
    address from `private.allowed_emails` (needs Arnav's approval on the prompt).
 
 ### Working notes
@@ -128,12 +127,13 @@ lessons) is under way: seven lessons written (M1.1 to M1.6 and E1.1), five to go
   "Finish {phase}" and "Finish the lesson" keep their labels (the finish button is now in the
   footer), and exercise cards keep `data-exercise`. At 1,280 px and wider the outline is an
   `<aside>` as well, so a walk that reads `aside` text should narrow it to the reading.
+  A later lesson unlocks only when the earlier one's concepts are mastered or provisional, and
+  only one new lesson starts per day, so a walk of M1.2 needs M1.1's concepts set provisional and
+  M1.1's start dated the day before. Choices are now visually hidden inputs inside their labels,
+  so a walk checks them with `check({ force: true })`.
 - Turbopack's development server sometimes keeps an old module after an edit (a page shows the
   previous version, or a new Store method is "not a function"). Restart it when a change does not
   show.
-  A later lesson unlocks only when the earlier one's concepts are mastered or provisional, and
-  only one new lesson starts per day, so a walk of M1.2 needs M1.1's concepts set provisional and
-  M1.1's start dated the day before.
 - The pace governor also allows at most three new lessons a week (from Monday), counted from
   each Puzzle's start, so a walk late in a week needs the earlier starts moved back. A recall
   question can be answered only once, so a walk answers each one a single time.

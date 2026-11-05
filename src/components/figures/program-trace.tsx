@@ -302,7 +302,13 @@ export function ProgramTrace({
                 </Button>
                 <p className="tabular text-sm text-ink-muted" aria-live="polite">
                   Step {step + 1} of {steps.length}
-                  {current ? (current.event === "line" ? `: about to run line ${current.line}` : `: returning from ${frames.at(-1)?.function ?? "the program"}`) : ""}
+                  {current
+                    ? current.event === "line"
+                      ? `: about to run line ${current.line}`
+                      : (frames.at(-1)?.function ?? "(main program)") === "(main program)"
+                        ? ": the program has finished"
+                        : `: returning from ${frames.at(-1)?.function}`
+                    : ""}
                 </p>
               </div>
               {predict.length === 0 ? (
