@@ -56,20 +56,22 @@ export function FigureFrame({
   const titleId = `${uid}-title`;
   const descId = `${uid}-desc`;
   return (
-    <figure aria-labelledby={titleId} className="not-prose my-8 flex flex-col gap-4 rounded-lg border border-rule bg-surface p-4 font-sans sm:p-5">
-      <div className="flex items-baseline justify-between gap-3">
+    <figure aria-labelledby={titleId} className="not-prose my-10 flex flex-col overflow-hidden rounded-xl border border-rule bg-surface font-sans shadow-xs">
+      <div className="flex items-center justify-between gap-3 border-b border-rule px-4 py-3 sm:px-5">
         <p id={titleId} className="text-base font-semibold text-ink">
           {title}
         </p>
-        <span className="text-xs font-semibold tracking-wide text-ink-muted uppercase">{label}</span>
+        <span className="shrink-0 rounded-full bg-inset px-2.5 py-0.5 text-xs font-semibold text-ink-muted">{label}</span>
       </div>
-      {predict}
-      <div className="min-w-0">{picture({ titleId, descId })}</div>
-      {controls ? <div className="flex flex-col gap-3">{controls}</div> : null}
-      <figcaption id={descId} className="text-sm leading-relaxed text-ink-muted">
-        {description}
-      </figcaption>
-      {table ? <NumbersTable table={table} /> : null}
+      <div className="flex flex-col gap-4 p-4 sm:p-5">
+        {predict}
+        <div className="min-w-0">{picture({ titleId, descId })}</div>
+        {controls ? <div className="flex flex-col gap-3 rounded-lg bg-inset/60 px-4 py-3">{controls}</div> : null}
+        <figcaption id={descId} className="text-sm leading-relaxed text-ink-muted">
+          {description}
+        </figcaption>
+        {table ? <NumbersTable table={table} /> : null}
+      </div>
     </figure>
   );
 }
@@ -97,8 +99,8 @@ export function FigureLabel({ text }: { text: string }) {
 
 function NumbersTable({ table }: { table: DataTable }) {
   return (
-    <details className="group rounded-md border border-rule">
-      <summary className="cursor-pointer list-none rounded-md px-3 py-2 text-sm font-medium text-accent hover:text-accent-strong">
+    <details className="group rounded-lg border border-rule">
+      <summary className="cursor-pointer list-none rounded-lg px-3 py-2 text-sm font-semibold text-accent hover:text-accent-strong">
         <span className="group-open:hidden">Show the numbers</span>
         <span className="hidden group-open:inline">Hide the numbers</span>
       </summary>
@@ -165,8 +167,8 @@ export function PredictPanel({
   return (
     <div
       className={clsx(
-        "flex flex-col gap-3 rounded-md border px-3 py-3",
-        phase === "revealed" ? "border-rule bg-inset" : "border-accent/40 bg-accent-soft",
+        "flex flex-col gap-3 rounded-lg border px-4 py-3",
+        phase === "revealed" ? "border-rule bg-inset/60" : "border-accent/30 bg-accent-soft",
       )}
     >
       <p className="text-sm text-ink">

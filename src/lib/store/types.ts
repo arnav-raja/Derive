@@ -141,6 +141,9 @@ export type Attempt = Required<Omit<AttemptInput, "rating">> & {
   createdAt: string;
 };
 
+/** One answer reduced to when it was given, its kind and its result: enough to chart activity and recall. */
+export type ActivityPoint = { createdAt: string; kind: AttemptKind; correct: boolean | null };
+
 export type AttemptQuery = {
   since?: string;
   lessonCode?: string;
@@ -220,6 +223,8 @@ export interface Store {
 
   recordAttempt(input: AttemptInput): Promise<Attempt>;
   attempts(query?: AttemptQuery): Promise<Attempt[]>;
+  /** Every answer since a time, however many there are, newest first. */
+  activity(since: string): Promise<ActivityPoint[]>;
 
   saveExplanation(input: ExplanationInput): Promise<Explanation>;
   explanations(lessonCode?: string): Promise<Explanation[]>;

@@ -8,117 +8,177 @@
  * value cannot slip in. Spacing stays on Tailwind's 4 px grid (--spacing).
  *
  * Contrast: every text token meets WCAG 2.2 AA (4.5:1) on every surface in
- * both themes; figure colours meet 3:1 for graphical objects. The pairs are
+ * both themes; figure and subject colours meet 3:1 for graphical objects, and
+ * the code editor's colours meet 4.5:1 on its own background. The pairs are
  * checked in src/lib/design/tokens.test.ts.
+ *
+ * An element marked data-preview="light" or "dark" takes that theme's tokens
+ * whichever theme is on, so Settings can show both side by side.
  */
 
+[data-preview="light"],
 :root {
   color-scheme: light;
 
-  /* Surfaces: warm off-white paper. */
-  --paper: #f7f5ef;
-  --surface: #fcfbf8;
-  --inset: #efece4;
+  /* Surfaces: a cool, quiet canvas with white cards on it. */
+  --paper: #f4f5f8;
+  --surface: #ffffff;
+  --inset: #eef0f4;
 
   /* Ink. */
-  --ink: #1c1b18;
-  --ink-muted: #55514a;
-  --ink-faint: #6e6a61;
+  --ink: #101828;
+  --ink-muted: #475467;
+  --ink-faint: #5d6679;
 
   /* Rules and borders. */
-  --rule: #e2ddd2;
-  --rule-strong: #c9c2b4;
+  --rule: #e3e6ec;
+  --rule-strong: #cfd4dc;
 
-  /* The one accent: deep indigo, for links, focus and vectors. */
-  --accent: #3b33a6;
-  --accent-strong: #2c2585;
-  --accent-soft: #e9e8f8;
-  --on-accent: #fcfbf8;
+  /* The one accent: Derive indigo, for actions, links, focus and vectors. */
+  --accent: #4f3fd6;
+  --accent-strong: #3f30b8;
+  --accent-soft: #eeedfd;
+  --on-accent: #ffffff;
 
   /* States, always paired with a word or icon. */
-  --correct: #1d6b3a;
-  --correct-soft: #e3f1e7;
-  --incorrect: #a3302b;
-  --incorrect-soft: #f8e5e3;
-  --hint: #0e6470;
-  --hint-soft: #e0f0f2;
-  --warning: #875200;
-  --warning-soft: #f6ecd9;
+  --correct: #16703f;
+  --correct-soft: #e6f4ec;
+  --incorrect: #b42318;
+  --incorrect-soft: #fdeceb;
+  --hint: #0e6a78;
+  --hint-soft: #e1f2f4;
+  --warning: #8a520a;
+  --warning-soft: #fbefdc;
+
+  /* Subjects: each curriculum's own mark, always shown with its name. */
+  --subject-m: #5440d8;
+  --subject-m-soft: #efedfd;
+  --subject-l: #0b6f65;
+  --subject-l-soft: #e3f5f2;
+  --subject-e: #a84d09;
+  --subject-e-soft: #fdf0e3;
 
   /* Figure grammar. */
-  --fig-vector: #3b33a6;
-  --fig-gradient: #b4460f;
+  --fig-vector: #4f3fd6;
+  --fig-gradient: #c2410c;
   --fig-mass: #7a68a6;
-  --fig-point: #6e6a61;
-  --fig-grid: #e2ddd2;
-  --fig-axis: #55514a;
+  --fig-point: #5d6679;
+  --fig-grid: #e3e6ec;
+  --fig-axis: #475467;
+
+  /* The code editor and console: dark in both themes, like a workbench. */
+  --code-bg: #0f1420;
+  --code-chrome: #171e2c;
+  --code-active: #161e2e;
+  --code-rule: #263044;
+  --code-ink: #e6e9ef;
+  --code-muted: #97a3b8;
+  --code-keyword: #c2b4ff;
+  --code-string: #8bd5a5;
+  --code-number: #f9b37a;
+  --code-function: #82c8f0;
+  --code-operator: #b8c0cf;
+  --code-correct: #7ddc9e;
+  --code-incorrect: #ff9d95;
+  --code-warning: #f2c46d;
+  --code-changed: #3a2f12;
+  --code-selection: #2c3a5c;
 
   /* Focus ring. */
-  --focus: #3b33a6;
+  --focus: #4f3fd6;
+
+  /* Elevation: the colour shadows are drawn in. */
+  --shadow-tint: rgb(16 24 40 / 0.06);
+  --shadow-tint-strong: rgb(16 24 40 / 0.1);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
-    --paper: #12161d;
-    --surface: #181d26;
-    --inset: #1f2530;
-    --ink: #e7e4dd;
-    --ink-muted: #b0aca3;
-    --ink-faint: #949088;
-    --rule: #2a313d;
-    --rule-strong: #3d4656;
-    --accent: #a9adf7;
-    --accent-strong: #c4c7fa;
-    --accent-soft: #262a4a;
-    --on-accent: #12161d;
-    --correct: #74c990;
-    --correct-soft: #16301f;
-    --incorrect: #f2938a;
-    --incorrect-soft: #3a1e1c;
-    --hint: #67c6d0;
-    --hint-soft: #14303a;
-    --warning: #e3b456;
-    --warning-soft: #352a14;
-    --fig-vector: #a9adf7;
-    --fig-gradient: #f0935a;
+    --paper: #0b0f17;
+    --surface: #121826;
+    --inset: #1a2131;
+    --ink: #e9ecf2;
+    --ink-muted: #aab2c3;
+    --ink-faint: #8d96aa;
+    --rule: #242c3d;
+    --rule-strong: #364055;
+    --accent: #a99fff;
+    --accent-strong: #c3bcff;
+    --accent-soft: #262147;
+    --on-accent: #0b0f17;
+    --correct: #6fd49a;
+    --correct-soft: #13291f;
+    --incorrect: #ff9a90;
+    --incorrect-soft: #351a1a;
+    --hint: #6ad0db;
+    --hint-soft: #112d33;
+    --warning: #f0bd5c;
+    --warning-soft: #33270f;
+    --subject-m: #b2a6ff;
+    --subject-m-soft: #241f45;
+    --subject-l: #5fd3c4;
+    --subject-l-soft: #0f2c29;
+    --subject-e: #f6a35b;
+    --subject-e-soft: #33220f;
+    --fig-vector: #a99fff;
+    --fig-gradient: #f59e5b;
     --fig-mass: #b3a3da;
-    --fig-point: #949088;
-    --fig-grid: #2a313d;
-    --fig-axis: #b0aca3;
-    --focus: #a9adf7;
+    --fig-point: #8d96aa;
+    --fig-grid: #242c3d;
+    --fig-axis: #aab2c3;
+    --code-bg: #080b11;
+    --code-chrome: #0f141d;
+    --code-active: #111827;
+    --code-rule: #1f2736;
+    --focus: #a99fff;
+    --shadow-tint: rgb(0 0 0 / 0.35);
+    --shadow-tint-strong: rgb(0 0 0 / 0.5);
   }
 }
 
-:root[data-theme="dark"] {
+:root[data-theme="dark"],
+[data-preview="dark"] {
   color-scheme: dark;
-  --paper: #12161d;
-  --surface: #181d26;
-  --inset: #1f2530;
-  --ink: #e7e4dd;
-  --ink-muted: #b0aca3;
-  --ink-faint: #949088;
-  --rule: #2a313d;
-  --rule-strong: #3d4656;
-  --accent: #a9adf7;
-  --accent-strong: #c4c7fa;
-  --accent-soft: #262a4a;
-  --on-accent: #12161d;
-  --correct: #74c990;
-  --correct-soft: #16301f;
-  --incorrect: #f2938a;
-  --incorrect-soft: #3a1e1c;
-  --hint: #67c6d0;
-  --hint-soft: #14303a;
-  --warning: #e3b456;
-  --warning-soft: #352a14;
-  --fig-vector: #a9adf7;
-  --fig-gradient: #f0935a;
+  --paper: #0b0f17;
+  --surface: #121826;
+  --inset: #1a2131;
+  --ink: #e9ecf2;
+  --ink-muted: #aab2c3;
+  --ink-faint: #8d96aa;
+  --rule: #242c3d;
+  --rule-strong: #364055;
+  --accent: #a99fff;
+  --accent-strong: #c3bcff;
+  --accent-soft: #262147;
+  --on-accent: #0b0f17;
+  --correct: #6fd49a;
+  --correct-soft: #13291f;
+  --incorrect: #ff9a90;
+  --incorrect-soft: #351a1a;
+  --hint: #6ad0db;
+  --hint-soft: #112d33;
+  --warning: #f0bd5c;
+  --warning-soft: #33270f;
+  --subject-m: #b2a6ff;
+  --subject-m-soft: #241f45;
+  --subject-l: #5fd3c4;
+  --subject-l-soft: #0f2c29;
+  --subject-e: #f6a35b;
+  --subject-e-soft: #33220f;
+  --fig-vector: #a99fff;
+  --fig-gradient: #f59e5b;
   --fig-mass: #b3a3da;
-  --fig-point: #949088;
-  --fig-grid: #2a313d;
-  --fig-axis: #b0aca3;
-  --focus: #a9adf7;
+  --fig-point: #8d96aa;
+  --fig-grid: #242c3d;
+  --fig-axis: #aab2c3;
+  --code-bg: #080b11;
+  --code-chrome: #0f141d;
+  --code-active: #111827;
+  --code-rule: #1f2736;
+  --focus: #a99fff;
+  --shadow-tint: rgb(0 0 0 / 0.35);
+  --shadow-tint-strong: rgb(0 0 0 / 0.5);
 }
 
 @theme {
@@ -151,17 +211,32 @@
   --text-4xl: 2.25rem;
   --text-4xl--line-height: 2.75rem;
 
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 8px;
+  --radius-xs: 3px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
   --radius-full: 9999px;
 
-  --shadow-sm: 0 1px 2px rgb(20 18 12 / 0.06);
-  --shadow-md: 0 4px 12px rgb(20 18 12 / 0.08), 0 1px 2px rgb(20 18 12 / 0.06);
-  --shadow-lg: 0 12px 32px rgb(20 18 12 / 0.12), 0 2px 6px rgb(20 18 12 / 0.06);
+  --shadow-xs: 0 1px 2px var(--shadow-tint);
+  --shadow-sm: 0 1px 3px var(--shadow-tint-strong), 0 1px 2px var(--shadow-tint);
+  --shadow-md: 0 4px 8px -2px var(--shadow-tint-strong), 0 2px 4px -2px var(--shadow-tint);
+  --shadow-lg: 0 12px 24px -6px var(--shadow-tint-strong), 0 4px 8px -4px var(--shadow-tint);
 
   /* Reading measure: 60 to 75 characters a line. */
   --container-measure: 68ch;
+
+  --animate-pulse-soft: pulse-soft 1.6s ease-in-out infinite;
+
+  @keyframes pulse-soft {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.55;
+    }
+  }
 }
 
 @theme inline {
@@ -185,12 +260,33 @@
   --color-hint-soft: var(--hint-soft);
   --color-warning: var(--warning);
   --color-warning-soft: var(--warning-soft);
+  --color-subject-m: var(--subject-m);
+  --color-subject-m-soft: var(--subject-m-soft);
+  --color-subject-l: var(--subject-l);
+  --color-subject-l-soft: var(--subject-l-soft);
+  --color-subject-e: var(--subject-e);
+  --color-subject-e-soft: var(--subject-e-soft);
   --color-fig-vector: var(--fig-vector);
   --color-fig-gradient: var(--fig-gradient);
   --color-fig-mass: var(--fig-mass);
   --color-fig-point: var(--fig-point);
   --color-fig-grid: var(--fig-grid);
   --color-fig-axis: var(--fig-axis);
+  --color-code-bg: var(--code-bg);
+  --color-code-chrome: var(--code-chrome);
+  --color-code-active: var(--code-active);
+  --color-code-rule: var(--code-rule);
+  --color-code-ink: var(--code-ink);
+  --color-code-muted: var(--code-muted);
+  --color-code-keyword: var(--code-keyword);
+  --color-code-string: var(--code-string);
+  --color-code-number: var(--code-number);
+  --color-code-function: var(--code-function);
+  --color-code-correct: var(--code-correct);
+  --color-code-incorrect: var(--code-incorrect);
+  --color-code-warning: var(--code-warning);
+  --color-code-changed: var(--code-changed);
+  --color-code-selection: var(--code-selection);
   --color-focus: var(--focus);
   --color-transparent: transparent;
   --color-current: currentColor;
@@ -202,6 +298,7 @@
     color: var(--ink);
     font-family: var(--font-sans);
     font-size: 100%;
+    font-feature-settings: "cv11", "ss01";
     -webkit-text-size-adjust: 100%;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -239,6 +336,12 @@
   a {
     color: inherit;
     text-decoration: none;
+  }
+
+  /* Thin, quiet scrollbars that follow the theme. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--rule-strong) transparent;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -295,8 +398,9 @@
   }
 
   .prose-derive :where(h2):not(:where(.not-prose, .not-prose *):not(:where(.not-prose .prose-derive *))) {
-    font-size: 1.5em;
+    font-size: 1.55em;
     margin-top: 2em;
+    letter-spacing: -0.012em;
   }
 
   .prose-derive :where(h3):not(:where(.not-prose, .not-prose *):not(:where(.not-prose .prose-derive *))) {
@@ -352,26 +456,33 @@
   }
 
   .prose-derive :where(code):not(:where(.not-prose, .not-prose *):not(:where(.not-prose .prose-derive *))) {
-    font-size: 0.85em;
-    background-color: var(--inset);
-    border-radius: var(--radius-sm);
-    padding: 0.1em 0.3em;
-  }
-
-  .prose-derive :where(pre):not(:where(.not-prose, .not-prose *):not(:where(.not-prose .prose-derive *))) {
-    font-size: 0.8em;
-    line-height: 1.6;
+    font-size: 0.82em;
     background-color: var(--inset);
     border: 1px solid var(--rule);
-    border-radius: var(--radius-md);
-    padding: 1em 1.2em;
+    border-radius: var(--radius-sm);
+    padding: 0.08em 0.32em;
+    overflow-wrap: anywhere;
+  }
+
+  /* Code samples in the text use the editor's dark workbench, so code always looks like code. */
+  .prose-derive :where(pre):not(:where(.not-prose, .not-prose *):not(:where(.not-prose .prose-derive *))) {
+    font-size: 0.78em;
+    line-height: 1.7;
+    color: var(--code-ink);
+    background-color: var(--code-bg);
+    border: 1px solid var(--code-rule);
+    border-radius: var(--radius-lg);
+    padding: 1em 1.25em;
     overflow-x: auto;
   }
 
   .prose-derive :where(pre code):not(:where(.not-prose, .not-prose *):not(:where(.not-prose .prose-derive *))) {
     background: none;
+    border: 0;
     padding: 0;
     font-size: inherit;
+    white-space: pre;
+    color: inherit;
   }
 
   .prose-derive :where(hr):not(:where(.not-prose, .not-prose *):not(:where(.not-prose .prose-derive *))) {
@@ -399,6 +510,11 @@
   .prose-derive :where(th):not(:where(.not-prose, .not-prose *):not(:where(.not-prose .prose-derive *))) {
     font-weight: 600;
     color: var(--ink-muted);
+    background-color: var(--inset);
+  }
+
+  .prose-derive :where(th:first-child, td:first-child):not(:where(.not-prose, .not-prose *):not(:where(.not-prose .prose-derive *))) {
+    padding-left: 0.75em;
   }
 
   /* KaTeX sized to match the reading text. */
@@ -453,5 +569,17 @@
 
   svg g[data-sym].sym-active > :not(text) {
     stroke: var(--accent-strong);
+  }
+
+  /* A placeholder block while a page loads, the same shape as what replaces it. */
+  .skeleton {
+    background-color: var(--inset);
+    border-radius: var(--radius-md);
+    animation: var(--animate-pulse-soft);
+  }
+
+  /* Text that should never wrap mid-word in a narrow column, such as codes. */
+  .nowrap {
+    white-space: nowrap;
   }
 }

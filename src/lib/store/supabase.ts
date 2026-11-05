@@ -5,6 +5,7 @@ import type { Tables } from "@/lib/supabase/database.types";
 
 import {
   StoreError,
+  type ActivityPoint,
   type Attempt,
   type AttemptInput,
   type AttemptKind,
@@ -323,6 +324,25 @@ export class SupabaseStore implements Store {
     const { data, error } = await q;
     if (error) fail("load your answers", error);
     return data.map(toAttempt);
+  }
+
+  async activity(since: string): Promise<ActivityPoint[]> {
+    // Read in pages: the API returns at most a thousand rows a request.
+    const PAGE = 1000;
+    const points: ActivityPoint[] = [];
+    for (let from = 0; ; from += PAGE) {
+      const { data, error } = await this.db
+        .from("attempts")
+        .select("created_at, kind, correct")
+        .eq("learner_id", this.learnerId)
+        .gte("created_at", since)
+        .order("created_at", { ascending: false })
+        .order("id", { ascending: false })
+        .range(from, from + PAGE - 1);
+      if (error) fail("load your activity", error);
+      for (const row of data) points.push({ createdAt: row.created_at, kind: row.kind as AttemptKind, correct: row.correct });
+      if (data.length < PAGE) return points;
+    }
   }
 
   async saveExplanation(input: ExplanationInput): Promise<Explanation> {

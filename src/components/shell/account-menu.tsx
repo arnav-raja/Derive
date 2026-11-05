@@ -1,81 +1,107 @@
 "use client";
 
+import { clsx } from "clsx";
 import { DropdownMenu } from "radix-ui";
 import Link from "next/link";
-import { useState, useSyncExternalStore } from "react";
 
 import { signOut } from "@/app/(auth)/actions";
-import { ChevronDownIcon } from "@/components/ui/icons";
+import { CheckIcon, ChevronDownIcon, LogOutIcon, MonitorIcon, MoonIcon, SettingsIcon, SunIcon } from "@/components/ui/icons";
 import type { ThemePreference } from "@/lib/store/types";
 
-import { applyTheme, readTheme } from "./theme";
-
-const subscribe = () => () => {};
+import { applyTheme, useThemePreference } from "./theme";
 
 const itemClasses =
-  "flex h-9 cursor-default items-center rounded-sm px-2 text-sm text-ink outline-none select-none data-[highlighted]:bg-inset";
+  "flex h-9 cursor-default items-center gap-2.5 rounded-sm px-2 text-sm text-ink outline-none select-none data-[highlighted]:bg-inset [&>svg]:size-4 [&>svg]:text-ink-muted";
 
-export function AccountMenu({ email }: { email: string | null }) {
-  // The saved theme is only known in the browser.
-  const initial = useSyncExternalStore(subscribe, readTheme, () => "system" as ThemePreference);
-  const [theme, setTheme] = useState<ThemePreference | null>(null);
-  const current = theme ?? initial;
+function Avatar({ letter, size = "md" }: { letter: string; size?: "sm" | "md" }) {
+  return (
+    <span
+      className={clsx(
+        "flex shrink-0 items-center justify-center rounded-full bg-accent font-semibold text-on-accent",
+        size === "sm" ? "size-8 text-sm" : "size-9 text-sm",
+      )}
+    >
+      {letter}
+    </span>
+  );
+}
+
+const THEMES = [
+  ["system", "Match this device", MonitorIcon],
+  ["light", "Light", SunIcon],
+  ["dark", "Dark", MoonIcon],
+] as const;
+
+export function AccountMenu({
+  email,
+  name,
+  variant = "sidebar",
+}: {
+  email: string | null;
+  name: string | null;
+  /** The sidebar shows the name beside the avatar; the phone top bar shows the avatar alone. */
+  variant?: "sidebar" | "compact";
+}) {
+  const current = useThemePreference();
 
   function choose(value: string) {
-    const next = value as ThemePreference;
-    setTheme(next);
-    applyTheme(next);
+    applyTheme(value as ThemePreference);
   }
 
-  const initialLetter = (email ?? "?").slice(0, 1).toUpperCase();
+  const label = name?.trim() || "Your account";
+  const letter = (name?.trim() || email || "?").slice(0, 1).toUpperCase();
 
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger
-        className="inline-flex h-9 items-center gap-1.5 rounded-md px-2 text-sm text-ink-muted hover:bg-inset hover:text-ink"
-        aria-label="Account and settings"
+        className={clsx(
+          "flex items-center gap-3 rounded-md text-left transition-colors hover:bg-inset",
+          variant === "sidebar" ? "w-full p-2" : "p-1",
+        )}
+        aria-label="Account, theme and sign out"
       >
-        <span className="flex size-7 items-center justify-center rounded-full bg-accent-soft text-xs font-semibold text-accent">
-          {initialLetter}
-        </span>
-        <ChevronDownIcon className="size-4" />
+        <Avatar letter={letter} size={variant === "compact" ? "sm" : "md"} />
+        {variant === "sidebar" ? (
+          <>
+            <span className="flex min-w-0 flex-1 flex-col">
+              <span className="truncate text-sm font-semibold text-ink">{label}</span>
+              {email ? <span className="truncate text-xs text-ink-muted">{email}</span> : null}
+            </span>
+            <ChevronDownIcon className="size-4 shrink-0 text-ink-faint" />
+          </>
+        ) : null}
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
         <DropdownMenu.Content
-          align="end"
-          sideOffset={6}
-          className="z-50 min-w-56 rounded-md border border-rule bg-surface p-1 shadow-md"
+          align={variant === "sidebar" ? "start" : "end"}
+          side={variant === "sidebar" ? "top" : "bottom"}
+          sideOffset={8}
+          className="z-50 min-w-60 rounded-lg border border-rule bg-surface p-1.5 shadow-lg"
         >
           {email ? (
             <>
-              <DropdownMenu.Label className="truncate px-2 py-2 text-xs text-ink-muted">
-                {email}
+              <DropdownMenu.Label className="flex flex-col px-2 py-2">
+                <span className="text-sm font-semibold text-ink">{label}</span>
+                <span className="truncate text-xs text-ink-muted">{email}</span>
               </DropdownMenu.Label>
               <DropdownMenu.Separator className="my-1 h-px bg-rule" />
             </>
           ) : null}
           <DropdownMenu.Item asChild className={itemClasses}>
-            <Link href="/settings">Settings</Link>
+            <Link href="/settings">
+              <SettingsIcon />
+              Settings
+            </Link>
           </DropdownMenu.Item>
           <DropdownMenu.Separator className="my-1 h-px bg-rule" />
-          <DropdownMenu.Label className="px-2 pt-2 pb-1 text-xs text-ink-muted">Theme</DropdownMenu.Label>
+          <DropdownMenu.Label className="px-2 pt-2 pb-1 text-xs font-semibold text-ink-muted">Theme</DropdownMenu.Label>
           <DropdownMenu.RadioGroup value={current} onValueChange={choose}>
-            {(
-              [
-                ["system", "Match this device"],
-                ["light", "Light"],
-                ["dark", "Dark"],
-              ] as const
-            ).map(([value, label]) => (
-              <DropdownMenu.RadioItem
-                key={value}
-                value={value}
-                className={`${itemClasses} justify-between`}
-                onSelect={(event) => event.preventDefault()}
-              >
-                {label}
-                <DropdownMenu.ItemIndicator className="text-xs font-medium text-accent">
-                  On
+            {THEMES.map(([value, text, Icon]) => (
+              <DropdownMenu.RadioItem key={value} value={value} className={itemClasses} onSelect={(event) => event.preventDefault()}>
+                <Icon />
+                <span className="flex-1">{text}</span>
+                <DropdownMenu.ItemIndicator>
+                  <CheckIcon className="size-4 text-accent" title="Chosen" />
                 </DropdownMenu.ItemIndicator>
               </DropdownMenu.RadioItem>
             ))}
@@ -84,6 +110,7 @@ export function AccountMenu({ email }: { email: string | null }) {
           <form action={signOut}>
             <DropdownMenu.Item asChild className={itemClasses}>
               <button type="submit" className="w-full text-left">
+                <LogOutIcon />
                 Sign out
               </button>
             </DropdownMenu.Item>

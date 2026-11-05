@@ -2,22 +2,25 @@
 
 import { clsx } from "clsx";
 import { useRouter } from "next/navigation";
+import { Dialog } from "radix-ui";
 import { useEffect, useId, useMemo, useRef, useState, useSyncExternalStore, useTransition } from "react";
 
 import { answerExercise, moveOn } from "@/app/(app)/lessons/actions";
 import { answerPlacement } from "@/app/(app)/placement/actions";
 import { answerCheck, answerReview } from "@/app/(app)/review/actions";
-import { useTutor, type TutorEntry } from "@/components/tutor/tutor";
+import { TutorThread, useTutor, type TutorEntry } from "@/components/tutor/tutor";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MathText, Tex } from "@/components/ui/tex";
 import { inputClasses } from "@/components/ui/field";
-import { HintIcon } from "@/components/ui/icons";
+import { CheckIcon, CollapseIcon, HintIcon } from "@/components/ui/icons";
 import { Notice } from "@/components/ui/notice";
 import type { AnswerPayload } from "@/lib/learning/payloads";
 import { python, type BreakitResult, type ExpressionResult, type RunResult, type RuntimeStatus } from "@/lib/python/client";
 
-import { BreakitInput, CodeInput, ErrorLine, Output, TestResults } from "./inputs/code";
+import { BreakitInput, CodeWorkbench } from "./inputs/code";
 import { ChoiceInput, NumberInput, StepsInput } from "./inputs/simple";
+import { KIND_ICONS } from "./kind-icons";
 import { KIND_LABELS, type ExerciseView } from "./types";
 
 /*
@@ -74,10 +77,13 @@ function wordCount(s: string): number {
 
 function ConfidenceSlider({ id, value, onChange, disabled }: { id: string; value: number; onChange: (v: number) => void; disabled: boolean }) {
   return (
-    <div className="flex flex-col gap-1">
-      <label htmlFor={id} className="text-sm font-medium text-ink">
-        How sure are you? <span className="tabular font-semibold">{value}%</span>
-      </label>
+    <div className="flex flex-col gap-2 rounded-lg border border-rule bg-inset/50 px-4 py-3">
+      <div className="flex items-baseline justify-between gap-3">
+        <label htmlFor={id} className="text-sm font-semibold text-ink">
+          How sure are you?
+        </label>
+        <span className="tabular text-sm font-semibold text-accent">{value}%</span>
+      </div>
       <input
         id={id}
         type="range"
@@ -87,12 +93,25 @@ function ConfidenceSlider({ id, value, onChange, disabled }: { id: string; value
         value={value}
         disabled={disabled}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full max-w-sm accent-[var(--accent)]"
+        className="w-full accent-[var(--accent)]"
         aria-valuetext={`${value} percent`}
       />
       <p className="text-xs text-ink-muted">Committing to a confidence first is how you find out what you really know.</p>
     </div>
   );
+}
+
+function StateBadge({ view }: { view: ExerciseView }) {
+  const s = view.state;
+  if (s.solved)
+    return (
+      <Badge tone="correct" icon={<CheckIcon className="size-3" strokeWidth={2.25} />}>
+        Solved
+      </Badge>
+    );
+  if (s.movedOn) return <Badge tone="hint">Moved on, comes back later</Badge>;
+  if (s.done) return <Badge tone="neutral">Answered</Badge>;
+  return <Badge tone="outline">{view.required ? "To do" : "Optional"}</Badge>;
 }
 
 export function ExerciseCard({ view }: { view: ExerciseView }) {
@@ -127,7 +146,8 @@ export function ExerciseCard({ view }: { view: ExerciseView }) {
   const [textEdit, setText] = useState<string | null>(null);
   const text = textEdit ?? (a.type === "text" ? draft : null) ?? (prior?.type === "text" ? prior.body : "");
   const [confidence, setConfidence] = useState(50);
-  const [showTests, setShowTests] = useState(false);
+  // Code can be worked on in a full-screen split view, the prompt beside the editor.
+  const [expanded, setExpanded] = useState(false);
 
   const [run, setRun] = useState<RunResult | null>(null);
   const [exprResult, setExprResult] = useState<ExpressionResult | null>(null);
@@ -357,237 +377,337 @@ export function ExerciseCard({ view }: { view: ExerciseView }) {
   const canMoveOn =
     view.target.mode === "lesson" && !done && (view.state.attempts > 0 || view.state.hintsUsed > 0 || graderDown);
 
+  const KindIcon = KIND_ICONS[view.kind];
+  const heading = view.title ?? KIND_LABELS[view.kind];
+  const hintButton =
+    view.hints && tutor && view.target.mode === "lesson" ? (
+      <Button
+        variant="ghost"
+        onClick={() => tutor.openFor(view.key)}
+        aria-label={view.state.solved ? "Talk it through with the tutor" : "Ask the tutor for a hint"}
+      >
+        <HintIcon className="size-4" />
+        {view.state.solved ? "Talk it through" : view.ladderLeft === 5 ? "Hint" : `Hint (${5 - view.ladderLeft} of 5 used)`}
+      </Button>
+    ) : null;
+  const workbench = (fill: boolean) =>
+    a.type === "code" ? (
+      <CodeWorkbench
+        view={a}
+        label={`Code for ${heading}`}
+        code={code}
+        onCode={(v) => {
+          setCode(v);
+          writeDraft(view.key, v);
+        }}
+        readOnly={working_}
+        onRun={() => void runOnly()}
+        onCheck={locked ? null : () => void check()}
+        status={status.state}
+        busy={busy ?? (pending ? "Saving" : null)}
+        run={run}
+        fill={fill}
+        onExpand={fill ? undefined : () => setExpanded(true)}
+        onCollapse={fill ? () => setExpanded(false) : undefined}
+        onReset={
+          code !== a.starter
+            ? () => {
+                setCode(a.starter);
+                writeDraft(view.key, a.starter);
+              }
+            : undefined
+        }
+      />
+    ) : null;
+
+  const outcomeNotice =
+    shown && a.type !== "text" ? (
+      <Notice tone={shown.correct ? "correct" : "incorrect"} title={shown.correct ? "Correct" : oneShot ? "Not this time" : "Not yet"} role="status">
+        {shown.correct
+          ? view.kind === "estimate" && shown.ratio
+            ? `Within range: your estimate is ${formatRatio(shown.ratio)} the answer.`
+            : a.type === "code"
+              ? "Every test passes."
+              : null
+          : failMessage
+            ? <MathText text={failMessage} />
+            : oneShot
+              ? null
+              : a.type === "code"
+                ? "Read the message under the first failing test, change that line, and run the tests again."
+                : "Look again, or ask for a hint."}
+      </Notice>
+    ) : null;
+
+  const errorNotice = error ? (
+    <Notice tone="warning" title="Check" role="alert">
+      {error}
+    </Notice>
+  ) : null;
+
   return (
     <section
       ref={card}
       aria-labelledby={titleId}
       className={clsx(
-        "not-prose my-8 flex flex-col gap-4 rounded-lg border bg-surface p-4 font-sans sm:p-5",
-        view.state.solved ? "border-correct/40" : done ? "border-rule-strong" : "border-rule",
+        "not-prose my-10 flex flex-col overflow-hidden rounded-xl border bg-surface font-sans shadow-xs",
+        view.state.solved ? "border-correct/40" : "border-rule",
       )}
       data-exercise={view.key}
     >
-      <header className="flex flex-wrap items-baseline justify-between gap-2">
-        <h3 id={titleId} className="flex flex-wrap items-baseline gap-2">
-          <span className="text-xs font-semibold tracking-wide text-accent uppercase">{KIND_LABELS[view.kind]}</span>
-          {view.title ? <span className="text-base font-semibold text-ink">{view.title}</span> : null}
+      <header className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-rule bg-inset/40 px-4 py-3 sm:px-5">
+        <h3 id={titleId} className="flex min-w-0 items-center gap-3">
+          <span
+            className={clsx(
+              "flex size-8 shrink-0 items-center justify-center rounded-md",
+              view.state.solved ? "bg-correct-soft text-correct" : "bg-accent-soft text-accent",
+            )}
+          >
+            <KindIcon className="size-4" />
+          </span>
+          <span className="flex min-w-0 flex-col">
+            <span className="text-xs font-semibold text-ink-muted">{KIND_LABELS[view.kind]}</span>
+            {view.title ? <span className="text-base leading-snug font-semibold text-ink">{view.title}</span> : null}
+          </span>
         </h3>
-        <p className="text-xs font-medium text-ink-muted">
-          {view.state.solved ? "Solved" : view.state.movedOn ? "Moved on, comes back later" : done ? "Answered" : view.required ? "" : "Optional"}
-          {view.state.hintsUsed > 0 ? ` · ${view.state.hintsUsed} hint${view.state.hintsUsed === 1 ? "" : "s"}` : ""}
-        </p>
+        <div className="flex flex-wrap items-center gap-2">
+          {view.state.hintsUsed > 0 ? (
+            <Badge tone="hint" icon={<HintIcon className="size-3" />}>
+              <span className="tabular">{view.state.hintsUsed}</span> {view.state.hintsUsed === 1 ? "hint" : "hints"}
+            </Badge>
+          ) : null}
+          <StateBadge view={view} />
+        </div>
       </header>
 
-      <div className="prose-derive max-w-none text-base [&_.katex]:text-[1.05em]">{view.prompt}</div>
+      <div className="flex flex-col gap-5 px-4 py-5 sm:px-5">
+        <div className="prose-derive max-w-none text-base [&_.katex]:text-[1.05em]">{view.prompt}</div>
 
-      {a.type === "choice" ? (
-        <ChoiceInput view={a} name={`${uid}-choice`} selected={selected} onChange={setSelected} disabled={locked || working_} />
-      ) : null}
-      {a.type === "number" ? (
-        <NumberInput
-          view={a}
-          id={uid}
-          value={number}
-          onChange={setNumber}
-          working={working}
-          onWorking={setWorking}
-          disabled={locked || working_ || (done && view.kind === "estimate")}
-          estimate={view.kind === "estimate"}
-        />
-      ) : null}
-      {a.type === "steps" ? <StepsInput view={a} id={uid} rules={rules} onChange={setRules} disabled={locked || working_ || view.state.solved} /> : null}
-      {a.type === "expression" ? (
-        <div className="flex flex-col gap-1">
-          <label htmlFor={`${uid}-expr`} className="text-sm font-medium text-ink">
-            Your expression
-          </label>
-          <div className="flex flex-wrap items-center gap-2">
-            {a.lhs ? <span className="text-base text-ink">{a.lhs}</span> : null}
-            <input
-              id={`${uid}-expr`}
-              value={expression}
-              onChange={(e) => setExpression(e.target.value)}
-              disabled={locked || working_ || view.state.solved}
-              autoComplete="off"
-              spellCheck={false}
-              className={clsx(inputClasses, "h-10 max-w-md flex-1 font-mono")}
-            />
-          </div>
-          <p className="text-xs text-ink-muted">
-            Type <code className="font-mono">*</code> to multiply, <code className="font-mono">/</code> to divide,{" "}
-            <code className="font-mono">^</code> or <code className="font-mono">**</code> for a power, and functions such as{" "}
-            <code className="font-mono">sqrt( )</code> for a square root.
-            {a.symbols.length ? ` Symbols: ${a.symbols.map((s) => s.name).join(", ")}.` : ""}
-          </p>
-          {exprResult?.latex ? (
-            <p className="text-sm text-ink-muted">
-              Read as: <Tex tex={exprResult.latex} className="text-base text-ink" />
-            </p>
-          ) : null}
-        </div>
-      ) : null}
-      {a.type === "code" ? (
-        <CodeInput
-          view={a}
-          label={`Code for ${view.title ?? KIND_LABELS[view.kind]}`}
-          code={code}
-          onCode={(v) => {
-            setCode(v);
-            writeDraft(view.key, v);
-          }}
-          readOnly={working_}
-          showTests={showTests}
-          onToggleTests={() => setShowTests((s) => !s)}
-        />
-      ) : null}
-      {a.type === "breakit" ? (
-        <BreakitInput
-          view={a}
-          name={`${uid}-breakit`}
-          selected={breakChoice}
-          onSelect={setBreakChoice}
-          disabled={locked || working_}
-          result={breakResult}
-        />
-      ) : null}
-      {a.type === "text" ? (
-        <div className="flex flex-col gap-2">
-          <div className="rounded-md bg-inset px-3 py-2 text-sm text-ink">
-            <p className="mb-1 font-semibold">What a good answer shows</p>
-            <ul className="list-disc pl-5">
-              {a.rubric.map((r) => (
-                <li key={r.id}>{r.criterion}</li>
-              ))}
-            </ul>
-          </div>
-          <label htmlFor={`${uid}-text`} className="text-sm font-medium text-ink">
-            Your answer
-          </label>
-          <textarea
-            id={`${uid}-text`}
-            rows={8}
-            value={text}
-            onChange={(e) => {
-              setText(e.target.value);
-              writeDraft(view.key, e.target.value);
-            }}
-            disabled={working_}
-            className={clsx(inputClasses, "resize-y py-2 leading-7")}
+        {a.type === "choice" ? (
+          <ChoiceInput view={a} name={`${uid}-choice`} selected={selected} onChange={setSelected} disabled={locked || working_} />
+        ) : null}
+        {a.type === "number" ? (
+          <NumberInput
+            view={a}
+            id={uid}
+            value={number}
+            onChange={setNumber}
+            working={working}
+            onWorking={setWorking}
+            disabled={locked || working_ || (done && view.kind === "estimate")}
+            estimate={view.kind === "estimate"}
           />
-          <p className={clsx("tabular text-xs", words > a.maxWords ? "text-incorrect" : "text-ink-muted")}>
-            {words} words; between {a.minWords} and {a.maxWords}.
-          </p>
-        </div>
-      ) : null}
-
-      {view.asksConfidence && !locked && !done ? (
-        <ConfidenceSlider id={`${uid}-confidence`} value={confidence} onChange={setConfidence} disabled={working_} />
-      ) : null}
-
-      <div className="flex flex-wrap items-center gap-2">
-        {a.type === "text" ? (
-          <Button onClick={() => void submitText()} disabled={working_ || words < a.minWords || words > a.maxWords}>
-            {view.state.attempts > 0 ? "Submit again" : "Submit"}
-          </Button>
-        ) : !locked && !(view.state.solved && a.type !== "code") ? (
-          <Button onClick={() => void check()} disabled={working_}>
-            {a.type === "code" ? "Run the tests" : a.type === "breakit" ? "Run it and see" : "Check"}
-          </Button>
+        ) : null}
+        {a.type === "steps" ? <StepsInput view={a} id={uid} rules={rules} onChange={setRules} disabled={locked || working_ || view.state.solved} /> : null}
+        {a.type === "expression" ? (
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor={`${uid}-expr`} className="text-sm font-semibold text-ink">
+              Your expression
+            </label>
+            <div className="flex flex-wrap items-center gap-2">
+              {a.lhs ? <span className="text-base text-ink">{a.lhs}</span> : null}
+              <input
+                id={`${uid}-expr`}
+                value={expression}
+                onChange={(e) => setExpression(e.target.value)}
+                disabled={locked || working_ || view.state.solved}
+                autoComplete="off"
+                spellCheck={false}
+                className={clsx(inputClasses, "h-11 max-w-md flex-1 font-mono")}
+              />
+            </div>
+            <p className="text-xs text-ink-muted">
+              Type <code className="font-mono">*</code> to multiply, <code className="font-mono">/</code> to divide,{" "}
+              <code className="font-mono">^</code> or <code className="font-mono">**</code> for a power, and functions such as{" "}
+              <code className="font-mono">sqrt( )</code> for a square root.
+              {a.symbols.length ? ` Symbols: ${a.symbols.map((s) => s.name).join(", ")}.` : ""}
+            </p>
+            {exprResult?.latex ? (
+              <p className="flex flex-wrap items-baseline gap-2 rounded-md bg-inset px-3 py-2 text-sm text-ink-muted">
+                Read as: <Tex tex={exprResult.latex} className="text-base text-ink" />
+              </p>
+            ) : null}
+          </div>
         ) : null}
         {a.type === "code" ? (
-          <Button variant="secondary" onClick={() => void runOnly()} disabled={working_}>
-            Run without tests
-          </Button>
+          expanded ? (
+            <div className="flex flex-col items-start gap-3 rounded-lg border border-dashed border-rule-strong bg-inset/50 px-4 py-5">
+              <p className="text-sm text-ink-muted">This exercise is open in the full-screen editor.</p>
+              <Button variant="secondary" size="sm" onClick={() => setExpanded(false)}>
+                <CollapseIcon className="size-4" />
+                Bring it back here
+              </Button>
+            </div>
+          ) : (
+            workbench(false)
+          )
         ) : null}
-        {view.hints && tutor && view.target.mode === "lesson" ? (
-          <Button variant="ghost" onClick={() => tutor.openFor(view.key)} aria-label={view.state.solved ? "Talk it through with the tutor" : "Ask the tutor for a hint"}>
-            <HintIcon className="size-4" />
-            {view.state.solved ? "Talk it through" : view.ladderLeft === 5 ? "Hint" : `Hint (${5 - view.ladderLeft} of 5 used)`}
-          </Button>
+        {a.type === "breakit" ? (
+          <BreakitInput
+            view={a}
+            name={`${uid}-breakit`}
+            selected={breakChoice}
+            onSelect={setBreakChoice}
+            disabled={locked || working_}
+            result={breakResult}
+          />
         ) : null}
-        {canMoveOn ? (
-          <Button variant="ghost" onClick={skip} disabled={working_}>
-            Move on for now
-          </Button>
+        {a.type === "text" ? (
+          <div className="flex flex-col gap-3">
+            <div className="rounded-lg border border-rule bg-inset/50 px-4 py-3 text-sm text-ink">
+              <p className="mb-1.5 font-semibold">What a good answer shows</p>
+              <ul className="flex list-disc flex-col gap-1 pl-5">
+                {a.rubric.map((r) => (
+                  <li key={r.id}>{r.criterion}</li>
+                ))}
+              </ul>
+            </div>
+            <label htmlFor={`${uid}-text`} className="text-sm font-semibold text-ink">
+              Your answer
+            </label>
+            <textarea
+              id={`${uid}-text`}
+              rows={8}
+              value={text}
+              onChange={(e) => {
+                setText(e.target.value);
+                writeDraft(view.key, e.target.value);
+              }}
+              disabled={working_}
+              className={clsx(inputClasses, "resize-y py-3 font-serif text-lg leading-8")}
+            />
+            <div className="flex items-center gap-3">
+              <span aria-hidden="true" className="flex h-1 max-w-48 flex-1 overflow-hidden rounded-full bg-inset">
+                <span
+                  className={clsx("h-full rounded-full", words > a.maxWords ? "bg-incorrect" : words >= a.minWords ? "bg-correct" : "bg-accent")}
+                  style={{ width: `${Math.min(100, (100 * words) / a.maxWords)}%` }}
+                />
+              </span>
+              <p className={clsx("tabular text-xs", words > a.maxWords ? "text-incorrect" : "text-ink-muted")}>
+                {words} words; between {a.minWords} and {a.maxWords}.
+              </p>
+            </div>
+          </div>
         ) : null}
-        {busy ? (
-          <p className="text-sm text-ink-muted" role="status">
-            {busy}
-          </p>
-        ) : pending ? (
-          <p className="text-sm text-ink-muted" role="status">
-            Saving
-          </p>
+
+        {view.asksConfidence && !locked && !done ? (
+          <ConfidenceSlider id={`${uid}-confidence`} value={confidence} onChange={setConfidence} disabled={working_} />
+        ) : null}
+
+        {errorNotice}
+        {outcomeNotice}
+
+        {grading ? (
+          <div className="flex flex-col gap-3">
+            <Notice tone={grading.passed ? "correct" : "incorrect"} title={grading.passed ? "Meets every point" : "Not yet"} role="status">
+              <div className="[&_p+p]:mt-2" dangerouslySetInnerHTML={{ __html: grading.feedbackHtml }} />
+            </Notice>
+            {a.type === "text" ? (
+              <ul className="flex flex-col gap-1.5 text-sm">
+                {a.rubric.map((r) => {
+                  const c = grading.criteria.find((x) => x.id === r.id);
+                  return (
+                    <li key={r.id} className="flex gap-2">
+                      <span className={clsx("shrink-0 font-semibold", c?.met ? "text-correct" : "text-incorrect")}>{c?.met ? "Shown:" : "Not yet:"}</span>
+                      <span className="text-ink">{r.criterion}</span>
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : null}
+            <div className="rounded-lg border border-hint/30 bg-hint-soft px-4 py-3 text-sm">
+              <p className="mb-1 text-xs font-semibold text-hint">A curious beginner asks</p>
+              <div dangerouslySetInnerHTML={{ __html: grading.questionHtml }} />
+            </div>
+          </div>
+        ) : null}
+
+        {view.reveal ? (
+          <div className="rounded-lg border border-rule bg-inset/60 px-4 py-4 sm:px-5">
+            <p className="mb-2 text-xs font-semibold tracking-wide text-ink-muted uppercase">
+              {view.state.solved || view.state.correct ? "Why" : "The answer, and why"}
+            </p>
+            <div className="prose-derive max-w-none text-base">{view.reveal}</div>
+          </div>
         ) : null}
       </div>
 
-      {error ? (
-        <Notice tone="warning" title="Check" role="alert">
-          {error}
-        </Notice>
-      ) : null}
-
-      {a.type === "code" && run ? (
-        run.tests.length > 0 ? (
-          <TestResults result={run} />
-        ) : (
-          <div className="flex flex-col gap-2">
-            {run.error ? <ErrorLine error={run.error} /> : null}
-            <Output text={run.output || (run.error ? "" : "(nothing printed)")} />
-          </div>
-        )
-      ) : null}
-
-      {shown && a.type !== "text" ? (
-        <Notice tone={shown.correct ? "correct" : "incorrect"} title={shown.correct ? "Correct" : oneShot ? "Not this time" : "Not yet"} role="status">
-          {shown.correct
-            ? view.kind === "estimate" && shown.ratio
-              ? `Within range: your estimate is ${formatRatio(shown.ratio)} the answer.`
-              : a.type === "code"
-                ? "Every test passes."
-                : null
-            : failMessage
-              ? <MathText text={failMessage} />
-              : oneShot
-                ? null
-                : a.type === "code"
-                  ? "Read the message under the first failing test, change that line, and run the tests again."
-                  : "Look again, or ask for a hint."}
-        </Notice>
-      ) : null}
-
-      {grading ? (
-        <div className="flex flex-col gap-3">
-          <Notice tone={grading.passed ? "correct" : "incorrect"} title={grading.passed ? "Meets every point" : "Not yet"} role="status">
-            <div className="[&_p+p]:mt-2" dangerouslySetInnerHTML={{ __html: grading.feedbackHtml }} />
-          </Notice>
+      {a.type === "code" && !hintButton && !canMoveOn ? null : (
+        <footer className="flex flex-wrap items-center gap-2 border-t border-rule bg-inset/30 px-4 py-3 sm:px-5">
           {a.type === "text" ? (
-            <ul className="flex flex-col gap-1 text-sm">
-              {a.rubric.map((r) => {
-                const c = grading.criteria.find((x) => x.id === r.id);
-                return (
-                  <li key={r.id} className={clsx("flex gap-2", c?.met ? "text-correct" : "text-incorrect")}>
-                    <span className="font-semibold">{c?.met ? "Shown:" : "Not yet:"}</span>
-                    <span className="text-ink">{r.criterion}</span>
-                  </li>
-                );
-              })}
-            </ul>
+            <Button onClick={() => void submitText()} disabled={working_ || words < a.minWords || words > a.maxWords}>
+              {view.state.attempts > 0 ? "Submit again" : "Submit"}
+            </Button>
+          ) : a.type !== "code" && !locked && !view.state.solved ? (
+            <Button onClick={() => void check()} disabled={working_}>
+              {a.type === "breakit" ? "Run it and see" : "Check"}
+            </Button>
           ) : null}
-          <div className="rounded-md border border-hint/40 bg-hint-soft px-3 py-2 text-sm">
-            <p className="mb-1 text-xs font-semibold text-hint">A curious beginner asks</p>
-            <div dangerouslySetInnerHTML={{ __html: grading.questionHtml }} />
-          </div>
-        </div>
-      ) : null}
+          {hintButton}
+          {canMoveOn ? (
+            <Button variant="ghost" onClick={skip} disabled={working_}>
+              Move on for now
+            </Button>
+          ) : null}
+          {a.type !== "code" && (busy || pending) ? (
+            <p className="text-sm text-ink-muted" role="status">
+              {busy ?? "Saving"}
+            </p>
+          ) : null}
+        </footer>
+      )}
 
-      {view.reveal ? (
-        <div className="rounded-md border border-rule bg-inset px-4 py-3">
-          <p className="mb-1 text-xs font-semibold tracking-wide text-ink-muted uppercase">
-            {view.state.solved || view.state.correct ? "Why" : "The answer, and why"}
-          </p>
-          <div className="prose-derive max-w-none text-base">{view.reveal}</div>
-        </div>
+      {a.type === "code" ? (
+        <Dialog.Root open={expanded} onOpenChange={setExpanded}>
+          <Dialog.Portal>
+            <Dialog.Content aria-describedby={undefined} className="fixed inset-0 z-50 flex flex-col bg-paper font-sans">
+              <div className="flex h-14 shrink-0 items-center justify-between gap-3 border-b border-rule bg-surface px-3 sm:px-4">
+                <Dialog.Title className="flex min-w-0 items-center gap-3">
+                  <span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-accent-soft text-accent">
+                    <KindIcon className="size-4" />
+                  </span>
+                  <span className="flex min-w-0 flex-col">
+                    <span className="text-xs font-semibold text-ink-muted">{KIND_LABELS[view.kind]}</span>
+                    <span className="truncate text-sm font-semibold text-ink">{heading}</span>
+                  </span>
+                </Dialog.Title>
+                <div className="flex shrink-0 items-center gap-2">
+                  <StateBadge view={view} />
+                  <Dialog.Close asChild>
+                    <Button variant="secondary" size="sm">
+                      <CollapseIcon className="size-4" />
+                      <span className="hidden sm:inline">Back to the lesson</span>
+                      <span className="sr-only sm:hidden">Back to the lesson</span>
+                    </Button>
+                  </Dialog.Close>
+                </div>
+              </div>
+              <div className="grid min-h-0 flex-1 grid-rows-[minmax(0,2fr)_minmax(0,3fr)] lg:grid-cols-[minmax(22rem,30rem)_minmax(0,1fr)] lg:grid-rows-1">
+                <section aria-label="Instructions" className="flex min-h-0 flex-col overflow-y-auto border-b border-rule bg-surface lg:border-r lg:border-b-0">
+                  <div className="flex flex-col gap-5 px-5 py-5">
+                    <p className="text-xs font-semibold tracking-wide text-ink-muted uppercase">Instructions</p>
+                    <div className="prose-derive max-w-none text-base [&_.katex]:text-[1.05em]">{view.prompt}</div>
+                    {errorNotice}
+                    {outcomeNotice}
+                    {canMoveOn ? (
+                      <div>
+                        <Button variant="ghost" size="sm" onClick={skip} disabled={working_}>
+                          Move on for now
+                        </Button>
+                      </div>
+                    ) : null}
+                  </div>
+                  {view.hints && tutor && view.target.mode === "lesson" ? (
+                    <div className="mt-auto border-t border-rule bg-inset/40 px-5 py-4">
+                      <TutorThread forKey={view.key} />
+                    </div>
+                  ) : null}
+                </section>
+                <div className="min-h-0 p-2 sm:p-4">{expanded ? workbench(true) : null}</div>
+              </div>
+            </Dialog.Content>
+          </Dialog.Portal>
+        </Dialog.Root>
       ) : null}
     </section>
   );

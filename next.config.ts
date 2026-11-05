@@ -29,9 +29,15 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // The development badge sits over the phone tab bar.
+  devIndicators: false,
   // Lesson content is read from the repository at build and request time.
   outputFileTracingIncludes: {
     "/**": ["./content/**/*"],
+  },
+  async redirects() {
+    // The Map became the Curriculum, with a page for each course.
+    return [{ source: "/map", destination: "/curriculum", permanent: true }];
   },
   async headers() {
     return [

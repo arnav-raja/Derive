@@ -5,7 +5,10 @@ import { z } from "zod";
 
 import { getStore } from "@/lib/auth";
 
-export type SettingsFormState = { error?: string; saved?: boolean } | null;
+export type SettingsField = "displayName" | "weeklyHours" | "dailyTutorBudgetUsd" | "monthlyComputeBudgetUsd";
+
+/** A failed save names the field at fault, so the form can mark it. */
+export type SettingsFormState = { error?: string; field?: SettingsField; saved?: boolean } | null;
 
 const settings = z.object({
   displayName: z.string().trim().max(80),
@@ -33,7 +36,14 @@ export async function saveSettings(
     dailyTutorBudgetUsd: formData.get("dailyTutorBudgetUsd"),
     monthlyComputeBudgetUsd: formData.get("monthlyComputeBudgetUsd"),
   });
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Check the values." };
+  if (!parsed.success) {
+    const issue = parsed.error.issues[0];
+    const field = issue?.path[0];
+    return {
+      error: issue?.message ?? "Check the values.",
+      field: typeof field === "string" && field in settings.shape ? (field as SettingsField) : undefined,
+    };
+  }
   const store = await getStore();
   await store.updateLearner({
     displayName: parsed.data.displayName || null,

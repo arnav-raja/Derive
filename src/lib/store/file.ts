@@ -5,6 +5,7 @@ import path from "node:path";
 
 import {
   StoreError,
+  type ActivityPoint,
   type Attempt,
   type AttemptInput,
   type AttemptQuery,
@@ -244,6 +245,11 @@ export class FileStore implements Store {
         .sort((a, b) => b.createdAt.localeCompare(a.createdAt) || b.id - a.id);
       return query.limit ? rows.slice(0, query.limit) : rows;
     });
+  }
+
+  async activity(since: string): Promise<ActivityPoint[]> {
+    const rows = await this.attempts({ since });
+    return rows.map((a) => ({ createdAt: a.createdAt, kind: a.kind, correct: a.correct }));
   }
 
   async saveExplanation(input: ExplanationInput): Promise<Explanation> {
