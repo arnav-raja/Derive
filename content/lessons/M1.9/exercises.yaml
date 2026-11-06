@@ -1,0 +1,1457 @@
+exercises:
+  # Puzzle ---------------------------------------------------------------------
+  - id: puzzle-tiles
+    phase: puzzle
+    kind: predict
+    concept: M1.9/induction
+    title: A grid with one square cut out
+    prompt: >-
+      A grid 1,024 squares wide and 1,024 squares high has one square cut out, anywhere at all. Can
+      tiles of three squares, each a 2 by 2 block less one square, cover every square that is
+      left, with no overlaps and nothing over the edge?
+    answer:
+      type: choice
+      options:
+        - { id: corner, label: 'Only when the cut square is at one of the four corners of the grid' }
+        - { id: never, label: 'Never: wherever the cut square is, some squares are left over' }
+        - { id: search, label: 'No one can know without a computer trying all 1,048,576 places for the cut square' }
+        - { id: always, label: 'Yes, wherever the cut square is' }
+      correct: [always]
+    explanation: >-
+      The count allows it, since the 1,048,575 squares left are $3 \times 349{,}525$, and the
+      Explore phase proves that the tiles always fit, without trying a single grid of that size.
+
+  # Recall ---------------------------------------------------------------------
+  - id: recall-sigma-last
+    phase: recall
+    kind: recall
+    concept: M1.6/sigma-notation
+    prompt: Which of these is equal to $\sum_{i=1}^{n+1} i^3$ for every whole number $n$?
+    answer:
+      type: choice
+      options:
+        - { id: last, label: '$\sum_{i=1}^{n} i^3 + (n + 1)^3$' }
+        - { id: shift, label: '$\sum_{i=1}^{n} (i + 1)^3$' }
+        - { id: plus-one, label: '$\sum_{i=1}^{n} i^3 + 1$' }
+        - { id: split, label: '$\sum_{i=1}^{n} i^3 + n^3 + 1$' }
+      correct: [last]
+    explanation: >-
+      The sum to $n + 1$ adds the same terms as the sum to $n$, and one more, the last:
+      $(n + 1)^3$. $\sum_{i=1}^{n} (i + 1)^3$ runs from $2^3$ to $(n + 1)^3$, so it leaves out
+      $1^3$, and $(n + 1)^3$ is not $n^3 + 1$: at $n = 1$ it is 8, not 2.
+
+  - id: recall-triangle
+    phase: recall
+    kind: recall
+    concept: M1.6/arithmetic-series
+    prompt: What is $1 + 2 + 3 + \dots + 200$?
+    answer: { type: number, value: 20100, tolerance: { abs: 0 } }
+    explanation: >-
+      Pair the first number with the last, $1 + 200 = 201$, the second with the second last, and
+      so on: 100 pairs of 201, which is $20{,}100$. The formula $\frac{n(n + 1)}{2}$, with
+      $n = 200$, gives the same.
+
+  - id: recall-expand
+    phase: recall
+    kind: recall
+    concept: M1.2/equivalence
+    prompt: Which of these is equal to $(k + 2)(2k + 3)$ for every number $k$?
+    answer:
+      type: choice
+      options:
+        - { id: no-middle, label: '$2k^2 + 6$' }
+        - { id: five, label: '$2k^2 + 5k + 6$' }
+        - { id: right, label: '$2k^2 + 7k + 6$' }
+        - { id: five-const, label: '$2k^2 + 7k + 5$' }
+      correct: [right]
+    explanation: >-
+      Multiply every term of one bracket by every term of the other:
+      $(k + 2)(2k + 3) = 2k^2 + 3k + 4k + 6 = 2k^2 + 7k + 6$. A check at $k = 1$: $3 \times 5 = 15$,
+      and $2 + 7 + 6 = 15$.
+
+  - id: recall-trust
+    phase: recall
+    kind: recall
+    concept: E1.5/base-and-recursive-case
+    prompt: E1.5 trusted a recursive function, such as `total`, without following every call. What did it check?
+    answer:
+      type: choice
+      options:
+        - { id: checks, label: 'Each call moves nearer a base case, the base case is right, and each recursive case is right if the smaller calls are' }
+        - { id: three-lists, label: 'It gives the right answer for three lists of different lengths, each worked out by hand beforehand' }
+        - { id: no-error, label: 'Its base case is right, and Python never stops it with `RecursionError`, even for a very long list' }
+        - { id: trace, label: 'Every call, followed by hand all the way down to the base case and back up, gives the right answer each time' }
+      correct: [checks]
+    explanation: >-
+      Three checks: each call moves nearer a base case, so every chain of calls ends; the base case
+      is right; and the recursive case is right on the assumption that the smaller calls are right.
+      Lists of a few lengths prove nothing about the others, and following every call by hand is
+      the work that the checks save.
+
+  - id: recall-contradiction
+    phase: recall
+    kind: recall
+    concept: M1.8/contradiction
+    prompt: How does a proof by contradiction of a claim begin?
+    answer:
+      type: choice
+      options:
+        - { id: cases, label: 'By checking the claim in its first few cases' }
+        - { id: suppose-false, label: 'By supposing that the claim is false' }
+        - { id: converse, label: 'By supposing that the converse of the claim is true' }
+        - { id: contrapositive, label: 'By proving the contrapositive of the claim instead' }
+      correct: [suppose-false]
+    explanation: >-
+      It supposes that the claim is false, and reasons until some statement and its denial are
+      both true. Every step after the supposition was valid, so the supposition is to blame, and
+      the claim is true. Proving the contrapositive is a different method, which never supposes
+      that the claim itself is false.
+
+  # Explore --------------------------------------------------------------------
+  - id: explore-centre-tile
+    phase: explore
+    kind: predict
+    concept: M1.9/induction
+    title: Where the first tile goes
+    prompt: >-
+      Suppose that every grid 4 by 4 with one square cut out can be covered, wherever the cut is.
+      Now take a grid 8 by 8 with its cut square in the top right quarter. Where should one tile
+      go, so that the supposition covers everything that is left?
+    answer:
+      type: choice
+      options:
+        - { id: far-corner, label: 'In the bottom left corner of the grid, as far as it can be from the cut square' }
+        - { id: centre, label: 'Across the centre, with one square in each of the three quarters without the cut square' }
+        - { id: next-to-cut, label: 'In the top right quarter, beside the cut square, to fill in round it first' }
+        - { id: anywhere, label: 'Anywhere at all, since the 60 squares that are left are a multiple of 3 wherever it goes' }
+      correct: [centre]
+    explanation: >-
+      The tile across the centre takes one square from each of the three whole quarters, so each
+      of the four quarters is a grid 4 by 4 with one square gone, and the claim for 4 by 4 covers
+      each of them. A tile in a corner, or beside the cut square, leaves at least two quarters
+      whole, and a whole quarter has 16 squares, which is not a multiple of 3. Counting the 60
+      squares left cannot tell these places apart.
+    review:
+      variants:
+        - prompt: A grid 16 by 16 has its cut square in the bottom left quarter. Once the tile across the centre is placed, what is left to cover?
+          answer:
+            type: choice
+            options:
+              - { id: four-gone, label: 'Four grids 8 by 8, each with one square cut out or covered' }
+              - { id: three-whole, label: 'Four grids 8 by 8, three of them whole' }
+              - { id: three-gone, label: 'Three grids 8 by 8 with one square gone, and one whole grid 8 by 8' }
+            correct: [four-gone]
+          explanation: >-
+            The centre tile takes one square from each of the three quarters without the cut square,
+            and the fourth quarter has the cut square, so each quarter is a grid 8 by 8 with one
+            square gone: the same puzzle, half as wide.
+        - prompt: The argument covers each grid $2^{k+1}$ squares wide using the claim for grids $2^k$ wide. From which grid does the chain of claims start?
+          answer:
+            type: choice
+            options:
+              - { id: big, label: 'The grid 1,024 wide, working down' }
+              - { id: four, label: 'A grid 4 by 4, the first that needs more than one tile' }
+              - { id: two, label: 'A grid 2 by 2 with one square cut out, which is one tile' }
+            correct: [two]
+          explanation: >-
+            The chain starts from the smallest grid, 2 by 2 less one square, which one tile covers
+            exactly. Each step doubles the width, so nine steps reach 1,024, and the chain goes on
+            through every power of 2 after it.
+
+  - id: explore-what-to-show
+    phase: explore
+    kind: predict
+    concept: M1.9/induction
+    title: What the step must show
+    prompt: >-
+      $P(n)$ is the claim $1 + 3 + 5 + \dots + (2n - 1) = n^2$, and its base case, $P(1)$, is
+      true. To prove $P(n)$ for every whole number $n \ge 1$ by induction, what must the
+      inductive step show?
+    answer:
+      type: choice
+      options:
+        - { id: every-n, label: 'That $P(n)$ is true for every $n$, starting from the base case' }
+        - { id: big-k, label: 'That $P(k)$ is true for a large $k$ as well, such as $k = 1{,}000$' }
+        - { id: step, label: 'That for every $k \ge 1$, if $P(k)$ is true, then $P(k + 1)$ is true' }
+        - { id: one-step, label: 'That $P(2)$ is true, using $P(1)$' }
+      correct: [step]
+    explanation: >-
+      The step proves "if $P(k)$, then $P(k + 1)$" for every $k$ from the base case up, with $k$
+      standing for any of them, as a letter does in M1.8's proofs. Then $P(1)$ gives $P(2)$, $P(2)$
+      gives $P(3)$, and so on. Assuming $P(n)$ for every $n$ assumes the claim itself, and one or
+      two more cases leave the rest unproved.
+    placement: true
+    review:
+      variants:
+        - prompt: To prove by induction that $2^n > n$ for every whole number $n \ge 1$, which two things must be proved?
+          answer:
+            type: choice
+            options:
+              - { id: right, label: '$2^1 > 1$, and for every $k \ge 1$, if $2^k > k$ then $2^{k+1} > k + 1$' }
+              - { id: two-cases, label: '$2^1 > 1$ and $2^2 > 2$' }
+              - { id: backwards, label: '$2^1 > 1$, and for every $k \ge 1$, if $2^{k+1} > k + 1$ then $2^k > k$' }
+            correct: [right]
+          explanation: >-
+            A base case and a step that runs forward: $2^1 = 2 > 1$, and if $2^k > k$, then
+            $2^{k+1} = 2 \times 2^k > 2k \ge k + 1$. Two cases prove only two cases, and a step that
+            runs back from $k + 1$ to $k$ carries nothing forward from the base case.
+        - prompt: In the inductive step for $1 + 3 + \dots + (2n - 1) = n^2$, what may the proof assume?
+          answer:
+            type: choice
+            options:
+              - { id: every-n, label: 'That $1 + 3 + \dots + (2n - 1) = n^2$ for every whole number $n$ at once' }
+              - { id: one-k, label: 'That $1 + 3 + \dots + (2k - 1) = k^2$, for the one $k$ it starts from' }
+              - { id: next, label: 'That $1 + 3 + \dots + (2k + 1) = (k + 1)^2$, for the $k$ it starts from' }
+            correct: [one-k]
+          explanation: >-
+            The step assumes the claim for one $k$, its inductive hypothesis, and proves it for
+            $k + 1$. Assuming it for every $n$ assumes what is to be proved, and the third choice is
+            $P(k + 1)$, the very thing that the step must show.
+        - prompt: A claim is proved for $n = 5$, and the step from $k$ to $k + 1$ is proved for every $k \ge 5$. For which $n$ does the claim follow?
+          answer:
+            type: choice
+            options:
+              - { id: all, label: 'For every whole number $n \ge 1$' }
+              - { id: from-five, label: 'For every whole number $n \ge 5$' }
+              - { id: two, label: 'For $n = 5$ and $n = 6$ only' }
+            correct: [from-five]
+          explanation: >-
+            The chain starts at the base case, $n = 5$, and each step reaches one further, so it
+            covers $5, 6, 7, \dots$, every $n \ge 5$. Nothing reaches the cases below 5, which may be
+            false, as $2^n > n^2$ is at $n = 2$, 3 and 4, though it is true from 5 up.
+
+  - id: explore-no-base
+    phase: explore
+    kind: predict
+    concept: M1.9/induction
+    title: Odd or even
+    prompt: For which whole numbers $n \ge 1$ is $n^2 + n$ odd?
+    answer:
+      type: choice
+      options:
+        - { id: every, label: 'For every $n$, since the step holds for every $k$' }
+        - { id: large, label: 'For every $n$ from some point on, once the step has carried it far enough' }
+        - { id: odd-n, label: 'For odd $n$ only' }
+        - { id: none, label: 'For no $n$ at all' }
+      correct: [none]
+    explanation: >-
+      $n^2 + n = n(n + 1)$, and of two neighbouring whole numbers one is even, so it is even for
+      every $n$, as M1.8 proved. The step is right, but it only carries oddness forward from a case
+      that has it, and no case has it: $1^2 + 1 = 2$. Without a base case, the chain hangs from
+      nothing.
+    review:
+      variants:
+        - prompt: Every step of an induction holds, but its base case is false. What follows about the claim?
+          answer:
+            type: choice
+            options:
+              - { id: nothing, label: 'Only that it is false at the base case; other cases may be true or false' }
+              - { id: false-all, label: 'It is false for every $n$, since the chain starts from a false case' }
+              - { id: true-after, label: 'It is true for every $n$ after the base case, since every step holds' }
+            correct: [nothing]
+          explanation: >-
+            A false base case leaves the induction with nothing to carry. The claim is false there,
+            and may be true or false elsewhere: $n^2 > 2n$ is false at $n = 1$ and $n = 2$, its step
+            holds for every $k \ge 1$, and it is true from $n = 3$ on, as a base case at 3 proves.
+        - prompt: >-
+            A claim says that $5^n + 2$ is a multiple of 4 for every whole number $n \ge 1$. Its step
+            is proved: if $5^k + 2 = 4m$, then $5^{k+1} + 2 = 5(5^k + 2) - 8 = 20m - 8$, a multiple
+            of 4. Is the claim true?
+          answer:
+            type: choice
+            options:
+              - { id: yes, label: 'Yes: the step holds for every $k$, so each case follows from the one before' }
+              - { id: no-base, label: 'No: $5^1 + 2 = 7$ is not a multiple of 4, so nothing starts the chain' }
+              - { id: from-two, label: 'Only for $n$ from 2 up, the cases that the step reaches' }
+            correct: [no-base]
+          explanation: >-
+            $5^n$ leaves a remainder of 1 when divided by 4, so $5^n + 2$ leaves 3, and is never a
+            multiple of 4. The step is valid, but nothing starts the chain. $5^n + 3$, whose base
+            case $5 + 3 = 8$ holds, is a multiple of 4 for every $n$.
+
+  - id: explore-all-same
+    phase: explore
+    kind: predict
+    concept: M1.9/induction
+    title: All the same answer
+    prompt: The claim is false, since two models can answer the same question differently. Where does the argument fail?
+    answer:
+      type: choice
+      options:
+        - { id: base, label: 'At the base case: one model on its own proves nothing' }
+        - { id: one-two, label: 'At the step from 1 model to 2, where the two groups have no model in common' }
+        - { id: two-three, label: 'At the step from 2 models to 3, where the groups have only one model in common' }
+        - { id: large, label: 'Only at large $k$, where the groups are too large to compare' }
+      correct: [one-two]
+    explanation: >-
+      With $k + 1 = 2$, the first group is model 1 and the second is model 2, and no model is in
+      both, so nothing ties their answers together. From 2 models to 3 the groups share model 2,
+      which is enough, and every step after that holds. One broken link is enough: the chain from 1
+      never reaches 2, or anything after it.
+    review:
+      variants:
+        - prompt: An induction proves $P(1)$, and proves that $P(k)$ gives $P(k + 1)$ for every $k \ge 2$. What does it prove?
+          answer:
+            type: choice
+            options:
+              - { id: all, label: '$P(n)$ for every $n \ge 1$, since every step from 2 up holds' }
+              - { id: from-two, label: '$P(n)$ for every $n \ge 2$, the cases the step covers' }
+              - { id: one, label: '$P(1)$ only, since nothing gives $P(2)$' }
+            correct: [one]
+          explanation: >-
+            The step from 1 to 2 is missing, so the chain stops at $P(1)$. The steps from 2 up would
+            carry $P(2)$ to every later case, but nothing proves $P(2)$. That is the models argument,
+            whose step from 1 to 2 is the one that fails.
+        - prompt: In the models argument, why does the step from 2 models to 3 hold?
+          answer:
+            type: choice
+            options:
+              - { id: more, label: 'Three models are more than two, so the hypothesis about two covers them' }
+              - { id: share, label: 'Models 1 and 2 agree, models 2 and 3 agree, and model 2 is in both groups' }
+              - { id: fails, label: 'It does not: the step fails for every $k$, not only from 1 to 2' }
+            correct: [share]
+          explanation: >-
+            Each group of two agrees, by the hypothesis, and model 2 is in both, so models 1, 2 and
+            3 all give model 2's answer. The step holds for every $k \ge 2$; only the step from 1
+            to 2 fails.
+
+  - id: explore-tile-rule
+    phase: explore
+    kind: predict
+    concept: M1.9/recurrences
+    covers: [M1.9/induction]
+    title: Counting the tiles
+    prompt: How is $T(k + 1)$ found from $T(k)$?
+    answer:
+      type: choice
+      options:
+        - { id: four, label: '$T(k + 1) = 4T(k)$' }
+        - { id: two, label: '$T(k + 1) = 2T(k) + 1$' }
+        - { id: plus-four, label: '$T(k + 1) = T(k) + 4$' }
+        - { id: right, label: '$T(k + 1) = 4T(k) + 1$' }
+      correct: [right]
+    explanation: >-
+      The grid $2^{k+1}$ wide splits into four quarters $2^k$ wide, each with one square cut out
+      or covered, and each takes $T(k)$ tiles, besides the one tile across the centre:
+      $T(k + 1) = 4T(k) + 1$. Doubling the width makes four times as many squares, not twice as
+      many.
+    placement: true
+    review:
+      variants:
+        - prompt: With $T(1) = 1$ and $T(k + 1) = 4T(k) + 1$, what is $T(3)$?
+          answer: { type: number, value: 21, tolerance: { abs: 0 } }
+          explanation: >-
+            $T(2) = 4 \times 1 + 1 = 5$, and $T(3) = 4 \times 5 + 1 = 21$, which is
+            $\frac{8 \times 8 - 1}{3}$: the 63 squares of a grid 8 by 8 less one, three to a tile.
+        - prompt: A loss starts at $d_0 = 2$, and at every step it is at most 0.9 times the loss before. What does induction prove about $d_{10}$?
+          answer:
+            type: choice
+            options:
+              - { id: linear, label: '$d_{10} \le 2 - 10 \times 0.1$, which is 1' }
+              - { id: exact, label: '$d_{10} = 2 \times 0.9^{10}$ exactly' }
+              - { id: right, label: '$d_{10} \le 2 \times 0.9^{10}$, about 0.70' }
+            correct: [right]
+          explanation: >-
+            Base case: $d_0 \le 0.9^0 \times 2$. Step: if $d_k \le 0.9^k \times 2$, then
+            $d_{k+1} \le 0.9\,d_k \le 0.9^{k+1} \times 2$. So $d_{10} \le 2 \times 0.9^{10}$, about
+            0.70. The bound need not be reached, since a step may shrink the loss by more than a
+            tenth.
+        - prompt: A sequence has $a_0 = 0$ and $a_{k+1} = 2a_k + 1$. Which closed form fits its first terms and survives a proof by induction?
+          answer:
+            type: choice
+            options:
+              - { id: right, label: '$a_n = 2^n - 1$' }
+              - { id: linear, label: '$a_n = 2n - 1$' }
+              - { id: half, label: '$a_n = 2^{n-1}$' }
+            correct: [right]
+          explanation: >-
+            The first terms are 0, 1, 3, 7 and 15, each one less than a power of 2. Base case:
+            $2^0 - 1 = 0$. Step: if $a_k = 2^k - 1$, then $a_{k+1} = 2(2^k - 1) + 1 = 2^{k+1} - 1$.
+            $2n - 1$ gives $-1$ at $n = 0$, and $2^{n-1}$ gives $\frac{1}{2}$.
+
+  - id: explore-stamps
+    phase: explore
+    kind: predict
+    concept: M1.9/strong-induction
+    title: Stamps of 4 and 5 rupees
+    prompt: >-
+      The step makes $k + 1$ rupees from $k - 3$ rupees and one more stamp of 4. Which amounts must
+      be made by hand first, so that the step reaches every amount from 12 rupees up?
+    answer:
+      type: choice
+      options:
+        - { id: twelve, label: '12 alone, as in an ordinary induction' }
+        - { id: two, label: '12 and 13' }
+        - { id: four, label: '12, 13, 14 and 15' }
+        - { id: eight, label: 'Every amount from 12 to 19' }
+      correct: [four]
+    explanation: >-
+      The step for $k + 1$ leans on $k - 3$, four amounts back, so the first amount it can make is
+      16, from 12. 13, 14 and 15 would lean on 9, 10 and 11, below the start, so they need making by
+      hand: $13 = 4 + 4 + 5$, $14 = 4 + 5 + 5$ and $15 = 5 + 5 + 5$. With 12 to 15 made, every
+      amount from 16 up leans on one already made.
+    placement: true
+    review:
+      variants:
+        - prompt: A step proves $P(k + 1)$ from $P(k - 1)$, for every $k \ge 2$. How many base cases does it need, from $n = 1$?
+          answer:
+            type: choice
+            options:
+              - { id: one, label: 'One, $P(1)$' }
+              - { id: two, label: 'Two, $P(1)$ and $P(2)$' }
+              - { id: three, label: 'Three, $P(1)$, $P(2)$ and $P(3)$' }
+            correct: [two]
+          explanation: >-
+            The step reaches two cases back, so $P(1)$ gives $P(3)$, $P(5)$ and the other odd cases,
+            and without $P(2)$ the even cases are never reached. With both, every case from 3 up
+            leans on one two below it.
+        - prompt: >-
+            Every whole number from 2 up is a product of primes, where a prime counts as a product of
+            one prime. In the step of a strong induction, $k + 1$ is not prime, so $k + 1 = ab$ with
+            $a$ and $b$ each from 2 to $k$. What does the inductive hypothesis give?
+          answer:
+            type: choice
+            options:
+              - { id: k-only, label: 'That $k$ is a product of primes, which says nothing about $a$ and $b$' }
+              - { id: prime, label: 'That $a$ and $b$ are both prime' }
+              - { id: both, label: 'That $a$ and $b$ are each a product of primes, so $ab$ is one too' }
+            correct: [both]
+          explanation: >-
+            Strong induction assumes every case from 2 to $k$, and $a$ and $b$ are among them, so each
+            is a product of primes, and the two products together make $k + 1$. Ordinary induction,
+            which assumes only $k$, could not reach $a$ and $b$. They need not be prime:
+            $12 = 2 \times 6$, and 6 is $2 \times 3$.
+        - prompt: With stamps of 3 and 5 rupees, every amount from 8 rupees up can be made. The step makes $k + 1$ from $k - 2$ and one more stamp of 3. Which amounts are the base cases?
+          answer:
+            type: choice
+            options:
+              - { id: eight-fifteen, label: 'Every amount from 8 to 15' }
+              - { id: eight, label: '8 alone' }
+              - { id: three, label: '8, 9 and 10' }
+            correct: [three]
+          explanation: >-
+            The step leans three amounts back, so it needs three base cases: $8 = 3 + 5$,
+            $9 = 3 + 3 + 3$ and $10 = 5 + 5$. Then 11 comes from 8, 12 from 9, and so on for ever.
+
+  - id: explore-leaves
+    phase: explore
+    kind: predict
+    concept: M1.9/structural-induction
+    title: Numbers and operations
+    prompt: An expression has 99 operations, each a $+$ or a $\times$ that joins two parts, as in E1.5's trees. How many numbers does it have?
+    answer: { type: number, value: 100, tolerance: { abs: 0 } }
+    explanation: >-
+      One more than its operations: 100. Each operation joins two parts into one, so if the
+      expression is built from its numbers, 100 separate parts become one after 99 joins, whatever
+      the brackets.
+    placement: true
+    review:
+      variants:
+        - prompt: A sum of 64 numbers is worked out two at a time, with the brackets anywhere at all. How many additions does it take?
+          answer: { type: number, value: 63, tolerance: { abs: 0 } }
+          explanation: >-
+            Each addition joins two parts into one, so 64 numbers take 63 additions to become one
+            total, whatever the brackets: the tree of the sum has one more number than operations.
+        - prompt: An expression tree has 12 numbers at its leaves, and each operation in it joins two parts. How many operations does it have?
+          answer: { type: number, value: 11, tolerance: { abs: 0 } }
+          explanation: >-
+            A tree whose operations each join two parts has one more number than operations, so 12
+            numbers go with 11 operations.
+        - prompt: In a tree where every operation joins three parts, such as a sum of three, how many numbers does a tree with 5 operations have?
+          answer: { type: number, value: 11, tolerance: { abs: 0 } }
+          explanation: >-
+            Each operation turns three parts into one, two fewer, so the numbers $N$ and operations
+            $O$ satisfy $N - 2O = 1$, and $N = 2 \times 5 + 1 = 11$. Induction on structure proves
+            it as before: a leaf has $1 = 2 \times 0 + 1$, and a join of three trees adds their
+            numbers, and their operations and one more.
+
+  # Derive ---------------------------------------------------------------------
+  - id: derive-squares
+    phase: derive
+    kind: proof
+    concept: M1.9/induction
+    title: The sum of the squares
+    prompt: >-
+      Here is a proof by induction that $1^2 + 2^2 + \dots + n^2 = \frac{n(n + 1)(2n + 1)}{6}$
+      for every whole number $n \ge 1$. Each line follows from the lines above it. Choose the rule
+      that justifies each line. A rule may be used more than once or not at all.
+    answer:
+      type: steps
+      rules:
+        - { id: induction, name: Induction, label: 'If $P(1)$ is true, and $P(k)$ gives $P(k + 1)$ for every $k \ge 1$, then $P(n)$ is true for every $n \ge 1$.' }
+        - { id: multiply-out, name: Multiply out, label: 'Multiplying out a bracket gives an equal expression.' }
+        - { id: factorise, name: Factorise a quadratic, label: 'A quadratic, such as $k^2 + 3k + 2$, may be swapped for two brackets that multiply out to it, here $(k + 1)(k + 2)$.' }
+        - { id: pairing, name: Pair the terms, label: 'Pairing the first term with the last adds a sum whose terms go up by the same amount each time.' }
+        - { id: hypothesis, name: Inductive hypothesis, label: 'In the step, $P(k)$ may be assumed, for the one $k$ that the step starts from.' }
+        - { id: work-out, name: Work it out, label: 'Numbers can be worked out, so a statement with no letters in it can be checked directly.' }
+        - { id: last-term, name: Split off the last term, label: 'A sum to $k + 1$ is the sum to $k$ plus its last term.' }
+        - { id: factor, name: Take out a factor, label: 'Taking a common factor out of several terms gives an equal expression, as $ab + ac = a(b + c)$.' }
+        - { id: every-n, name: True for every n, label: 'The formula is true for every whole number $n$, so it is true for $n = k + 1$.' }
+      start: 'P(n):\ \sum_{i=1}^{n} i^2 = \frac{n(n + 1)(2n + 1)}{6}'
+      lines:
+        - math: 'P(1):\ 1^2 = 1 \text{ and } \frac{1 \times 2 \times 3}{6} = 1'
+          rule: work-out
+        - math: '\sum_{i=1}^{k+1} i^2 = \sum_{i=1}^{k} i^2 + (k + 1)^2'
+          rule: last-term
+        - math: '= \frac{k(k + 1)(2k + 1)}{6} + (k + 1)^2 \text{, if } P(k) \text{ is true}'
+          rule: hypothesis
+        - math: '= \frac{(k + 1)\big(k(2k + 1) + 6(k + 1)\big)}{6}'
+          rule: factor
+        - math: '= \frac{(k + 1)(2k^2 + 7k + 6)}{6}'
+          rule: multiply-out
+        - math: '= \frac{(k + 1)(k + 2)(2k + 3)}{6} \text{, which is } P(k + 1)'
+          rule: factorise
+        - math: 'P(n) \text{ is true for every whole number } n \ge 1'
+          rule: induction
+    explanation: >-
+      Line 1 is the base case, worked out. The step splits the last term off the sum, uses the
+      inductive hypothesis $P(k)$ for the sum to $k$, takes out the common factor $k + 1$,
+      multiplies out what is left, and swaps the quadratic $2k^2 + 7k + 6$ for $(k + 2)(2k + 3)$,
+      the two brackets that multiply out to it. Then induction gives every $n$. "True for every n"
+      would assume the claim being proved, and pairing fits only sums whose terms go up by the same
+      amount each time.
+
+  - id: derive-why-induction
+    phase: derive
+    kind: proof
+    concept: M1.9/induction
+    title: Why induction works
+    prompt: >-
+      Here is a proof that induction works: if $P(1)$ is true, and $P(k)$ gives $P(k + 1)$ for
+      every whole number $k \ge 1$, then $P(n)$ is true for every whole number $n \ge 1$. Choose the
+      rule that justifies each line. A rule may be used more than once or not at all.
+    answer:
+      type: steps
+      rules:
+        - { id: below, name: Below the smallest, label: 'A whole number smaller than the smallest member of a collection is not in the collection.' }
+        - { id: induction, name: Induction, label: 'If $P(1)$ is true and each $P(k)$ gives $P(k + 1)$, then $P(n)$ is true for every $n \ge 1$.' }
+        - { id: smallest, name: A smallest member, label: 'Every collection of whole numbers with at least one member has a smallest member.' }
+        - { id: contradiction, name: Contradiction, label: 'If supposing a statement leads to a statement and its denial, the supposition is false.' }
+        - { id: suppose, name: Suppose the opposite, label: 'A proof by contradiction starts by supposing that the claim is false.' }
+        - { id: cases, name: Proof by cases, label: 'A claim proved in each of several cases that together cover everything is proved.' }
+        - { id: base, name: The base case, label: '$P(1)$ is true, as given.' }
+        - { id: step, name: The step, label: 'For every $k \ge 1$, if $P(k)$ is true, then $P(k + 1)$ is true, as given.' }
+      start: '\text{Given: } P(1) \text{ is true, and } P(k) \text{ gives } P(k + 1) \text{ for every } k \ge 1.'
+      lines:
+        - math: '\text{Suppose that } P(n) \text{ is false for some whole number } n \ge 1.'
+          rule: suppose
+        - math: '\text{Of all the } n \text{ for which } P(n) \text{ is false, call the smallest } m.'
+          rule: smallest
+        - math: 'm \ne 1 \text{, so } m \ge 2.'
+          rule: base
+        - math: 'P(m - 1) \text{ is true, since } 1 \le m - 1 < m.'
+          rule: below
+        - math: 'P(m) \text{ is true, with } k = m - 1.'
+          rule: step
+        - math: 'P(m) \text{ is false and true, so } P(n) \text{ is true for every } n \ge 1.'
+          rule: contradiction
+    explanation: >-
+      The proof supposes that there is a counterexample, takes the smallest, $m$, and finds that it
+      can be neither the base case, which is true, nor a later case, since the case just below it is
+      true and the step carries that to $m$. Citing Induction would assume what the proof sets out
+      to show. The fact that induction rests on is that every collection of whole numbers with a
+      member has a smallest member.
+
+  - id: derive-fib-step
+    phase: derive
+    kind: step
+    concept: M1.9/strong-induction
+    covers: [M1.9/recurrences]
+    title: Counting the calls of fib
+    prompt: >-
+      The step may assume $C(k) = 2F(k + 1) - 1$ and $C(k - 1) = 2F(k) - 1$. Write $C(k + 1)$ in
+      terms of $a = F(k + 1)$ and $b = F(k)$.
+    answer:
+      type: expression
+      symbols:
+        - { name: a, integer: true }
+        - { name: b, integer: true }
+      lhs: 'C(k + 1) ='
+      reference: 2*a + 2*b - 1
+      accept: ['2*(a + b) - 1', '2a+2b-1', '1 + (2*a - 1) + (2*b - 1)']
+      reject: ['2*a + 2*b + 1', '2*a + 2*b - 2', '2*a + 2*b', 'a + b + 1', '2*a + 2*b - 3', '2*a + b - 1', '4*a - 1', 'a + b - 1']
+    explanation: >-
+      $C(k + 1) = 1 + C(k) + C(k - 1) = 1 + (2a - 1) + (2b - 1) = 2a + 2b - 1$. Since
+      $a + b = F(k + 1) + F(k) = F(k + 2)$, that is $2F(k + 2) - 1$, the claim for $k + 1$.
+
+  - id: derive-leaves
+    phase: derive
+    kind: proof
+    concept: M1.9/structural-induction
+    title: One more number than operations
+    prompt: >-
+      Here is a proof that every expression tree whose operations each join two parts has one more
+      number than operations: $N(t) = O(t) + 1$ for every tree $t$. Choose the rule that justifies
+      each line. A rule may be used more than once or not at all.
+    answer:
+      type: steps
+      rules:
+        - { id: structure, name: Induction on structure, label: 'A claim that holds for every single number, and holds for a tree whenever it holds for the two trees that the tree joins, holds for every tree.' }
+        - { id: substitute, name: Substitute, label: 'A letter, or a name such as $N(u)$, may be replaced by what it equals.' }
+        - { id: triangle, name: Triangle numbers, label: '$1 + 2 + \dots + n = \frac{n(n + 1)}{2}$.' }
+        - { id: leaf, name: A single number, label: 'A tree that is a single number has one number in it and no operations.' }
+        - { id: branches, name: The two smaller trees, label: 'In the step, the claim may be assumed for the two smaller trees, $u$ and $v$, that the top operation joins.' }
+        - { id: numbers, name: Count the numbers, label: 'The numbers in a tree that joins $u$ and $v$ are the numbers of $u$ and the numbers of $v$.' }
+        - { id: depth, name: Depth, label: 'The depth of a tree is one more than the depth of the deeper of the two trees it joins.' }
+        - { id: operations, name: Count the operations, label: 'The operations in a tree that joins $u$ and $v$ are its top one, those of $u$ and those of $v$.' }
+      start: '\text{Claim: } N(t) = O(t) + 1 \text{ for every tree } t\text{, with } N \text{ numbers and } O \text{ operations.}'
+      lines:
+        - math: 'N = 1 \text{ and } O = 0 \text{ for a single number, and } 1 = 0 + 1.'
+          rule: leaf
+        - math: '\text{For a tree } t \text{ that joins } u \text{ and } v\text{: } N(t) = N(u) + N(v)'
+          rule: numbers
+        - math: 'O(t) = 1 + O(u) + O(v)'
+          rule: operations
+        - math: 'N(u) = O(u) + 1 \text{ and } N(v) = O(v) + 1'
+          rule: branches
+        - math: 'N(t) = O(u) + 1 + O(v) + 1 = O(t) + 1'
+          rule: substitute
+        - math: 'N(t) = O(t) + 1 \text{ for every tree } t'
+          rule: structure
+    explanation: >-
+      The single numbers are the base case. A larger tree joins two smaller ones, $u$ and $v$: its
+      numbers are theirs, its operations are theirs and one more, the claim may be assumed for $u$
+      and $v$, and substituting gives the claim for the larger tree. Then induction on structure
+      gives every tree. Depth and the triangle numbers are never needed.
+
+  - id: derive-ema
+    phase: derive
+    kind: step
+    concept: M1.9/recurrences
+    covers: [M1.9/induction]
+    title: The running average, by induction
+    prompt: >-
+      The step supposes that $m_k = (1 - \beta^k)g$. Put that into $m_{k+1} = \beta m_k + (1 - \beta)g$,
+      and write $m_{k+1}$ as simply as you can, in terms of $\beta$, $k$ and $g$.
+    answer:
+      type: expression
+      symbols:
+        - { name: beta, positive: true }
+        - { name: k, integer: true }
+        - { name: g, positive: true }
+      lhs: 'm_{k+1} ='
+      reference: (1 - beta**(k + 1))*g
+      accept: ['g - g*beta**(k + 1)', '(1-beta^(k+1))g', 'g*(1 - beta*beta**k)', '(1 - β^(k + 1))g', 'g − gβ^(k+1)']
+      reject: ['(1 - beta**k)*g', '(1 - beta**(k - 1))*g', 'beta*(1 - beta**k)*g', '(1 - beta)*g', '(beta - beta**(k + 1))*g', '1 - beta**(k + 1)', 'beta*(1 - beta**k)*g + (1 - beta)*g']
+      form:
+        maxOps: 5
+        message: That is the right value, but it can be simpler. Multiply out, and collect what multiplies $g$.
+    explanation: >-
+      $m_{k+1} = \beta(1 - \beta^k)g + (1 - \beta)g = (\beta - \beta^{k+1} + 1 - \beta)g = (1 - \beta^{k+1})g$.
+      The two $\beta$ terms cancel, and $\beta \times \beta^k = \beta^{k+1}$, so the formula for
+      $k$ gives the formula for $k + 1$.
+
+  - id: derive-bernoulli
+    phase: derive
+    kind: proof
+    concept: M1.9/induction
+    title: A power above a line
+    prompt: >-
+      Prove that $(1 + h)^n \ge 1 + nh$ for every whole number $n \ge 0$ and every number
+      $h \ge -1$. Use induction on $n$, say where the step uses $h \ge -1$, and justify each step.
+    answer:
+      type: text
+      rubric:
+        - { id: base, criterion: 'Proves the base case, $n = 0$. A proof that starts at $n = 1$ must check $n = 0$ as well.' }
+        - { id: hypothesis, criterion: 'States the inductive hypothesis for one whole number $k$, and what the step must show for $k + 1$.' }
+        - { id: multiply, criterion: 'Gets from the hypothesis to a bound on $(1 + h)^{k+1}$, names the fact about inequalities that this uses, and says where and why $h \ge -1$ is needed, in one argument or in cases.' }
+        - { id: expand, criterion: 'Reaches $1 + (k + 1)h$ from that bound, and justifies each inequality on the way, including leaving out any term.' }
+        - { id: conclude, criterion: 'Concludes the claim for $k + 1$, and so, by induction, for every $n \ge 0$.' }
+      reference: >-
+        Fix a number $h \ge -1$ and prove the claim for every whole number $n \ge 0$ by induction on
+        $n$. Base case: at $n = 0$, $(1 + h)^0 = 1$ and $1 + 0 \times h = 1$, and $1 \ge 1$. Step:
+        suppose that $(1 + h)^k \ge 1 + kh$ for some whole number $k \ge 0$; the step must show
+        $(1 + h)^{k+1} \ge 1 + (k + 1)h$. Since $h \ge -1$, $1 + h \ge 0$, and multiplying both
+        sides of an inequality by a number that is at least 0 keeps it, so
+        $(1 + h)^{k+1} = (1 + h)^k(1 + h) \ge (1 + kh)(1 + h)$. Multiplying out,
+        $(1 + kh)(1 + h) = 1 + h + kh + kh^2 = 1 + (k + 1)h + kh^2$, and $kh^2 \ge 0$, since $k \ge 0$
+        and a square is never negative. So $(1 + h)^{k+1} \ge 1 + (k + 1)h$, which is the claim for
+        $k + 1$. By induction, the claim holds for every $n \ge 0$. Without $h \ge -1$, the
+        multiplication could turn the inequality round: at $h = -4$ and $n = 3$,
+        $(-3)^3 = -27$, which is less than $1 - 12 = -11$.
+      minWords: 40
+      maxWords: 250
+    explanation: >-
+      Base case: at $n = 0$ both sides are 1. Step: if $(1 + h)^k \ge 1 + kh$, multiply both sides
+      by $1 + h$, which keeps the inequality because $1 + h \ge 0$: that is where $h \ge -1$ is
+      needed. Then $(1 + h)^{k+1} \ge (1 + kh)(1 + h) = 1 + (k + 1)h + kh^2 \ge 1 + (k + 1)h$, since
+      $kh^2 \ge 0$. At $h = -4$ and $n = 3$ the claim fails: $(-3)^3 = -27$, less than $-11$.
+
+  # Build ----------------------------------------------------------------------
+  - id: build-tiles
+    phase: build
+    kind: build
+    concept: M1.9/induction
+    covers: [M1.9/structural-induction]
+    title: Covering the grid
+    prompt: >-
+      Replace the `pass` in `cover`, so that `cover(width, top, left, hole)` gives tiles that cover
+      every square of the block `width` squares wide whose top left square is `[top, left]`, except
+      the square `hole`. Each tile is a list of three `[row, column]` squares. For each quarter,
+      the loop should cover the quarter with the right square left out, and give the centre tile
+      its square when the quarter does not hold `hole`.
+    answer:
+      type: code
+      starter: |
+        def inside(square, top, left, width):
+            """True when square, a [row, column] list, lies in the block width squares wide
+            whose top left square is [top, left]."""
+            row = square[0]
+            column = square[1]
+            return top <= row and row < top + width and left <= column and column < left + width
+
+        def cover(width, top, left, hole):
+            """L tiles, each a list of three [row, column] squares, that cover every square
+            of the block width squares wide whose top left square is [top, left], except the
+            square hole. width is 1, 2, 4, 8 or another power of 2."""
+            if width == 1:
+                return []
+            half = width // 2
+            # The top left squares of the four quarters, and the four squares round the
+            # centre, one in each quarter, in the same order.
+            corners = [[top, left], [top, left + half], [top + half, left], [top + half, left + half]]
+            middle = [[top + half - 1, left + half - 1], [top + half - 1, left + half],
+                      [top + half, left + half - 1], [top + half, left + half]]
+            tiles = []
+            centre = []
+            for i in range(4):
+                pass
+            tiles.append(centre)
+            return tiles
+
+        print(cover(2, 0, 0, [0, 1]))
+        print(len(cover(8, 0, 0, [2, 5])))
+      tests: |
+        def grouped(v):
+            """A whole number with its digits grouped in threes, or anything else as Python shows it."""
+            return f"{v:,}" if type(v) is int else str(v)
+
+        def shown(v):
+            """v as Python shows it, cut short after 80 characters."""
+            s = repr(v)
+            return s if len(s) <= 80 else s[:79] + "…"
+
+        def is_square(s):
+            """True when s is a [row, column] list of two whole numbers."""
+            return isinstance(s, list) and len(s) == 2 and all(type(x) is int for x in s)
+
+        def problem(width, top, left, hole):
+            """What is wrong with cover(width, top, left, hole), in words, or None when it is right."""
+            call = f"cover({width}, {top}, {left}, {hole})"
+            tiles = cover(width, top, left, hole)
+            if not isinstance(tiles, list):
+                return f"{call} gives {shown(tiles)}, not a list of tiles."
+            nested = [t for t in tiles if isinstance(t, list) and any(isinstance(s, list) and not is_square(s) for s in t)]
+            empty = [t for t in tiles if t == []]
+            # At width 2, append leaves each quarter's empty list in as an item. Otherwise an empty
+            # list among the tiles is a centre tile that no quarter gave a square.
+            if nested or (width == 2 and 0 < len(empty) < len(tiles)):
+                return (f"{call} gives {shown(tiles)}: some of its items are lists of tiles, or empty lists, not tiles. "
+                        "append puts a whole list in as one item, while tiles = tiles + more joins on the tiles in more.")
+            covered = {}
+            for tile in tiles:
+                if tile == []:
+                    return f"{call} has an empty tile, []. Does each quarter that does not hold hole give the centre tile its middle square?"
+                if not (isinstance(tile, list) and all(is_square(s) for s in tile)):
+                    return f"{call} gives {shown(tiles)}, and its item {shown(tile)} is not a tile, a list of three [row, column] squares."
+                if len(tile) != 3:
+                    hint = ""
+                    if len(tile) == 4:
+                        hint = (" In each call, only the three quarters that do not hold that call's hole give the centre tile"
+                                " a square, and each of them is covered with that square left out.")
+                    return f"{call} has a tile {shown(tile)} with {len(tile)} {'square' if len(tile) == 1 else 'squares'}, not 3." + hint
+                squares = {(s[0], s[1]) for s in tile}
+                rows = {s[0] for s in squares}
+                columns = {s[1] for s in squares}
+                if len(squares) != 3 or len(rows) != 2 or len(columns) != 2 or max(rows) - min(rows) != 1 or max(columns) - min(columns) != 1:
+                    return f"{call} has a tile {tile}, whose squares do not make an L inside one 2 by 2 block."
+                for s in squares:
+                    if not (top <= s[0] < top + width and left <= s[1] < left + width):
+                        return f"{call} has a tile {tile}, which goes over the edge of the block."
+                    if s in covered:
+                        return f"{call} covers the square {list(s)} twice, with the tiles {covered[s]} and {tile}."
+                    covered[s] = tile
+            if (hole[0], hole[1]) in covered:
+                return f"{call} covers the cut square {hole}, with the tile {covered[(hole[0], hole[1])]}."
+            missed = [[r, c] for r in range(top, top + width) for c in range(left, left + width) if (r, c) not in covered and [r, c] != hole]
+            if missed:
+                return f"{call} leaves {grouped(len(missed))} {'square' if len(missed) == 1 else 'squares'} uncovered besides the cut one, such as {missed[0]}."
+            return None
+
+        def test_filled():
+            """cover still returns a list, not None."""
+            got = cover(2, 0, 0, [0, 0])
+            assert got is not None, "cover gives None. Keep the return at the end of the function."
+
+        def test_two():
+            """A grid 2 by 2 is covered by one tile, wherever its cut square is."""
+            for hole in ([0, 0], [0, 1], [1, 0], [1, 1]):
+                p = problem(2, 0, 0, hole)
+                assert p is None, p
+                n = len(cover(2, 0, 0, hole))
+                assert n == 1, f"cover(2, 0, 0, {hole}) gives {n} tiles, not 1."
+
+        def test_four():
+            """A grid 4 by 4 is covered by 5 tiles, wherever its cut square is."""
+            for r in range(4):
+                for c in range(4):
+                    p = problem(4, 0, 0, [r, c])
+                    assert p is None, p
+
+        def test_eight():
+            """A grid 8 by 8 is covered by 21 tiles, wherever its cut square is."""
+            for r in range(8):
+                for c in range(8):
+                    p = problem(8, 0, 0, [r, c])
+                    assert p is None, p
+            n = len(cover(8, 0, 0, [2, 5]))
+            assert n == 21, f"cover(8, 0, 0, [2, 5]) gives {n} tiles, not 21."
+
+        def test_elsewhere():
+            """A block whose top left square is not [0, 0] is covered inside its own edges."""
+            for hole in ([8, 16], [11, 19], [9, 18]):
+                p = problem(4, 8, 16, hole)
+                assert p is None, p
+
+        def test_sixty_four():
+            """A grid 64 by 64 is covered by 1,365 tiles, which is (4^6 - 1) / 3, with the cut square in three places."""
+            for hole in ([37, 12], [0, 63], [31, 32]):
+                p = problem(64, 0, 0, hole)
+                assert p is None, p
+            n = len(cover(64, 0, 0, [37, 12]))
+            assert n == 1365, f"cover(64, 0, 0, [37, 12]) gives {grouped(n)} tiles, not 1,365."
+      reference: |
+        def inside(square, top, left, width):
+            """True when square, a [row, column] list, lies in the block width squares wide
+            whose top left square is [top, left]."""
+            row = square[0]
+            column = square[1]
+            return top <= row and row < top + width and left <= column and column < left + width
+
+        def cover(width, top, left, hole):
+            """L tiles, each a list of three [row, column] squares, that cover every square
+            of the block width squares wide whose top left square is [top, left], except the
+            square hole. width is 1, 2, 4, 8 or another power of 2."""
+            if width == 1:
+                return []
+            half = width // 2
+            # The top left squares of the four quarters, and the four squares round the
+            # centre, one in each quarter, in the same order.
+            corners = [[top, left], [top, left + half], [top + half, left], [top + half, left + half]]
+            middle = [[top + half - 1, left + half - 1], [top + half - 1, left + half],
+                      [top + half, left + half - 1], [top + half, left + half]]
+            tiles = []
+            centre = []
+            for i in range(4):
+                corner = corners[i]
+                if inside(hole, corner[0], corner[1], half):
+                    tiles = tiles + cover(half, corner[0], corner[1], hole)
+                else:
+                    centre.append(middle[i])
+                    tiles = tiles + cover(half, corner[0], corner[1], middle[i])
+            tiles.append(centre)
+            return tiles
+
+        print(cover(2, 0, 0, [0, 1]))
+        print(len(cover(8, 0, 0, [2, 5])))
+      wrong:
+        - code: |
+            def inside(square, top, left, width):
+                row = square[0]
+                column = square[1]
+                return top <= row and row < top + width and left <= column and column < left + width
+
+            def cover(width, top, left, hole):
+                if width == 1:
+                    return []
+                half = width // 2
+                corners = [[top, left], [top, left + half], [top + half, left], [top + half, left + half]]
+                middle = [[top + half - 1, left + half - 1], [top + half - 1, left + half],
+                          [top + half, left + half - 1], [top + half, left + half]]
+                tiles = []
+                centre = []
+                for i in range(4):
+                    corner = corners[i]
+                    centre.append(middle[i])
+                    tiles = tiles + cover(half, corner[0], corner[1], middle[i])
+                tiles.append(centre)
+                return tiles
+          why: Never asks which quarter holds the cut square, so the centre tile gets four squares and the cut square is covered.
+        - code: |
+            def inside(square, top, left, width):
+                row = square[0]
+                column = square[1]
+                return top <= row and row < top + width and left <= column and column < left + width
+
+            def cover(width, top, left, hole):
+                if width == 1:
+                    return []
+                half = width // 2
+                corners = [[top, left], [top, left + half], [top + half, left], [top + half, left + half]]
+                middle = [[top + half - 1, left + half - 1], [top + half - 1, left + half],
+                          [top + half, left + half - 1], [top + half, left + half]]
+                tiles = []
+                centre = []
+                for i in range(4):
+                    corner = corners[i]
+                    if inside(hole, corner[0], corner[1], half):
+                        tiles = tiles + cover(half, corner[0], corner[1], hole)
+                    else:
+                        centre.append(middle[i])
+                        tiles = tiles + cover(half, corner[0], corner[1], hole)
+                tiles.append(centre)
+                return tiles
+          why: Hands the cut square to every quarter, even the three it is not in, so those quarters leave nothing out and their own centre tiles get four squares.
+        - code: |
+            def inside(square, top, left, width):
+                row = square[0]
+                column = square[1]
+                return top <= row and row < top + width and left <= column and column < left + width
+
+            def cover(width, top, left, hole):
+                if width == 1:
+                    return []
+                half = width // 2
+                corners = [[top, left], [top, left + half], [top + half, left], [top + half, left + half]]
+                middle = [[top + half - 1, left + half - 1], [top + half - 1, left + half],
+                          [top + half, left + half - 1], [top + half, left + half]]
+                tiles = []
+                centre = []
+                for i in range(4):
+                    corner = corners[i]
+                    if inside(hole, corner[0], corner[1], half):
+                        tiles = tiles + cover(half, corner[0], corner[1], hole)
+                    else:
+                        tiles = tiles + cover(half, corner[0], corner[1], middle[i])
+                tiles.append(centre)
+                return tiles
+          why: Leaves the three middle squares out of their quarters but never puts them into the centre tile, so they stay uncovered and an empty tile is added.
+        - code: |
+            def inside(square, top, left, width):
+                row = square[0]
+                column = square[1]
+                return top <= row and row < top + width and left <= column and column < left + width
+
+            def cover(width, top, left, hole):
+                if width == 1:
+                    return []
+                half = width // 2
+                corners = [[top, left], [top, left + half], [top + half, left], [top + half, left + half]]
+                middle = [[top + half - 1, left + half - 1], [top + half - 1, left + half],
+                          [top + half, left + half - 1], [top + half, left + half]]
+                tiles = []
+                centre = []
+                for i in range(4):
+                    corner = corners[i]
+                    if inside(hole, corner[0], corner[1], half):
+                        tiles = tiles + cover(width, corner[0], corner[1], hole)
+                    else:
+                        centre.append(middle[i])
+                        tiles = tiles + cover(width, corner[0], corner[1], middle[i])
+                tiles.append(centre)
+                return tiles
+          why: Calls cover on a block as wide as the whole one instead of a quarter, so the calls never reach the base case, and Python stops with RecursionError.
+    explanation: >-
+      For each quarter, `inside(hole, corner[0], corner[1], half)` asks whether it holds the cut
+      square. If it does, `cover(half, corner[0], corner[1], hole)` covers it; if not, its middle
+      square goes into `centre` and `cover(half, corner[0], corner[1], middle[i])` covers the rest
+      of it. By induction on the width, every call is right: width 1 needs no tiles, and a call is
+      right whenever its four calls on quarters are.
+
+  - id: build-induction-check
+    phase: build
+    kind: build
+    concept: M1.9/induction
+    covers: [M1.9/recurrences]
+    title: Checking an induction with SymPy
+    prompt: >-
+      Replace each `None`. `proves(total, term)` checks the base case at $n = 1$ and the step, for
+      the symbol `n`, of the claim that `total(n)` is `term(1) + term(2) + ... + term(n)`.
+      `solves(closed, start, rule)` checks the base case at $n = 0$ and the step of the claim that
+      `closed(n)` is the term at $n$ of the sequence that starts with `start` and makes each term
+      with `rule` from the one before. Each should give `True` only when both hold.
+    answer:
+      type: code
+      starter: |
+        from sympy import symbols, simplify, Rational
+
+        n = symbols("n", integer=True, positive=True)
+
+        def proves(total, term):
+            """True when induction proves that total(n) is term(1) + term(2) + ... + term(n)
+            for every whole number n from 1 up: the base case holds, and so does the step,
+            for the symbol n."""
+            return None
+
+        def solves(closed, start, rule):
+            """True when induction proves that closed(n) is the term at n of the sequence that
+            starts with start at n = 0 and makes each later term with rule from the one before:
+            the base case holds, and so does the step, for the symbol n."""
+            return None
+
+        def squares(n):
+            return Rational(1, 6) * n * (n + 1) * (2 * n + 1)
+
+        def square(i):
+            return i ** 2
+
+        def tiles(n):
+            return Rational(1, 3) * (4 ** n - 1)
+
+        def four_more(t):
+            return 4 * t + 1
+
+        print(proves(squares, square))
+        print(solves(tiles, 0, four_more))
+      tests: |
+        def triangle(n):
+            return Rational(1, 2) * n * (n + 1)
+
+        def counting(i):
+            return i
+
+        def cubes(n):
+            return (Rational(1, 2) * n * (n + 1)) ** 2
+
+        def cube(i):
+            return i ** 3
+
+        def odd(i):
+            return 2 * i - 1
+
+        def n_squared(n):
+            return n ** 2
+
+        def squares_plus_one(n):
+            return Rational(1, 6) * n * (n + 1) * (2 * n + 1) + 1
+
+        def doubling(n):
+            return 2 ** n - 1
+
+        def average(n):
+            return 1 - Rational(9, 10) ** n
+
+        def average_late(n):
+            return 1 - Rational(9, 10) ** (n + 1)
+
+        def smooth(m):
+            return Rational(9, 10) * m + Rational(1, 10)
+
+        def note(got, claim_holds, which):
+            """A word on an answer from proves or solves, named by which, that is not the one wanted."""
+            from sympy import Eq
+            if isinstance(got, Eq):
+                return " That is an equation that SymPy has not settled: compare the simplified difference of its two sides with 0."
+            if got is None:
+                try:
+                    first = proves(triangle, counting) if which == "proves" else solves(tiles, 0, four_more)
+                except Exception:
+                    first = None
+                if first is None:
+                    return ""
+                return (" A function gives None when it ends without reaching a return, and SymPy's is_zero"
+                        " gives None when it cannot tell whether an expression is 0.")
+            if claim_holds and got == False:
+                at = 1 if which == "proves" else 0
+                return (f" Its base case, at n = {at}, and its step both hold, so look at how {which} checks each:"
+                        " between two SymPy expressions, == asks whether they are written alike, not whether they"
+                        " are equal for every n.")
+            return ""
+
+        def test_filled():
+            """proves and solves both give an answer, not None."""
+            assert proves(triangle, counting) is not None, "Replace the None in proves."
+            assert solves(tiles, 0, four_more) is not None, "Replace the None in solves."
+
+        def test_true_sums():
+            """proves gives True for the triangle numbers, the squares, the cubes and the odd numbers."""
+            for total, term, words in ((triangle, counting, "1 + 2 + ... + n = n(n + 1)/2"),
+                                       (squares, square, "the sum of the squares, n(n + 1)(2n + 1)/6"),
+                                       (cubes, cube, "the sum of the cubes, (n(n + 1)/2)^2"),
+                                       (n_squared, odd, "1 + 3 + ... + (2n - 1) = n^2")):
+                got = proves(total, term)
+                assert got == True, f"proves gives {got!r} for {words}, not True." + note(got, True, "proves")
+
+        def test_wrong_step():
+            """proves gives False for n^2 as the sum 1 + 2 + ... + n, whose base case holds but whose step fails."""
+            got = proves(n_squared, counting)
+            assert got == False, f"proves(n_squared, counting) gives {got!r}, not False: 1 = 1 at n = 1, but the step fails, since (n + 1)^2 - n^2 is 2n + 1, not n + 1." + note(got, False, "proves")
+
+        def test_wrong_base():
+            """proves gives False for n(n + 1)(2n + 1)/6 + 1 as the sum of the squares: at n = 1 it is 2, not 1."""
+            got = proves(squares_plus_one, square)
+            assert got == False, f"proves(squares_plus_one, square) gives {got!r}, not False: at n = 1 it gives 2, not 1." + note(got, False, "proves")
+
+        def test_tiles():
+            """solves gives True for the tiles, (4^n - 1)/3 from T(0) = 0 with T(k + 1) = 4T(k) + 1, and False for 2^n - 1."""
+            got = solves(tiles, 0, four_more)
+            assert got == True, f"solves(tiles, 0, four_more) gives {got!r}, not True." + note(got, True, "solves")
+            got = solves(doubling, 0, four_more)
+            assert got == False, f"solves(doubling, 0, four_more) gives {got!r}, not False: 2^n - 1 starts at 0, but the step fails." + note(got, False, "solves")
+
+        def test_average():
+            """solves gives True for the running average 1 - 0.9^n from 0, and False for 1 - 0.9^(n + 1), which is one step out."""
+            got = solves(average, 0, smooth)
+            assert got == True, f"solves(average, 0, smooth) gives {got!r}, not True." + note(got, True, "solves")
+            got = solves(average_late, 0, smooth)
+            assert got == False, f"solves(average_late, 0, smooth) gives {got!r}, not False: its step holds, but at n = 0 it gives 1/10, not 0." + note(got, False, "solves")
+      reference: |
+        from sympy import symbols, simplify, Rational
+
+        n = symbols("n", integer=True, positive=True)
+
+        def proves(total, term):
+            """True when induction proves that total(n) is term(1) + term(2) + ... + term(n)
+            for every whole number n from 1 up: the base case holds, and so does the step,
+            for the symbol n."""
+            base = total(1) == term(1)
+            step = simplify(total(n + 1) - total(n) - term(n + 1)) == 0
+            return base and step
+
+        def solves(closed, start, rule):
+            """True when induction proves that closed(n) is the term at n of the sequence that
+            starts with start at n = 0 and makes each later term with rule from the one before:
+            the base case holds, and so does the step, for the symbol n."""
+            base = closed(0) == start
+            step = simplify(closed(n + 1) - rule(closed(n))) == 0
+            return base and step
+
+        def squares(n):
+            return Rational(1, 6) * n * (n + 1) * (2 * n + 1)
+
+        def square(i):
+            return i ** 2
+
+        def tiles(n):
+            return Rational(1, 3) * (4 ** n - 1)
+
+        def four_more(t):
+            return 4 * t + 1
+
+        print(proves(squares, square))
+        print(solves(tiles, 0, four_more))
+      wrong:
+        - code: |
+            from sympy import symbols, simplify, Rational
+
+            n = symbols("n", integer=True, positive=True)
+
+            def proves(total, term):
+                return simplify(total(n + 1) - total(n) - term(n + 1)) == 0
+
+            def solves(closed, start, rule):
+                return simplify(closed(n + 1) - rule(closed(n))) == 0
+
+            def squares(n):
+                return Rational(1, 6) * n * (n + 1) * (2 * n + 1)
+
+            def square(i):
+                return i ** 2
+
+            def tiles(n):
+                return Rational(1, 3) * (4 ** n - 1)
+
+            def four_more(t):
+                return 4 * t + 1
+          why: Checks only the steps, so a formula that is one too many at every $n$, such as the sum of the squares plus 1, passes.
+        - code: |
+            from sympy import symbols, simplify, Rational
+
+            n = symbols("n", integer=True, positive=True)
+
+            def proves(total, term):
+                return total(1) == term(1)
+
+            def solves(closed, start, rule):
+                return closed(0) == start
+
+            def squares(n):
+                return Rational(1, 6) * n * (n + 1) * (2 * n + 1)
+
+            def square(i):
+                return i ** 2
+
+            def tiles(n):
+                return Rational(1, 3) * (4 ** n - 1)
+
+            def four_more(t):
+                return 4 * t + 1
+          why: Checks only the base cases, so $n^2$ passes as $1 + 2 + \dots + n$, since both are 1 at $n = 1$.
+        - code: |
+            from sympy import symbols, simplify, Rational
+
+            n = symbols("n", integer=True, positive=True)
+
+            def proves(total, term):
+                base = total(1) == term(1)
+                step = simplify(total(n + 1) - total(n) - term(n)) == 0
+                return base and step
+
+            def solves(closed, start, rule):
+                base = closed(0) == start
+                step = simplify(closed(n + 1) - rule(closed(n))) == 0
+                return base and step
+
+            def squares(n):
+                return Rational(1, 6) * n * (n + 1) * (2 * n + 1)
+
+            def square(i):
+                return i ** 2
+
+            def tiles(n):
+                return Rational(1, 3) * (4 ** n - 1)
+
+            def four_more(t):
+                return 4 * t + 1
+          why: Takes away `term(n)`, the last term of the sum to $n$, instead of `term(n + 1)`, the term that the step adds, so even the true sums fail.
+        - code: |
+            from sympy import symbols, simplify, Rational
+
+            n = symbols("n", integer=True, positive=True)
+
+            def proves(total, term):
+                base = total(1) == term(1)
+                step = simplify(total(n + 1) - total(n) - term(n + 1)) == 0
+                return base and step
+
+            def solves(closed, start, rule):
+                base = closed(1) == start
+                step = simplify(closed(n + 1) - rule(closed(n))) == 0
+                return base and step
+
+            def squares(n):
+                return Rational(1, 6) * n * (n + 1) * (2 * n + 1)
+
+            def square(i):
+                return i ** 2
+
+            def tiles(n):
+                return Rational(1, 3) * (4 ** n - 1)
+
+            def four_more(t):
+                return 4 * t + 1
+          why: >-
+            Checks the sequence's base case at $n = 1$ instead of $n = 0$, where `start` belongs, so
+            the true formulas fail: `tiles(1)` is 1 and `average(1)` is $\frac{1}{10}$, not 0.
+    explanation: >-
+      `proves` needs `total(1) == term(1)` and `simplify(total(n + 1) - total(n) - term(n + 1)) == 0`,
+      and `solves` needs `closed(0) == start` and `simplify(closed(n + 1) - rule(closed(n))) == 0`,
+      each joined with `and`. The step is checked for the symbol `n`, which stands for every whole
+      number at once, so SymPy proves it rather than testing it.
+
+  - id: breakit-no-base
+    phase: build
+    kind: breakit
+    concept: M1.9/induction
+    title: Without the base case
+    prompt: Predict what happens after the change, then run both versions to see.
+    answer:
+      type: breakit
+      code: |
+        from sympy import symbols, simplify
+
+        n = symbols("n", integer=True, positive=True)
+
+        def proves(total, term):
+            base = total(1) == term(1)
+            step = simplify(total(n + 1) - total(n) - term(n + 1)) == 0
+            return base and step
+
+        def almost(n):
+            return (n ** 2 + n + 6) / 2
+
+        def counting(i):
+            return i
+
+        print(proves(almost, counting))
+      broken: |
+        from sympy import symbols, simplify
+
+        n = symbols("n", integer=True, positive=True)
+
+        def proves(total, term):
+            base = total(1) == term(1)
+            step = simplify(total(n + 1) - total(n) - term(n + 1)) == 0
+            return step
+
+        def almost(n):
+            return (n ** 2 + n + 6) / 2
+
+        def counting(i):
+            return i
+
+        print(proves(almost, counting))
+      change: '`proves` now returns `step` alone, and no longer asks about the base case.'
+      options:
+        - { id: same, label: 'It still prints `False`', when: "output.strip() == 'False'" }
+        - { id: prints-true, label: 'It prints `True`', when: "output.strip() == 'True'" }
+        - { id: error, label: 'Python stops with an error', when: 'error is not None' }
+    explanation: >-
+      It prints `True`. $\frac{n^2 + n + 6}{2}$ is the triangle number plus 3, so it grows by
+      $n + 1$ from each $n$ to the next, exactly as the sum does, and the step holds. Only the base
+      case catches it: at $n = 1$ it is 4, not 1, and every value after that is three too many.
+
+  - id: debug-power
+    phase: build
+    kind: debug
+    concept: M1.9/strong-induction
+    covers: [M1.9/structural-induction]
+    title: A power by halving
+    prompt: >-
+      `power(x, n)` should give $x^n$ for every whole number `n`, by halving `n`: for even `n`,
+      $x^n$ is $x^{n/2} \times x^{n/2}$. For 2 to the powers 0 to 5 it prints 1, 2, 4, 4, 16 and 8.
+      Find the first `n` for which it goes wrong, and which case of its proof's step fails there,
+      then mend the function; once the tests pass, the answer says whether you were right. The
+      tests also try `power(3, 5000)`.
+    answer:
+      type: code
+      starter: |
+        def power(x, n):
+            """x to the power n, for a whole number n, worked out from x to the power n // 2."""
+            if n == 0:
+                return 1
+            half = power(x, n // 2)
+            if n % 2 == 0:
+                return half * half
+            return half * x
+
+        for n in range(6):
+            print(n, power(2, n))
+      tests: |
+        def test_small():
+            """power(x, n) is x^n for every integer x from -3 to 3 and every n from 0 to 12."""
+            for x in range(-3, 4):
+                for k in range(13):
+                    got = power(x, k)
+                    assert got == x ** k, f"power({x}, {k}) gives {got!r}, not {x ** k:,}."
+
+        def test_odd():
+            """Odd powers come out right: power(2, 3) is 8 and power(2, 5) is 32."""
+            for k, right in ((3, 8), (5, 32), (7, 128), (9, 512)):
+                got = power(2, k)
+                assert got == right, f"power(2, {k}) gives {got!r}, not {right}."
+
+        def test_fraction():
+            """power(0.5, 10) is 0.0009765625, which is 0.5^10 exactly."""
+            got = power(0.5, 10)
+            assert got == 0.0009765625, f"power(0.5, 10) gives {got!r}, not 0.0009765625."
+
+        def test_large():
+            """power(3, 5000) is 3^5000, a number with 2,386 digits, which halving reaches in a chain of 14 calls."""
+            got = power(3, 5000)
+            assert got == 3 ** 5000, "power(3, 5000) is not 3 to the power 5,000."
+      reference: |
+        def power(x, n):
+            """x to the power n, for a whole number n, worked out from x to the power n // 2."""
+            if n == 0:
+                return 1
+            half = power(x, n // 2)
+            if n % 2 == 0:
+                return half * half
+            return half * half * x
+
+        for n in range(6):
+            print(n, power(2, n))
+      wrong:
+        - code: |
+            def power(x, n):
+                if n == 0:
+                    return 1
+                half = power(x, n // 2)
+                if n % 2 == 0:
+                    return half * half
+                return half * x
+          why: The original, which uses only one half for an odd `n`, and is first wrong at $n = 3$.
+        - code: |
+            def power(x, n):
+                if n == 0:
+                    return 1
+                return x * power(x, n - 1)
+          why: Takes one off `n` instead of halving it, which is right but makes 5,001 calls in a chain for `power(3, 5000)`, far more than Python allows, so it stops with RecursionError.
+        - code: |
+            def power(x, n):
+                if n == 0:
+                    return 1
+                half = power(x, n // 2)
+                if n % 2 == 0:
+                    return half * half
+                return half * x * x
+          why: >-
+            Multiplies by $x$ twice instead of using both halves, so it is wrong from $n = 1$ on: it
+            gives $x^2$ for $x^1$, $x^4$ for $x^2$ and for $x^3$, and $x^6$ for $x^5$.
+        - code: |
+            def power(x, n):
+                if n == 0:
+                    return 1
+                half = power(x, n / 2)
+                if n % 2 == 0:
+                    return half * half
+                return half * half * x
+          why: Halves `n` with `/`, which gives a float, so `n` becomes a fraction such as 2.5, then 1.25 and smaller fractions still, instead of reaching 0 in a few calls. Halving reaches 0.0 only after about 1,075 halvings, and Python stops the chain with RecursionError first.
+    explanation: >-
+      For odd `n`, $n = 2 \times (n \mathbin{//} 2) + 1$, so $x^n$ is `half * half * x`, and the
+      original leaves out one `half`. It is first wrong at $n = 3$: at $n = 1$, `half` is $x^0 = 1$,
+      and $1 \times x$ happens to be right. The proof is a strong induction: $n = 0$ gives 1, and for
+      $n \ge 1$, `n // 2` is smaller than `n`, so `half` is $x^{n // 2}$ by the hypothesis, and each
+      case follows. The calls for `power(3, 5000)` go through 2,500, 1,250, and so on down to 0: 14
+      in all.
+
+  # Explain --------------------------------------------------------------------
+  - id: explain-induction
+    phase: explain
+    kind: explain
+    concept: M1.9/induction
+    covers: [M1.9/strong-induction, M1.9/recurrences, M1.9/structural-induction]
+    title: Tiles, stamps and programs, simply
+    prompt: >-
+      Explain to your friend how the puzzle is settled for a grid 1,024 by 1,024 without trying a
+      single grid of that size: the base case, the step and its tile across the centre, and why the
+      two together reach 1,024. Say why each part is needed, with an example of an argument that
+      goes wrong without it. Then explain how a recurrence counts the tiles and how induction proves
+      its closed form, why the stamps from 12 rupees up need four base cases, and why proving a
+      recursive function right, such as `total` or `power`, is the same kind of argument.
+    answer:
+      type: text
+      rubric:
+        - { id: base-step, criterion: 'Gives the base case, a grid 2 by 2 less one square is one tile, and the step: the tile across the centre leaves four grids half as wide, each with one square gone, which the claim for the smaller width covers.' }
+        - { id: chain, criterion: 'Says why the two reach 1,024 without any grid of that size being tried: from the base case, nine steps each double the width; or a smallest width that failed would have to follow one that worked.' }
+        - { id: both-needed, criterion: 'Says why each part is needed, with an example of each: a step with no base case can carry a false claim, as for $n^2 + n$ being odd, and a step that fails for one $k$ breaks the chain, as from one model to two. Other correct examples count.' }
+        - { id: recurrence, criterion: 'Gets the count of tiles from $T(1) = 1$ and $T(k + 1) = 4T(k) + 1$, gives or checks $T(n) = \frac{4^n - 1}{3}$, and finds $T(10) = 349{,}525$.' }
+        - { id: strong, criterion: 'Explains strong induction with the stamps: the step makes $k + 1$ from $k - 3$, four amounts back, so 12, 13, 14 and 15 are all base cases.' }
+        - { id: programs, criterion: 'Says that trusting a recursive function, by its base case and then each call on the assumption that the smaller calls are right, is a proof by induction on the size of its argument.' }
+      reference: >-
+        Start small. A grid 2 by 2 with one square cut out is exactly one tile: that is the base
+        case. Now suppose that every grid of some width, with one square cut out anywhere, can be
+        covered, and take a grid twice as wide. Split it into four quarters. The cut square is in
+        one of them. Put one tile across the centre, with one square in each of the other three
+        quarters. Now every quarter is a grid of the smaller width with one square gone, and each
+        can be covered: that is the step. From 2 by 2, nine steps, each doubling the width, reach
+        1,024 by 1,024, and no grid of that size is ever tried. Put another way, if some width
+        failed, the smallest that failed would be twice a width that worked, and the step rules
+        that out. Both parts are needed. The step for "$n^2 + n$ is odd" is perfectly valid, since
+        adding $2(k + 1)$ keeps a number odd, but no case starts the chain, and in fact $n^2 + n$
+        is always even. And one bad step breaks everything: the argument that any number of models
+        give the same answer fails only at the step from one model to two, where the two groups
+        share no model, and that is enough for the whole chain to fall. The count of tiles follows
+        the same pattern. Write $T(n)$ for the tiles that cover a grid $2^n$ wide less one square:
+        $T(1) = 1$, and the step gives $T(k + 1) = 4T(k) + 1$, four quarters and the centre tile.
+        The first values, 1, 5, 21 and 85, suggest $T(n) = \frac{4^n - 1}{3}$, and induction
+        proves it: it is 1 at $n = 1$, and $4 \times \frac{4^k - 1}{3} + 1 = \frac{4^{k+1} - 1}{3}$.
+        So $T(10) = \frac{1{,}048{,}576 - 1}{3} = 349{,}525$. With stamps of 4 and 5 rupees, an
+        amount $k + 1$ can be made from $k - 3$ and one more 4, so the step leans four amounts back,
+        and needs four base cases: 12, 13, 14 and 15, each made by hand. That is strong induction,
+        which may assume every case below. Finally, a recursive function is trusted the same way:
+        check the base case, then check each call on the assumption that the smaller calls it makes
+        are right. That is induction on the size of the argument, the length of the list for
+        `total`, or strong induction on $n$ for `power`, which leans on $n$ halved; for a tree, it
+        is induction from the leaves up.
+      minWords: 120
+      maxWords: 500
+    explanation: >-
+      A strong answer gives the base case, one tile, and the step, the tile across the centre that
+      leaves four grids half as wide, and says why the two reach 1,024: nine doublings, or no
+      smallest failure. It shows a step with no base case carrying a false claim, and a single
+      failed step, from one model to two, breaking the chain. It finds the count from
+      $T(k + 1) = 4T(k) + 1$, proves $T(n) = \frac{4^n - 1}{3}$, explains the four base cases of
+      the stamps, and sees the trust in a recursive function as induction on the size of its
+      argument.

@@ -1,0 +1,201 @@
+{
+  "version": 1,
+  "expressions": {
+    "derive-ema": {
+      "source": "40fbf6eaefe353ec",
+      "points": [
+        {
+          "beta": "4/7",
+          "k": "-5",
+          "g": "17/2"
+        },
+        {
+          "beta": "11/2",
+          "k": "-4",
+          "g": "9/4"
+        },
+        {
+          "beta": "7/2",
+          "k": "-5",
+          "g": "13/2"
+        },
+        {
+          "beta": "29/4",
+          "k": "4",
+          "g": "9/7"
+        },
+        {
+          "beta": "36/7",
+          "k": "9",
+          "g": "15"
+        },
+        {
+          "beta": "16/3",
+          "k": "-5",
+          "g": "30/7"
+        }
+      ],
+      "values": [
+        "-71.220703125000000000",
+        "2.2364763335837716003",
+        "6.4566847147022074136",
+        "-25752.110072544642857",
+        "-194149301.78118333122",
+        "4.2804173060825892857"
+      ]
+    },
+    "derive-fib-step": {
+      "source": "9e7eecf3e47148ad",
+      "points": [
+        {
+          "a": "9",
+          "b": "8"
+        },
+        {
+          "a": "6",
+          "b": "7"
+        },
+        {
+          "a": "1",
+          "b": "6"
+        },
+        {
+          "a": "7",
+          "b": "-8"
+        },
+        {
+          "a": "-5",
+          "b": "7"
+        },
+        {
+          "a": "4",
+          "b": "-8"
+        }
+      ],
+      "values": [
+        "33.000000000000000000",
+        "25.000000000000000000",
+        "13.000000000000000000",
+        "-3.0000000000000000000",
+        "3.0000000000000000000",
+        "-9.0000000000000000000"
+      ]
+    }
+  },
+  "runs": {
+    "build-induction-check": {
+      "tests": [
+        {
+          "name": "test_filled",
+          "description": "proves and solves both give an answer, not None.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_true_sums",
+          "description": "proves gives True for the triangle numbers, the squares, the cubes and the odd numbers.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_wrong_step",
+          "description": "proves gives False for n^2 as the sum 1 + 2 + ... + n, whose base case holds but whose step fails.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_wrong_base",
+          "description": "proves gives False for n(n + 1)(2n + 1)/6 + 1 as the sum of the squares: at n = 1 it is 2, not 1.",
+          "passed": false,
+          "message": "proves(squares_plus_one, square) gives True, not False: at n = 1 it gives 2, not 1."
+        },
+        {
+          "name": "test_tiles",
+          "description": "solves gives True for the tiles, (4^n - 1)/3 from T(0) = 0 with T(k + 1) = 4T(k) + 1, and False for 2^n - 1.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_average",
+          "description": "solves gives True for the running average 1 - 0.9^n from 0, and False for 1 - 0.9^(n + 1), which is one step out.",
+          "passed": false,
+          "message": "solves(average_late, 0, smooth) gives True, not False: its step holds, but at n = 0 it gives 1/10, not 0."
+        }
+      ],
+      "error": null,
+      "output": ""
+    },
+    "build-tiles": {
+      "tests": [
+        {
+          "name": "test_filled",
+          "description": "cover still returns a list, not None.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_two",
+          "description": "A grid 2 by 2 is covered by one tile, wherever its cut square is.",
+          "passed": false,
+          "message": "cover(2, 0, 0, [0, 0]) has a tile [[0, 0], [0, 1], [1, 0], [1, 1]] with 4 squares, not 3. In each call, only the three quarters that do not hold that call's hole give the centre tile a square, and each of them is covered with that square left out."
+        },
+        {
+          "name": "test_four",
+          "description": "A grid 4 by 4 is covered by 5 tiles, wherever its cut square is.",
+          "passed": false,
+          "message": "cover(4, 0, 0, [0, 0]) has a tile [[0, 0], [0, 1], [1, 0], [1, 1]] with 4 squares, not 3. In each call, only the three quarters that do not hold that call's hole give the centre tile a square, and each of them is covered with that square left out."
+        },
+        {
+          "name": "test_eight",
+          "description": "A grid 8 by 8 is covered by 21 tiles, wherever its cut square is.",
+          "passed": false,
+          "message": "cover(8, 0, 0, [0, 0]) has a tile [[0, 0], [0, 1], [1, 0], [1, 1]] with 4 squares, not 3. In each call, only the three quarters that do not hold that call's hole give the centre tile a square, and each of them is covered with that square left out."
+        },
+        {
+          "name": "test_elsewhere",
+          "description": "A block whose top left square is not [0, 0] is covered inside its own edges.",
+          "passed": false,
+          "message": "cover(4, 8, 16, [8, 16]) has a tile [[8, 16], [8, 17], [9, 16], [9, 17]] with 4 squares, not 3. In each call, only the three quarters that do not hold that call's hole give the centre tile a square, and each of them is covered with that square left out."
+        },
+        {
+          "name": "test_sixty_four",
+          "description": "A grid 64 by 64 is covered by 1,365 tiles, which is (4^6 - 1) / 3, with the cut square in three places.",
+          "passed": false,
+          "message": "cover(64, 0, 0, [37, 12]) has a tile [[0, 0], [0, 1], [1, 0], [1, 1]] with 4 squares, not 3. In each call, only the three quarters that do not hold that call's hole give the centre tile a square, and each of them is covered with that square left out."
+        }
+      ],
+      "error": null,
+      "output": ""
+    },
+    "debug-power": {
+      "tests": [
+        {
+          "name": "test_small",
+          "description": "power(x, n) is x^n for every integer x from -3 to 3 and every n from 0 to 12.",
+          "passed": false,
+          "message": "power(-3, 3) gives 9, not -27."
+        },
+        {
+          "name": "test_odd",
+          "description": "Odd powers come out right: power(2, 3) is 8 and power(2, 5) is 32.",
+          "passed": false,
+          "message": "power(2, 3) gives 4, not 8."
+        },
+        {
+          "name": "test_fraction",
+          "description": "power(0.5, 10) is 0.0009765625, which is 0.5^10 exactly.",
+          "passed": false,
+          "message": "power(0.5, 10) gives 0.015625, not 0.0009765625."
+        },
+        {
+          "name": "test_large",
+          "description": "power(3, 5000) is 3^5000, a number with 2,386 digits, which halving reaches in a chain of 14 calls.",
+          "passed": false,
+          "message": "power(3, 5000) is not 3 to the power 5,000."
+        }
+      ],
+      "error": null,
+      "output": ""
+    }
+  }
+}

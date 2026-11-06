@@ -1,0 +1,331 @@
+misconceptions:
+  - id: step-alone
+    belief: A step that holds for every $k$ proves the claim, whatever the base case.
+    why: >-
+      The step only carries a claim forward from a case that already has it. "$n^2 + n$ is odd"
+      has a step that holds for every $k$, but $1^2 + 1 = 2$ is even, so nothing starts the chain,
+      and in fact $n^2 + n$ is always even. Without a true base case the induction proves nothing.
+    cue: >-
+      The learner chooses "For every $n$" or "from some point on" in explore-no-base, predicts that
+      the break-it still prints `False`, or leaves the base case out of `proves` in
+      build-induction-check.
+  - id: assume-the-claim
+    belief: The inductive step may assume the claim for every $n$, or the case $k + 1$ it is proving.
+    why: >-
+      The step assumes the claim for the one $k$ it starts from and proves it for $k + 1$.
+      Assuming it for every $n$, or assuming $P(k + 1)$, assumes what is to be proved, which is
+      M1.8's circular argument.
+    cue: >-
+      The learner chooses "That $P(n)$ is true for every $n$" in explore-what-to-show, cites "True
+      for every n" in derive-squares, or cites Induction in derive-why-induction.
+  - id: more-cases
+    belief: The inductive step means checking a few more cases, such as $k = 2$ or a large $k$.
+    why: >-
+      Cases prove only themselves, as M1.8 found. The step is a proof about a letter $k$ that stands
+      for every case from the base case up, so that one argument links each case to the next.
+    cue: The learner chooses "$P(2)$, using $P(1)$" or "a large $k$" in explore-what-to-show.
+  - id: base-is-trivial
+    belief: A base case as easy as one model agreeing with itself proves nothing, so that is where an induction fails.
+    why: >-
+      A base case may be easy and still true, and it must be. In the models argument the base case
+      is fine; the step from 1 to 2 fails, because the two groups of one model share nobody.
+    cue: The learner chooses the base case in explore-all-same.
+  - id: most-steps-enough
+    belief: A step that holds for nearly every $k$ is good enough.
+    why: >-
+      The chain needs every link from the base case up. If the step fails at one $k$, nothing
+      reaches $k + 1$, and every later case is left unproved, however many later steps hold.
+    cue: The learner chooses "$P(n)$ for every $n \ge 1$" or "$P(n)$ for every $n \ge 2$" in the first review of explore-all-same.
+  - id: count-is-enough
+    belief: Any first tile will do, as long as the squares left are a multiple of 3.
+    why: >-
+      A count can rule a covering out but never in. A whole quarter of 16 squares is not a multiple
+      of 3, so a tile that leaves a quarter whole leaves a piece that the claim for the smaller
+      grids cannot cover. The tile across the centre leaves every quarter with one square gone.
+    cue: The learner chooses "Anywhere at all" in explore-centre-tile.
+  - id: double-width-double-tiles
+    belief: Doubling the width of the grid doubles the number of tiles.
+    why: >-
+      Doubling the width doubles the height too, so the grid has four times as many squares: four
+      quarters, each needing $T(k)$ tiles, and the centre tile, $T(k + 1) = 4T(k) + 1$.
+    cue: The learner chooses $2T(k) + 1$ in explore-tile-rule.
+  - id: one-base-case
+    belief: Every induction has exactly one base case.
+    why: >-
+      A step that leans on a case further back than $k$ needs a base case for every case that the
+      step cannot reach: the stamps step leans four amounts back, so 12, 13, 14 and 15 are all base
+      cases, and `fib`'s count leans two back, so it needs $n = 0$ and $n = 1$.
+    cue: The learner chooses "12 alone" in explore-stamps, or "One, $P(1)$" or "8 alone" in its reviews.
+  - id: shape-matters
+    belief: How many numbers an expression has depends on its brackets, not only on its operations.
+    why: >-
+      Every operation joins two parts into one, whatever the brackets, so the numbers are always one
+      more than the operations. Brackets change the order of the work, never its amount.
+    cue: The learner says, in the reviews of explore-leaves or in the Explain phase, that the count of numbers or of additions depends on where the brackets go.
+  - id: pattern-proves
+    belief: A closed form that fits the first few terms of a sequence is proved.
+    why: >-
+      Four terms that fit are evidence, as M1.8's forty primes were. A guess from the first terms is
+      proved only by showing the base case and that the recurrence carries the formula from $k$ to
+      $k + 1$.
+    cue: The learner says in the Explain phase that $\frac{4^n - 1}{3}$ is proved by the values 1, 5, 21 and 85.
+  - id: odd-half
+    belief: For an odd $n$, $x^n$ is $x^{n // 2}$ times $x$.
+    why: >-
+      $n = 2 \times (n \mathbin{//} 2) + 1$ for odd $n$, so $x^n$ needs both halves and one more $x$:
+      `half * half * x`. One half times $x$ is right only at $n = 1$, where the half is $x^0 = 1$.
+    cue: The learner keeps `half * x`, or writes `half * x * x`, in debug-power.
+  - id: inequality-any-multiplier
+    belief: Multiplying both sides of an inequality by any number keeps it.
+    why: >-
+      Multiplying by a negative number turns it round: $3 \ge 2$, but $-3 \le -2$. The step of
+      Bernoulli's inequality multiplies by $1 + h$, which is safe only because $h \ge -1$ makes
+      $1 + h \ge 0$.
+    cue: The learner multiplies by $1 + h$ in derive-bernoulli without saying why it is allowed, or never uses $h \ge -1$.
+
+exercises:
+  derive-squares:
+    rungs:
+      - For each line, what changed from the line above, and which rule allows exactly that change?
+      - >-
+        In the Explore phase, the step for the odd numbers split the last term off the sum, used
+        the hypothesis for the rest, and multiplied out to reach $(k + 1)^2$. In Recall,
+        $(k + 2)(2k + 3)$ was multiplied out.
+      - >-
+        Look at lines 2 and 3 alone. Line 2 has a sum to $k + 1$ on the left; what has happened to
+        it on the right? Line 3 replaces the sum to $k$ with a fraction: where does that fraction
+        come from, and is it a formula already proved, or an assumption that the step is allowed?
+      - >-
+        If your rules for lines 1 to 3 are right, the trouble is in lines 4 to 7. Put each of those
+        lines beside the one above it and say in words what changed before you look at the menu:
+        did a bracket appear, disappear, or stay as it was? If a line cites the claim being true for
+        every $n$, look again: the step may assume only $P(k)$.
+      - >-
+        For $1 + 2 + \dots + n = \frac{n(n + 1)}{2}$: the base case is $1 = \frac{1 \times 2}{2}$,
+        worked out; the sum to $k + 1$ is the sum to $k$ plus $k + 1$, by splitting off the last
+        term; that is $\frac{k(k + 1)}{2} + (k + 1)$ by the hypothesis; and taking out the factor
+        $k + 1$ gives $\frac{(k + 1)(k + 2)}{2}$, which is the formula for $k + 1$.
+    notes: >-
+      Hypothesis for line 2 mistakes splitting off the last term for using the assumption. "True
+      for every n" for line 3 or line 6 assumes the claim being proved. Multiply out for line 4
+      misses that the line puts a bracket in, by taking out the factor $k + 1$. Take out a factor
+      for line 6 is close, but no factor common to $2k^2$, $7k$ and 6 is taken out: the quadratic
+      is swapped for two brackets that multiply out to it, as Recall's $(k + 2)(2k + 3)$ did.
+      Multiply out for line 6 runs the wrong way, since the line puts brackets in. Pairing never
+      applies, since the squares do not go up by the same amount.
+  derive-why-induction:
+    rungs:
+      - >-
+        For each line, what does it rest on? Something given at the start, a fact about whole
+        numbers, or the supposition?
+      - >-
+        M1.8's proofs by contradiction supposed that the claim was false and reasoned until a
+        statement and its denial were both true. The start of this proof gives two facts, the base
+        case and the step.
+      - >-
+        Try it with a claim that is false at 5, 8 and 12 and true everywhere else. Which of those is
+        $m$? What do you know about $P(4)$, and why?
+      - >-
+        If your rules for lines 1 and 2 are right, the trouble is in lines 3 to 5. For each of
+        them, ask what it needs that the lines above it do not give: something given at the start,
+        or something that follows from $m$ being the smallest. If any line cites Induction, look
+        again: that is the very thing being proved.
+      - >-
+        The same method proves that every whole number from 2 up has a prime factor. Suppose that
+        some do not, and take the smallest, $n$. It is not prime, or it would be its own prime
+        factor, so $n = ab$ with $2 \le a < n$. Since $a$ is smaller than $n$, it is not one of the
+        numbers without a prime factor, so it has one, and that prime divides $n$ as well, which
+        contradicts the choice of $n$.
+    notes: >-
+      Induction for any line is circular: the proof shows that induction works. Base for line 4
+      confuses $m - 1$ with 1. Step for line 4 misses that $P(m - 1)$ is true only because $m - 1$
+      is below the smallest counterexample. Cases never applies. Contradiction for line 1 mistakes
+      the supposition for the conclusion.
+  derive-fib-step:
+    rungs:
+      - What is $C(k + 1)$ in terms of $C(k)$ and $C(k - 1)$, before any assumption is used?
+      - >-
+        E1.5 found that `fib(n)` makes its own call and those of `fib(n - 1)` and `fib(n - 2)`,
+        which gave the rule for $C(n)$. The step may assume the claim for $k$ and for $k - 1$.
+      - >-
+        Try $k = 3$: work out $C(4)$ from the table's $C(3)$ and $C(2)$, and read $a = F(4)$ and
+        $b = F(3)$ from its last row. Does your expression give the same number at those values?
+      - >-
+        If your expression has $2a$ and $2b$ in it, those parts are right, and the trouble is in the
+        number on its own: go back to $C(k + 1) = 1 + C(k) + C(k - 1)$ and follow every number in it
+        into your answer. If it has $a$ and $b$ without the 2s, look again at what each hypothesis
+        says $C(k)$ and $C(k - 1)$ are.
+      - >-
+        For a sequence with $D(n) = 2 + D(n - 1) + D(n - 2)$, assuming $D(k) = 3a - 2$ and
+        $D(k - 1) = 3b - 2$ would give $D(k + 1) = 2 + (3a - 2) + (3b - 2) = 3a + 3b - 2$.
+    notes: >-
+      $2a + 2b + 1$ adds the 1 for the call but drops both $-1$s. $2a + 2b - 2$ keeps both $-1$s but
+      forgets the call itself. $2a + 2b$ or $2(a + b)$ keeps the 1 but drops one $-1$. $a + b + 1$
+      leaves out the factors 2 of the hypotheses. The checker compares values at integers $a$ and
+      $b$, positive and negative, so any form equal to $2a + 2b - 1$ is accepted.
+  derive-leaves:
+    rungs:
+      - For each line, does it count something, use an assumption about the smaller trees, rewrite with what something equals, or conclude for every tree?
+      - >-
+        In the Explore phase, each operation joined two parts into one, and E1.5's `value` worked a
+        tree out by working out its two branches first. In this lesson, the step of an induction may assume
+        the claim for the smaller cases.
+      - >-
+        Try the tree for $2 + 3 \times 4$: it joins the tree $2$ and the tree $3 \times 4$. Count
+        the numbers and operations of each part, then of the whole, and see how the whole's counts
+        come from the parts'.
+      - >-
+        If your rules for lines 1 to 3 are right, the trouble is in lines 4 to 6. Line 4 does not
+        follow from lines 2 and 3: ask where in an induction a line may come from that nothing above
+        it gives. For lines 5 and 6, say what each does with the lines before it. If you cited Depth
+        or Triangle numbers, look again: neither is about counting numbers and operations.
+      - >-
+        To prove that every tree has at least one number: a single number has one; and a tree that
+        joins $u$ and $v$ has the numbers of both, so if $u$ has at least one, so does the tree. By
+        induction on structure, every tree has at least one number.
+    notes: >-
+      Numbers for line 3 mixes up the two counts. Substitute for line 4 misses that the line is the
+      assumption that the step is allowed for the smaller trees. The two smaller trees for line 5
+      misses that the line puts line 4's values into line 2. Depth and Triangle numbers never apply.
+  derive-ema:
+    rungs:
+      - What do you get when you put $(1 - \beta^k)g$ in place of $m_k$, and multiply the first bracket out?
+      - >-
+        M1.2's exponent rules give $\beta \times \beta^k = \beta^{k + 1}$, and its distributive law
+        multiplies a bracket out term by term. Where does the step need each of them?
+      - >-
+        Try $\beta = 0.5$, $g = 1$ and $k = 1$: then $m_1 = 0.5$, and $m_2 = 0.5 \times 0.5 + 0.5$.
+        What is $m_2$, and does your expression give the same?
+      - >-
+        If your expression gives the right value but is not accepted, it is right and only needs
+        tidying: multiply out, and collect what multiplies $g$. If its value is wrong, check that it
+        keeps both parts of the recurrence, $\beta m_k$ and $(1 - \beta)g$, and then the power of
+        $\beta$ in each.
+      - >-
+        For $s_{k+1} = 3s_k + 2$ with the hypothesis $s_k = 3^k - 1$: $s_{k+1} = 3(3^k - 1) + 2 =
+        3^{k+1} - 3 + 2 = 3^{k+1} - 1$.
+    notes: >-
+      $(1 - \beta^k)g$ restates the hypothesis instead of the next step. $\beta(1 - \beta^k)g$
+      leaves out the new gradient's share, $(1 - \beta)g$. $(\beta - \beta^{k+1})g$ multiplies out
+      the first part but drops $(1 - \beta)g$. An answer without $g$ forgets that the average is a
+      fraction of $g$. The unsimplified $\beta(1 - \beta^k)g + (1 - \beta)g$ has the right value and
+      is turned away only for its length.
+  derive-bernoulli:
+    rungs:
+      - What is the claim at $n = 0$, and what must the step show, given $(1 + h)^k \ge 1 + kh$?
+      - >-
+        M1.8 multiplied two inequalities between positive numbers, and the Derive phase noted that
+        multiplying both sides by a number that is at least 0 keeps an inequality. Where could the
+        step use that?
+      - >-
+        Try $h = 0.5$ and $k = 2$: $(1.5)^2 = 2.25 \ge 1 + 2 \times 0.5 = 2$. Multiply both sides by
+        $1.5$: what do you get, and how does it compare with $1 + 3 \times 0.5$?
+      - >-
+        If you multiplied both sides by $1 + h$, say why that keeps the inequality; that is where
+        $h \ge -1$ comes in. If you have $(1 + kh)(1 + h)$, multiply it out and see which term is
+        left over beyond $1 + (k + 1)h$, and why it cannot be negative.
+      - >-
+        To prove $2^n \ge 2n$ for every $n \ge 1$: at $n = 1$, $2 \ge 2$. If $2^k \ge 2k$ for some
+        $k \ge 1$, then $2^{k+1} = 2 \times 2^k \ge 2 \times 2k = 2k + 2k \ge 2k + 2 = 2(k + 1)$,
+        since $2k \ge 2$. By induction, $2^n \ge 2n$ for every $n \ge 1$.
+    notes: >-
+      An answer that checks values of $n$ or $h$ is evidence, not the proof. One that multiplies by
+      $1 + h$ without saying why it is allowed misses the condition $h \ge -1$. One that drops
+      $kh^2$ should say why it is at least 0: $k \ge 0$, and a square is never negative. A proof that
+      starts at $n = 1$, with $1 + h \ge 1 + h$, must also check $n = 0$, which the claim includes.
+      Treating $h \ge 0$ and $-1 \le h < 0$ as two cases is fine, if each says why $1 + h \ge 0$.
+  build-tiles:
+    rungs:
+      - For one quarter, how can the function tell whether the cut square is in it, and which square should the quarter's own call leave out in each case?
+      - >-
+        In the Explore phase, the tile across the centre took one square from each quarter without
+        the cut square, and each quarter was then covered by the claim for half the width. E1.4
+        made a new list with `a = a + [3]`, and `+` joins any two lists the same way.
+      - >-
+        Work through `cover(2, 0, 0, [0, 1])` by hand: `half` is 1, and each quarter is one square.
+        For each `i` from 0 to 3, is `hole` inside that quarter, and what should happen to
+        `middle[i]`? Which three squares should the single tile hold, and is that what your program
+        prints?
+      - >-
+        If test_two passes and a larger test fails, the base case and the centre tile are right, and
+        the trouble is in the calls on the quarters: check which block each call covers and which
+        square it is told to leave out. If every test stops with RecursionError, the calls never
+        reach the base case: look at the width each call is given. If test_two says an item is not
+        a tile, compare the list it shows with the one tile a block 2 by 2 needs, and look at what
+        the base case gives, how each quarter's tiles are added to `tiles`, and what goes into
+        `centre`.
+      - >-
+        To list every square of a block, a function could split it into four quarters, ask for the
+        squares of each quarter with a call on a block half as wide, join the four lists with `+`,
+        and give a block 1 wide as `[[top, left]]`, its only square.
+    notes: >-
+      Giving every quarter its middle square fails test_two with a four-square tile. Passing `hole`
+      to every quarter fails test_four, since three quarters then leave nothing out. Never filling
+      `centre` leaves the middle squares uncovered and adds an empty tile. Calling `cover` with
+      `width` instead of `half` never reaches the base case and stops with RecursionError.
+      Appending each quarter's list with `tiles.append(...)`, instead of joining it with `+`, nests
+      the lists, so test_two shows `[[], [], [], [], [[0, 1], [1, 0], [1, 1]]]`.
+  build-induction-check:
+    rungs:
+      - What are the two things an induction must show, and which of them is a check at one value and which a claim about every $n$?
+      - >-
+        In the Explore phase, the step for a sum split off the last term: the sum to $k + 1$ is the
+        sum to $k$ plus the term $k + 1$. M1.2's SymPy showed that two expressions are equal by
+        turning their difference into 0. Which part of `proves` can use that?
+      - >-
+        For the triangle numbers, `total(n)` is `Rational(1, 2) * n * (n + 1)`. What is
+        `total(n + 1) - total(n)`, worked out by hand, and which term should it equal?
+      - >-
+        If test_true_sums passes, the parts of `proves` work for true sums, and the trouble is in
+        what makes it give False: test_wrong_base needs the base case and test_wrong_step needs the
+        step, and each must be able to make the answer False on its own. If one of the true sums
+        fails, check your base case and your step on that sum separately, and print what each
+        gives. For `solves`, compare the value of `n` at which your base case checks with where the
+        sequence starts.
+      - >-
+        To check that `f(n)` is `2 * f(n - 1)` for every `n`, with SymPy: `simplify(f(n) - 2 * f(n - 1)) == 0`,
+        with `n` a symbol, holds for `f(n) = 3 * 2 ** n` and fails for `f(n) = n ** 2`.
+    notes: >-
+      Leaving out the base case passes $\frac{n(n + 1)(2n + 1)}{6} + 1$ as the sum of the squares and
+      fails test_wrong_base. Leaving out the step passes $n^2$ as the triangle numbers and fails
+      test_wrong_step. Joining the two with `or` fails every test that wants False. Taking away
+      `term(n)` instead of `term(n + 1)` fails test_true_sums, and so do `is` in place of `==`, a
+      step that is never simplified, and a step that compares its two sides with `==`, which asks
+      whether they are written alike. A base case of `proves` at $n = 0$ fails only for the odd
+      numbers, whose term at 0 is $-1$. Checking the sequence's base case at 1 fails test_tiles and
+      test_average. A step checked with `simplify(Eq(...))` gives SymPy's own True and False, which
+      the tests accept, but SymPy cannot settle the doubling case that way. A step checked with
+      `.is_zero` gives None for the doubling case, since SymPy cannot tell whether $2 - 2^{n+1}$ is 0.
+  debug-power:
+    rungs:
+      - Which is the first $n$ whose printed value is wrong, and is that $n$ even or odd?
+      - >-
+        E1.1 split a whole number with `//` and `%`, and E1.5 traced a recursive function by working
+        out its smaller calls first. In this lesson, strong induction assumes the cases below $n$,
+        here the case `n // 2`. Which of these helps with an odd `n`?
+      - >-
+        Work out `power(2, 3)` by hand: `3 // 2` is 1, so `half` is `power(2, 1)`. What is that, and
+        what does the last line then give? What should $2^3$ be, written with `half`?
+      - >-
+        If the even powers are right and the odd ones wrong, the trouble is in the last line: write
+        $n$ as twice `n // 2`, plus 1, and work out what $x^n$ is in terms of `half`. If only
+        `power(3, 5000)` stops with an error, look at how much smaller each call makes `n`; if every
+        test stops with one, print `n` at the start of each call.
+      - >-
+        `sum_to(n)` adds $1 + 2 + \dots + n$ by halving. With `m = n // 2`, the sum to $2m$ is twice
+        the sum to $m$, plus $m^2$, since each of $m + 1$ to $2m$ is $m$ more than one of 1 to $m$;
+        an odd $n = 2m + 1$ adds $n$ itself. So `sum_to(0)` is 0, and otherwise `half = sum_to(m)`,
+        then `2 * half + m * m` for an even `n` and `2 * half + m * m + n` for an odd one.
+    notes: >-
+      Keeping `half * x` fails every test, test_small first at `power(-3, 3)`. `half * x * x` is
+      wrong from $n = 1$ on, where it gives $x^2$. Taking one off `n` passes the small tests and
+      stops with RecursionError in test_large. Halving with `/` makes `n` a float, 2.5, 1.25 and so
+      on, which would reach 0.0 only after about 1,075 halvings, so every test stops with
+      RecursionError first.
+
+novice:
+  - How can a proof about one $k$ say anything about a million cases?
+  - If the step assumes $P(k)$, is the proof not assuming what it wants to prove?
+  - Why is the base case needed, when it is usually so easy?
+  - Why do the stamps need four base cases, when the tiles need one?
+  - How is checking a recursive function's smaller calls the same as induction?

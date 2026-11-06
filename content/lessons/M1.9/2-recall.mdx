@@ -1,0 +1,61 @@
+This lesson builds on M1.6's sums, M1.8's proofs and E1.5's recursion, and on M1.2's algebra. Five quick questions check that they are ready. Answer from memory, without a calculator. A miss opens a short re-teach straight away.
+
+<Exercise id="recall-sigma-last" />
+
+<Reteach for="recall-sigma-last">
+
+<Callback lesson="M1.6">
+
+$\sum_{i=1}^{n} a_i$ adds the terms from $a_1$ to $a_n$. A sum that runs one term further adds the same terms and one more, its last, so it splits as $\sum_{i=1}^{n+1} a_i = \sum_{i=1}^{n} a_i + a_{n+1}$. For the squares as far as 3, that is $1 + 4 + 9 = (1 + 4) + 9$. The last term puts $n + 1$ in place of $i$, all of it: for $i^2$ it is $(n + 1)^2$, not $n^2 + 1$.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-triangle" />
+
+<Reteach for="recall-triangle">
+
+<Callback lesson="M1.6">
+
+Pair the first term with the last, the second with the second last, and so on. In $1 + 2 + \dots + 10$ each pair, $1 + 10$, $2 + 9$ and the rest, makes 11, and there are 5 pairs, so the sum is 55. In general $1 + 2 + \dots + n = \frac{n(n + 1)}{2}$: the number of terms times the average of the first and the last.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-expand" />
+
+<Reteach for="recall-expand">
+
+<Callback lesson="M1.2">
+
+Multiplying out two brackets multiplies every term of one by every term of the other and adds the four products: $(k + 1)(k + 3) = k^2 + 3k + k + 3 = k^2 + 4k + 3$. The two middle products are the ones most often forgotten. A check at one value catches a slip: at $k = 1$, $2 \times 4 = 8$, and $1 + 4 + 3 = 8$.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-trust" />
+
+<Reteach for="recall-trust">
+
+<Callback lesson="E1.5">
+
+`total(xs)` gives 0 for the empty list, and otherwise `xs[0]` plus the total of the rest. E1.5 trusted it without following a single call, by three checks. Every call is given a shorter list, so every chain of calls reaches the empty list. The base case, `total([])`, gives 0, the sum of an empty list. And the recursive case is right on the assumption that the smaller call is right, since the first number plus the sum of the rest is the sum of the whole list.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-contradiction" />
+
+<Reteach for="recall-contradiction">
+
+<Callback lesson="M1.8">
+
+A proof by contradiction supposes that the claim is false, and reasons, one valid step at a time, until some statement and its denial are both true. Only the supposition can be to blame, so the claim is true. M1.8 supposed that $\sqrt{2} = \frac{p}{q}$ in lowest terms, and found that $p$ and $q$ were both even, and not both even.
+
+</Callback>
+
+</Reteach>

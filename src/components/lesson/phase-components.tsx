@@ -16,6 +16,7 @@ import {
   SetDiagram,
   Staircase,
   TextBytes,
+  TileGrid,
 } from "@/components/figures";
 import { HintIcon, LockIcon } from "@/components/ui/icons";
 import { loadLesson, type LoadedLesson } from "@/lib/content/lesson";
@@ -193,6 +194,20 @@ export function phaseComponents(ctx: PhaseContext): MDXComponents {
     );
   }
 
+  /** A tile grid whose tiles wait for an exercise they would answer, such as where the first tile goes. */
+  function TileGridSlot({ tilesAfter, ...props }: ComponentProps<typeof TileGrid> & { tilesAfter?: string }) {
+    if (tilesAfter && !lesson.byId.has(tilesAfter)) {
+      return <Problem>a tile grid waits for {tilesAfter}, which does not exist.</Problem>;
+    }
+    return (
+      <TileGrid
+        {...props}
+        tilesLocked={tilesAfter ? !states.get(tilesAfter)?.done : false}
+        lockedNote={tilesAfter ? opensNote(tilesAfter, "Placing the tiles") : undefined}
+      />
+    );
+  }
+
   function MixedCheck() {
     if (phase !== "explain") return <Problem>the mixed check belongs in the Explain phase.</Problem>;
     const items = ctx.check?.items ?? [];
@@ -266,5 +281,6 @@ export function phaseComponents(ctx: PhaseContext): MDXComponents {
     TextBytes: TextBytesSlot,
     SetDiagram,
     QuantifierGrid: QuantifierGridSlot,
+    TileGrid: TileGridSlot,
   };
 }

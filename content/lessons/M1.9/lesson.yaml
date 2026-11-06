@@ -1,0 +1,117 @@
+code: M1.9
+title: "Proof II: induction and recursion"
+course: M1
+status: ready
+summary: >-
+  A grid 1,024 squares wide has one square cut out, anywhere at all. Can tiles of three squares,
+  each a 2 by 2 block less one square, always cover the rest? Proof by induction and strong
+  induction, recurrences and the formulas they lead to, and proofs about recursive programs and the
+  trees they work on.
+sittings: 2
+minutes:
+  puzzle: 10
+  recall: 10
+  explore: 45
+  derive: 40
+  build: 50
+  explain: 25
+concepts:
+  taught:
+    - id: M1.9/induction
+      name: Proof by induction
+      summary: >-
+        To prove a claim $P(n)$ for every whole number $n$ from $n_0$ up, prove the base case,
+        $P(n_0)$, and the inductive step: for every $k \ge n_0$, if $P(k)$ is true, then $P(k + 1)$
+        is true. The step supposes $P(k)$ for the one $k$ it starts from, its inductive hypothesis,
+        never the claim for every $n$. Both parts are needed: a step with no base case can carry a
+        false claim, such as that $n^2 + n$ is always odd, and a step that fails for one $k$ breaks
+        the chain there. Induction works because a smallest counterexample could be neither
+        the base case nor a case that follows a true one.
+      usedBy: [M1.10, M5.1, E1.10]
+    - id: M1.9/strong-induction
+      name: Strong induction
+      summary: >-
+        In strong induction the step may suppose every case from $n_0$ up to $k$, not only $P(k)$,
+        and must then prove $P(k + 1)$. It needs as many base cases as the step reaches back: a
+        step that builds $P(k + 1)$ from $P(k - 3)$ needs four. So every amount from 12 rupees up
+        can be made with 4 and 5 rupee stamps, and every whole number from 2 up is a product of
+        primes. It is also how a recursive function that calls itself on half its argument, such
+        as `power`, is proved right, and how the calls of `fib`, which leans on the two cases
+        before, are counted.
+      usedBy: [E1.10, M11.3]
+    - id: M1.9/recurrences
+      name: Recurrences and closed forms
+      summary: >-
+        A sequence can be defined recursively, by its first term and a recurrence that gives each
+        term from earlier ones, as $T(1) = 1$ and $T(k + 1) = 4T(k) + 1$ count the tiles. A closed
+        form gives the $n$th term directly, here $T(n) = \frac{4^n - 1}{3}$; one can be guessed from
+        the first few terms and then proved by induction. Induction also proves a bound that every
+        step keeps: if $d_{t+1} \le 0.9\,d_t$ at every step, then $d_t \le 0.9^t d_0$.
+      usedBy: [M5.1, M10.4, E1.10, M14.2]
+    - id: M1.9/structural-induction
+      name: Induction on structure
+      summary: >-
+        A claim about every tree, or every nested list, is proved for the smallest pieces, such as
+        the single numbers at the leaves, and then for each larger piece on the supposition that it
+        holds for the parts the piece is made of. So an expression whose operations each join two
+        parts has one more number than it has operations. A recursive function is proved right by
+        induction on the size of its argument, and a loop by induction on its passes, which is what
+        an invariant does.
+      usedBy: [E1.10, M11.3, L2.4]
+  used:
+    - M1.8/proof
+    - M1.8/direct-proof
+    - M1.8/contradiction
+    - M1.6/sigma-notation
+    - M1.6/arithmetic-series
+    - M1.6/geometric-series
+    - E1.5/base-and-recursive-case
+    - E1.5/recursive-structures
+    - E1.2/loop-invariants
+    - M1.2/equivalence
+    - M1.2/exponent-rules
+    - M1.7/quantifiers
+    - E1.3/defining-functions
+    - E1.4/lists
+links:
+  requires:
+    - lesson: M1.6
+      bridge: >-
+        M1.6 found sums by pairing terms and by subtracting a multiple of the sum, tricks that fit
+        one kind of sum each. SymPy gave the sum of the first $n$ squares as
+        $\frac{n^3}{3} + \frac{n^2}{2} + \frac{n}{6}$, which pairing cannot find. This lesson's
+        induction proves it, and the step of each proof splits the last term off a sum.
+    - lesson: M1.8
+      bridge: >-
+        M1.8 showed that checking cases never proves a claim about every whole number. Induction
+        proves one with two finite arguments, the first case and a proof that each case gives the
+        next, and a proof by contradiction, about a smallest counterexample, shows why that covers
+        every whole number.
+  buildsOn:
+    - lesson: E1.5
+      bridge: >-
+        E1.5 trusted a recursive function by checking its base case, and its recursive case on the
+        assumption that the smaller calls are right, so that the lists were settled one length at a
+        time. That argument is proof by induction on the length of the list.
+  anotherViewOf:
+    - lesson: E1.2
+      bridge: >-
+        E1.2 proved what a loop computes with an invariant: true before the first pass, and kept
+        true by every pass. That is induction on the number of passes, with the start as its base
+        case and the pass as its step, and this lesson shows why the two together reach every pass.
+  foreshadows:
+    - lesson: M1.10
+      bridge: >-
+        Counting arrangements leads to formulas for every $n$, such as the
+        $n! = 1 \times 2 \times \dots \times n$ orders of $n$ things and the binomial theorem for
+        $(a + b)^n$, and M1.10 proves them by induction on $n$.
+    - lesson: M5.1
+      bridge: >-
+        A sequence defined by a recurrence, such as the errors of an iterative method, is proved to
+        shrink by induction, one step at a time, and M5.1 asks what it shrinks towards.
+    - lesson: E1.10
+      bridge: >-
+        Merge sort sorts the two halves of a list and merges them. E1.10 proves that it sorts by
+        strong induction on the length, and counts its work with a recurrence that this lesson's
+        methods solve.
+skills: []
