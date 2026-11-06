@@ -50,10 +50,16 @@ export const test = base.extend<Fixtures>({
 
 export { expect };
 
-/** Opens a page and waits until it has loaded, its fonts are in and the network is quiet. */
+/**
+ * Opens a page and waits until its content has come from Derive's server and is on screen, its
+ * fonts are in and the network is quiet. GitHub Pages serves a page that does not exist with
+ * status 404, and the content then says so.
+ */
 export async function open(page: Page, path: string, status = 200) {
   const response = await page.goto(path, { waitUntil: "load" });
   expect(response?.status(), `${path} answered ${response?.status()}`).toBe(status);
+  await page.waitForSelector("html[data-page]", { timeout: 30_000 });
+  expect(await page.locator("html").getAttribute("data-page"), `${path} shows its content`).toBe(status === 404 ? "not-found" : "ready");
   await settle(page);
 }
 

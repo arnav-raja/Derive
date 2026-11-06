@@ -2,8 +2,10 @@ import localFont from "next/font/local";
 
 /*
  * Source Serif 4, the reading type of lesson text, exercise prompts and the notebook, loaded as
- * sans.ts explains. The layouts and pages that set text in it import this file, so that only
- * they preload it. The italic is rarer, so it loads only once a page sets something in it.
+ * sans.ts explains. It is not preloaded: a page's content now arrives from Derive's server after
+ * the page loads, and a preload would make every page that links to a lesson fetch the face
+ * when it prefetches that link. The page's content is shown once its fonts are in, so the text
+ * does not jump as this arrives.
  */
 
 export const serifUpright = localFont({
@@ -14,7 +16,7 @@ export const serifUpright = localFont({
   ],
   display: "swap",
   adjustFontFallback: false,
-  preload: true,
+  preload: false,
 });
 
 export const serifItalic = localFont({

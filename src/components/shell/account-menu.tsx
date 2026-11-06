@@ -3,8 +3,9 @@
 import { clsx } from "clsx";
 import { DropdownMenu } from "radix-ui";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-import { signOut } from "@/app/(auth)/actions";
+import { signOut } from "@/lib/sign-out";
 import { CheckIcon, ChevronDownIcon, LogOutIcon, MonitorIcon, MoonIcon, SettingsIcon, SunIcon } from "@/components/ui/icons";
 import type { ThemePreference } from "@/lib/store/types";
 
@@ -43,6 +44,7 @@ export function AccountMenu({
   variant?: "sidebar" | "compact";
 }) {
   const current = useThemePreference();
+  const router = useRouter();
 
   function choose(value: string) {
     applyTheme(value as ThemePreference);
@@ -107,7 +109,7 @@ export function AccountMenu({
             ))}
           </DropdownMenu.RadioGroup>
           <DropdownMenu.Separator className="my-1 h-px bg-rule" />
-          <form action={signOut}>
+          <form action={() => signOut((to) => router.replace(to))}>
             <DropdownMenu.Item asChild className={itemClasses}>
               <button type="submit" className="w-full text-left">
                 <LogOutIcon />

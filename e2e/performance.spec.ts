@@ -6,7 +6,8 @@ import { PHASES, writtenLessons } from "./store";
 /*
  * Performance budgets. Each page is loaded once, at desktop width, with an empty cache, and
  * what it takes to show it is measured: the bytes of script, style, fonts and HTML sent over
- * the network (compressed, as served), and the number of elements on the page. A page over its
+ * the network (compressed, as served; the HTML counts the page's content from Derive's server
+ * as well as the static page around it), and the number of elements on the page. A page over its
  * budget fails the build. Bytes and elements are the same on every run, so the budgets hold on
  * any machine; times are not, so they are not budgeted.
  *
@@ -31,7 +32,9 @@ const PAGE_BUDGETS: Record<string, Budget> = {
   "/progress": { js: 210 * KB, css: 20 * KB, fonts: 85 * KB, html: 25 * KB, elements: 900 },
   "/settings": { js: 215 * KB, css: 20 * KB, fonts: 85 * KB, html: 12 * KB, elements: 400 },
   "/placement?course=E1": { js: 465 * KB, css: 21 * KB, fonts: 220 * KB, html: 10 * KB, elements: 250 },
-  "/sign-in": { js: 180 * KB, css: 20 * KB, fonts: 140 * KB, html: 9 * KB, elements: 200 },
+  // Raised from 180 KB on 6 November, when sign-in moved into the browser for GitHub Pages: the
+  // page now carries Supabase's auth client and the form's checks (201 KB measured).
+  "/sign-in": { js: 230 * KB, css: 20 * KB, fonts: 140 * KB, html: 9 * KB, elements: 200 },
 };
 
 /**
@@ -44,6 +47,7 @@ const PHASE_BUDGET: Budget = { js: 525 * KB, css: 21 * KB, fonts: 725 * KB, html
 async function measure(page: Page, path: string): Promise<Measure> {
   const response = await page.goto(path, { waitUntil: "load" });
   expect(response?.status(), `${path} answered ${response?.status()}`).toBe(200);
+  await page.waitForSelector("html[data-page=ready]", { timeout: 30_000 });
   await page.waitForLoadState("networkidle");
   await page.evaluate(() => document.fonts.ready);
   return page.evaluate(() => {
@@ -51,6 +55,11 @@ async function measure(page: Page, path: string): Promise<Measure> {
     const out = { js: 0, css: 0, fonts: 0, html: nav?.encodedBodySize ?? 0, elements: document.getElementsByTagName("*").length };
     for (const e of performance.getEntriesByType("resource") as PerformanceResourceTiming[]) {
       const url = new URL(e.name);
+      // The page's content, from Derive's server, counts with its HTML.
+      if (url.pathname.endsWith("/_derive/page")) {
+        out.html += e.encodedBodySize;
+        continue;
+      }
       // Prefetches for later pages, made once the page is up, are not part of showing it.
       if (e.initiatorType === "fetch" || e.initiatorType === "xmlhttprequest") continue;
       if (/\.m?js$/.test(url.pathname)) out.js += e.encodedBodySize;

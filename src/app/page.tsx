@@ -1,6 +1,6 @@
-import { redirect } from "next/navigation";
+// A static page for GitHub Pages; its content comes from Derive's server (src/server/app).
+import { WiredPage } from "@/components/shell/wired-page";
 
-// The proxy sends visitors without a session to sign in first.
-export default function Home() {
-  redirect("/today");
+export default function Page() {
+  return <WiredPage />;
 }

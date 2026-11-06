@@ -10,6 +10,7 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 
 import { ScrollStops } from "@/components/ui/scroll-stops";
+import { WireHost } from "@/lib/wire/client";
 
 export const metadata: Metadata = {
   title: { default: "Derive", template: "%s · Derive" },
@@ -18,7 +19,34 @@ export const metadata: Metadata = {
   applicationName: "Derive",
   // Derive is private: one learner, never indexed.
   robots: { index: false, follow: false },
+  referrer: "strict-origin-when-cross-origin",
 };
+
+/** The origin of a configured address, or null when it is unset or not a URL. */
+function originOf(url: string | undefined): string | null {
+  try {
+    return url ? new URL(url).origin : null;
+  } catch {
+    return null;
+  }
+}
+
+// GitHub Pages cannot send headers, so the policy travels in a meta tag
+// (which cannot carry frame-ancestors). The browser talks to Derive's server
+// and to Supabase's sign-in, and to nothing else. Pyodide and its web worker
+// need WebAssembly compilation; React's development build needs eval().
+const connect = ["'self'", originOf(process.env.NEXT_PUBLIC_DERIVE_API_URL), originOf(process.env.NEXT_PUBLIC_SUPABASE_URL)];
+const contentSecurityPolicy = [
+  "default-src 'self'",
+  `script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""}`,
+  "worker-src 'self' blob:",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob:",
+  "font-src 'self' data:",
+  `connect-src ${[...new Set(connect.filter(Boolean))].join(" ")}`,
+  "base-uri 'self'",
+  "form-action 'self'",
+].join("; ");
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -36,10 +64,11 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
   return (
     <html lang="en-IN" suppressHydrationWarning>
       <head>
+        <meta httpEquiv="Content-Security-Policy" content={contentSecurityPolicy} />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className="bg-paper text-ink">
-        {children}
+        <WireHost>{children}</WireHost>
         <ScrollStops />
       </body>
     </html>
