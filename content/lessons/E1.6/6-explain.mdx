@@ -1,0 +1,27 @@
+The test of understanding is explaining it simply to someone who was not there. Your friend worked through E1.1 to E1.4 with you, so values, loops, functions, lists and dictionaries are familiar, but they have never looked inside a string or opened a file from a program.
+
+<Exercise id="explain-text-bytes" />
+
+## Where this leads
+
+Text is where a model's data begins: gathered as bytes, cleaned, split into fields and tokens, and only then turned into numbers.
+
+<Foreshadow lesson="L4.2">
+
+A language model reads text as tokens, not characters. L4.2 builds a byte-pair encoder, which starts from a text's UTF-8 bytes, so that it can read any text in any script, and then merges the pairs of bytes that come up most often into tokens of their own, over and over.
+
+</Foreshadow>
+
+<Foreshadow lesson="E2.8">
+
+Real data arrives as messy files, with headers, blank lines, missing fields and numbers written as text, as in this lesson's training log but far larger. E2.8 loads such files, cleans them, and splits the data into the parts used for training and for testing.
+
+</Foreshadow>
+
+<Foreshadow lesson="E9.2">
+
+Text for training a model is gathered from the web, as pages of bytes in many encodings and languages, mojibake included. E9.2 extracts the text from them, cleans it, and works out which language each page is in.
+
+</Foreshadow>
+
+<MixedCheck />

@@ -1,0 +1,61 @@
+This lesson builds on E1.1's types, E1.2's accumulators, E1.4's lists and dictionaries, and M1.1's powers of ten. Five quick questions check that they are ready. Answer from memory, without running anything. A miss opens a short re-teach straight away.
+
+<Exercise id="recall-plus-strings" />
+
+<Reteach for="recall-plus-strings">
+
+<Callback lesson="E1.1">
+
+The type decides what an operation means. `+` joins two strings, so `"4" + str(2)` is the string `"4"` joined to the string `"2"`, which is `"42"`. `int("4")` turns the string into the int 4, so `int("4") + 2` adds two numbers and gives 6. `*` with a string and a whole number repeats the string, so `"4" * 2` is `"44"`. Python never turns text into a number, or a number into text, unless it is told to.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-slice" />
+
+<Reteach for="recall-slice">
+
+<Callback lesson="E1.4">
+
+Indexes start at 0, so `xs[0]` is the first slot, `"s"`, and a negative index counts from the end, so `xs[-1]` is the last slot, `"p"`. A slice `xs[a:b]` is a new list of the slots from index `a` up to, but not including, index `b`, so `xs[1:3]` is slots 1 and 2, `['t', 'e']`. `print` shows the strings in a list with quotes around them.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-accumulate" />
+
+<Reteach for="recall-accumulate">
+
+<Callback lesson="E1.2">
+
+An accumulator starts empty and grows on every pass. Each pass works out the right side from the value that `text` refers to now, then makes `text` refer to the result. `range(3)` gives 0, 1 and 2, so `text` goes from `""` to `"0,"`, then `"0,1,"`, then `"0,1,2,"`. Every pass adds a comma after its number, the last pass too.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-dict-count" />
+
+<Reteach for="recall-dict-count">
+
+<Callback lesson="E1.4">
+
+`counts.get(w, 0)` gives the count so far for `w`, or 0 the first time `w` is seen, so each word's count goes up by one every time the word comes. `"to"` comes twice, so `counts["to"]` is 2. `len(counts)` counts the keys, which are the different words: to, be, or and not, four of them.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-powers" />
+
+<Reteach for="recall-powers">
+
+<Callback lesson="M1.1">
+
+Dividing powers of ten subtracts their exponents. A page takes $2{,}000 = 2 \times 10^3$ bytes, so a gigabyte holds $\frac{10^9}{2 \times 10^3} = \frac{1}{2} \times 10^{6} = 5 \times 10^5$ pages, which is 500,000.
+
+</Callback>
+
+</Reteach>

@@ -1,0 +1,55 @@
+## The bits that carry a code point
+
+Explore's bits view showed UTF-8's markers. A byte that is a whole character starts with `0`. A character of $n$ bytes, for $n$ from 2 to 4, starts with a byte of $n$ ones followed by a zero, and each of its other $n - 1$ bytes starts with `10`. Every bit that is not a marker carries part of the code point.
+
+<Exercise id="derive-payload" />
+
+<Reveal for="derive-payload">
+
+So a character of two bytes carries 11 bits of code point, one of three bytes 16 and one of four 21, and a byte on its own carries 7. A run of bits can carry any code point that fits in it, and no larger one.
+
+<Exercise id="derive-largest" />
+
+</Reveal>
+
+<Reveal for="derive-largest">
+
+So two bytes carry code points up to 2,047, three up to 65,535, and four up to 2,097,151, well past Unicode's last code point, 1,114,111, so four bytes are always enough. One byte on its own carries up to $2^7 - 1 = 127$. UTF-8 always uses the fewest bytes that can carry a code point, so a code point takes one byte below 128, two from 128 to 2,047, three from 2,048 to 65,535, and four from 65,536 up.
+
+## The size of a whole script
+
+That settles the size of nearly a whole script at once. Unicode's main block for Devanagari, the script of Hindi, Marathi, Nepali and Sanskrit, holds the code points from 2,304 to 2,431, with every letter, vowel sign and mark that Hindi uses. A few rare signs, for Vedic texts and old manuscripts, sit in small blocks further up.
+
+<Exercise id="derive-devanagari-proof" />
+
+</Reveal>
+
+<Reveal for="derive-devanagari-proof">
+
+So every letter, vowel sign and mark of the block takes three bytes, which is why नमस्ते took 18. The Chinese, Japanese and Korean characters in everyday use have code points from 2,048 to 65,535 as well, and take three bytes each. The accented letters of French, German, Spanish and the other major European languages, and the Greek, Cyrillic, Hebrew and Arabic letters of everyday text, are below 2,048 and take two, and most emoji, above 65,535, take four.
+
+## Hindi and English, mixed
+
+Hindi written online often mixes in English words, digits and punctuation. Suppose that a fraction $p$ of a text's characters take one byte each, as English letters, digits, spaces and common punctuation do, and that the rest are Devanagari.
+
+<Exercise id="derive-mixed-bytes" />
+
+</Reveal>
+
+<Reveal for="derive-mixed-bytes">
+
+At $p = 0$, a text all in Devanagari, that is 3 bytes a character, and at $p = 1$, all in English, it is 1. A text in which a quarter of the characters take one byte takes $3 - 2 \times \frac{1}{4} = 2.5$ bytes a character.
+
+## A gigabyte of Hindi
+
+Sizes like these decide how much text a dataset holds.
+
+<Exercise id="derive-estimate" />
+
+</Reveal>
+
+<Reveal for="derive-estimate">
+
+The estimate's text is the mixed text at $p = \frac{1}{6}$, since one character in six is a space, and $3 - \frac{2}{6} \approx 2.7$ bytes a character agrees with the 16 bytes of each word and its space. Five English letters and a space take 6 bytes, so the same number of English words would fit in $3.75 \times 10^8$ bytes, three eighths of the gigabyte. A tokeniser that starts from bytes, as L4.2's does, feels the same gap. Petrov and colleagues, at NeurIPS 2023, tokenised the same sentences translated into many languages, and found that one language can need up to 15 times as many tokens as another for the same meaning, and over 4 times as many even for models that read bytes directly. A model's context window, the most tokens it can read at once, and its price are both counted in tokens, so in such a language the same window holds less text, and the same text costs more.
+
+</Reveal>

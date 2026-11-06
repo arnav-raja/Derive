@@ -1,0 +1,1464 @@
+exercises:
+  # Puzzle ---------------------------------------------------------------------
+  - id: puzzle-namaste
+    phase: puzzle
+    kind: predict
+    concept: E1.6/unicode-and-bytes
+    covers: [E1.6/strings-as-sequences]
+    title: A greeting in two scripts
+    prompt: What does the program print? The options show its two lines, one after the other.
+    answer:
+      type: choice
+      options:
+        - { id: seen-one-byte, label: '`5 3`, then `5 3`' }
+        - { id: one-byte, label: '`5 6`, then `5 6`' }
+        - { id: seen-three, label: '`5 3`, then `5 9`' }
+        - { id: two-bytes, label: '`5 6`, then `5 12`' }
+        - { id: right, label: '`5 6`, then `5 18`' }
+      correct: [right]
+    explanation: >-
+      A reader sees three syllables in नमस्ते: न, म and स्ते. Python counts six characters: न, म,
+      स, the mark ्, which Hindi calls halant and Unicode calls virama, that takes away स's vowel
+      so that it joins the next letter, त, and the vowel sign े. Each letter of `hello` takes one byte, but each of the six Hindi characters takes
+      three, so the greeting takes 18 bytes.
+
+  # Recall ---------------------------------------------------------------------
+  - id: recall-plus-strings
+    phase: recall
+    kind: recall
+    concept: E1.1/values-and-types
+    prompt: |
+      What does this program print?
+
+      ```python
+      print("4" + str(2), int("4") + 2, "4" * 2)
+      ```
+    answer:
+      type: choice
+      options:
+        - { id: numbers, label: '`6 6 8`' }
+        - { id: right, label: '`42 6 44`' }
+        - { id: joined, label: '`42 42 44`' }
+        - { id: error, label: 'Nothing: Python stops with `TypeError`' }
+      correct: [right]
+    explanation: >-
+      `+` joins the strings `"4"` and `"2"` into `42`. `int("4")` is the number 4, and 4 plus 2 is
+      6. `"4" * 2` repeats the string, giving `44`.
+
+  - id: recall-slice
+    phase: recall
+    kind: recall
+    concept: E1.4/lists
+    prompt: |
+      What does this program print?
+
+      ```python
+      xs = ["s", "t", "e", "p"]
+      print(xs[0], xs[-1], xs[1:3])
+      ```
+    answer:
+      type: choice
+      options:
+        - { id: one-based, label: '`t p [''e'', ''p'']`' }
+        - { id: with-end, label: '`s p [''t'', ''e'', ''p'']`' }
+        - { id: right, label: '`s p [''t'', ''e'']`' }
+        - { id: no-negative, label: 'Nothing: Python stops with `IndexError` at `xs[-1]`' }
+      correct: [right]
+    explanation: >-
+      `xs[0]` is the first slot, `s`, and `xs[-1]` is the last, `p`. `xs[1:3]` is a new list of
+      slots 1 and 2, stopping before slot 3: `['t', 'e']`.
+
+  - id: recall-accumulate
+    phase: recall
+    kind: recall
+    concept: E1.2/accumulator-pattern
+    prompt: |
+      What does this program print?
+
+      ```python
+      text = ""
+      for k in range(3):
+          text = text + str(k) + ","
+      print(text)
+      ```
+    answer:
+      type: choice
+      options:
+        - { id: right, label: '`0,1,2,`' }
+        - { id: no-last, label: '`0,1,2`' }
+        - { id: last-only, label: '`2,`' }
+        - { id: from-one, label: '`1,2,3,`' }
+      correct: [right]
+    explanation: >-
+      `text` starts empty, and each pass adds its number and a comma to what is there: `"0,"`,
+      then `"0,1,"`, then `"0,1,2,"`. The last pass adds a comma too.
+
+  - id: recall-dict-count
+    phase: recall
+    kind: recall
+    concept: E1.4/dicts-and-sets
+    prompt: |
+      What does this program print?
+
+      ```python
+      counts = {}
+      for w in ["to", "be", "or", "not", "to", "be"]:
+          counts[w] = counts.get(w, 0) + 1
+      print(counts["to"], len(counts))
+      ```
+    answer:
+      type: choice
+      options:
+        - { id: all-words, label: '`2 6`' }
+        - { id: right, label: '`2 4`' }
+        - { id: first-only, label: '`1 4`' }
+        - { id: key-error, label: 'Nothing: Python stops with `KeyError`' }
+      correct: [right]
+    explanation: >-
+      `counts.get(w, 0)` is 0 the first time a word comes, so each word's count goes up by one
+      every time it comes. `"to"` comes twice, and the dictionary has four keys: to, be, or and
+      not.
+
+  - id: recall-powers
+    phase: recall
+    kind: recall
+    concept: M1.1/powers-of-ten
+    prompt: >-
+      A gigabyte is $10^9$ bytes, and a page of English text takes about 2,000 bytes. How many
+      pages of 2,000 bytes fit in a gigabyte?
+    answer: { type: number, value: 500000, tolerance: { abs: 0 }, unit: pages }
+    explanation: >-
+      $\frac{10^9}{2 \times 10^3} = \frac{1}{2} \times 10^6 = 500{,}000$ pages.
+
+  # Explore --------------------------------------------------------------------
+  - id: explore-in
+    phase: explore
+    kind: predict
+    concept: E1.6/strings-as-sequences
+    title: Inside a string
+    placement: true
+    prompt: >-
+      What does the program print? The options show its three lines, one after another.
+    answer:
+      type: choice
+      options:
+        - { id: letters-anywhere, label: '`l g earn`, then `True True`, then `False`' }
+        - { id: single-chars, label: '`l g earn`, then `False False`, then `False`' }
+        - { id: list-runs, label: '`l g earn`, then `True False`, then `True`' }
+        - { id: right, label: '`l g earn`, then `True False`, then `False`' }
+      correct: [right]
+    explanation: >-
+      `"earn"` is in `"learning"`, at indexes 1 to 4, which is the slice `s[1:5]`. `"nl"` is not:
+      the string has an `n` and an `l`, but never side by side in that order. For the list, `in`
+      looks for `["e", "a"]` as one of its items, and its items are four single letters.
+    review:
+      variants:
+        - prompt: |
+            What does this print?
+
+            ```python
+            word = "token"
+            print(word[-2], word[1:3], len(word[1:]))
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: last, label: '`n ok 4`' }
+              - { id: with-end, label: '`e oke 4`' }
+              - { id: right, label: '`e ok 4`' }
+              - { id: whole, label: '`e ok 5`' }
+            correct: [right]
+          explanation: >-
+            `word[-2]` is the second character from the end, `e`. `word[1:3]` is the characters at
+            indexes 1 and 2, `ok`, and `word[1:]` is every character after the first, `oken`, four
+            of them.
+        - prompt: |
+            What does this print?
+
+            ```python
+            print([1, 2] in [1, 2, 3], [1, 2] in [[1, 2], 3])
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: both, label: '`True True`' }
+              - { id: run, label: '`True False`' }
+              - { id: right, label: '`False True`' }
+            correct: [right]
+          explanation: >-
+            For a list, `in` asks whether the value is one of its items. `[1, 2, 3]` has the items
+            1, 2 and 3, none of them the list `[1, 2]`; `[[1, 2], 3]` has `[1, 2]` as its first
+            item.
+        - prompt: |
+            What does this print?
+
+            ```python
+            print("ain" in "training", "tin" in "training")
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: right, label: '`True False`' }
+              - { id: both, label: '`True True`' }
+              - { id: neither, label: '`False False`' }
+            correct: [right]
+          explanation: >-
+            `"ain"` appears in `training` as a run of letters side by side. `t`, `i` and `n` are
+            all in `training`, but not as the run `tin`.
+
+  - id: explore-upper
+    phase: explore
+    kind: predict
+    concept: E1.6/strings-as-sequences
+    title: Capital letters
+    prompt: What does the program print?
+    answer:
+      type: choice
+      options:
+        - { id: changed, label: '`DERIVE`, then `DERIVE DERIVE`, then `DERIVE`' }
+        - { id: slot-assign, label: '`derive`, then `DERIVE Derive`, then `Derive`' }
+        - { id: right, label: '`derive`, then `DERIVE Derive`, and then Python stops with `TypeError`' }
+      correct: [right]
+    explanation: >-
+      `name.upper()` gives a new string, `"DERIVE"`, and leaves `name` as it was, so the first line
+      is `derive`. `name.replace("d", "D")` is another new string, `Derive`. Then
+      `name[0] = "D"` tries to change a slot of the string, which Python does not allow.
+    review:
+      variants:
+        - prompt: |
+            What does this print?
+
+            ```python
+            tag = "loss"
+            tag.replace("s", "t")
+            print(tag, tag.replace("s", "t"))
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: changed, label: '`lott lott`' }
+              - { id: right, label: '`loss lott`' }
+              - { id: first-only, label: '`loss lost`' }
+            correct: [right]
+          explanation: >-
+            The second line works out a new string and drops it, so `tag` is still `loss`.
+            `replace` replaces every `s`, so the new string is `lott`.
+        - prompt: |
+            What does this print?
+
+            ```python
+            a = "cat"
+            b = a
+            a = a + "s"
+            print(a, b)
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: right, label: '`cats cat`' }
+              - { id: shared, label: '`cats cats`' }
+              - { id: unchanged, label: '`cat cat`' }
+            correct: [right]
+          explanation: >-
+            `a + "s"` makes a new string, and `a` is made to refer to it. `b` still refers to the
+            string `"cat"`, which never changes.
+
+  - id: explore-compare
+    phase: explore
+    kind: predict
+    concept: E1.6/strings-as-sequences
+    covers: [E1.6/unicode-and-bytes]
+    title: Two comparisons
+    prompt: What does the program print?
+    answer:
+      type: choice
+      options:
+        - { id: right, label: '`True True`' }
+        - { id: alphabet, label: '`False False`' }
+        - { id: numbers, label: '`True False`' }
+        - { id: letters-only, label: '`False True`' }
+      correct: [right]
+    explanation: >-
+      Python compares the first characters, `Z` and `a`, and in Python's order the capitals A to Z
+      all come before the small letters a to z. `"10"` and `"9"` are compared as text too: their first
+      characters, `1` and `9`, decide it, and `1` comes first.
+    review:
+      variants:
+        - prompt: |
+            What does this print?
+
+            ```python
+            print("Cat" < "cat", "cat" < "cats", "9" < "10")
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: all, label: '`True True True`' }
+              - { id: right, label: '`True True False`' }
+              - { id: alphabet, label: '`False True True`' }
+            correct: [right]
+          explanation: >-
+            `C`, at 67, comes before `c`, at 99. `cat` is the start of `cats`, and a string comes
+            before any longer string that starts with it. `"9"` and `"10"` are decided by their first
+            characters, and `9`, at 57, comes after `1`, at 49.
+        - prompt: |
+            What does this print?
+
+            ```python
+            print(ord("c") - ord("a"), chr(ord("A") + 2))
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: right, label: '`2 C`' }
+              - { id: three, label: '`3 C`' }
+              - { id: small, label: '`2 c`' }
+            correct: [right]
+          explanation: >-
+            The small letters have code points in order, 97 for `a` and 99 for `c`, so the
+            difference is 2. The capitals are in order too, so 2 after `A`, at 65, is `C`, at 67.
+
+  - id: explore-duniya
+    phase: explore
+    kind: predict
+    concept: E1.6/unicode-and-bytes
+    title: Hello, world
+    placement: true
+    prompt: >-
+      `"नमस्ते दुनिया"` is "hello, world" in Hindi. Python counts 13 characters in it: the six of
+      नमस्ते, a space, and the six of दुनिया, "world", whose code points run from 2,342 to 2,369.
+      How many bytes does it take in UTF-8?
+    answer: { type: number, value: 37, tolerance: { abs: 0 }, unit: bytes }
+    explanation: >-
+      नमस्ते takes 18 bytes, as the puzzle and the figure showed. The space, at code point 32,
+      takes one, as in `𝑥 + 1`. The figure gives त, the fifth character of नमस्ते, the code point
+      2,340, and 日 26,085, and both take three bytes. A larger code point never takes fewer, so
+      every code point from 2,340 to 26,085 takes three, the six of दुनिया among them: 18 more.
+      That is $18 + 1 + 18 = 37$ bytes.
+    review:
+      variants:
+        - prompt: >-
+            How many bytes does `"naïve"` take in UTF-8? Its `ï` has code point 239, and the other
+            four letters are English.
+          answer: { type: number, value: 6, tolerance: { abs: 0 }, unit: bytes }
+          explanation: >-
+            The four English letters take one byte each, and `ï`, from 128 to 2,047, takes two:
+            6 bytes for 5 characters.
+        - prompt: >-
+            How many bytes does `"日本語"`, "Japanese", take in UTF-8? Its code points are 26,085,
+            26,412 and 35,486.
+          answer: { type: number, value: 9, tolerance: { abs: 0 }, unit: bytes }
+          explanation: >-
+            Each code point is from 2,048 to 65,535, so each takes three bytes: 9 bytes for 3
+            characters.
+        - prompt: >-
+            How many bytes does `"2 × 3"` take in UTF-8? `×` has code point 215, and the other
+            four characters are digits and spaces.
+          answer: { type: number, value: 6, tolerance: { abs: 0 }, unit: bytes }
+          explanation: >-
+            The digits and spaces take one byte each, and `×`, from 128 to 2,047, takes two: 6
+            bytes.
+
+  - id: explore-cut
+    phase: explore
+    kind: predict
+    concept: E1.6/unicode-and-bytes
+    title: Four bytes of a greeting
+    prompt: What does the program print?
+    answer:
+      type: choice
+      options:
+        - { id: chars, label: '`नमस`, then `नमस्`' }
+        - { id: dropped, label: '`न`, then `न` again, leaving out the part of a character' }
+        - { id: replaced, label: '`न`, then `न` and a mark for a broken character' }
+        - { id: right, label: '`न`, and then Python stops with `UnicodeDecodeError`' }
+      correct: [right]
+    explanation: >-
+      The first three bytes are न, so `data[:3]` decodes to न. The fourth byte, 224, is the first
+      of म's three, and its markers, `1110`, promise two more bytes that are not there. Python does
+      not guess what was meant: `decode` stops with `UnicodeDecodeError`.
+    review:
+      variants:
+        - prompt: |
+            What does this print?
+
+            ```python
+            data = "café".encode("utf-8")
+            print(len(data), data[:4].decode("utf-8", errors="ignore"))
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: chars, label: '`4 café`' }
+              - { id: whole, label: '`5 café`' }
+              - { id: right, label: '`5 caf`' }
+            correct: [right]
+          explanation: >-
+            `café` takes 5 bytes, two of them for `é`. The first four bytes hold `caf` and the
+            first byte of `é`, which `errors="ignore"` leaves out.
+        - prompt: In UTF-8, which of these bytes can never be the first byte of a character?
+          answer:
+            type: choice
+            options:
+              - { id: ascii, label: '65, which is `01000001`' }
+              - { id: two, label: '195, which is `11000011`' }
+              - { id: right, label: '169, which is `10101001`' }
+              - { id: four, label: '240, which is `11110000`' }
+            correct: [right]
+          explanation: >-
+            A byte that starts with `10` only ever continues a character. 65 is a whole character,
+            195 starts a character of two bytes, and 240 one of four.
+
+  - id: explore-readlines
+    phase: explore
+    kind: predict
+    concept: E1.6/files
+    title: Reading the losses back
+    prompt: What does the program print?
+    answer:
+      type: choice
+      options:
+        - { id: stripped, label: '`[''2.5'', ''1.9'', ''1.4''] 3`' }
+        - { id: one-string, label: '`[''2.5\n1.9\n1.4\n''] 1`' }
+        - { id: right, label: '`[''2.5\n'', ''1.9\n'', ''1.4\n''] 3`' }
+        - { id: empty-last, label: '`[''2.5'', ''1.9'', ''1.4'', ''''] 4`' }
+      correct: [right]
+    explanation: >-
+      `readlines` cuts the text after each newline and keeps the newline with its line, so each
+      line is a string such as `'2.5\n'`, and `print` shows a list's strings with their newlines
+      written as `\n`. The file ends with a newline, so nothing is left after the third line.
+
+  - id: explore-strip
+    phase: explore
+    kind: predict
+    concept: E1.6/files
+    covers: [E1.6/parsing-and-formatting]
+    title: Counting lines
+    placement: true
+    prompt: What does the program print?
+    answer: { type: number, value: 0, tolerance: { abs: 0 } }
+    explanation: >-
+      Each line keeps its newline, so the lines are `"ok\n"`, `"fail\n"`, `"ok\n"` and `"ok\n"`,
+      and none of them is equal to `"ok"`. The count stays at 0.
+    review:
+      variants:
+        - prompt: |
+            What does this print?
+
+            ```python
+            total = 0
+            for line in ["3\n", "4\n", "\n"]:
+                if line.strip() != "":
+                    total = total + int(line)
+            print(total)
+            ```
+          answer: { type: number, value: 7, tolerance: { abs: 0 } }
+          explanation: >-
+            The blank line strips to `""` and is skipped. `int` skips the newline around a number,
+            so the other two lines give 3 and 4.
+        - prompt: |
+            What does this print?
+
+            ```python
+            with open("words.txt", "w", encoding="utf-8") as f:
+                f.write("cat\ndog\n")
+
+            with open("words.txt", encoding="utf-8") as f:
+                text = f.read()
+            print(len(text), text.split("\n"))
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: no-newlines, label: '`6 [''cat'', ''dog'']`' }
+              - { id: dropped, label: '`8 [''cat'', ''dog'']`' }
+              - { id: right, label: '`8 [''cat'', ''dog'', '''']`' }
+            correct: [right]
+          explanation: >-
+            `read` gives the whole file, newlines and all: `"cat\ndog\n"`, 8 characters. Splitting
+            at each newline leaves an empty string after the last one.
+
+  - id: explore-split
+    phase: explore
+    kind: predict
+    concept: E1.6/parsing-and-formatting
+    title: Three ways to split
+    placement: true
+    prompt: What does the program print? The options show its three lines, one after another.
+    answer:
+      type: choice
+      options:
+        - { id: drops-empty, label: '`[''100'', ''2.9'', ''0.001'']`, then `[''the'', ''cat'']`, then `[''the'', ''cat'']`' }
+        - { id: right, label: '`[''100'', ''2.9'', '''', ''0.001'']`, then `['''', ''the'', '''', ''cat'', '''']`, then `[''the'', ''cat'']`' }
+        - { id: space-merges, label: '`[''100'', ''2.9'', '''', ''0.001'']`, then `[''the'', ''cat'']`, then `[''the'', ''cat'']`' }
+        - { id: same-split, label: '`[''100'', ''2.9'', '''', ''0.001'']`, then `['''', ''the'', '''', ''cat'', '''']`, then `['''', ''the'', '''', ''cat'', '''']`' }
+        - { id: csv-drops, label: '`[''100'', ''2.9'', ''0.001'']`, then `['''', ''the'', '''', ''cat'', '''']`, then `[''the'', ''cat'']`' }
+      correct: [right]
+    explanation: >-
+      `split(",")` cuts at every comma, and the two commas side by side leave an empty field
+      between them. `split(" ")` cuts at every single space, so the spaces at the ends and the
+      two spaces side by side leave empty strings too. `split()` with no separator treats each run
+      of spaces as one break and ignores the spaces at the ends.
+    review:
+      variants:
+        - prompt: |
+            What does this print?
+
+            ```python
+            print("a,b,".split(","), len(",".split(",")))
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: drops, label: '`[''a'', ''b''] 1`' }
+              - { id: half, label: '`[''a'', ''b'', ''''] 1`' }
+              - { id: right, label: '`[''a'', ''b'', ''''] 2`' }
+            correct: [right]
+          explanation: >-
+            A comma at the end leaves an empty field after it. A single comma has an empty field
+            on each side: `['', '']`, two of them.
+        - prompt: |
+            What does this print?
+
+            ```python
+            print("-".join("a b  c".split()))
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: right, label: '`a-b-c`' }
+              - { id: empty, label: '`a-b--c`' }
+              - { id: ends, label: '`-a-b-c-`' }
+            correct: [right]
+          explanation: >-
+            `split()` gives `['a', 'b', 'c']`, treating the two spaces as one break, and `join` puts
+            a `-` between each pair.
+        - prompt: |
+            What does this print?
+
+            ```python
+            fields = "7,,9".split(",")
+            print(len(fields), fields[1] == "")
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: dropped, label: '`2 False`' }
+              - { id: right, label: '`3 True`' }
+              - { id: space, label: '`3 False`' }
+            correct: [right]
+          explanation: >-
+            The two commas side by side leave an empty string between them, so there are three
+            fields, and the middle one is `""`.
+
+  - id: explore-format
+    phase: explore
+    kind: predict
+    concept: E1.6/parsing-and-formatting
+    covers: [E1.6/strings-as-sequences]
+    title: Writing numbers out
+    prompt: What does the program print?
+    answer:
+      type: choice
+      options:
+        - { id: truncates, label: '`step 1,500: loss 0.666`, then `0.30 0.30000000000000004 False`' }
+        - { id: right, label: '`step 1,500: loss 0.667`, then `0.30 0.30000000000000004 False`' }
+        - { id: changes-value, label: '`step 1,500: loss 0.667`, then `0.30 0.3 True`' }
+      correct: [right]
+    explanation: >-
+      `:,` puts a comma in `1500`, and `:.3f` rounds $\frac{2}{3}$ to three digits after the point,
+      `0.667`. `shown` is the string `"0.30"`, but making it changed nothing about `x`, which is
+      still the float that E1.1 showed is just above 0.3, so `x == 0.3` is `False`.
+    review:
+      variants:
+        - prompt: |
+            What does this print?
+
+            ```python
+            print(f"{1234.5678:.2f}", f"{1000000:,}")
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: right, label: '`1234.57 1,000,000`' }
+              - { id: truncates, label: '`1234.56 1,000,000`' }
+              - { id: swapped, label: '`1,234.57 1000000`' }
+            correct: [right]
+          explanation: >-
+            `:.2f` rounds to two digits after the point, and `.5678` rounds up to `.57`. `:,`
+            groups the digits of a million in threes. `:.2f` alone adds no commas.
+        - prompt: |
+            What does this print?
+
+            ```python
+            loss = 2.71828
+            text = f"{loss:.1f}"
+            print(text, float(text) == loss)
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: same, label: '`2.7 True`' }
+              - { id: right, label: '`2.7 False`' }
+              - { id: unrounded, label: '`2.71828 True`' }
+            correct: [right]
+          explanation: >-
+            The format writes `2.7`, and turning that text back into a number gives 2.7, not the
+            2.71828 that was rounded off.
+
+  # Derive ---------------------------------------------------------------------
+  - id: derive-payload
+    phase: derive
+    kind: step
+    concept: E1.6/unicode-and-bytes
+    title: Bits for the code point
+    prompt: >-
+      A character takes $n$ bytes, where $n$ is 2, 3 or 4. How many of its $8n$ bits carry its code
+      point? Write it as an expression in $n$.
+    answer:
+      type: expression
+      symbols:
+        - { name: n, integer: true, positive: true }
+      lhs: '\text{bits for the code point} ='
+      reference: 5*n + 1
+      accept: ['1 + 5n', '5n+1', '(7 - n) + 6*(n - 1)', '8*n - (n + 1) - 2*(n - 1)']
+      reject: ['8*n', '6*n', '7*n', '6*n + 1', '5*n', '7*n - 1', '6*n - 1', '5*n - 1', '7 - n']
+    explanation: >-
+      The first byte spends $n + 1$ bits on its markers, $n$ ones and a zero, and keeps $7 - n$.
+      Each of the other $n - 1$ bytes spends 2 bits on `10` and keeps 6. That is
+      $(7 - n) + 6(n - 1) = 5n + 1$ bits.
+
+  - id: derive-largest
+    phase: derive
+    kind: step
+    concept: E1.6/unicode-and-bytes
+    title: The largest code point
+    prompt: >-
+      What is the largest code point that a character of $n$ bytes can carry, for $n$ from 2 to 4?
+      Write it as an expression in $n$.
+    answer:
+      type: expression
+      symbols:
+        - { name: n, integer: true, positive: true }
+      lhs: '\text{largest code point} ='
+      reference: 2**(5*n + 1) - 1
+      accept: ['2^(5n+1) - 1', '2*32**n - 1', '2*2**(5*n) - 1', '-1 + 2**(5*n + 1)']
+      reject: ['2**(5*n + 1)', '2**(5*n) - 1', '2**(8*n) - 1', '2**(5*n + 1) + 1', '256**n - 1', '5*n + 1', '2**(5*n + 2) - 1', '2**(6*n) - 1']
+    explanation: >-
+      $5n + 1$ bits, all of them 1, are worth $1 + 2 + 4 + \dots + 2^{5n} = 2^{5n+1} - 1$, by
+      E1.4's doubling sum, and they can write every number from 0 up to that.
+
+  - id: derive-devanagari-proof
+    phase: derive
+    kind: proof
+    concept: E1.6/unicode-and-bytes
+    title: The Devanagari block
+    prompt: >-
+      Here is why every character of the Devanagari block takes exactly three bytes in UTF-8. Each line follows
+      from the lines above it. Choose the rule that justifies each line. A rule may be used more
+      than once or not at all.
+    answer:
+      type: steps
+      rules:
+        - { id: work-out, name: Work it out, label: 'Work out a power, or compare two known numbers.' }
+        - { id: fewest, name: Fewest bytes, label: 'UTF-8 writes each code point in the fewest bytes that can carry it.' }
+        - { id: byte-size, name: Byte size, label: 'A byte is 8 bits, so it holds one of 256 numbers, 0 to 255.' }
+        - { id: largest, name: Largest code point, label: 'A character of $n$ bytes, for $n$ from 2 to 4, can carry a code point up to $2^{5n+1} - 1$ and no larger, and a single byte one up to $2^7 - 1$ and no larger.' }
+        - { id: block, name: The block, label: 'Unicode gives its Devanagari block the code points from 2,304 to 2,431.' }
+      start: '\text{Claim: every character of the Devanagari block takes exactly 3 bytes in UTF-8}'
+      lines:
+        - math: '\text{A character of the block has a code point } c \text{ with } 2{,}304 \le c \le 2{,}431'
+          rule: block
+        - math: '\text{One byte carries code points up to } 2^7 - 1 \text{, and two bytes up to } 2^{11} - 1'
+          rule: largest
+        - math: '2^7 - 1 = 127 \text{ and } 2^{11} - 1 = 2{,}047 \text{, both less than } 2{,}304 \text{, so one or two bytes cannot carry } c'
+          rule: work-out
+        - math: '\text{Three bytes carry code points up to } 2^{16} - 1'
+          rule: largest
+        - math: 'c \le 2{,}431 < 65{,}535 = 2^{16} - 1 \text{, so three bytes can carry } c'
+          rule: work-out
+        - math: '\text{So UTF-8 writes } c \text{ in exactly 3 bytes}'
+          rule: fewest
+    explanation: >-
+      The block puts every one of its code points between 2,304 and 2,431. The bound from the
+      previous step gives 127 for one byte and 2,047 for two, both below 2,304, so fewer than three
+      bytes cannot carry the character, while three bytes carry up to 65,535, well above 2,431.
+      UTF-8 always uses the fewest bytes that can carry a code point, so it uses exactly three. The
+      rule about a byte's 256 numbers is not needed: what decides the length is how many bits each
+      length leaves for the code point, not how many numbers a whole byte can hold.
+
+  - id: derive-mixed-bytes
+    phase: derive
+    kind: step
+    concept: E1.6/unicode-and-bytes
+    title: Bytes per character, mixed
+    prompt: >-
+      On average, how many bytes does the text take for each character? Write it as an expression
+      in $p$.
+    answer:
+      type: expression
+      symbols:
+        - { name: p, positive: true }
+      lhs: '\text{bytes per character} ='
+      reference: 3 - 2*p
+      accept: ['p + 3*(1 - p)', '1*p + 3*(1 - p)', '3 - 2p', '-2*p + 3']
+      reject: ['2*p + 1', '3*p + (1 - p)', '3 - p', '2', '1 + 2*p', '3*p + 1', 'p + 3', '4*p', '(1 + 3)/2']
+    explanation: >-
+      A fraction $p$ of the characters take 1 byte each and the other $1 - p$ take 3, so on average
+      a character takes $p \times 1 + (1 - p) \times 3 = 3 - 2p$ bytes.
+
+  - id: derive-estimate
+    phase: derive
+    kind: estimate
+    concept: E1.6/unicode-and-bytes
+    title: Words in a gigabyte
+    prompt: >-
+      A dataset holds a gigabyte, $10^9$ bytes, of Hindi text in UTF-8. Its words average five
+      characters, as Python counts them, all of them Devanagari, and each word is followed by a
+      space. About how many words does it hold? An answer within a factor of 1.3 counts.
+    answer: { type: number, value: 62500000, tolerance: { factor: 1.3 }, unit: words }
+    explanation: >-
+      A word takes five characters of three bytes each, and one byte for its space: 16 bytes. So
+      $10^9$ bytes hold $\frac{10^9}{16} = 6.25 \times 10^7$ words, about 60 million.
+
+  # Build ----------------------------------------------------------------------
+  - id: build-read-log
+    phase: build
+    kind: build
+    concept: E1.6/files
+    covers: [E1.6/parsing-and-formatting, E1.6/strings-as-sequences]
+    title: A training log
+    prompt: >-
+      A training run writes its loss every 500 steps to a CSV file, `log.csv`, which you can see in
+      its own tab. Write the bodies of `read_log(path)`, which reads such a file, written in UTF-8, into
+      a dictionary of numbers, and `summary(losses)`, which describes the lowest loss in words. The tests also write
+      files of their own, some with blank lines or spaces in them, and read them with your
+      function.
+    answer:
+      type: code
+      files:
+        log.csv: |
+          step,loss
+          500,2.913
+          1000,2.417
+          1500,2.190
+          2000,2.254
+      starter: |
+        def read_log(path):
+            """A dict from each step, an int, to its loss, a float, read from the CSV file at path.
+            The file's first line is a header, step,loss. Each other line holds a step and a loss
+            with a comma between them, perhaps with spaces around them. Blank lines are skipped."""
+
+
+        def summary(losses):
+            """A line such as 'lowest loss 2.190 at step 1,500': the lowest loss in losses, with
+            three digits after the point, and its step, with its digits grouped in threes. On a
+            tie, the earlier step, the one with the smaller number."""
+
+
+        losses = read_log("log.csv")
+        print(losses)
+        print(summary(losses))
+      tests: |
+        # write(name, text) makes a file for a test, as log.csv was made for the script.
+        # {x!r} in an f-string writes x as repr does, so a string shows its quotes.
+        def write(name, text):
+            with open(name, "w", encoding="utf-8") as f:
+                f.write(text)
+
+        def test_script_log():
+            """The script's log.csv gives four steps and their losses."""
+            got = read_log("log.csv")
+            expected = {500: 2.913, 1000: 2.417, 1500: 2.19, 2000: 2.254}
+            assert got == expected, f"read_log('log.csv') is {got!r}, not {expected!r}."
+
+        def test_types():
+            """Steps are ints and losses are floats, not strings."""
+            got = read_log("log.csv")
+            for step in got:
+                assert type(step) == int, f"The step {step!r} is not an int."
+                assert type(got[step]) == float, f"The loss {got[step]!r} for step {step!r} is not a float."
+
+        def test_blank_and_spaces():
+            """Blank lines are skipped, and spaces around a value are allowed."""
+            write("messy.csv", "step,loss\n\n10, 3.5\n 20 ,3.25\n\n30,3.0\n\n")
+            got = read_log("messy.csv")
+            expected = {10: 3.5, 20: 3.25, 30: 3.0}
+            assert got == expected, f"read_log of a file with blank lines and spaces is {got!r}, not {expected!r}."
+
+        def test_header_only():
+            """A log with no steps yet gives an empty dict."""
+            write("empty.csv", "step,loss\n")
+            got = read_log("empty.csv")
+            expected = {}
+            assert got == expected, f"read_log of a file with only its header is {got!r}, not {expected!r}."
+
+        def test_no_final_newline():
+            """The last line may have no newline after it."""
+            write("short.csv", "step,loss\n5,1.5\n6,1.25")
+            got = read_log("short.csv")
+            expected = {5: 1.5, 6: 1.25}
+            assert got == expected, f"read_log of a file whose last line has no newline is {got!r}, not {expected!r}."
+
+        def test_summary():
+            """The script's summary: the lowest loss and its step, written as asked."""
+            got = summary({500: 2.913, 1000: 2.417, 1500: 2.19, 2000: 2.254})
+            assert got == "lowest loss 2.190 at step 1,500", f"summary of the script's losses is {got!r}, not 'lowest loss 2.190 at step 1,500'."
+
+        def test_summary_format():
+            """A large step gets commas, and a loss exactly three digits after the point."""
+            got = summary({1234567: 0.25, 2000000: 0.5})
+            assert got == "lowest loss 0.250 at step 1,234,567", f"summary is {got!r}, not 'lowest loss 0.250 at step 1,234,567'."
+
+        def test_summary_tie():
+            """On a tie, the earlier step, the one with the smaller number."""
+            got = summary({100: 2.5, 200: 2.0, 300: 2.0})
+            assert got == "lowest loss 2.000 at step 200", f"summary of a tie between steps 200 and 300 is {got!r}, not 'lowest loss 2.000 at step 200'."
+
+        def test_summary_large():
+            """Losses in the hundreds, as at the start of some runs."""
+            got = summary({10: 250.0, 20: 180.5, 30: 320.0})
+            assert got == "lowest loss 180.500 at step 20", f"summary of the losses 250.0, 180.5 and 320.0 is {got!r}, not 'lowest loss 180.500 at step 20'."
+
+        # test_encoding lends read_log an open() that notes the encoding it is asked for, then gives
+        # back Python's own open.
+        def test_encoding():
+            """read_log names the file's encoding, so it reads the file the same way on any computer."""
+            asked = []
+
+            def noting_open(*args, **kwargs):
+                asked.append(kwargs.get("encoding", args[3] if len(args) > 3 else None))
+                return open(*args, **kwargs)
+
+            read_log.__globals__["open"] = noting_open
+            try:
+                read_log("log.csv")
+            finally:
+                del read_log.__globals__["open"]
+            assert asked and all(str(e).lower() in ("utf-8", "utf8") for e in asked), "read_log opens the file without encoding=\"utf-8\". Name the encoding, as every open in Explore did."
+      reference: |
+        def read_log(path):
+            """A dict from each step, an int, to its loss, a float, read from the CSV file at path.
+            The file's first line is a header, step,loss. Each other line holds a step and a loss
+            with a comma between them, perhaps with spaces around them. Blank lines are skipped."""
+            losses = {}
+            with open(path, encoding="utf-8") as f:
+                lines = f.readlines()
+            for line in lines[1:]:
+                line = line.strip()
+                if line != "":
+                    fields = line.split(",")
+                    losses[int(fields[0])] = float(fields[1])
+            return losses
+
+
+        def summary(losses):
+            """A line such as 'lowest loss 2.190 at step 1,500': the lowest loss in losses, with
+            three digits after the point, and its step, with its digits grouped in threes. On a
+            tie, the earlier step, the one with the smaller number."""
+            best = None
+            for step in losses:
+                if best is None or losses[step] < losses[best]:
+                    best = step
+            return f"lowest loss {losses[best]:.3f} at step {best:,}"
+
+
+        losses = read_log("log.csv")
+        print(losses)
+        print(summary(losses))
+      wrong:
+        - code: |
+            def read_log(path):
+                losses = {}
+                with open(path, encoding="utf-8") as f:
+                    for line in f:
+                        line = line.strip()
+                        if line != "":
+                            fields = line.split(",")
+                            losses[int(fields[0])] = float(fields[1])
+                return losses
+
+
+            def summary(losses):
+                best = None
+                for step in losses:
+                    if best is None or losses[step] < losses[best]:
+                        best = step
+                return f"lowest loss {losses[best]:.3f} at step {best:,}"
+
+
+            losses = read_log("log.csv")
+            print(losses)
+            print(summary(losses))
+          why: Reads the header as if it were data, so `float("loss")` stops Python with `ValueError`; the right side of the assignment is worked out first.
+        - code: |
+            def read_log(path):
+                losses = {}
+                with open(path, encoding="utf-8") as f:
+                    lines = f.readlines()
+                for line in lines[1:]:
+                    line = line.strip()
+                    if line != "":
+                        fields = line.split(",")
+                        losses[fields[0]] = fields[1]
+                return losses
+
+
+            def summary(losses):
+                best = None
+                for step in losses:
+                    if best is None or losses[step] < losses[best]:
+                        best = step
+                return f"lowest loss {losses[best]:.3f} at step {best:,}"
+
+
+            losses = read_log("log.csv")
+            print(losses)
+            print(summary(losses))
+          why: Keeps each step and loss as the strings from the file, so `:.3f` cannot format a loss and stops Python with `ValueError`.
+        - code: |
+            def read_log(path):
+                losses = {}
+                with open(path, encoding="utf-8") as f:
+                    lines = f.readlines()
+                for line in lines[1:]:
+                    fields = line.split(",")
+                    losses[int(fields[0])] = float(fields[1])
+                return losses
+
+
+            def summary(losses):
+                best = None
+                for step in losses:
+                    if best is None or losses[step] < losses[best]:
+                        best = step
+                return f"lowest loss {losses[best]:.3f} at step {best:,}"
+
+
+            losses = read_log("log.csv")
+            print(losses)
+            print(summary(losses))
+          why: Does not skip blank lines, so a blank line splits into a single field, and `fields[1]` stops Python with `IndexError`.
+        - code: |
+            def read_log(path):
+                losses = {}
+                with open(path, encoding="utf-8") as f:
+                    lines = f.readlines()
+                for line in lines[1:]:
+                    line = line.strip()
+                    if line != "":
+                        fields = line.split(",")
+                        losses[int(fields[0])] = float(fields[1])
+                return losses
+
+
+            def summary(losses):
+                best = None
+                for step in losses:
+                    if best is None or losses[step] < losses[best]:
+                        best = step
+                return f"lowest loss {losses[best]} at step {best}"
+
+
+            losses = read_log("log.csv")
+            print(losses)
+            print(summary(losses))
+          why: Leaves out the formats, so the loss is written as `2.19` and the step as `1500`.
+        - code: |
+            def read_log(path):
+                losses = {}
+                with open(path, encoding="utf-8") as f:
+                    lines = f.readlines()
+                for line in lines[1:]:
+                    line = line.strip()
+                    if line != "":
+                        fields = line.split(",")
+                        losses[int(fields[0])] = float(fields[1])
+                return losses
+
+
+            def summary(losses):
+                best = None
+                for step in losses:
+                    if best is None or losses[step] <= losses[best]:
+                        best = step
+                return f"lowest loss {losses[best]:.3f} at step {best:,}"
+
+
+            losses = read_log("log.csv")
+            print(losses)
+            print(summary(losses))
+          why: Uses `<=`, so on a tie the later step takes the place of the earlier one.
+        - code: |
+            def read_log(path):
+                losses = {}
+                with open(path, encoding="utf-8") as f:
+                    lines = f.readlines()
+                for line in lines[1:]:
+                    line = line.strip()
+                    if line != "":
+                        fields = line.split()
+                        losses[int(fields[0])] = float(fields[1])
+                return losses
+
+
+            def summary(losses):
+                best = None
+                for step in losses:
+                    if best is None or losses[step] < losses[best]:
+                        best = step
+                return f"lowest loss {losses[best]:.3f} at step {best:,}"
+
+
+            losses = read_log("log.csv")
+            print(losses)
+            print(summary(losses))
+          why: Splits at spaces instead of commas, so each line is a single field, and `fields[1]` stops Python with `IndexError`.
+        - code: |
+            def read_log(path):
+                losses = {}
+                with open(path, encoding="utf-8") as f:
+                    lines = f.readlines()
+                for line in lines[1:]:
+                    line = line.strip()
+                    if line != "":
+                        fields = line.split(",")
+                        losses[int(fields[0])] = float(fields[1])
+                return losses
+
+
+            def summary(losses):
+                lowest = 100
+                best = 0
+                for step in losses:
+                    if losses[step] < lowest:
+                        lowest = losses[step]
+                        best = step
+                return f"lowest loss {lowest:.3f} at step {best:,}"
+
+
+            losses = read_log("log.csv")
+            print(losses)
+            print(summary(losses))
+          why: Starts the lowest loss at a guess, 100, which no loss in the hundreds beats.
+        - code: |
+            def read_log(path):
+                losses = {}
+                with open(path) as f:
+                    lines = f.readlines()
+                for line in lines[1:]:
+                    line = line.strip()
+                    if line != "":
+                        fields = line.split(",")
+                        losses[int(fields[0])] = float(fields[1])
+                return losses
+
+
+            def summary(losses):
+                best = None
+                for step in losses:
+                    if best is None or losses[step] < losses[best]:
+                        best = step
+                return f"lowest loss {losses[best]:.3f} at step {best:,}"
+
+
+            losses = read_log("log.csv")
+            print(losses)
+            print(summary(losses))
+          why: Opens the file without naming its encoding, so it reads the file rightly only where the computer's own encoding happens to be UTF-8.
+    explanation: >-
+      `read_log` skips the header with `lines[1:]`, strips each line so that a blank one becomes
+      `""` and can be skipped, splits the rest at the comma, and turns the step into an int and the
+      loss into a float; `int` and `float` skip the spaces around each field. `summary` keeps the
+      step with the lowest loss so far, replacing it only for a loss that is strictly lower, so on
+      a tie the earlier step stays, and its formats write the loss with three digits after the
+      point and the step with commas.
+
+  - id: build-utf8-length
+    phase: build
+    kind: build
+    concept: E1.6/unicode-and-bytes
+    covers: [E1.6/strings-as-sequences]
+    title: Bytes without encode
+    prompt: >-
+      Write the body of `utf8_length(text)`, which works out how many bytes `text` takes in UTF-8
+      from the code points of its characters, without `encode`. The tests compare it with `encode`
+      on many texts, among them the code points on each side of every change in the number of
+      bytes.
+    answer:
+      type: code
+      starter: |
+        def utf8_length(text):
+            """The number of bytes that text takes in UTF-8, worked out from the code points of its
+            characters, without encode."""
+
+
+        for word in ["hello", "café", "नमस्ते", "𝑥 + 1"]:
+            print(word, len(word), utf8_length(word))
+      tests: |
+        # Each test compares utf8_length with len(text.encode("utf-8")), which counts the bytes themselves.
+        def test_examples():
+            """The script's four texts, and the empty text."""
+            for text in ["hello", "café", "नमस्ते", "𝑥 + 1", ""]:
+                got = utf8_length(text)
+                expected = len(text.encode("utf-8"))
+                assert got == expected, f"utf8_length({text!r}) is {got!r}, not {expected}."
+
+        def test_edges():
+            """The code points on each side of every change in the number of bytes."""
+            for cp in [0, 127, 128, 2047, 2048, 65535, 65536, 1114111]:
+                text = chr(cp)
+                got = utf8_length(text)
+                expected = len(text.encode("utf-8"))
+                assert got == expected, f"utf8_length(chr({cp})) is {got!r}, not {expected}, the number of bytes that UTF-8 gives code point {cp:,}."
+
+        def test_long_text():
+            """A text of several hundred characters in several scripts."""
+            text = "Derive नमस्ते 日本 𝑥² é " * 20
+            got = utf8_length(text)
+            expected = len(text.encode("utf-8"))
+            assert got == expected, f"utf8_length of a text of {len(text)} characters in several scripts is {got!r}, not {expected}."
+
+        # The function's own names are in utf8_length.__code__.co_names. A generator expression inside
+        # it has a code object of its own among utf8_length.__code__.co_consts, with names of its own.
+        def test_no_encode():
+            """utf8_length works from code points, without encode or bytes."""
+            names = list(utf8_length.__code__.co_names)
+            for const in utf8_length.__code__.co_consts:
+                if type(const) == type(utf8_length.__code__):
+                    names = names + list(const.co_names)
+            assert "encode" not in names and "bytes" not in names, "utf8_length makes the bytes, with encode or bytes; work the number of bytes out from each character's code point instead."
+      reference: |
+        def utf8_length(text):
+            """The number of bytes that text takes in UTF-8, worked out from the code points of its
+            characters, without encode."""
+            total = 0
+            for ch in text:
+                cp = ord(ch)
+                if cp < 128:
+                    total = total + 1
+                elif cp < 2048:
+                    total = total + 2
+                elif cp < 65536:
+                    total = total + 3
+                else:
+                    total = total + 4
+            return total
+
+
+        for word in ["hello", "café", "नमस्ते", "𝑥 + 1"]:
+            print(word, len(word), utf8_length(word))
+      wrong:
+        - code: |
+            def utf8_length(text):
+                total = 0
+                for ch in text:
+                    cp = ord(ch)
+                    if cp < 256:
+                        total = total + 1
+                    elif cp < 2048:
+                        total = total + 2
+                    elif cp < 65536:
+                        total = total + 3
+                    else:
+                        total = total + 4
+                return total
+
+
+            for word in ["hello", "café", "नमस्ते", "𝑥 + 1"]:
+                print(word, len(word), utf8_length(word))
+          why: Gives one byte to every code point below 256, since a byte holds 256 numbers, but a byte that is a whole character spends a bit on its marker and carries only 7.
+        - code: |
+            def utf8_length(text):
+                return len(text)
+
+
+            for word in ["hello", "café", "नमस्ते", "𝑥 + 1"]:
+                print(word, len(word), utf8_length(word))
+          why: Counts characters, not bytes.
+        - code: |
+            def utf8_length(text):
+                total = 0
+                for ch in text:
+                    cp = ord(ch)
+                    if cp < 128:
+                        total = total + 1
+                    elif cp < 2048:
+                        total = total + 2
+                    else:
+                        total = total + 3
+                return total
+
+
+            for word in ["hello", "café", "नमस्ते", "𝑥 + 1"]:
+                print(word, len(word), utf8_length(word))
+          why: Has no case for four bytes, so a code point from 65,536 up is counted as three.
+        - code: |
+            def utf8_length(text):
+                total = 0
+                for ch in text:
+                    cp = ord(ch)
+                    if cp <= 128:
+                        total = total + 1
+                    elif cp <= 2048:
+                        total = total + 2
+                    elif cp <= 65536:
+                        total = total + 3
+                    else:
+                        total = total + 4
+                return total
+
+
+            for word in ["hello", "café", "नमस्ते", "𝑥 + 1"]:
+                print(word, len(word), utf8_length(word))
+          why: Uses `<=` where `<` is needed, so the code points 128, 2,048 and 65,536 are each given one byte too few.
+        - code: |
+            def utf8_length(text):
+                return len(text.encode("utf-8"))
+
+
+            for word in ["hello", "café", "नमस्ते", "𝑥 + 1"]:
+                print(word, len(word), utf8_length(word))
+          why: Calls `encode`, which the exercise rules out.
+    explanation: >-
+      Each character's code point decides its bytes: one below 128, two below 2,048, three below
+      65,536 and four from there up to 1,114,111, the ranges the Derive phase found. The loop adds
+      them up, E1.2's accumulator, over the characters of the text.
+
+  - id: build-break-encoding
+    phase: build
+    kind: breakit
+    concept: E1.6/files
+    covers: [E1.6/unicode-and-bytes]
+    title: Another encoding
+    prompt: Predict what happens after the change, then run both versions to see.
+    answer:
+      type: breakit
+      code: |
+        with open("names.txt", "w", encoding="utf-8") as f:
+            f.write("Arnav\nअर्णव\n")
+
+        with open("names.txt", encoding="utf-8") as f:
+            lines = f.readlines()
+        print(len(lines), len(lines[1].strip()))
+      broken: |
+        with open("names.txt", "w", encoding="utf-8") as f:
+            f.write("Arnav\nअर्णव\n")
+
+        with open("names.txt", encoding="latin-1") as f:
+            lines = f.readlines()
+        print(len(lines), len(lines[1].strip()))
+      change: 'The file is read back with `encoding="latin-1"`, an older encoding for Western European languages, in place of `encoding="utf-8"`.'
+      options:
+        - { id: same, label: 'It prints `2 5`, as before', when: "error is None and output.split() == ['2', '5']" }
+        - { id: decode-error, label: 'Python stops with `UnicodeDecodeError`, since the file was written in UTF-8', when: "error == 'UnicodeDecodeError'" }
+        - { id: bytes, label: 'It prints `2 15`, with no error', when: "error is None and output.split() == ['2', '15']" }
+        - { id: other, label: 'Something else happens', when: "not ((error is None and output.split() in (['2', '5'], ['2', '15'])) or error == 'UnicodeDecodeError')" }
+    explanation: >-
+      Latin-1 turns each byte into one character, so it never meets a byte that it cannot decode.
+      The first line, `Arnav`, comes out the same, since its bytes are all below 128. But अर्णव is
+      five characters of three bytes each in UTF-8, and Latin-1 reads its 15 bytes as 15
+      characters. Nothing tells you that anything went wrong.
+
+  - id: build-truncate
+    phase: build
+    kind: debug
+    concept: E1.6/unicode-and-bytes
+    title: Cutting to a limit
+    prompt: >-
+      A message field allows at most `limit` bytes of UTF-8, so `truncate(text, limit)` should give
+      the longest start of `text` that fits. Run the script: it works on English, but stops with
+      `UnicodeDecodeError` on Hindi. Fix `truncate` so that it moves the cut back to the start of a
+      character, without `errors=`, and still gives the longest start that fits. The tests try every limit on texts in several
+      scripts.
+    answer:
+      type: code
+      starter: |
+        def truncate(text, limit):
+            """The longest start of text whose UTF-8 bytes number at most limit."""
+            data = text.encode("utf-8")
+            return data[:limit].decode("utf-8")
+
+
+        print(truncate("hello world", 5))
+        print(truncate("नमस्ते दुनिया", 10))
+      tests: |
+        # ("hello", 0, "") is a tuple, a fixed group of values. for text, limit, expected in ...
+        # gives each tuple's three values these three names, one tuple on each pass.
+        # text[:len(got)] == got is True when got is a start of text.
+        # truncate.__code__.co_consts lists the strings and numbers written in truncate's code.
+        def test_english():
+            """English text, where every character takes one byte."""
+            for text, limit, expected in [("hello world", 5, "hello"), ("hello", 10, "hello"), ("hello", 0, "")]:
+                got = truncate(text, limit)
+                assert got == expected, f"truncate({text!r}, {limit}) is {got!r}, not {expected!r}."
+
+        def test_hindi():
+            """The script's Hindi greeting, cut to 10 bytes."""
+            got = truncate("नमस्ते दुनिया", 10)
+            assert got == "नमस", f"truncate('नमस्ते दुनिया', 10) is {got!r}, not 'नमस': three characters of three bytes each fit in 10 bytes, and a fourth does not."
+
+        def test_every_limit():
+            """Every limit from 0 to past the end, on texts in several scripts."""
+            for text in ["नमस्ते दुनिया", "café au lait", "À la carte", "𝑥 + 1 = 2", "日本語"]:
+                size = len(text.encode("utf-8"))
+                for limit in range(size + 3):
+                    # If truncate stops with an error, the message names the text and the limit.
+                    try:
+                        got = truncate(text, limit)
+                    except Exception as e:
+                        raise AssertionError(f"truncate({text!r}, {limit}) stops with {type(e).__name__}: {e}")
+                    assert type(got) == str, f"truncate({text!r}, {limit}) is {got!r}, not a string."
+                    assert text[:len(got)] == got, f"truncate({text!r}, {limit}) is {got!r}, which is not a start of the text."
+                    used = len(got.encode("utf-8"))
+                    assert used <= limit, f"truncate({text!r}, {limit}) is {got!r}, which takes {used} bytes, more than {limit}."
+                    if got != text:
+                        longer = text[:len(got) + 1]
+                        assert len(longer.encode("utf-8")) > limit, f"truncate({text!r}, {limit}) is {got!r}, but {longer!r} also fits in {limit} bytes."
+
+        def test_no_errors_argument():
+            """truncate moves the cut itself, without errors="ignore" or errors="replace"."""
+            consts = truncate.__code__.co_consts
+            assert "ignore" not in consts and "replace" not in consts, "truncate tells decode to drop or replace the broken character; move the cut back to the start of a character instead."
+      reference: |
+        def truncate(text, limit):
+            """The longest start of text whose UTF-8 bytes number at most limit."""
+            data = text.encode("utf-8")
+            if limit >= len(data):
+                return text
+            end = limit
+            while end > 0 and data[end] >= 128 and data[end] < 192:
+                end = end - 1
+            return data[:end].decode("utf-8")
+
+
+        print(truncate("hello world", 5))
+        print(truncate("नमस्ते दुनिया", 10))
+      wrong:
+        - code: |
+            def truncate(text, limit):
+                return text[:limit]
+
+
+            print(truncate("hello world", 5))
+            print(truncate("नमस्ते दुनिया", 10))
+          why: Cuts at `limit` characters rather than `limit` bytes, so Hindi text keeps up to three times as many bytes as the limit allows.
+        - code: |
+            def truncate(text, limit):
+                data = text.encode("utf-8")
+                if limit >= len(data):
+                    return text
+                end = limit
+                while end > 0 and data[end - 1] >= 128 and data[end - 1] < 192:
+                    end = end - 1
+                return data[:end].decode("utf-8")
+
+
+            print(truncate("hello world", 5))
+            print(truncate("नमस्ते दुनिया", 10))
+          why: Looks at the last byte kept instead of the first byte left out, so a cut just after the first byte of a character still breaks it, and `decode` stops Python with `UnicodeDecodeError`.
+        - code: |
+            def truncate(text, limit):
+                return text[:limit // 3]
+
+
+            print(truncate("hello world", 5))
+            print(truncate("नमस्ते दुनिया", 10))
+          why: Allows three bytes for every character, which suits Devanagari but cuts English text to a third of what fits.
+        - code: |
+            def truncate(text, limit):
+                data = text.encode("utf-8")
+                return data[:limit].decode("utf-8", errors="replace")
+
+
+            print(truncate("hello world", 5))
+            print(truncate("नमस्ते दुनिया", 10))
+          why: Puts the mark � in place of the broken character, and the mark is not part of the text and takes three bytes of its own.
+        - code: |
+            def truncate(text, limit):
+                data = text.encode("utf-8")
+                end = limit
+                while end > 0 and data[end] >= 128 and data[end] < 192:
+                    end = end - 1
+                return data[:end].decode("utf-8")
+
+
+            print(truncate("hello world", 5))
+            print(truncate("नमस्ते दुनिया", 10))
+          why: Looks at `data[limit]` even when the limit reaches the end of the bytes, so it stops Python with `IndexError`.
+        - code: |
+            def truncate(text, limit):
+                """The longest start of text whose UTF-8 bytes number at most limit."""
+                data = text.encode("utf-8")
+                return data[:limit].decode("utf-8", errors="ignore")
+
+
+            print(truncate("hello world", 5))
+            print(truncate("नमस्ते दुनिया", 10))
+          why: Lets `decode` drop the broken character with `errors="ignore"` instead of moving the cut, which hides the break rather than avoiding it.
+        - code: |
+            def truncate(text, limit):
+                """The longest start of text whose UTF-8 bytes number at most limit."""
+                data = text.encode("utf-8")
+                if limit >= len(data):
+                    return text
+                end = limit
+                while end > 0 and data[end] > 128 and data[end] < 192:
+                    end = end - 1
+                return data[:end].decode("utf-8")
+
+
+            print(truncate("hello world", 5))
+            print(truncate("नमस्ते दुनिया", 10))
+          why: Tests `data[end] > 128`, so a cut just before a continuation byte of 128, as in À, is not moved back, and `decode` stops Python with `UnicodeDecodeError`.
+    explanation: >-
+      The byte at the cut, `data[limit]` to begin with, is the first byte left out. While it is a
+      byte from 128 to 191, which only ever
+      continues a character, the cut is inside a character, so the cut moves back one byte, and at
+      most three steps reach the start of that character. A limit that reaches the end keeps the
+      whole text, and there is no byte after the end to look at.
+
+  # Explain --------------------------------------------------------------------
+  - id: explain-text-bytes
+    phase: explain
+    kind: explain
+    concept: E1.6/unicode-and-bytes
+    covers: [E1.6/strings-as-sequences, E1.6/files, E1.6/parsing-and-formatting]
+    title: What text is made of
+    prompt: >-
+      Explain to your friend why Python counts six characters in नमस्ते, and why a file needs 18
+      bytes to store it: what a string is and what can be done with one, what code points are, how
+      UTF-8 turns them into bytes, and why a cut through the bytes can break a character. Then
+      explain how a program reads a file of lines and turns them into numbers, what can go wrong on
+      the way, and how it turns numbers back into text.
+    answer:
+      type: text
+      rubric:
+        - { id: strings, criterion: 'Explains that a string is a sequence of characters that never changes: indexes, slices, `len` and `for` work as on a list, `in` finds a run of characters, and methods give back new strings rather than changing the old one.' }
+        - { id: code-points, criterion: 'Explains that Unicode gives each character a number, its code point, and that Python counts code points, which need not match what a reader sees: नमस्ते is three syllables to a reader but six code points, among them a vowel sign and the mark that joins two letters.' }
+        - { id: utf8, criterion: 'Explains that UTF-8 writes each code point as one to four bytes, one for a code point below 128 and three for each character of the Devanagari block, so that नमस्ते takes 18; that marker bits at the start of each byte say where a character starts and how many bytes it has; and that a cut through a character leaves bytes that cannot be decoded.' }
+        - { id: files, criterion: 'Explains that a file holds bytes, decoded with an encoding when it is read, that the wrong encoding can stop with an error or quietly give the wrong characters, and that each line read keeps its newline, so a line is stripped before it is compared.' }
+        - { id: parsing, criterion: 'Explains parsing and formatting: `split` cuts a line into fields, keeping an empty field where a value is missing, `int` and `float` turn fields into numbers, and a format such as `:.3f` or `:,` in an f-string changes how a number is written but not the number.' }
+      reference: >-
+        A string is a sequence of characters. You can take its length, index it from 0, slice it
+        and loop over it as you would a list, and `in` asks whether a run of characters appears in
+        it, so "earn" in "learning" is True. Unlike a list, a string never changes: upper and replace
+        give back new strings, and assigning to s[0] is an error. Every character has a number, its
+        code point, given by Unicode, such as 97 for a and 2,344 for न, and Python's characters are
+        code points. नमस्ते looks like three syllables, न, म and स्ते, but स्ते is written with four
+        code points: स, the mark ् that joins it to the next letter, त, and the vowel sign े. So
+        len counts six. A file stores bytes, numbers from 0 to 255, and UTF-8 turns each code point
+        into one to four bytes. Code points below 128, such as the English letters, take one byte,
+        and those of the Devanagari block, from 2,304 to 2,431, take three, so hello takes 5 bytes
+        and नमस्ते takes 18. The first bits of each byte are markers: a byte that is a whole character starts with 0,
+        the first byte of a longer one starts with as many 1s as the character has bytes, and every
+        other byte starts with 10. So if you cut the bytes in the middle of a character, the part
+        you keep cannot be decoded, and Python stops with UnicodeDecodeError. To read a file, open
+        it with its encoding, utf-8. Read it with the wrong one and you may get an error, or worse,
+        nonsense with no error at all. Each line you read keeps its newline, so strip it before you
+        compare it with anything. split then cuts a line into fields at each comma, keeping an empty
+        string where a value is missing, and int and float turn the fields into numbers. To write
+        numbers out, use an f-string: {loss:.3f} writes three digits after the point and {step:,}
+        puts commas in, but the numbers themselves are unchanged.
+      minWords: 100
+      maxWords: 400

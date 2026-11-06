@@ -75,19 +75,39 @@ def _counting_tracer(limit):
     return tracer
 
 
-def _learner_line(exc):
-    """The line in the learner's code where an exception was raised, if any.
+def _learner_frame(exc):
+    """The frame of the learner's code where an exception was raised, and its line, if any.
 
     Python raises RecursionError as a new call starts, while its frame still stands at the `def`
-    line, so for that error the line of the call that went one too deep is given instead."""
+    line, so for that error the call that went one too deep is given instead."""
     entries = [(frame, lineno) for frame, lineno in traceback.walk_tb(exc.__traceback__)
                if frame.f_code.co_filename == LEARNER_FILE]
     if not entries:
         return None
     frame, line = entries[-1]
     if isinstance(exc, RecursionError) and len(entries) > 1 and line == frame.f_code.co_firstlineno:
-        return entries[-2][1]
-    return line
+        return entries[-2]
+    return frame, line
+
+
+def _learner_line(exc):
+    """The line in the learner's code where an exception was raised, if any."""
+    found = _learner_frame(exc)
+    return found[1] if found else None
+
+
+def _test_error(exc):
+    """An error a test ran into, said as the console says a program's error, with the place in
+    the learner's code it came from: "IndexError on line 10, in read_log: list index out of
+    range". An error that came from the tests alone has no place in the learner's code."""
+    described = _describe(exc)
+    label = "Stopped" if described["type"] == "StepLimit" else described["type"]
+    found = _learner_frame(exc)
+    if found:
+        frame, line = found
+        name = frame.f_code.co_name
+        label += f" on line {line:,}" if name == "<module>" else f" on line {line:,}, in {name}"
+    return f"{label}: {described['message']}"
 
 
 def _describe(exc):
@@ -226,7 +246,7 @@ def _run_tests(ns, output, tests, max_steps, code=None, files=None):
         exec(compile(tests, TESTS_FILE, "exec"), env)
     except BaseException as exc:  # noqa: BLE001
         return [{"name": "tests", "description": "The tests could not start.", "passed": False,
-                 "message": f"{type(exc).__name__}: {exc}"}]
+                 "message": _test_error(exc)}]
     for name, fn in _test_functions(env):
         doc = (fn.__doc__ or name.replace("_", " ")).strip().splitlines()[0]
         entry = {"name": name, "description": doc, "passed": True, "message": None}
@@ -239,10 +259,9 @@ def _run_tests(ns, output, tests, max_steps, code=None, files=None):
                 entry["passed"] = False
                 entry["message"] = str(exc) or "This check did not hold."
             except BaseException as exc:  # noqa: BLE001
-                described = _describe(exc)
                 entry["passed"] = False
-                entry["message"] = f"{described['type']}: {described['message']}"
-                entry["line"] = described.get("line")
+                entry["message"] = _test_error(exc)
+                entry["line"] = _learner_line(exc)
             finally:
                 sys.settrace(None)
         results.append(entry)

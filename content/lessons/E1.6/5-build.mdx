@@ -1,0 +1,41 @@
+The Derive phase worked out how many bytes UTF-8 gives each character. Now read a training log from a file into numbers and write a summary of it, count a text's bytes from its code points, predict what reading a file with another encoding does, and mend a function that cuts text to fit a limit in bytes. The tests call your functions with many texts and files, some of them messy.
+
+## A training log
+
+<Exercise id="build-read-log" />
+
+<Reveal for="build-read-log">
+
+The same few steps read almost any table kept as text. Python's `csv` module does the splitting for you, and also copes with a comma inside a quoted field, which `split(",")` cannot. E2.8 reads data at scale with tools built on the same steps.
+
+## Bytes without encode
+
+<Exercise id="build-utf8-length" />
+
+</Reveal>
+
+<Reveal for="build-utf8-length">
+
+Counting this way gives a text's size in bytes without making the bytes, and code that has to keep within a limit in bytes, such as a column in a database or a field in a network message, must count bytes and not characters.
+
+## Another encoding
+
+<Exercise id="build-break-encoding" />
+
+</Reveal>
+
+<Reveal for="build-break-encoding">
+
+As `repr` writes them, the 15 characters are `'à¤\x85à¤°à¥\x8dà¤£à¤µ'`: each `à` is the byte 224 that starts a Devanagari character in UTF-8, and `\x85` and `\x8d` are bytes that Latin-1 turns into characters that cannot be seen. Text decoded with the wrong encoding is called *mojibake*, from the Japanese for "character transformation", and text gathered from the web holds plenty of it. A wrong encoding that stops with an error is the lucky case, so always name the encoding when you open a file.
+
+## Cutting to a limit
+
+<Exercise id="build-truncate" />
+
+</Reveal>
+
+<Reveal for="build-truncate">
+
+Stepping back can never drop anything but the part of the last character. `errors="ignore"` would give the same answers here, since the only broken character is the one the cut went through, but on bytes from anywhere else it drops whatever is broken without a word, which can hide a bug. A cut between code points can still split what a reader sees as one syllable: `truncate("नमस्ते दुनिया", 10)` keeps स but not the ् that joins it to त. Unicode publishes rules for where the syllables and letters a reader sees begin and end, and text libraries follow them.
+
+</Reveal>

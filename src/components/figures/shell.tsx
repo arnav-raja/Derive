@@ -32,6 +32,11 @@ export function useWidth<T extends HTMLElement>(fallback = 640): [RefObject<T | 
   return [ref, width];
 }
 
+/** Devanagari is marked as Hindi, so that a screen reader reads it in a Hindi voice. */
+export function langOf(text: string): string | undefined {
+  return /\p{Script=Devanagari}/u.test(text) ? "hi" : undefined;
+}
+
 /** A figure's numbers. In a string cell, `name` is set in the code font, as in the figure's sentences. */
 export type DataTable = { columns: string[]; rows: (string | number)[][]; caption?: string };
 
@@ -143,11 +148,11 @@ function NumbersTable({ table }: { table: DataTable }) {
               <tr key={i} className="border-t border-rule">
                 {r.map((cell, j) =>
                   j === 0 ? (
-                    <th key={j} scope="row" className="px-3 py-1.5 font-normal text-ink">
+                    <th key={j} scope="row" lang={typeof cell === "string" ? langOf(cell) : undefined} className="px-3 py-1.5 font-normal text-ink">
                       {typeof cell === "string" ? <CodeText text={cell} /> : cell}
                     </th>
                   ) : (
-                    <td key={j} className="px-3 py-1.5 text-ink">
+                    <td key={j} lang={typeof cell === "string" ? langOf(cell) : undefined} className="px-3 py-1.5 text-ink">
                       {typeof cell === "string" ? <CodeText text={cell} /> : cell}
                     </td>
                   ),

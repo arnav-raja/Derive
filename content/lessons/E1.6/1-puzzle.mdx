@@ -1,0 +1,18 @@
+E1.1 met text as a value of type `str`, a *string*. A file does not keep characters, though. It keeps *bytes*, numbers from 0 to 255, and almost every file and web page turns its text into bytes in the same way, called UTF-8. In Python, `s.encode("utf-8")` gives the UTF-8 bytes that stand for a string `s`, and `len` counts them, as it counts the characters of a string.
+
+```python
+word = "hello"
+greeting = "नमस्ते"
+print(len(word), len(greeting))
+print(len(word.encode("utf-8")), len(greeting.encode("utf-8")))
+```
+
+`नमस्ते` is *namaste*, the Hindi greeting. Decide what the program prints before you read on.
+
+<Exercise id="puzzle-namaste" />
+
+<Reveal for="puzzle-namaste">
+
+Every program that reads a file, a web page or a prompt meets the gap between what a reader sees, what Python counts and what a file keeps. A language model meets it before it reads a single word, since many models' tokenisers turn the text into bytes, and the bytes into tokens. This lesson looks inside strings, at the numbers behind the characters and the bytes that store them, and then at files, at turning their lines into numbers, and at turning numbers back into text.
+
+</Reveal>

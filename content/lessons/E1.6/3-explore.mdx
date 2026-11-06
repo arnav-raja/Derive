@@ -1,0 +1,226 @@
+## A string, one character at a time
+
+A string is a sequence of characters, and much of what E1.4 did with lists works on it. `len(s)` counts its characters. `s[i]` is the character at index `i`, counting from 0, and a negative index counts from the end. A slice `s[a:b]` is a new string of the characters from index `a` up to, but not including, index `b`, and `for ch in s:` visits the characters in order. `x in s` works on a string as well:
+
+```python
+s = "learning"
+print(s[0], s[-1], s[1:5])
+print("earn" in s, "nl" in s)
+print(["e", "a"] in ["l", "e", "a", "r"])
+```
+
+<Exercise id="explore-in" />
+
+<Reveal for="explore-in">
+
+So `in` asks a different question of each. Of a list, it asks whether `x` is one of its items. Of a string, it asks whether `x` is a *substring*: a run of characters side by side, in the same order.
+
+## Methods on a string
+
+E1.4's lists change in place: `xs.append(v)` gives the same list a new slot. Strings have methods too. `s.upper()` gives `s` in capital letters, and `s.replace(a, b)` gives `s` with every `a` in it replaced by `b`.
+
+```python
+name = "derive"
+name.upper()
+print(name)
+print(name.upper(), name.replace("d", "D"))
+name[0] = "D"
+print(name)
+```
+
+<Exercise id="explore-upper" />
+
+</Reveal>
+
+<Reveal for="explore-upper">
+
+A string is *immutable*: once made, it never changes, so a method can only give back a new string. To keep the result, give it a name, as in `name = name.upper()`, which makes `name` refer to the new string. A slot cannot be given a new value either: Python's message is `TypeError: 'str' object does not support item assignment`. Lists, which can change, are *mutable*. Because no string ever changes, E1.4's care over two names that share one list is never needed for strings: whatever names refer to a string, it stays as it was.
+
+## Which string comes first
+
+`==` asks whether two strings have the same characters in the same order. `<` compares two strings as well, one character at a time from the left, and the first place where they differ decides which comes first.
+
+```python
+print("Zebra" < "apple", "10" < "9")
+```
+
+<Exercise id="explore-compare" />
+
+</Reveal>
+
+<Reveal for="explore-compare">
+
+Python compares characters by numbers. Every character has one, its *code point*, given to it by *Unicode*, the standard that numbers the characters of the world's writing systems: more than 150,000 of them so far, from Latin and Devanagari letters to Chinese characters, mathematical symbols and emoji. `ord(ch)` gives a character's code point, and `chr(n)` gives the character whose code point is `n`:
+
+| Character | `A` | `Z` | `a` | `z` | `0` | `1` | `9` | `é` | `न` | `日` | `𝑥` |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Code point | 65 | 90 | 97 | 122 | 48 | 49 | 57 | 233 | 2,344 | 26,085 | 119,909 |
+
+`𝑥` is not the letter `x`, which is 120, but the mathematical italic x, a separate character that typeset maths uses. The two look alike, but Python counts them as different characters.
+
+The capital letters A to Z have code points 65 to 90, all below the small letters a to z, at 97 to 122, and the digits 0 to 9 come before both, at 48 to 57. When one string is the start of another, as `"cat"` is of `"cats"`, the shorter comes first. To compare numbers written as text, turn them into numbers first. Code points run from 0 to 1,114,111, which leaves room for every script there is and many more to come.
+
+## Characters as bytes
+
+A file, a message sent over a network and a computer's memory all hold *bytes*. A byte is eight bits, eight binary digits, so it holds one of $2^8 = 256$ numbers, 0 to 255, and a code point such as 2,344 does not fit in one. *UTF-8*, the way almost every file and web page stores text, writes each code point as one to four bytes: each English letter takes one, as in `hello`, and a larger code point never takes fewer bytes than a smaller one. `s.encode("utf-8")` gives a string's UTF-8 bytes, as a value of type `bytes`, which works like a sequence of numbers from 0 to 255, and `b.decode("utf-8")` turns bytes back into a string.
+
+The figure shows each character of a text with its code point and its UTF-8 bytes. It asks you something first.
+
+<TextBytes
+  title="Characters, code points and bytes"
+  description="Each character of the chosen text sits in a box, with its code point under it and, once café's bytes have been predicted, its UTF-8 bytes under that, one to a line, as numbers or as eight bits each. In the bits view, the marker bits at the start of each byte are grey, and the bits that carry the code point are in colour. A vowel sign, or the mark ्, is drawn on a dotted circle, as in ◌े."
+  texts={["café", "hello", "नमस्ते", "日本", "𝑥 + 1"]}
+  predict={{ text: "café", prompt: "Before the bytes appear: how many bytes does café take in UTF-8? Lock in your answer, then reveal." }}
+  typingAfter="explore-duniya"
+/>
+
+<Exercise id="explore-duniya" />
+
+</Reveal>
+
+<Reveal for="explore-duniya">
+
+"Show the bits" writes each byte as its eight bits. The grey bits at the start of each byte are markers. A byte that starts with `0` is a whole character, with 7 bits left for its code point. A character of two bytes starts with `110`, one of three bytes with `1110`, and one of four with `11110`, so the first byte says how many bytes the character has, and each of its other bytes starts with `10`. The bits in colour, read in order across a character's bytes, are its code point in binary.
+
+For é, $233 = 128 + 64 + 32 + 8 + 1$, which in binary, with places 1, 2, 4, 8 and so on from the right, is `11101001`. Two bytes leave 11 places, so it is written `00011101001`: `00011` goes after the markers `110`, and `101001` after `10`. That gives `11000011`, which is 195, and `10101001`, which is 169, the figure's two bytes for é.
+
+A string's bytes can number up to four times its characters, so a limit in bytes and a limit in characters are different limits. A field that allows 160 bytes holds 160 English letters but only 53 Devanagari characters. Python keeps Devanagari's characters in the order they are said, not the order they are drawn: दुनिया is द, ु, न, ि, य and ा, with ि after न although it is drawn to its left. Type it into the figure to see.
+
+`print` writes a value of type `bytes` as `b'caf\xc3\xa9'`: a byte below 128 as the character it stands for, and any other as `\x` and two digits of *hexadecimal*, base 16, whose digits run from 0 to 9 and then a to f for 10 to 15, so `c3` is $12 \times 16 + 3 = 195$. `list(b)` gives the numbers themselves, and `b[3]`, a single byte, is a number: for café's bytes, 195.
+
+## A cut through the bytes
+
+A slice of `bytes`, such as `data[:4]`, is cut by index, as a slice of a list is, and a cut can fall anywhere, even inside a character:
+
+```python
+data = "नमस्ते".encode("utf-8")
+print(data[:3].decode("utf-8"))
+print(data[:4].decode("utf-8"))
+```
+
+<Exercise id="explore-cut" />
+
+</Reveal>
+
+<Reveal for="explore-cut">
+
+The error says which byte, and where: `'utf-8' codec can't decode byte 0xe0 in position 3: unexpected end of data`. `0xe0` is hexadecimal, as the `0x` at its start says: `e` is 14, and $14 \times 16 = 224$. Position 3 is that byte's index. A cut through a character is always noticed: a character's first byte says how many bytes it has, so one cut short at the end is seen, and a byte from 128 to 191, one that starts with `10`, only ever continues a character, so a piece left at the start is seen too. `decode` can be told to carry on instead. `errors="replace"` puts the mark `�` in place of what is broken, and `errors="ignore"` leaves it out, but either way part of the text is gone, so it is better to cut only between characters. The Build phase writes a function that does.
+
+## Files
+
+A *file* is a sequence of bytes kept under a name. `open(path, encoding="utf-8")` opens the file at `path` to be read as text, decoding its bytes as UTF-8 as it goes. `open(path, "w", encoding="utf-8")` makes a new, empty file to write to, or empties the file if there is one already. A `with` block keeps the file open while its lines run, and closes it when the block ends:
+
+```python
+with open("losses.txt", "w", encoding="utf-8") as f:
+    f.write("2.5\n1.9\n1.4\n")
+
+with open("losses.txt", encoding="utf-8") as f:
+    lines = f.readlines()
+print(lines, len(lines))
+```
+
+`f.write(text)` adds `text` to the file. `"\n"` in a string is a single character, a *newline*, which ends a line. `f.read()` gives the whole file as one string, and `f.readlines()` gives a list of its lines.
+
+<Exercise id="explore-readlines" />
+
+</Reveal>
+
+<Reveal for="explore-readlines">
+
+An open file can also be looped over: `for line in f:` visits its lines in order, one at a time, without reading the whole file at once, which matters for a file of many gigabytes. `float` and `int` skip spaces and newlines around a number, so `float("2.5\n")` is 2.5. Here a script counts the lines that say `ok`:
+
+```python
+with open("status.txt", "w", encoding="utf-8") as f:
+    f.write("ok\nfail\nok\nok\n")
+
+count = 0
+with open("status.txt", encoding="utf-8") as f:
+    for line in f:
+        if line == "ok":
+            count = count + 1
+print(count)
+```
+
+<Exercise id="explore-strip" />
+
+</Reveal>
+
+<Reveal for="explore-strip">
+
+`line.strip()` gives `line` without the spaces, tabs and newlines at its start and end, so `if line.strip() == "ok":` counts 3. A program that reads lines nearly always strips them first. Stripping also copes with the one line that can come without a newline, the last line of a file that does not end with one. The newline is easy to forget because it cannot be seen: `print(line)` shows `ok` and then an empty line. `repr(x)` writes `x` the way it would be typed in a program, so `print(repr(line))` shows `'ok\n'`, which makes the newline plain.
+
+## Lines into fields
+
+A line of a table often holds several values, its *fields*, with a separator between them, such as the comma of a CSV file, short for "comma-separated values". `s.split(sep)` cuts `s` at every `sep` and gives a list of the pieces between them. `s.split()`, with no separator, cuts at spaces too.
+
+```python
+print("100,2.9,,0.001".split(","))
+print(" the  cat ".split(" "))
+print(" the  cat ".split())
+```
+
+<Exercise id="explore-split" />
+
+</Reveal>
+
+<Reveal for="explore-split">
+
+Keeping the empty field is what a table needs: the CSV line `100,2.9,,0.001` is missing its third value, and the `''` in its place keeps every later field in its column. `split()` treats tabs and newlines as it treats spaces, which suits words, and takes care of a line's newline as well. `sep.join(xs)` goes the other way and joins a list of strings into one, with `sep` between them: `"-".join(["a", "b", "c"])` is `"a-b-c"`, and `",".join(fields)` makes a CSV line again.
+
+Put together, `split` and E1.1's conversions turn a log into numbers. Step through the figure. It stops once to ask you first.
+
+<ProgramTrace
+  title="A log into a dictionary"
+  description="A short program turns a log, kept in one string, into a dictionary from each step to its loss. Step through it one line at a time; it stops once to ask you about a value."
+  code={"log = \"step,loss\\n100,2.913\\n200,2.417\"\nlosses = {}\nfor line in log.split(\"\\n\")[1:]:\n    fields = line.split(\",\")\n    losses[int(fields[0])] = float(fields[1])\nprint(losses)"}
+  predict={[{ line: 4, variable: "fields", prompt: "Line 4 is about to run for the first time. Once it has, what will `fields` refer to?" }]}
+/>
+
+## Numbers into text
+
+An *f-string*, a string with an `f` before its opening quote, works out each expression in braces and puts its value into the string: with `step` as 300, `f"step {step}"` is `"step 300"`. A *format* can follow the expression, after a colon. `:,` groups a whole number's digits in threes, with commas, and `:.3f` writes a number with exactly three digits after the point.
+
+```python
+step = 1500
+loss = 2 / 3
+print(f"step {step:,}: loss {loss:.3f}")
+x = 0.1 + 0.2
+shown = f"{x:.2f}"
+print(shown, x, x == 0.3)
+```
+
+<Exercise id="explore-format" />
+
+</Reveal>
+
+<Reveal for="explore-format">
+
+A format rounds what is written and leaves the value alone. Rounding for the eye is safe, but comparing the rounded text, or turning it back into a number, loses whatever was rounded off. So a training log prints its losses with `:.3f` or `:.4f` for people to read, and keeps the full values for any sum or comparison.
+
+## The names
+
+<Definition term="Strings">
+
+A *string* is a sequence of characters. `len`, indexes, slices and `for` work on it as on a list, and `x in s` asks whether `x` is a *substring* of `s`, a run of characters side by side. A string is *immutable*: its methods, such as `upper`, `replace`, `strip` and `split`, give back new values, and leave the string as it was. Strings compare one character at a time, by code point.
+
+</Definition>
+
+<Definition term="Code points and UTF-8">
+
+*Unicode* gives each character a number, its *code point*, from 0 to 1,114,111. `ord` gives a character's code point, and `chr` the character with a code point. *UTF-8* writes each code point as one to four *bytes*, numbers from 0 to 255, with marker bits at the start of each byte that say where a character starts and how many bytes it has. `s.encode("utf-8")` gives a string's bytes, and `b.decode("utf-8")` turns bytes back into a string.
+
+</Definition>
+
+<Definition term="Files">
+
+A *file* is a sequence of bytes kept under a name. `open(path, encoding="utf-8")` reads it as text, `open(path, "w", encoding="utf-8")` writes a new one, and `with` closes the file when its block ends. `read` gives the whole text, and `readlines` and `for line in f` give its lines, each with the newline that ends it.
+
+</Definition>
+
+<Definition term="Parsing and formatting">
+
+*Parsing* turns text into values: `strip` takes off the spaces and newlines at the ends, `split` cuts a line into *fields*, and `int` and `float` turn fields into numbers. *Formatting* turns values into text: an *f-string* puts the value of each expression in braces into the string, and a format such as `:,` or `:.3f` changes how a number is written, never the number.
+
+</Definition>
+
+</Reveal>

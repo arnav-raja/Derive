@@ -6,7 +6,7 @@ import { useId, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { inputClasses } from "@/components/ui/field";
 
-import { FigureFrame, PredictPanel, type PredictPhase } from "./shell";
+import { FigureFrame, langOf, PredictPanel, type PredictPhase } from "./shell";
 
 /*
  * A text as Python counts it and as a file stores it: each character with its code point, the
@@ -56,6 +56,12 @@ function inWords(items: string[]): string {
 /** A combining mark, such as a Hindi vowel sign, is drawn on a dotted circle so that it can be seen alone. */
 function isMark(char: string): boolean {
   return /\p{M}/u.test(char);
+}
+
+/** A byte as its marker bits, a space, and the bits that carry the code point, as in "110 00011". */
+export function markedBits(byte: number): string {
+  const s = byte.toString(2).padStart(8, "0");
+  return `${s.slice(0, markerBits(byte))} ${s.slice(markerBits(byte))}`;
 }
 
 /** How a character is named in a sentence or a table cell. */
@@ -127,6 +133,7 @@ export function TextBytes({
             prompt={predict.prompt}
             phase={phase}
             canLock={guessed !== null}
+            lockHint="Type a whole number of bytes to lock it in."
             onLock={() => setPhase("locked")}
             onReveal={() => setPhase("revealed")}
             onReset={() => setPhase("asking")}
@@ -159,7 +166,7 @@ export function TextBytes({
         <div role="img" aria-labelledby={titleId} aria-describedby={descId} className="flex flex-wrap gap-2">
           {chars.map((c, i) => (
             <div key={i} className="flex min-w-16 flex-col items-center gap-1 rounded-md border border-rule bg-surface px-2 py-2">
-              <span className={clsx("flex h-9 items-center text-2xl leading-none text-ink", c.char === " " && "text-xs text-ink-muted")}>
+              <span lang={langOf(c.char)} className={clsx("flex h-9 items-center text-2xl leading-none text-ink", c.char === " " && "text-xs text-ink-muted")}>
                 {c.char === " " ? "space" : isMark(c.char) ? `◌${c.char}` : c.char}
               </span>
               <span className="tabular text-xs text-ink-muted">{group(c.codePoint)}</span>
@@ -187,7 +194,7 @@ export function TextBytes({
         <>
           <div className="flex flex-wrap gap-2" role="group" aria-label="Texts to try">
             {texts.map((t) => (
-              <Button key={t} size="sm" variant={t === text ? "primary" : "secondary"} onClick={() => setText(t)} aria-pressed={t === text}>
+              <Button key={t} size="sm" variant={t === text ? "primary" : "secondary"} onClick={() => setText(t)} aria-pressed={t === text} lang={langOf(t)}>
                 {t}
               </Button>
             ))}
@@ -216,18 +223,21 @@ export function TextBytes({
             ) : null}
           </div>
           <p className="text-sm text-ink" aria-live="polite">
-            <span className="font-semibold">{text || "No text"}</span>: {group(chars.length)} {chars.length === 1 ? "character" : "characters"}
+            <span lang={langOf(text)} className="font-semibold">
+              {text || "No text"}
+            </span>
+            : {group(chars.length)} {chars.length === 1 ? "character" : "characters"}
             {revealed ? `, ${group(total)} ${total === 1 ? "byte" : "bytes"} in UTF-8.` : ". The bytes appear once you have made your prediction."}
           </p>
           {revealed ? (
             <div className="flex flex-wrap items-center gap-3">
-              <Button size="sm" variant="secondary" onClick={() => setBits((v) => !v)} aria-pressed={bits}>
-                {bits ? "Show the bytes as numbers" : "Show the bits"}
+              <Button size="sm" variant={bits ? "primary" : "secondary"} onClick={() => setBits((v) => !v)} aria-pressed={bits}>
+                Show the bits
               </Button>
               {bits ? (
                 <p className="text-sm text-ink-muted">
                   In each byte, the grey bits say where a character starts and how many bytes it has; the bits in colour, read in
-                  order, are its code point in base 2.
+                  order, are its code point in binary.
                 </p>
               ) : null}
             </div>
@@ -235,12 +245,9 @@ export function TextBytes({
         </>
       }
       table={{
-        columns: revealed ? ["Character", "Code point", "UTF-8 bytes"] : ["Character", "Code point"],
-        rows: chars.map((c) => [
-          charName(c.char),
-          group(c.codePoint),
-          ...(revealed ? [bits ? c.bytes.map((b) => b.toString(2).padStart(8, "0")).join(" ") : c.bytes.join(", ")] : []),
-        ]),
+        columns: revealed ? ["Character", "Code point", bits ? "UTF-8 bytes, marker bits first" : "UTF-8 bytes"] : ["Character", "Code point"],
+        caption: revealed && bits ? "Each byte is written as its marker bits, a space, and the bits that carry the code point." : undefined,
+        rows: chars.map((c) => [charName(c.char), group(c.codePoint), ...(revealed ? [bits ? c.bytes.map(markedBits).join(", ") : c.bytes.join(", ")] : [])]),
       }}
     />
   );

@@ -1,0 +1,108 @@
+code: E1.6
+title: "Text, files and strings"
+course: E1
+status: review
+summary: >-
+  The Hindi greeting नमस्ते: how many characters does Python count in it, and how many bytes does a
+  file need to store it? Strings as sequences of characters, the numbers behind the characters and
+  the bytes that store them, reading and writing files, and turning lines of text into numbers and
+  numbers back into text.
+sittings: 2
+minutes:
+  puzzle: 10
+  recall: 10
+  explore: 55
+  derive: 35
+  build: 60
+  explain: 25
+concepts:
+  taught:
+    - id: E1.6/strings-as-sequences
+      name: Strings as sequences
+      summary: >-
+        A string is a sequence of characters: `len`, indexes, slices and `for` work on it as on a
+        list, and `x in s` asks whether `x` appears in `s` as a run of characters side by side. A
+        string never changes. Its methods, such as `upper`, `replace`, `strip` and `split`, give
+        back new values and leave the string as it was. Strings compare one character at a time, by
+        the numbers behind the characters, so `"Z" < "a"` and `"10" < "9"`.
+      usedBy: [L4.2, E1.12]
+    - id: E1.6/unicode-and-bytes
+      name: Code points and UTF-8
+      summary: >-
+        Unicode gives every character a number, its code point, from 0 to 1,114,111: `ord` gives a
+        character's code point, and `chr` the character with a code point. Files and networks carry
+        bytes, numbers from 0 to 255, and UTF-8 writes each code point as one to four of them: one
+        below 128, two below 2,048, three below 65,536 and four from 65,536 up. Marker bits at the start
+        of each byte say where a character starts and how many bytes it has, so a byte from 128 to
+        191 never starts a character. `len` counts code points, which need not be the syllables
+        and letters a reader sees, and a string's bytes can number up to four times its characters.
+      usedBy: [L4.2, E9.2]
+    - id: E1.6/files
+      name: Reading and writing files
+      summary: >-
+        A file is a sequence of bytes kept under a name. `open(path, encoding="utf-8")` reads it as
+        text, decoding its bytes as it goes, `"w"` writes a new file, and `with` closes the file when
+        its block ends. `read` gives the whole text, and `readlines` and `for line in f` give its
+        lines, each with the newline that ends it. Bytes decoded with the wrong encoding either stop
+        Python with `UnicodeDecodeError` or, worse, give the wrong characters without a word.
+      usedBy: [E1.12, E2.8, E9.2]
+    - id: E1.6/parsing-and-formatting
+      name: Parsing and formatting
+      summary: >-
+        Parsing turns text into values: `strip` takes off the spaces and newlines at the ends, `split`
+        cuts a line into its fields, keeping an empty field where nothing stands between two
+        separators, and `int` and `float` turn fields into numbers. Formatting turns values back
+        into text: an f-string puts the value of each expression in braces into the string, and a
+        format such as `:,` or `:.3f` changes how a number is written, never the number.
+      usedBy: [E1.12, E2.8, E9.2]
+  used:
+    - E1.1/values-and-types
+    - E1.1/variables-as-names
+    - E1.1/evaluation-order
+    - E1.1/floats-are-approximate
+    - E1.2/loops
+    - E1.2/conditions
+    - E1.2/accumulator-pattern
+    - E1.3/defining-functions
+    - E1.4/lists
+    - E1.4/dicts-and-sets
+    - E1.4/aliasing-and-mutation
+    - E1.4/cost-of-operations
+    - M1.1/powers-of-ten
+    - M1.1/fermi-estimation
+links:
+  requires:
+    - lesson: E1.4
+      bridge: >-
+        A string is a sequence, as E1.4's lists are, so indexes, slices, `len` and `for` carry over.
+        But a list changes in place and a string never does, so E1.4's care over two names sharing
+        one list is never needed for strings. And a file read line by line gives a list of lines,
+        which parsing turns into a dictionary of numbers.
+  applies:
+    - lesson: M1.1
+      bridge: >-
+        M1.1 counted in powers of ten and estimated from rough rates. Text is measured the same way:
+        a gigabyte is $10^9$ bytes, and the Derive phase estimates how many words a gigabyte of Hindi
+        holds from the bytes that each word takes.
+  foreshadows:
+    - lesson: L4.2
+      bridge: >-
+        A language model reads text as tokens. L4.2 builds a byte-pair encoder, which starts from a
+        text's UTF-8 bytes, so that it can read any text in any script, and then merges the pairs of
+        bytes that come up most often into tokens of their own.
+    - lesson: E1.11
+      bridge: >-
+        `for line in f` reads a file one line at a time, without ever holding the whole of it.
+        E1.11 looks at what makes that work: iterators, and generators that make their values one
+        at a time, so that a program can stream data far larger than its memory.
+    - lesson: E2.8
+      bridge: >-
+        Real data arrives as messy files: a header, blank lines, missing fields and numbers written
+        as text. E2.8 loads such files, cleans them, and splits the data into the parts used for
+        training and for testing.
+    - lesson: E9.2
+      bridge: >-
+        Text for training a model is gathered from the web, as pages of bytes in many encodings and
+        languages. E9.2 extracts the text from them, cleans it, and works out which language each
+        page is in.
+skills: [2]

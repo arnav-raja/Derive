@@ -1,0 +1,169 @@
+{
+  "version": 1,
+  "expressions": {
+    "derive-largest": {
+      "source": "015676109fd81b6a",
+      "points": [
+        {
+          "n": "8"
+        },
+        {
+          "n": "5"
+        },
+        {
+          "n": "2"
+        },
+        {
+          "n": "7"
+        },
+        {
+          "n": "1"
+        },
+        {
+          "n": "9"
+        }
+      ],
+      "values": [
+        "2199023255551.0000000",
+        "67108863.000000000000",
+        "2047.0000000000000000",
+        "68719476735.000000000",
+        "63.000000000000000000",
+        "70368744177663.000000"
+      ]
+    },
+    "derive-mixed-bytes": {
+      "source": "8a5ec87564fc8425",
+      "points": [
+        {
+          "p": "37/3"
+        },
+        {
+          "p": "26/3"
+        },
+        {
+          "p": "37"
+        },
+        {
+          "p": "4/7"
+        },
+        {
+          "p": "9/5"
+        },
+        {
+          "p": "6"
+        }
+      ],
+      "values": [
+        "-21.666666666666666667",
+        "-14.333333333333333333",
+        "-71.000000000000000000",
+        "1.8571428571428571429",
+        "-0.60000000000000000000",
+        "-9.0000000000000000000"
+      ]
+    },
+    "derive-payload": {
+      "source": "6764cb658d094b8e",
+      "points": [
+        {
+          "n": "9"
+        },
+        {
+          "n": "4"
+        },
+        {
+          "n": "6"
+        },
+        {
+          "n": "3"
+        },
+        {
+          "n": "2"
+        },
+        {
+          "n": "8"
+        }
+      ],
+      "values": [
+        "46.000000000000000000",
+        "21.000000000000000000",
+        "31.000000000000000000",
+        "16.000000000000000000",
+        "11.000000000000000000",
+        "41.000000000000000000"
+      ]
+    }
+  },
+  "runs": {
+    "build-read-log": {
+      "tests": [],
+      "error": {
+        "type": "ValueError",
+        "message": "could not convert string to float: 'loss'",
+        "line": 8
+      },
+      "output": ""
+    },
+    "build-truncate": {
+      "tests": [
+        {
+          "name": "test_english",
+          "description": "English text, where every character takes one byte.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_hindi",
+          "description": "The script's Hindi greeting, cut to 10 bytes.",
+          "passed": false,
+          "message": "truncate('नमस्ते दुनिया', 10) is 'नमस्ते दुन', not 'नमस': three characters of three bytes each fit in 10 bytes, and a fourth does not."
+        },
+        {
+          "name": "test_every_limit",
+          "description": "Every limit from 0 to past the end, on texts in several scripts.",
+          "passed": false,
+          "message": "truncate('नमस्ते दुनिया', 1) is 'न', which takes 3 bytes, more than 1."
+        },
+        {
+          "name": "test_no_errors_argument",
+          "description": "truncate moves the cut itself, without errors=\"ignore\" or errors=\"replace\".",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": "hello\nनमस्ते दुन\n"
+    },
+    "build-utf8-length": {
+      "tests": [
+        {
+          "name": "test_examples",
+          "description": "The script's four texts, and the empty text.",
+          "passed": false,
+          "message": "utf8_length('café') is 4, not 5."
+        },
+        {
+          "name": "test_edges",
+          "description": "The code points on each side of every change in the number of bytes.",
+          "passed": false,
+          "message": "utf8_length(chr(128)) is 1, not 2, the number of bytes that UTF-8 gives code point 128."
+        },
+        {
+          "name": "test_long_text",
+          "description": "A text of several hundred characters in several scripts.",
+          "passed": false,
+          "message": "utf8_length of a text of 440 characters in several scripts is 820, not 860."
+        },
+        {
+          "name": "test_no_encode",
+          "description": "utf8_length works from code points, without encode or bytes.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": "hello 5 5\ncafé 4 4\nनमस्ते 6 18\n𝑥 + 1 5 8\n"
+    }
+  }
+}

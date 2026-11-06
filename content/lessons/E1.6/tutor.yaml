@@ -1,0 +1,314 @@
+misconceptions:
+  - id: visible-letters
+    belief: Python counts the syllables or letters that a reader sees.
+    why: >-
+      Python counts code points. A syllable that a reader sees can be several code points, as स्ते
+      is स, the joining mark ्, त and the vowel sign े, so नमस्ते is three syllables to a reader and
+      six characters to Python.
+    cue: The learner chooses `seen-one-byte` or `seen-three` in the puzzle.
+  - id: one-byte-each
+    belief: Every character takes one byte.
+    why: >-
+      A byte holds a number from 0 to 255, and code points run to 1,114,111. UTF-8 gives one byte
+      only to a code point below 128, and two, three or four to larger ones.
+    cue: The learner chooses `one-byte` in the puzzle, answers 13 in explore-duniya, or chooses `chars` in explore-cut.
+  - id: two-bytes-beyond-english
+    belief: A character outside English always takes two bytes, as é does.
+    why: >-
+      Two bytes carry code points only up to 2,047. The Devanagari block's code points are from
+      2,304 up, so each of its characters takes three, and most emoji take four.
+    cue: The learner chooses `two-bytes` in the puzzle, or answers 25 in explore-duniya.
+  - id: in-checks-items
+    belief: "`x in s` for a string looks only for a single character, as `in` for a list looks for one item."
+    why: >-
+      For a string, `in` looks for a substring, a run of characters side by side, so `"earn" in
+      "learning"` is `True`.
+    cue: The learner chooses `single-chars` in explore-in.
+  - id: letters-anywhere
+    belief: "`x in s` is `True` when every letter of `x` appears somewhere in `s`."
+    why: >-
+      The letters must appear side by side and in order. `"nl"` is not in `"learning"`, although
+      both letters are.
+    cue: The learner chooses `letters-anywhere` in explore-in, or `both` in its first review variant.
+  - id: list-in-finds-runs
+    belief: "`in` on a list finds a run of items side by side, as it does on a string."
+    why: >-
+      For a list, `in` asks whether the value is one of its items. A list of two items is found only
+      if that list is itself an item.
+    cue: The learner chooses `list-runs` in explore-in, or `both` or `run` in its third review variant.
+  - id: method-changes-string
+    belief: A string method such as `upper` changes the string it is called on, as `append` changes a list.
+    why: >-
+      Strings never change. A method gives back a new string and leaves the old one as it was, so
+      the result is lost unless it is given a name.
+    cue: The learner chooses `changed` in explore-upper or in its first review variant.
+  - id: slot-assignment
+    belief: A character of a string can be replaced by assigning to its slot, as in a list.
+    why: >-
+      Strings are immutable, so `s[0] = "D"` stops Python with `TypeError`. A new string is made
+      instead, for example with `replace` or by joining slices.
+    cue: The learner chooses `slot-assign` in explore-upper.
+  - id: compare-alphabetical
+    belief: Strings compare in plain alphabetical order, ignoring case, and numbers in strings compare as numbers.
+    why: >-
+      Strings compare one character at a time by code point. The capitals A to Z all come before
+      the small letters a to z, and `"10" < "9"` because `"1"` comes before `"9"`.
+    cue: The learner chooses `alphabet`, `numbers` or `letters-only` in explore-compare.
+  - id: one-byte-256
+    belief: Every code point below 256 fits in one byte, since a byte holds 256 numbers.
+    why: >-
+      A byte that is a whole character starts with the marker `0`, so it has only 7 bits for its
+      code point, and carries code points only up to 127.
+    cue: The learner says that é takes one byte, or counts one byte below 256 in build-utf8-length.
+  - id: cut-anywhere
+    belief: Cutting bytes in the middle of a character just leaves that character out, or marks it.
+    why: >-
+      `decode` stops with `UnicodeDecodeError` when bytes end part-way through a character. Only
+      `errors="ignore"` or `errors="replace"` makes it carry on, and then part of the text is lost.
+    cue: The learner chooses `dropped` or `replaced` in explore-cut.
+  - id: readlines-strips
+    belief: "`readlines` gives the lines without their newlines."
+    why: >-
+      Each line keeps the newline that ended it in the file, as `'2.5\n'`, until it is stripped.
+    cue: The learner chooses `stripped` in explore-readlines.
+  - id: readlines-one-string
+    belief: "`readlines` gives the whole file as one string."
+    why: "`read` gives one string; `readlines` gives a list with one string for each line."
+    cue: The learner chooses `one-string` in explore-readlines.
+  - id: readlines-empty-last
+    belief: A file that ends with a newline has an empty line after it.
+    why: >-
+      The newline ends the last line and nothing follows it, so `readlines` gives no empty string at
+      the end; only `split("\n")` leaves one.
+    cue: The learner chooses `empty-last` in explore-readlines.
+  - id: newline-invisible
+    belief: A line read from a file is equal to the text on it.
+    why: >-
+      The line ends with `"\n"`, which cannot be seen when the line is printed, so `line == "ok"` is
+      `False` for the line `ok`.
+    cue: The learner answers 3 in explore-strip.
+  - id: split-drops-empty
+    belief: "`split` leaves out the empty fields."
+    why: >-
+      `split(",")` keeps an empty string wherever two separators stand side by side, so that the
+      fields after it stay in their columns. Only `split()` with no separator merges runs of
+      spaces.
+    cue: The learner chooses `drops-empty` or `csv-drops` in explore-split, or `drops` in its first review variant.
+  - id: split-same
+    belief: "`split()` and `split(\" \")` are the same."
+    why: >-
+      `split(" ")` cuts at every single space and keeps the empty strings between spaces side by
+      side, while `split()` treats any run of spaces, tabs and newlines as one break.
+    cue: The learner chooses `space-merges` or `same-split` in explore-split.
+  - id: format-changes-value
+    belief: Formatting a number with `:.2f` rounds the number itself.
+    why: >-
+      A format makes a new string and leaves the number as it was. Turning the rounded text back
+      into a number gives a different number.
+    cue: The learner chooses `changes-value` in explore-format, or `same` in its second review variant.
+  - id: format-truncates
+    belief: "`:.3f` cuts the digits off after the third, rather than rounding."
+    why: "`:.3f` rounds to the nearest number with three digits after the point, so $2/3$ is written `0.667`."
+    cue: The learner chooses `truncates` in explore-format or in its first review variant.
+  - id: wrong-encoding-errors
+    belief: Reading a file with the wrong encoding always stops with an error.
+    why: >-
+      An encoding such as Latin-1 gives a character to every byte, so it decodes anything without
+      an error and quietly gives the wrong characters.
+    cue: The learner chooses `decode-error` in build-break-encoding.
+  - id: chars-not-bytes-limit
+    belief: A limit in bytes can be kept by counting characters.
+    why: >-
+      A character takes one to four bytes, so a text of `limit` characters can take up to four times
+      `limit` bytes.
+    cue: build-truncate with `text[:limit]`.
+
+exercises:
+  derive-payload:
+    rungs:
+      - How many of a first byte's 8 bits are markers when its character has $n$ bytes, and how many of each other byte's?
+      - "Explore: a character of two bytes starts with `110`, and each of its bytes after the first starts with `10`. In the bits view, the bits that carry the code point are in colour."
+      - Count the bits in colour for a character of two bytes, such as é, and for one of three, such as न. Then find one expression that gives both counts.
+      - >-
+        Work out what your expression gives at $n = 2$ and at $n = 3$. If it gives 11 at $n = 2$,
+        your count for two bytes is right; check it at $n = 3$ against the bits in colour for न as
+        well. If it gives 20 at $n = 3$, look again at the bytes after the first: each has markers
+        of its own. If it gives 18 or 19 at $n = 3$, count again how many markers the first byte has
+        when its character has three bytes. If it gives 24, find the markers in each byte before you
+        count.
+      - >-
+        A train of $m$ carriages has 40 seats in each. The first carriage gives $m + 1$ seats to the
+        crew and every other carriage gives 2, so the seats left for passengers are
+        $(40 - m - 1) + (40 - 2)(m - 1) = 37m + 1$.
+    notes: >-
+      $7n - 1$ takes off only the first byte's markers. $6n$ takes 2 marker bits from every byte,
+      the first included. $8n$ takes off no markers. $5n$ or $5n - 1$ usually comes from a slip in
+      the first byte's count. $6n + 1$ gives the first byte 7 bits, as if it were a character on its
+      own.
+  derive-largest:
+    rungs:
+      - With $k$ bits, what is the largest number that can be written in binary?
+      - "E1.4's doubling sum: $1 + 2 + 4 + \\dots + 2^{k-1} = 2^k - 1$. The previous step: a character of $n$ bytes has $5n + 1$ bits for its code point."
+      - With 3 bits, the largest number is `111`. What is it in decimal? Then try 11 bits, for a character of two bytes.
+      - >-
+        If your expression gives 2,048 for $n = 2$, its power of two is right, and the trouble is at
+        the very top: write 2,048 in binary and count its digits. If it gives 65,535 for $n = 2$,
+        its shape is right, and the trouble is in how many bits it counts: not all 16 bits of two
+        bytes carry the code point. If it gives 1,023, take the number of bits for two bytes from
+        the previous step again.
+      - >-
+        With 4 decimal digits the largest number is 9,999, which is $10^4 - 1$: one less than the
+        smallest number that needs a fifth digit. In the same way, a counter of 3 digits shows at
+        most $10^3 - 1 = 999$.
+    notes: >-
+      $2^{5n+1}$ is the first number that does not fit. $2^{5n} - 1$ drops a bit. $2^{8n} - 1$ or
+      $256^n - 1$ counts the marker bits as if they carried the code point.
+  derive-devanagari-proof:
+    rungs:
+      - What does each line claim, in your own words? Is it a fact about Devanagari, a fact about UTF-8, or arithmetic?
+      - "The previous step: a character of $n$ bytes carries code points up to $2^{5n+1} - 1$. The Derive phase: UTF-8 uses the fewest bytes that can carry a code point."
+      - Take one Devanagari character, न, at 2,344. Can one byte carry it? Two? Three? Which facts did you use for each answer?
+      - >-
+        If the first line cites "The block", and the two lines that say only how far one, two or
+        three bytes reach cite "Largest code point", those are right. If a line that works out a
+        power or compares $c$ with a number cites a fact instead, ask whether that line brings in
+        anything new or only works out what the lines above it say. If the last line cites "Work it
+        out", ask what rules out four bytes, which could carry $c$ as well.
+      - >-
+        For Greek, whose main block runs from 880 to 1,023: one byte carries up to 127 (the bound),
+        and $127 < 880$, so one byte cannot carry a Greek letter (working it out); two bytes carry
+        up to 2,047 (the bound), and $1{,}023 < 2{,}047$, so two can (working it out); and UTF-8 uses
+        the fewest, so exactly two (fewest bytes).
+    notes: >-
+      Byte size is the decoy: the length is decided by the bits left for the code point, not by the
+      256 numbers a whole byte holds. The bound for the lines that work out $2^7 - 1$ or compare
+      numbers confuses a fact with the arithmetic that uses it. Work it out for the last line misses
+      that four bytes could carry $c$ as well, and only the fewest-bytes rule rules them out.
+  derive-mixed-bytes:
+    rungs:
+      - Out of 100 characters, how many take one byte, and how many take three?
+      - "The Derive phase: one byte for a code point below 128. The proof: three bytes for each character of the Devanagari block."
+      - Take $p = \frac{1}{2}$, so that half the characters take one byte and half take three. What is the average? Then try $p = 0$ and $p = 1$.
+      - >-
+        If your expression gives 3 at $p = 0$, your value for a text all in Devanagari is right;
+        then, if it does not give 1 at $p = 1$, work out what it gives at $p = \frac{1}{2}$, and
+        compare that with the average of 1 and 3. If it gives 1 at $p = 0$, look at which characters
+        $p$ counts, the one-byte ones or the Devanagari ones. If it gives 2 for every $p$, ask whether
+        the two kinds of character are always equally common.
+      - >-
+        In a class, a fraction $q$ of the students walk 2 km to school and the rest cycle 6 km, so
+        the average trip is $2q + 6(1 - q) = 6 - 4q$ km.
+    notes: >-
+      $1 + 2p$ or $3p + (1 - p)$ swaps the two kinds of character. $3 - p$ subtracts the fraction
+      once instead of twice. 2 averages the two sizes without weighting them.
+  derive-estimate:
+    rungs:
+      - How many bytes does one word take, with its space?
+      - "The proof: every character of the Devanagari block takes three bytes. Explore: a space, at code point 32, takes one. M1.1: a total divided by the size of each part gives the number of parts."
+      - How many bytes do 10 such words take? Then how many such words fit in 1,600 bytes?
+      - >-
+        If your bytes for a word are 16, that part is right: check the division of $10^9$ by it. If
+        your answer is near $1.7 \times 10^8$, look again at how many bytes each Devanagari
+        character takes.
+      - >-
+        A terabyte, $10^{12}$ bytes, of English text whose words average four letters and a space
+        takes 5 bytes a word, so it holds about $\frac{10^{12}}{5} = 2 \times 10^{11}$ words.
+    notes: >-
+      About $1.7 \times 10^8$ gives each character one byte. About $9 \times 10^7$ gives each
+      Devanagari character two. About $6.7 \times 10^7$ leaves out the space, which is a small slip
+      within the factor allowed.
+  build-read-log:
+    rungs:
+      - What should `read_log` give for a file holding only the lines `step,loss` and `5,1.5`? Which of a file's lines hold data?
+      - "Explore: `readlines` keeps each line's newline and `strip` takes it off, `split(\",\")` cuts a line into fields, and `int` and `float` turn fields into numbers; an f-string format such as `:.3f` or `:,` writes a number as asked. E1.4: `d[k] = v` adds a key to a dict."
+      - >-
+        Write `read_log` for the script's `log.csv` first, leaving blank lines aside, and print each
+        line's fields to check them. Then work out by hand what a blank line gives after `strip`,
+        and after `split(",")`.
+      - >-
+        If the script stops with `ValueError` about `'loss'`, your conversions work, and the trouble
+        is in which lines reach them: find the line of the file that holds that text. If it stops
+        with `IndexError`, your conversions are written right, and some line gives fewer fields than
+        they expect: print the fields of each line and look for one that gives only one. If it stops
+        with `ValueError` about the format code `f`, your formats are right for numbers, and the
+        trouble is in what they are given: look at the type of the values that `read_log` keeps. If
+        test_script_log passes, your parsing is right for a clean file; then, if
+        test_blank_and_spaces fails, work out what a blank line becomes when it is split. If
+        test_encoding fails, look at how your function opens the file. If a summary test fails,
+        compare your text with the expected one a character at a time, and look at what your loop
+        does when two losses are equal, and at what the lowest loss is before the loop has seen any.
+      - >-
+        To read a file of temperatures with lines such as `Pune: 31.5` and no header: open it with
+        `encoding="utf-8"`, and for each line of `f.readlines()`, strip it, skip it if it is empty,
+        split it at `": "`, and keep `temps[fields[0]] = float(fields[1])`. For a file holding
+        `Pune: 31.5`, a blank line and `Delhi: 38.5`, the lines are `'Pune: 31.5\n'`, `'\n'` and
+        `'Delhi: 38.5\n'`; the blank one strips to `''` and is skipped, and the others split into
+        `['Pune', '31.5']` and `['Delhi', '38.5']`, so `temps` is `{'Pune': 31.5, 'Delhi': 38.5}`.
+        A loop that keeps the hottest city so far holds `Pune`, then `Delhi`, since 38.5 is more than
+        31.5, and `f"hottest {best} at {temps[best]:.1f} degrees"` gives
+        `hottest Delhi at 38.5 degrees`.
+    notes: >-
+      `ValueError` about `'loss'` means the header was read as data: the loss is converted first,
+      since the right side of an assignment is worked out before its target. `IndexError` means a
+      line gave a single field, from a blank line that was not skipped or a split at spaces.
+      `ValueError` about the format code `f` means the losses were left as strings. `2.19` and
+      `1500` in the summary mean the formats were left out. Step 300 on the tie means `<=`. A
+      failure of test_summary_large alone means the lowest loss started at a guess, and of
+      test_encoding alone that the file was opened without `encoding="utf-8"`.
+  build-utf8-length:
+    rungs:
+      - Given only a character's code point, how many bytes does it take?
+      - "The Derive phase: one byte below 128, two from 128 to 2,047, three from 2,048 to 65,535, and four from 65,536 up. Explore: `ord(ch)` gives a code point, and `for ch in text:` visits the characters."
+      - Work out the bytes for one character first, and try `"a"`, `"é"`, `"न"` and `"𝑥"` by hand. Then add up over a whole text.
+      - >-
+        If test_examples passes for `hello`, your count for English letters is right. Then, if it
+        fails for `café`, work out by hand how many bytes your function gives `é`, at 233, and
+        compare that with what the figure showed; if it fails only for `𝑥 + 1`, look at what your
+        function gives a code point above 65,535. If test_examples passes and test_edges fails at a
+        code point, look at whether your comparison takes in that code point or stops just before
+        it. If test_no_encode fails, look for `encode` or `bytes` in your function.
+      - >-
+        To work out postage on parcels: under 20 g costs 1, under 100 g costs 2, under 500 g costs
+        3, and anything heavier 4. A loop over the weights adds 1 `if w < 20`, 2 `elif w < 100`, 3
+        `elif w < 500`, and 4 `else`, to a running total.
+    notes: >-
+      4 for café means one byte below 256. Lengths equal to `len(text)` mean characters were
+      counted. 3 for 𝑥 means no case for four bytes. A failure at exactly 128, 2,048 or 65,536 means
+      `<=` in place of `<`.
+  build-truncate:
+    rungs:
+      - What do the first 10 bytes of the Hindi greeting hold, and where does the cut fall in its fourth character?
+      - "Explore: a byte from 128 to 191 continues a character and never starts one. E1.2: a `while` loop repeats its block until its test is `False`."
+      - Take `"é!"`, whose bytes are 195, 169 and 33, with a limit of 1. Which byte is the first one left out, and which kind of byte is it? How far back must the cut move?
+      - >-
+        If the script, or test_every_limit, stops with `UnicodeDecodeError`, your encoding and
+        decoding are right, and the trouble is in where the cut falls: at that limit, list the bytes
+        on each side of the cut, and say which character each belongs to. If test_english passes,
+        your function is right when every character takes one byte; then, if test_hindi gives more
+        characters than expected, check whether your cut counts characters or bytes. If
+        test_english gives a start that is too short, work out how many bytes your function allows
+        each English letter. If test_every_limit says that a longer start also fits, look at whether
+        the cut moved back further than it needed to. If it says that truncate stops with
+        `IndexError`, look at limits that reach the end of the bytes. If test_no_errors_argument
+        fails, look at what your function asks `decode` to do with a broken character.
+      - >-
+        To cut a list of words to at most `limit` letters in all, without splitting a word, keep a
+        running total of letters and stop before the first word that would take it past `limit`.
+        For `["the", "cat", "sat"]` and a limit of 7: `the` brings the total to 3 and `cat` to 6, and
+        `sat` would bring it to 9, past 7, so the cut keeps `the` and `cat`. It falls back to the
+        start of `sat`, the word the limit fell inside, never into it.
+    notes: >-
+      More characters than fit, with no error, means `text[:limit]`. `UnicodeDecodeError` at the
+      script means the cut was not moved, or the byte before the cut was looked at instead of the
+      byte after it. A `�` in the result means `errors="replace"`. `IndexError` means `data[limit]`
+      was looked at when the limit reaches the end. A cut far too short for English means a guess
+      of three bytes a character. A failure of test_no_errors_argument alone means
+      `errors="ignore"`. `UnicodeDecodeError` only for À la carte means `> 128` in place of
+      `>= 128`.
+
+novice:
+  - Why does Python count the joining mark ् as a character of its own?
+  - Is a string's `len` ever the number of its bytes?
+  - What happens if I open a file without saying which encoding it is in?
+  - Why not store every character in four bytes, so that a cut is always safe?
+  - How can a program count the syllables and letters that a reader sees, rather than the code points?
