@@ -1,7 +1,7 @@
 code: E1.3
 title: "Functions and abstraction"
 course: E1
-status: review
+status: ready
 summary: >-
   A function halves the learning rate it is given. After the call, the program prints the rate it
   passed in and the rate that came back. Has the call changed the rate it was given? Defining and

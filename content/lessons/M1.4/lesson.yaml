@@ -1,7 +1,7 @@
 code: M1.4
 title: Linear and quadratic functions, and rates of change
 course: M1
-status: review
+status: ready
 summary: >-
   The simplest model in machine learning always predicts the same number. Which number fits its
   data best? Steady change and straight lines, rates of change measured between two points, the

@@ -1,7 +1,7 @@
 code: E1.2
 title: "Control flow: conditions and loops"
 course: E1
-status: review
+status: ready
 summary: >-
   A schedule halves the learning rate again and again until it is no longer above 0.001. How many
   halvings does that take? Conditions that choose which lines run, loops that run lines again and

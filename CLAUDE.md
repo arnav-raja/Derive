@@ -15,6 +15,10 @@ before you stop.
   tool can do (an account, a secret pasted into a dashboard, an approval for spending or an
   irreversible step), once, with a direct link and the fewest steps.
 - Always execute the complete plan, phase by phase; never stop at a partial plan.
+- Arnav must be able to study a phase as soon as it is complete: each lesson goes live
+  (`status: ready`) once it is written and has passed its checks, both reviews and a
+  walk-through. The tutor leak tests do not hold a lesson back, and every lesson opens with the
+  tutor working (Arnav's decisions of 6 November).
 - "Pause" from Arnav: finish or revert the step in hand, commit and push, update docs/STATUS.md,
   then stop. "Resume": read docs/STATUS.md and carry on from its next step.
 - Writing: Indian English (for example "colour", "optimise", and "practise" as the

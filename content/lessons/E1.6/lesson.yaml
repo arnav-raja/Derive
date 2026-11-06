@@ -1,7 +1,7 @@
 code: E1.6
 title: "Text, files and strings"
 course: E1
-status: review
+status: ready
 summary: >-
   The Hindi greeting नमस्ते: how many characters does Python count in it, and how many bytes does a
   file need to store it? Strings as sequences of characters, the numbers behind the characters and

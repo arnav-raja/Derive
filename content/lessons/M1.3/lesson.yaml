@@ -1,7 +1,7 @@
 code: M1.3
 title: "Functions: mappings, composition and inverses"
 course: M1
-status: review
+status: ready
 summary: >-
   A tokeniser's decoder gives back exactly the text its encoder was given. Does every list of
   token ids survive the trip the other way? Functions as rules that give each input one output,

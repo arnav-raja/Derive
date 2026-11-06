@@ -1,7 +1,7 @@
 code: M1.5
 title: Exponentials and logarithms
 course: M1
-status: review
+status: ready
 summary: >-
   A language model scores a passage of text by multiplying together the probabilities it gave to
   each word. How do two models' scores for a long passage compare? Repeated multiplication, powers

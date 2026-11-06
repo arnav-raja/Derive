@@ -1,7 +1,7 @@
 code: M1.1
 title: Quantities, units and estimation
 course: M1
-status: review
+status: ready
 summary: >-
   How long would one chip take to train GPT-3? Units that multiply and cancel like symbols,
   powers of ten for numbers too large to picture, a units check that catches a wrong formula

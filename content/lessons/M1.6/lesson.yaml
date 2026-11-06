@@ -1,7 +1,7 @@
 code: M1.6
 title: Sums, products and series
 course: M1
-status: review
+status: ready
 summary: >-
   A language model compares each token of a passage with itself and every token before it. How many
   comparisons does a passage of 1,000 tokens take? Adding long runs of numbers without adding them

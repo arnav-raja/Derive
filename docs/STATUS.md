@@ -1,15 +1,21 @@
 # Status
 
-Updated 6 November 2026, at Arnav's "Pause" of 11:45 UTC. On "Pause" or "Resume", follow
+Updated 6 November 2026, after Arnav's "Resume" of 11:51 UTC. On "Pause" or "Resume", follow
 CLAUDE.md and carry on from "Resume here" (phase 1) and "Phase 2: resume here" (phase 2).
 
 ## Where things stand
 
 Phase 0 (set-up) is done apart from the steps waiting on Arnav. Phase 1 (the first slice of 12
-lessons) is under way: all 12 lessons are written (M1.1 to M1.6 and E1.1 to E1.6), and the
-end-to-end tests and performance budgets are written, pass, and run in CI. Production runs the
-latest commit, and `/api/health` is fine. What is left of phase 1: the tutor leak tests, which
-wait on Arnav's yes, and then setting the lessons to `ready` so that he sees them.
+lessons) is done: all 12 lessons are written (M1.1 to M1.6 and E1.1 to E1.6) and live, with
+the tutor working in each, and the end-to-end tests and performance budgets pass and run in CI.
+On 6 November Arnav declined the tutor leak tests (no sign-in exemption and no API credit for
+them), and said he must be able to study a phase as soon as it is complete and that there must
+be an AI chat widget; so the 12 lessons went live without the tests, with the Tutor panel in
+every lesson, and CLAUDE.md now has the rule that a lesson goes live once written, checked,
+reviewed and walked. Phase 1's gate, Arnav finishing three lessons end to end, is his to pass.
+Hosting is to move to GitHub Pages with GitHub Actions, in its own thread ("Move Derive hosting
+to GitHub Pages"); the tutor, which needs a server for the Anthropic key and the private
+references, has to move with it (asked of that thread on 6 November).
 
 Phase 2 (the full learning loop, and the lessons after the first slice) began on 6 November in
 its own thread. M1.7 Logic, sets and quantifiers is written, as a `draft`, with two new figure
@@ -271,19 +277,15 @@ learner views come from `python3 -I scripts/learner-view.py . <code> <scratch di
 answer key in a separate folder). The briefs given to the reviewer and the simulated learner are
 in `derive-resume/review/prompts/`; change the lesson and the paths in them for another lesson.
 
-1. Tutor leak tests, once Arnav says yes (see "Waiting on Arnav"). Apply
-   `derive-resume/leaks/proxy-patch.py` from the repository root, copy `proxy.test.ts` from
-   there to `src/lib/supabase/`, run `npm run check`, and push. On the new deployment's generated
-   address (from the Vercel tools' deployment list, not `derive-tan.vercel.app`), fetch
-   `/api/tutor/leak-test?lesson=CODE&exercise=ID` with the Vercel tool `web_fetch_vercel_url`,
-   which passes the deployment protection; one exercise a call keeps each well inside the
-   route's 300 seconds. Save each answer and merge it with `python3 merge.py answer.json`,
-   which writes the lesson's leaks.json. Keep a running total of `costUsd` and stop past $20.
-   A leak means a change to that exercise's tutor notes or the tutor's prompt, and a fresh run.
-   Then set each lesson whose records all pass to `ready`, run `check:content`, and commit.
-2. Finish phase 1: once the lessons are `ready`, push, check the deployment and `/api/health`,
-   and, if Arnav says yes on its card, remove the test address (the row that is not Arnav's)
-   from `private.allowed_emails`.
+1. Remove the test address (the row that is not Arnav's) from `private.allowed_emails`.
+   Arnav said yes on 6 November; the Supabase tool asks him to confirm the delete, and its first
+   prompt timed out, so send it again when he says he is ready.
+2. Agree with the hosting thread who moves the tutor routes (`src/app/api/tutor/`,
+   `src/lib/tutor/`) off Vercel, and keep the Vercel site serving until they have moved.
+3. Tutor leak tests are not run: Arnav declined them on 6 November. If he ever asks for them,
+   `derive-resume/leaks/` has the proxy fix (`proxy-patch.py`, `proxy.test.ts`), the merge
+   script and the steps; `content/lessons/<code>/leaks.json` takes the records, and the content
+   check warns about missing ones and fails only a ready lesson whose record failed.
 
 ### Phase 2: resume here
 
@@ -291,8 +293,8 @@ Phase 2 of the plan, word for word: "Platform work: Map, Notebook and concept ma
 and viva modes, the "This confused me" button, automatic revision flags, and the remaining
 figure components. Lessons ready: all of stage 1 and the start of stage 2. Gate to move on:
 stage 1 done at a steady pace, with recall at 85% or better." Lessons stay 4 to 6 weeks ahead
-of Arnav. Leave `src/lib/supabase/proxy.ts` and the 12 phase 1 lessons' status to the phase 1
-steps above.
+of Arnav. Each lesson goes live (`ready`) once it is written, checked, reviewed and walked
+(CLAUDE.md), so that Arnav can study a phase as soon as it is complete.
 
 Done so far:
 
@@ -318,8 +320,9 @@ Next, in order:
 1. Review M1.7 as the earlier lessons were: an independent reviewer and a simulated learner,
    with the briefs in `derive-resume/review/prompts/` changed from E1.6 to M1.7 (ancestors M1.1
    to M1.3; the two new figures). Apply what they find, walk the changed parts again, set M1.7 to
-   `review`, add it to the end-to-end tests' learners and budgets if they do not pick it up on
-   their own (`e2e/learners.ts`, `e2e/performance.spec.ts`), run `npm run test:e2e`, and push.
+   `ready` (the rule in CLAUDE.md), add it to the end-to-end tests' learners and budgets if they
+   do not pick it up on their own (`e2e/learners.ts`, `e2e/performance.spec.ts`), run
+   `npm run test:e2e`, and push.
 2. E1.7 Classes and objects (requires E1.3 and E1.4); check whether ProgramTrace can show an
    object's attributes, and extend it if not.
 3. The phase 2 features: the "This confused me" button (records the exact step as a notebook
@@ -371,17 +374,9 @@ Next, in order:
 
 ## Waiting on Arnav
 
-- The tutor leak tests, asked on 6 November on a card in the thread ("Allow the tutor leak
-  tests to run, at about $10 to $20?"). The proxy sends `/api/tutor/leak-test` to sign-in like
-  every other API route, so the tests cannot run through the Vercel tools, which have no
-  learner session. The fix in `derive-resume/leaks/` lets that one route through without a
-  session only on the deployment's own generated address, which Vercel's protection keeps
-  private; production keeps sign-in, and the route refuses there anyway. The tests cost about
-  $10 to $20 once for the 104 exercises with hints, and about $1 to $2 for each later lesson.
-  Apply the fix and spend nothing until Arnav says yes. Until the tests pass, the 12 lessons
-  stay at `review`, so production shows Arnav none of them.
-- Removing the test sign-up address from `private.allowed_emails`, asked on a second card on
-  6 November. Sign-up is closed anyway once the one account exists, so nothing waits on it.
+- Confirming the Supabase tool's prompt to delete the test sign-up address (he said yes to the
+  removal on 6 November; the first prompt timed out). Sign-up is closed anyway once the one
+  account exists, so nothing waits on it.
 
 The three set-up steps asked on 4 November are done or no longer needed. Checked on
 5 November: Arnav's account exists and is confirmed (created on 4 November), and `/api/health`

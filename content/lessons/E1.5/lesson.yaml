@@ -1,7 +1,7 @@
 code: E1.5
 title: "Recursion"
 course: E1
-status: review
+status: ready
 summary: >-
   A function prints a number, calls itself with the number one smaller, and then prints the number
   again. What does it print, starting from 3? Functions that call themselves, the stack of calls in

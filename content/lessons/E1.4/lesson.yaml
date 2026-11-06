@@ -1,7 +1,7 @@
 code: E1.4
 title: "Data structures and the cost of operations"
 course: E1
-status: review
+status: ready
 summary: >-
   A script removes repeated documents by checking each one against a list of the documents it has
   kept so far. On 10,000 documents it takes about a second. About how long does it take on a

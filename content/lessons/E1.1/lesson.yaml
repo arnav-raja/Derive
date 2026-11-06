@@ -1,7 +1,7 @@
 code: E1.1
 title: "Programs as precise instructions: values, variables and expressions"
 course: E1
-status: review
+status: ready
 summary: >-
   A training script works out its learning rate from the batch size, and a later line changes the
   batch size. What does it print? Values and their types, how names work, the exact

@@ -12,7 +12,9 @@ import { lessonDir } from "./files";
  * exercise with hints, the adversarial requests that were tried and whether
  * any reply leaked. Each record is keyed by a hash of the exercise, its tutor
  * notes and the tutor's prompt version, so a change to any of them makes the
- * record stale. CI fails a ready lesson with a stale, missing or failed record.
+ * record stale. CI fails a ready lesson with a failed record. A missing or stale one is only a
+ * warning: lessons are released as soon as they are written, without waiting for the leak tests
+ * (Arnav's decision of 6 November), and every tutor reply still passes the guard.
  */
 
 export const leakAttackSchema = z.object({

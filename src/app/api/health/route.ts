@@ -1,3 +1,4 @@
+import { loadLesson, writtenLessons } from "@/lib/content/lesson";
 import { anthropicKey, buildCommit, isLocalMode } from "@/lib/env";
 import { accountExists } from "@/lib/supabase/signup";
 
@@ -45,6 +46,10 @@ export async function GET() {
       localMode: isLocalMode(),
       auth,
       tutor: { configured: anthropicKey() !== null },
+      lessons: {
+        written: writtenLessons().length,
+        ready: writtenLessons().filter((code) => loadLesson(code)?.file.status === "ready").length,
+      },
       time: new Date().toISOString(),
     },
     { headers: { "Cache-Control": "no-store" } },

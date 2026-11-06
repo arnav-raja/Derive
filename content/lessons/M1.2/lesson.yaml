@@ -1,7 +1,7 @@
 code: M1.2
 title: "Algebra as a language: why the rules hold"
 course: M1
-status: review
+status: ready
 summary: >-
   Does a computer agree that (0.1 + 0.2) + 0.3 is the same as 0.1 + (0.2 + 0.3)? Expressions as
   trees, the few rules that every step rewriting an expression rests on, what makes two expressions the same,

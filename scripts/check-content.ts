@@ -172,16 +172,16 @@ async function checkLesson(code: string, errors: string[], warnings: string[]) {
       warnings.push(`${code}/tutor.yaml lists fewer than three novice questions.`);
     }
 
-    // Leak tests: a ready lesson needs a current, passing record for every exercise with hints.
+    // Leak tests do not hold a lesson back: Arnav studies each phase as soon as it is written
+    // (his decision of 6 November), and every tutor reply still passes the guard. A failed
+    // record stops a ready lesson, though, since it means a hint leaked.
     const statuses = leakStatus(exercises, tutorResult.value, readLeaksFile(code), TUTOR_VERSION);
-    const said: Record<string, string> = {
-      failed: "failed its tutor leak test",
-      stale: "has a leak test record that is out of date",
-      missing: "has no tutor leak test record",
-    };
-    for (const s of statuses) {
-      if (s.status === "passed") continue;
-      (lesson.status === "ready" ? errors : warnings).push(`${code}/${s.id} ${said[s.status]}.`);
+    for (const s of statuses.filter((x) => x.status === "failed")) {
+      (lesson.status === "ready" ? errors : warnings).push(`${code}/${s.id} failed its tutor leak test.`);
+    }
+    const untested = statuses.filter((x) => x.status === "missing" || x.status === "stale").length;
+    if (untested) {
+      warnings.push(`${code}: ${untested} of its ${statuses.length} exercises with hints have no current tutor leak test record.`);
     }
   }
 
