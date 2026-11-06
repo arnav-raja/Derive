@@ -1,0 +1,291 @@
+{
+  "version": 1,
+  "expressions": {
+    "derive-new-objects": {
+      "source": "718dc90da91d7576",
+      "points": [
+        {
+          "n": "8"
+        },
+        {
+          "n": "2"
+        },
+        {
+          "n": "9"
+        },
+        {
+          "n": "7"
+        },
+        {
+          "n": "5"
+        },
+        {
+          "n": "1"
+        }
+      ],
+      "values": [
+        "16.000000000000000000",
+        "4.0000000000000000000",
+        "18.000000000000000000",
+        "14.000000000000000000",
+        "10.000000000000000000",
+        "2.0000000000000000000"
+      ]
+    },
+    "derive-tolerance": {
+      "source": "38a6b66c0cd33a23",
+      "points": [
+        {
+          "t": "18"
+        },
+        {
+          "t": "1/5"
+        },
+        {
+          "t": "1"
+        },
+        {
+          "t": "6"
+        },
+        {
+          "t": "33/7"
+        },
+        {
+          "t": "3"
+        }
+      ],
+      "values": [
+        "36.000000000000000000",
+        "0.40000000000000000000",
+        "2.0000000000000000000",
+        "12.000000000000000000",
+        "9.4285714285714285714",
+        "6.0000000000000000000"
+      ]
+    }
+  },
+  "runs": {
+    "build-early-stop": {
+      "tests": [
+        {
+          "name": "test_script",
+          "description": "The script's run: patience 2, and the losses 1.0, 0.8, 0.9, 0.85, 0.7.",
+          "passed": false,
+          "message": "With patience 2 and the losses [1.0, 0.8, 0.9, 0.85, 0.7], step gave [False, False, False, False, False], not [False, False, False, True, False]. 0.9 and 0.85 are two losses in a row after the best, 0.8, and 0.7 is a new best."
+        },
+        {
+          "name": "test_patience_one",
+          "description": "With patience 1, the first loss after a new best that is no new best stops the run.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_improving",
+          "description": "A run whose loss falls every time never stops.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_against_the_best",
+          "description": "A loss is compared with the best so far, not with the loss just before it.",
+          "passed": false,
+          "message": "With patience 2 and the losses [1.0, 3.0, 2.0], step gave [False, False, False], not [False, False, True]: 2.0 is lower than 3.0, but not lower than the best, 1.0."
+        },
+        {
+          "name": "test_equal_is_no_best",
+          "description": "A loss equal to the best so far is not a new best.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_count_starts_again",
+          "description": "A new best starts the count again.",
+          "passed": false,
+          "message": "With patience 3 and the losses [5.0, 6.0, 7.0, 4.0, 5.0, 6.0, 7.0], step gave [False, False, False, False, False, False, False], not False six times and then True. 4.0 is a new best, so the count starts again after it, and only the third loss after it reaches 3."
+        },
+        {
+          "name": "test_after_stop",
+          "description": "After saying True, a watcher goes on counting, and a new best still starts the count again.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_large_first",
+          "description": "The first loss is a new best, however large it is.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_two_watchers",
+          "description": "Two watchers keep their own best losses and their own counts.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_true_or_false",
+          "description": "step returns True or False.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": ""
+    },
+    "build-sequential": {
+      "tests": [
+        {
+          "name": "test_order",
+          "description": "The first layer in the list is applied first.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_three",
+          "description": "Each layer is applied to what the layer before it gave.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_empty",
+          "description": "With no layers, the input comes back as it was.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_functions",
+          "description": "A plain function is a layer too.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_nested",
+          "description": "A Sequential can be called with one argument, so it can be a layer of another.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_each_once",
+          "description": "Each call of the model calls each of its layers once.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_own_copy",
+          "description": "A later change to the caller's list leaves the model as it was.",
+          "passed": false,
+          "message": "After model = Sequential(layers) and then layers.append(AddOne()), model(5) is 11, not 10: the model should keep a copy of the list, which the caller's change does not reach."
+        },
+        {
+          "name": "test_separate",
+          "description": "Two models keep their own layers.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": ""
+    },
+    "build-value": {
+      "tests": [
+        {
+          "name": "test_add",
+          "description": "+ makes a value holding the sum.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_mul",
+          "description": "* makes a value holding the product.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_parents",
+          "description": "A result's parents are the two values it was made from themselves, left one first.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_new_object",
+          "description": "+ and * make a new value.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_inputs_unchanged",
+          "description": "+ and * leave the values they combine as they were.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_no_parents",
+          "description": "A value made without parents has an empty list of its own.",
+          "passed": false,
+          "message": "Value(1).parents and Value(2).parents are one and the same list. A default value is made once, when the def line runs, and shared by every call, as E1.4 found."
+        },
+        {
+          "name": "test_given_parents",
+          "description": "parents passed in are kept as they are.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_chain",
+          "description": "a * b + a, worked out in the order of its tree.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_repr",
+          "description": "print shows a value as Value(data).",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": ""
+    },
+    "debug-vec-add": {
+      "tests": [
+        {
+          "name": "test_sum",
+          "description": "The sum has the sums of the coordinates.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_unchanged",
+          "description": "Both vectors added are left as they were.",
+          "passed": false,
+          "message": "After u + v, u is Vec(4, 6), not Vec(1, 2)."
+        },
+        {
+          "name": "test_new_object",
+          "description": "The sum is a new vector.",
+          "passed": false,
+          "message": "u + v should be a new vector, not u or v itself."
+        },
+        {
+          "name": "test_chain",
+          "description": "Three vectors added in a row.",
+          "passed": false,
+          "message": "After a + Vec(2, 2) + Vec(3, 3), a is Vec(6, 6), not Vec(1, 1)."
+        },
+        {
+          "name": "test_twice",
+          "description": "A vector added to itself.",
+          "passed": false,
+          "message": "After u + u, u is Vec(2, 4), not Vec(1, 2)."
+        },
+        {
+          "name": "test_script",
+          "description": "The script prints Vec(1, 2) Vec(3, 4) Vec(4, 6).",
+          "passed": false,
+          "message": "The script printed 'Vec(4, 6) Vec(3, 4) Vec(4, 6)\\n', not Vec(1, 2) Vec(3, 4) Vec(4, 6)."
+        }
+      ],
+      "error": null,
+      "output": "Vec(4, 6) Vec(3, 4) Vec(4, 6)\n"
+    }
+  }
+}

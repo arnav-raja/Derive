@@ -5,11 +5,11 @@ import { useEffect, useId, useMemo, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { inputClasses } from "@/components/ui/field";
-import { python, type TraceFrame, type TraceResult, type TraceStep } from "@/lib/python/client";
+import { python, type TraceFrame, type TraceResult } from "@/lib/python/client";
 
 import { CodeText, FigureFrame, PredictPanel, RangeControl, type PredictPhase } from "./shell";
 import { normalise, sameAnswer } from "./trace-answer";
-import { callName, changesBetween, finishedStep, frameHeading, frameMarks, frameStatus, MAIN, returnText, runningIn } from "./trace-frames";
+import { callName, changesBetween, finishedStep, frameHeading, frameMarks, frameStatus, lookupName, MAIN, returnText, runningIn } from "./trace-frames";
 
 /*
  * A program run one line at a time by real Python in the browser. Each step
@@ -19,26 +19,14 @@ import { callName, changesBetween, finishedStep, frameHeading, frameMarks, frame
  * progress are shown side by side, each call with its own.
  */
 
-/** A pause before a line runs, the first time or the given time it is reached, to ask for a value. */
+/**
+ * A pause before a line runs, the first time or the given time it is reached, to ask for a value:
+ * a name's, or an object's attribute, such as `self.count`.
+ */
 type Stop = { line: number; variable: string; prompt?: string; pass?: number };
 
 /** A value the program reads with input(), which the learner can change and run again. */
 type TraceInput = { label: string; value: string; presets?: string[] };
-
-/**
- * A name's value as the running code sees it, and the function whose name it is: the running
- * call's own names first, then the main program's, as Python looks a name up. A caller's names
- * are not seen from inside a call it made.
- */
-function lookup(step: TraceStep | undefined, name: string): { value: string; owner: string } | undefined {
-  if (!step) return undefined;
-  const top = step.stack.length - 1;
-  for (const i of top > 0 ? [top, 0] : [0]) {
-    const v = step.stack[i]!.variables[name];
-    if (v !== undefined) return { value: v, owner: i === 0 ? MAIN : callName(step.stack[i]!) };
-  }
-  return undefined;
-}
 
 export function ProgramTrace({
   title,
@@ -140,7 +128,7 @@ export function ProgramTrace({
     // A line that calls a function finishes only once the call has returned, so the value is read
     // there, while the figure goes on into the call one step at a time.
     const done = finishedStep(steps, step);
-    const found = lookup(steps[done], question.stop.variable);
+    const found = lookupName(steps[done], question.stop.variable);
     const actual = found?.value ?? "(not defined yet)";
     const owner = found && found.owner !== MAIN ? found.owner : null;
     setResults((r) => [...r, { stop: question.stop, said: answer, actual, owner, later: done > step + 1 }]);
@@ -154,8 +142,9 @@ export function ProgramTrace({
   const lastResult = results.at(-1);
   const blocked = Boolean(predictOutput) && outPhase === "asking";
 
-  // A list, dict or set carries its tag, such as "list 1", so that two names for one list show
-  // the same tag, and a name moved to another list with an equal value shows a new one.
+  // A list, dict, set or object carries its tag, such as "list 1" or "Config 1", so that two
+  // names for one list show the same tag, and a name moved to another list with an equal value
+  // shows a new one. An object's value is its attributes.
   const variablesTable = (frame: TraceFrame | undefined, marks: Record<string, "new" | "changed">) =>
     frame && Object.keys(frame.variables).length ? (
       <table className="w-full text-left text-sm">

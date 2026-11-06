@@ -969,7 +969,8 @@ exercises:
         def test_contrapositive():
             """contrapositive is False: p => q and its contrapositive agree in every row."""
             assert contrapositive is not None, "Replace the None in contrapositive first."
-            assert contrapositive is False, f"contrapositive is {contrapositive}, a row where the two differ, but the contrapositive agrees with p => q in every row. Check the statement it is compared with."
+            assert contrapositive is False or isinstance(contrapositive, dict), f"contrapositive is {contrapositive}, but satisfiable gives either False or a row of the truth table, written like {{p: True, q: True}}."
+            assert contrapositive is False, "contrapositive is a row of the truth table, not False. p => q and its contrapositive agree in every row, so a search for a row where they differ finds none and gives False: check what the search is asked to find, and what p => q is compared with."
 
         def test_short_filter():
             """short_filter keeps exactly the emails the filter keeps, in every row of the truth table."""

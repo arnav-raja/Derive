@@ -29,6 +29,9 @@ async function start() {
       indexURL,
       stdout: () => {},
       stderr: () => {},
+      // A fixed hash seed, so that sets of strings and SymPy's searches come out the
+      // same on every run, as they do in the checks (scripts/lib/python-node.ts).
+      env: { PYTHONHASHSEED: "0" },
     });
     const source = await (await fetch(siteUrl("workers/harness.py"), { cache: "no-cache" })).text();
     pyodide.FS.mkdirTree("/home/pyodide/derive");

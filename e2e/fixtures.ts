@@ -208,8 +208,14 @@ export async function screenshot(page: Page, testInfo: TestInfo, name: string) {
   await testInfo.attach(name, { path: file, contentType: "image/jpeg" });
 }
 
-/** A screenshot of each lesson figure on the page, attached to the test's report. */
+/**
+ * A screenshot of each lesson figure on the page, attached to the test's report. Taking one
+ * scrolls its figure into view, so the page is scrolled back afterwards: the checks that follow
+ * then see the page as it was opened, not with whichever figure came last half under the sticky
+ * header, where axe would count its buttons as too small to touch.
+ */
 export async function figureScreenshots(page: Page, testInfo: TestInfo, theme: Theme) {
+  const scrolled = await page.evaluate(() => window.scrollY);
   const figures = page.locator("figure[aria-labelledby]");
   const n = await figures.count();
   for (let i = 0; i < n; i++) {
@@ -219,6 +225,10 @@ export async function figureScreenshots(page: Page, testInfo: TestInfo, theme: T
     await fig.screenshot({ path: file, type: "jpeg", quality: 80, animations: "disabled", caret: "hide" });
     await testInfo.attach(`figure ${i + 1}, ${theme}`, { path: file, contentType: "image/jpeg" });
   }
+  await page.evaluate(async (y) => {
+    window.scrollTo(0, y);
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+  }, scrolled);
   return n;
 }
 

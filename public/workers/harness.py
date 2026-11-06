@@ -55,6 +55,25 @@ def _guarded_limit():
         real(before)
 
 
+# Calls of objects' __call__ methods that may be in progress at once. Each such call runs through
+# more of Pyodide's C code than a plain call does, so a few hundred of them, one inside another,
+# overflow the JavaScript stack before Python's own limit is reached (in Node at about 750, and
+# sooner in Chromium's worker, whose stack is smaller), and Pyodide stops for good. A runaway is
+# stopped here instead, with the RecursionError that Python gives for any other recursion that
+# runs out of room.
+_CALL_LIMIT = 200
+
+
+def _calls_in_progress(frame):
+    """How many calls of a __call__ method are in progress, the one starting at frame included."""
+    n = 0
+    while frame is not None:
+        if frame.f_code.co_name == "__call__":
+            n += 1
+        frame = frame.f_back
+    return n
+
+
 def _counting_tracer(limit):
     """A trace function that stops learner code after `limit` line events."""
     count = 0
@@ -69,6 +88,8 @@ def _counting_tracer(limit):
 
     def tracer(frame, event, arg):
         if frame.f_code.co_filename in (LEARNER_FILE, TESTS_FILE):
+            if frame.f_code.co_name == "__call__" and _calls_in_progress(frame) > _CALL_LIMIT:
+                raise RecursionError("maximum recursion depth exceeded while calling a Python object")
             return local
         return None
 
@@ -322,13 +343,62 @@ def _breakit(payload):
 
 def _safe_repr(value, limit=80):
     try:
-        if callable(value) and hasattr(value, "__name__"):
+        if isinstance(value, type):
+            text = f"<class {value.__name__}>"
+        elif callable(value) and hasattr(value, "__name__"):
             text = f"<function {value.__name__}>"
         else:
             text = repr(value)
     except Exception:  # noqa: BLE001
         text = "<unprintable>"
-    return text if len(text) <= limit else text[: limit - 1] + "…"
+    return _cut(text, limit)
+
+
+def _cut(text, limit):
+    return text if limit is None or len(text) <= limit else text[: limit - 1] + "…"
+
+
+def _is_object(value):
+    """An object of a class that the learner's program defines, such as a Config or a Value."""
+    return (
+        not isinstance(value, type)
+        and getattr(type(value), "__module__", None) == "__main__"
+        and hasattr(value, "__dict__")
+    )
+
+
+def _holds_object(value, depth=0, seen=None):
+    """Whether a list, tuple, dict or set holds such an object anywhere inside it."""
+    if _is_object(value):
+        return True
+    if depth > 6 or not isinstance(value, (list, tuple, dict, set, frozenset)):
+        return False
+    seen = set() if seen is None else seen
+    if id(value) in seen:
+        return False
+    seen.add(id(value))
+    items = list(value.items()) if isinstance(value, dict) else list(value)
+    for item in items:
+        for part in (item if isinstance(value, dict) else (item,)):
+            if _holds_object(part, depth + 1, seen):
+                return True
+    return False
+
+
+def _is_class(value):
+    """A class that the learner's program defines."""
+    return isinstance(value, type) and getattr(value, "__module__", None) == "__main__"
+
+
+def _class_parts(cls):
+    """A learner's class: the attributes kept on the class itself, such as `losses`, and its methods."""
+    data, methods = [], []
+    for k, v in vars(cls).items():
+        if callable(v) or isinstance(v, (staticmethod, classmethod, property)):
+            methods.append(k)
+        elif not k.startswith("__"):
+            data.append((k, v))
+    return data, methods
 
 
 def _digest(value):
@@ -346,7 +416,7 @@ def _visible(name, value):
 
 
 # The collections whose identity a trace shows, so that two names for one list can be told from
-# two lists that hold equal values.
+# two lists that hold equal values. Objects of the learner's own classes are tagged too.
 _TAGGED = (("list", list), ("dict", dict), ("set", set))
 
 
@@ -369,15 +439,80 @@ def _trace(payload):
     counts = {}
 
     def tag(value):
-        for kind, cls in _TAGGED:
-            if isinstance(value, cls):
-                key = id(value)
-                if key not in tags:
-                    counts[kind] = counts.get(kind, 0) + 1
-                    tags[key] = f"{kind} {counts[kind]}"
-                    kept.append(value)
-                return tags[key]
-        return None
+        if _is_class(value):
+            # A class the program defines is named by itself, such as class Run.
+            if id(value) not in tags:
+                tags[id(value)] = f"class {value.__name__}"
+                kept.append(value)
+            return tags[id(value)]
+        kind = next((k for k, cls in _TAGGED if isinstance(value, cls)), None)
+        if kind is None and _is_object(value):
+            # An object of the learner's own class is tagged by its class, such as Config 1.
+            kind = type(value).__name__
+        if kind is None:
+            return None
+        key = id(value)
+        if key not in tags:
+            counts[kind] = counts.get(kind, 0) + 1
+            tags[key] = f"{kind} {counts[kind]}"
+            kept.append(value)
+        return tags[key]
+
+    def shown(value, top=True, depth=0):
+        """A value as the trace shows it. An object of the learner's own class shows its
+        attributes, such as `lr=0.01, batch=32`, and inside another value, its tag, such as
+        Config 1, so that two references to one object can be told apart. Every other value is
+        shown as repr shows it."""
+        if _is_object(value):
+            if not top:
+                return tag(value)
+            attrs = vars(value)
+            if not attrs:
+                return "no attributes"
+            return ", ".join(f"{k}={shown(v, False, depth + 1)}" for k, v in attrs.items())
+        if _is_class(value):
+            if not top:
+                return tag(value)
+            data, methods = _class_parts(value)
+            bases = [b.__name__ for b in value.__bases__ if b is not object]
+            parts = ["subclass of " + ", ".join(bases)] if bases else []
+            parts += [f"{k}={shown(v, False, depth + 1)}" for k, v in data]
+            if methods:
+                parts.append("methods: " + ", ".join(methods))
+            return "; ".join(parts) if parts else "no attributes"
+        if depth > 6 or not _holds_object(value):
+            return _safe_repr(value, None)
+        if isinstance(value, list):
+            return "[" + ", ".join(shown(x, False, depth + 1) for x in value) + "]"
+        if isinstance(value, tuple):
+            inner = ", ".join(shown(x, False, depth + 1) for x in value)
+            return "(" + inner + ("," if len(value) == 1 else "") + ")"
+        if isinstance(value, dict):
+            return "{" + ", ".join(f"{shown(k, False, depth + 1)}: {shown(v, False, depth + 1)}" for k, v in value.items()) + "}"
+        if isinstance(value, (set, frozenset)):
+            return "{" + ", ".join(shown(x, False, depth + 1) for x in value) + "}"
+        return _safe_repr(value, None)
+
+    def text(value, limit=80):
+        try:
+            return _cut(shown(value), limit)
+        except Exception:  # noqa: BLE001
+            return _safe_repr(value, limit)
+
+    def digest(value):
+        try:
+            return zlib.crc32(shown(value).encode())
+        except Exception:  # noqa: BLE001
+            return _digest(value)
+
+    def argument(value):
+        """A call's argument as its heading shows it: an object by its tag, anything else as repr."""
+        return tag(value) if _is_object(value) else _safe_repr(value, 24)
+
+    def name_of(code):
+        """A method by its class, such as Config.__init__; a function by its name."""
+        qual = getattr(code, "co_qualname", code.co_name)
+        return code.co_name if "<locals>" in qual else qual
 
     def snapshot(frame):
         frames = []
@@ -392,20 +527,25 @@ def _trace(payload):
             scope = f.f_globals if f.f_code.co_name == "<module>" else f.f_locals
             names = [(k, v) for k, v in scope.items() if _visible(k, v)]
             entry = {
-                "function": "(main program)" if f.f_code.co_name == "<module>" else f.f_code.co_name,
+                "function": "(main program)" if f.f_code.co_name == "<module>" else name_of(f.f_code),
                 "line": f.f_lineno,
-                "variables": {k: _safe_repr(v) for k, v in names},
+                "variables": {k: text(v) for k, v in names},
             }
             if f.f_code.co_name != "<module>":
                 # The call as it began, such as countdown(2), so that calls of one function can be
                 # told apart.
-                entry["call"] = f"{f.f_code.co_name}({begun.get(id(f), '')})"
+                entry["call"] = f"{name_of(f.f_code)}({begun.get(id(f), '')})"
             refs = {k: t for k, t in ((k, tag(v)) for k, v in names) if t}
             if refs:
                 entry["refs"] = refs
                 # The shown value is cut at 80 characters, so a change further along is found
                 # by comparing fingerprints of the whole value.
-                entry["digests"] = {k: _digest(v) for k, v in names if k in refs}
+                entry["digests"] = {k: digest(v) for k, v in names if k in refs}
+            # An object's attributes one by one, so that a question can ask for one, such as
+            # self.count.
+            attrs = {k: {a: _cut(shown(x, False), 80) for a, x in vars(v).items()} for k, v in names if _is_object(v)}
+            if attrs:
+                entry["attrs"] = attrs
             stack.append(entry)
         return stack
 
@@ -421,9 +561,13 @@ def _trace(payload):
             return None
         if event == "call":
             fc = frame.f_code
+            if not fc.co_flags & 0x02 and fc.co_name != "<module>":
+                # A class statement's body runs as a frame of its own, though it is not a call:
+                # its lines are not stepped through, and the class appears once it is made.
+                return None
             count = fc.co_argcount + fc.co_kwonlyargcount + bool(fc.co_flags & 0x04) + bool(fc.co_flags & 0x08)
             params = fc.co_varnames[:count]
-            begun[id(frame)] = ", ".join(_safe_repr(frame.f_locals[p], 24) for p in params if p in frame.f_locals)
+            begun[id(frame)] = ", ".join(argument(frame.f_locals[p]) for p in params if p in frame.f_locals)
             kept.append(frame)
             return tracer
         if event == "exception":
@@ -439,7 +583,7 @@ def _trace(payload):
                 if raised:
                     step["raised"] = raised
                 else:
-                    step["returned"] = _safe_repr(arg)
+                    step["returned"] = f"{tag(arg)} ({text(arg)})" if _is_object(arg) else _safe_repr(arg)
             steps.append(step)
         return tracer
 

@@ -31,6 +31,9 @@ export async function startPython() {
     indexURL: `${path.join(root, "node_modules/pyodide")}/`,
     stdout: () => {},
     stderr: () => {},
+    // A fixed hash seed, as in the browser's worker, so that sets of strings and SymPy's
+    // searches come out the same on every run, and the runs kept in checks.json stay true.
+    env: { PYTHONHASHSEED: "0" },
   });
   py.FS.mkdirTree("/home/pyodide/derive");
   py.FS.writeFile(

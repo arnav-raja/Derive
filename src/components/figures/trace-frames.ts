@@ -27,8 +27,8 @@ export function sameCall(prev: TraceStep | undefined, cur: TraceStep, index: num
 
 /**
  * The names of one frame that are new or changed since the step before. A name is changed when
- * its value is, or when it now refers to another list, dict or set, even one with an equal value.
- * A long value is cut where it is shown, so its fingerprint is compared as well.
+ * its value is, or when it now refers to another list, dict, set or object, even one with an
+ * equal value. A long value is cut where it is shown, so its fingerprint is compared as well.
  */
 export function frameMarks(prev: TraceStep | undefined, cur: TraceStep | undefined, index: number): Record<string, "new" | "changed"> {
   const marks: Record<string, "new" | "changed"> = {};
@@ -51,10 +51,10 @@ function inWords(items: string[]): string {
 }
 
 /**
- * Names and their values in words. A name for a list, dict or set is said to refer to it, by its
- * tag, since writing `b = [1, 2]` would read as the line that makes a second list: "`b` refers to
- * list 1 (`[1, 2]`)", or "now refers" for a name moved to another one. Passed to a call, a name is
- * "referring to" it.
+ * Names and their values in words. A name for a list, dict, set or object is said to refer to
+ * it, by its tag, since writing `b = [1, 2]` would read as the line that makes a second list:
+ * "`b` refers to list 1 (`[1, 2]`)", or "now refers" for a name moved to another one. Passed to a
+ * call, a name is "referring to" it. An object's value is its attributes, such as `lr=0.01`.
  */
 function assignments(frame: TraceFrame, names: string[], marks: Record<string, "new" | "changed">, inCall = false): string {
   return inWords(
@@ -70,7 +70,7 @@ function assignments(frame: TraceFrame, names: string[], marks: Record<string, "
 /**
  * What running the line at step `a` changed, by the time of step `b`, in words with code in
  * backticks: the names it made or changed, frame by frame, any call it started, and any list,
- * dict or set it changed in place, with every name that refers to it.
+ * dict, set or object it changed in place, with every name that refers to it.
  */
 export function changesBetween(a: TraceStep, b: TraceStep | undefined): string {
   if (!b) return "";
@@ -111,6 +111,26 @@ export function changesBetween(a: TraceStep, b: TraceStep | undefined): string {
     parts.push(`prints ${inWords(printed.map((p) => (p === "" ? "an empty line" : `\`${p}\``)))}`);
   }
   return parts.join("; ");
+}
+
+/**
+ * A name's value as the running code sees it, and the call whose name it is: the running call's
+ * own names first, then the main program's, as Python looks a name up. A caller's names are not
+ * seen from inside a call it made. A name such as `self.count` is an object's attribute: the
+ * object is looked up by its name, then the attribute among its own.
+ */
+export function lookupName(step: TraceStep | undefined, name: string): { value: string; owner: string } | undefined {
+  if (!step) return undefined;
+  const dot = name.indexOf(".");
+  const base = dot < 0 ? name : name.slice(0, dot);
+  const top = step.stack.length - 1;
+  for (const i of top > 0 ? [top, 0] : [0]) {
+    const frame = step.stack[i]!;
+    if (frame.variables[base] === undefined) continue;
+    const value = dot < 0 ? frame.variables[base] : frame.attrs?.[base]?.[name.slice(dot + 1)];
+    return value === undefined ? undefined : { value, owner: i === 0 ? MAIN : callName(frame) };
+  }
+  return undefined;
 }
 
 /** The step at which the line run at `at` has finished, with any calls it made: the next step no deeper than it. */
