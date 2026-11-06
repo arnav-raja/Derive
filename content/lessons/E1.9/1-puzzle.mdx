@@ -1,0 +1,17 @@
+A team keeps a leaderboard of its models, in order of validation loss. Its function `sort_losses` puts a list of losses in order, from the smallest up, and it has a bug that nobody has noticed yet: when two losses in a list are equal, it keeps only one of them, so a model drops off the board.
+
+To test it, a script makes 100 lists of 10 losses each. Every loss is a whole number from 1 to 1,000,000, picked at random, each number as likely as any other. The script sorts each list with `sort_losses` and compares the result with a slow sort that is known to be right, so a list shows the bug only if two of its losses are equal.
+
+<Exercise id="puzzle-ties" />
+
+<Reveal for="puzzle-ties">
+
+Count the pairs of losses in one list. The second loss can equal the first, the third either of the two before it, and so on up to the tenth, which can equal any of the nine before it, so a list holds $1 + 2 + \dots + 9 = 45$ pairs, E1.4's $\frac{n(n - 1)}{2}$ for $n = 10$. So the test passes, and the bug reaches the leaderboard.
+
+Real losses are not so kind: they are often rounded, to four decimal places say, and then two models share a loss far more often than the test's numbers ever do. Narrow the test's range and it finds the bug at once. With losses from 1 to 10, follow one list a loss at a time. The second loss differs from the first 9 times in 10. Of those lists, the third differs from both 8 times in 10, and so on, up to the tenth, which differs from all nine before it only 1 time in 10. So all ten differ only $0.9 \times 0.8 \times \dots \times 0.1$ of the time, about 4 times in 10,000, and nearly every list shows the bug.
+
+The same count explains the *birthday problem*. A room of 23 people holds 253 pairs, each sharing a birthday about once in 365, so a room holds about 0.7 shared birthdays on average. That is not the chance that two of them share one, since some rooms hold two shared birthdays or more. Followed one person at a time, as above, all 23 birthdays differ about 49 times in 100, so two of the 23 share a birthday just over half the time.
+
+A test is only as good as the inputs it tries. This lesson writes tests that run after every change, chooses the cases they try, and states *properties*, rules that should hold for every input, which a program can check on random inputs that it makes for itself, from a range narrow enough to reach cases such as ties. When one fails, the program *shrinks* the failing input to a small one that still fails. Koen Claessen and John Hughes described QuickCheck, a tool for the language Haskell that checks properties on random inputs, in 2000, and David MacIver first released Hypothesis, a tool for the same idea in Python, in 2013.
+
+</Reveal>

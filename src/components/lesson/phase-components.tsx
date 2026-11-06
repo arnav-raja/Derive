@@ -18,6 +18,7 @@ import {
   SetDiagram,
   Staircase,
   TextBytes,
+  TieLists,
   TileGrid,
 } from "@/components/figures";
 import { HintIcon, LockIcon } from "@/components/ui/icons";
@@ -284,5 +285,6 @@ export function phaseComponents(ctx: PhaseContext): MDXComponents {
     SetDiagram,
     QuantifierGrid: QuantifierGridSlot,
     TileGrid: TileGridSlot,
+    TieLists,
   };
 }

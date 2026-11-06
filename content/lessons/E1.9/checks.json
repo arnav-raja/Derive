@@ -1,0 +1,224 @@
+{
+  "version": 1,
+  "expressions": {
+    "derive-pairs": {
+      "source": "967632eb34f98035",
+      "points": [
+        {
+          "N": "2"
+        },
+        {
+          "N": "7"
+        },
+        {
+          "N": "6"
+        },
+        {
+          "N": "8"
+        },
+        {
+          "N": "3"
+        },
+        {
+          "N": "1"
+        }
+      ],
+      "values": [
+        "2.0000000000000000000",
+        "3.7416573867739413856",
+        "3.4641016151377545871",
+        "4.0000000000000000000",
+        "2.4494897427831780982",
+        "1.4142135623730950488"
+      ]
+    }
+  },
+  "runs": {
+    "build-check": {
+      "tests": [
+        {
+          "name": "test_uses_its_arguments",
+          "description": "It gets every input from make and asks prop about it, the two functions it is given, not functions of the script.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_finds_failure",
+          "description": "With the inputs 1, 2, 3 and so on, and a property that fails only for 3, it gives 3, after making exactly 3 inputs.",
+          "passed": false,
+          "message": "check gives 1 after making the inputs [1], where it should give 3, the first input for which the property is False, after making just [1, 2, 3]."
+        },
+        {
+          "name": "test_first_failure",
+          "description": "When the property fails for 3 and for 5, it gives 3, the first.",
+          "passed": false,
+          "message": "With the property failing for 3 and 5, check gives 1, not 3."
+        },
+        {
+          "name": "test_none_when_all_pass",
+          "description": "When the property holds for every input, it gives None, after making exactly trials inputs.",
+          "passed": false,
+          "message": "check gives 1, not None, though the property held for every input."
+        },
+        {
+          "name": "test_trials_limit",
+          "description": "It makes no more than trials inputs: a failure at the 20th input is not reached in 10 trials.",
+          "passed": false,
+          "message": "check gives 1, not None, though the property held for all 10 inputs it should make."
+        },
+        {
+          "name": "test_gives_the_input",
+          "description": "It gives the input itself, the very list that make gave, not True or False.",
+          "passed": false,
+          "message": "check gives [0], not [2], the input for which the property is False."
+        },
+        {
+          "name": "test_prop_once",
+          "description": "It asks the property about each input once, in order.",
+          "passed": false,
+          "message": "The property was asked about [1], not [1, 2, 3, 4]."
+        },
+        {
+          "name": "test_zero_trials",
+          "description": "With 0 trials it makes no input, and gives None.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": "[10, 1, 8, 5, 4]\n"
+    },
+    "build-runner": {
+      "tests": [
+        {
+          "name": "test_reports_the_failure",
+          "description": "Given the tests a, b and c, of which only b fails, it gives [\"b\"].",
+          "passed": false,
+          "message": "run_tests stopped with the AssertionError of a failing test, so the tests after it never ran."
+        },
+        {
+          "name": "test_goes_on",
+          "description": "After a test fails, the tests after it still run: when a fails, b and c are called too.",
+          "passed": false,
+          "message": "run_tests stopped with the AssertionError of a failing test, so the tests after it never ran."
+        },
+        {
+          "name": "test_all_fail",
+          "description": "When every test fails, it gives every name, in order.",
+          "passed": false,
+          "message": "run_tests stopped with the AssertionError of a failing test, so the tests after it never ran."
+        },
+        {
+          "name": "test_all_pass",
+          "description": "When every test passes, it gives an empty list.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_each_once",
+          "description": "It calls every test exactly once, in the order of the dictionary.",
+          "passed": false,
+          "message": "run_tests stopped with the AssertionError of a failing test, so the tests after it never ran."
+        },
+        {
+          "name": "test_no_tests",
+          "description": "An empty suite gives an empty list.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": "[]\n"
+    },
+    "build-test-median": {
+      "tests": [
+        {
+          "name": "test_passes_right",
+          "description": "Your test passes a right median.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_uses_its_argument",
+          "description": "Your test calls the median it is given, and no other.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_upper_middle",
+          "description": "It fails wrong median A.",
+          "passed": false,
+          "message": "Your test_median passes wrong median A, which gives the upper of the two middle values for an even number of values. Which list would tell it from a right median?"
+        },
+        {
+          "name": "test_unsorted",
+          "description": "It fails wrong median B.",
+          "passed": false,
+          "message": "Your test_median passes wrong median B, which takes the middle of the list as it is, without sorting it. Which list would tell it from a right median?"
+        },
+        {
+          "name": "test_whole_mean",
+          "description": "It fails wrong median C.",
+          "passed": false,
+          "message": "Your test_median passes wrong median C, which rounds the mean of the two middle values down to a whole number. Which list would tell it from a right median?"
+        },
+        {
+          "name": "test_no_repeats",
+          "description": "It fails wrong median D.",
+          "passed": false,
+          "message": "Your test_median passes wrong median D, which keeps only one of each repeated value. Which list would tell it from a right median?"
+        },
+        {
+          "name": "test_in_place",
+          "description": "It fails wrong median E.",
+          "passed": false,
+          "message": "Your test_median passes wrong median E, which puts the list it is given in order, changing the caller's list. How could a test see that?"
+        }
+      ],
+      "error": null,
+      "output": "test_median passes this median\n"
+    },
+    "debug-shrink": {
+      "tests": [
+        {
+          "name": "test_example",
+          "description": "For [1, 2, 1, 1], with fails true when a list has a repeat, it gives [1, 1].",
+          "passed": false,
+          "message": "shrink(fails, [1, 2, 1, 1]) gives [2, 1, 1], not [1, 1]."
+        },
+        {
+          "name": "test_explore",
+          "description": "For the Explore phase's [7, 3, 9, 3, 5], it gives [3, 3].",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_still_fails",
+          "description": "What it gives still fails, for several lists with a repeat.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_pair",
+          "description": "For a list with a repeat, it ends with just two equal numbers, since every other item can be taken out.",
+          "passed": false,
+          "message": "shrink(fails, [3, 4, 3, 3, 4]) gives [4, 3, 4], but every item except two equal numbers can be taken out, and the list still fails."
+        },
+        {
+          "name": "test_other_property",
+          "description": "With fails true when a list holds a number above 5, [1, 2, 9, 3] shrinks to [9].",
+          "passed": false,
+          "message": "With fails true when a list holds a number above 5, shrink(fails, [1, 2, 9, 3]) gives [2, 9], not [9]."
+        },
+        {
+          "name": "test_leaves_the_list",
+          "description": "It leaves the caller's list as it was.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": "[2, 1, 1]\n"
+    }
+  }
+}

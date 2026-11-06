@@ -1,0 +1,139 @@
+code: E1.9
+title: Testing and property-based testing
+course: E1
+status: ready
+summary: >-
+  A sort that drops one of two equal losses is tested on 100 lists of 10 losses, each a whole
+  number from 1 to 1,000,000 picked at random. How many of the lists will show the bug? Tests that
+  run after every change, how to choose the cases they try, properties that should hold for every
+  input, and random inputs that a program makes for itself and then shrinks to a small one that
+  still fails.
+sittings: 2
+minutes:
+  puzzle: 10
+  recall: 10
+  explore: 45
+  derive: 35
+  build: 55
+  explain: 25
+concepts:
+  taught:
+    - id: E1.9/unit-tests
+      name: Unit tests
+      summary: >-
+        A test calls a function with an input chosen beforehand and asserts what it should give. A
+        suite of tests is run after every change, so that a change which breaks something that
+        used to work, a regression, is caught at once. A function is a value, so tests can be kept
+        in a dictionary and called by a runner, which calls each one inside `try` and
+        `except AssertionError`, so that a failing test is reported and the tests after it still
+        run.
+      usedBy: [E1.12, E3.4]
+    - id: E1.9/test-cases
+      name: Choosing test cases
+      summary: >-
+        Bugs gather at edges, so the cases worth testing are an empty input, one item, two, repeated
+        items, and the values on each side of every boundary in the code. The value a test expects
+        must come from somewhere other than the code it tests: worked out by hand, or given by a
+        slower, simpler version. A test that passes shows only that the code worked on that input,
+        never that it has no bugs, and a suite is judged by the mutants, small bugs put in on
+        purpose, that it catches.
+      usedBy: [E1.12, E6.8]
+    - id: E1.9/properties
+      name: Properties
+      summary: >-
+        A property is a statement that should hold for every input: a sort's output is in order and
+        has the same items as its input, decoding undoes encoding, a fast function agrees with a
+        slow, simple one. A property-based test checks one on many inputs made by a random
+        generator from a fixed seed, so that a failure can be run again. A list of $n$ items has
+        $\frac{n(n - 1)}{2}$ pairs, so about $\sqrt{2N}$ numbers from 1 to $N$ hold one equal pair
+        on average: values drawn from a small range repeat often, and reach cases such as ties that
+        a wide range almost never makes.
+      usedBy: [E1.10, E1.12, E6.8]
+    - id: E1.9/shrinking
+      name: Shrinking
+      summary: >-
+        When a random input makes a property fail, shrinking makes the input smaller a step at a
+        time, by taking out an item or making a number smaller, and keeps each step only if the
+        property still fails. One call of a shrinker that tries taking out each item in turn ends
+        after as many tries as the list has items, and leaves a list that still fails; calling it
+        again on its own result, until a call takes nothing out, leaves a failing input that no
+        single removal can shrink further, which is far easier to read than the large one it
+        started from.
+      usedBy: [E1.12, E10.3]
+  used:
+    - E1.8/assertion
+    - E1.8/hypothesis
+    - E1.4/lists
+    - E1.4/dicts-and-sets
+    - E1.4/aliasing-and-mutation
+    - E1.4/cost-of-operations
+    - E1.3/defining-functions
+    - E1.3/pure-functions
+    - E1.3/abstraction
+    - E1.2/conditions
+    - E1.2/loops
+    - E1.2/loop-invariants
+    - E1.2/accumulator-pattern
+    - E1.1/values-and-types
+    - E1.1/floats-are-approximate
+    - M1.2/equivalence
+    - M1.2/solving-equations
+    - M1.3/inverse-functions
+    - M1.1/powers-of-ten
+    - M1.1/fermi-estimation
+links:
+  requires:
+    - lesson: E1.8
+      bridge: >-
+        E1.8's assertions check an assumption while a program runs, and stop it where the
+        assumption fails. A test is a function of assertions about chosen inputs, and a suite of
+        them runs after every change, so that one change cannot quietly break what another
+        mended.
+    - lesson: E1.4
+      bridge: >-
+        Tests work on E1.4's lists, dictionaries and sets: a set finds repeated items, a dictionary
+        holds the tests by name, and aliasing explains why a function that changes the list it is
+        given can make a later test fail, or pass, for the wrong reason.
+  contrastsWith:
+    - lesson: M1.9
+      bridge: >-
+        Induction, which M1.9 teaches, proves a claim about every whole number with two finite
+        arguments, a base case and a step. A property makes the same kind of claim about every input, but a test checks it only on the inputs it tries: one
+        that fails disproves the claim, and any number that pass prove nothing. Where a proof is
+        possible it settles what testing can only sample.
+  applies:
+    - lesson: M1.2
+      bridge: >-
+        M1.2 showed that one value where two expressions disagree proves them different, while
+        agreement at a few values proves nothing, since a part such as x(x - 1)(x - 2) can hide at
+        exactly those values. A failing test is such a disagreement and a passing one such an
+        agreement, so a mutant is shown to be equivalent only by an argument about every input.
+    - lesson: M1.3
+      bridge: >-
+        M1.3 undid a function by solving for its input, and the square root undid a square for
+        numbers 0 or more. The Derive phase undoes the count of pairs the same way: about
+        $\frac{n^2}{2}$ pairs, each equal once in $N$, hold one equal pair on average when
+        $n = \sqrt{2N}$, so a range 100 times wider needs lists only 10 times longer.
+    - lesson: M1.1
+      bridge: >-
+        M1.1's estimates say how likely a random test is to reach a case. Ten numbers make 45
+        pairs, so ten numbers from 1 to a million share a value about 45 times in a million, and
+        a bug that one input in 1,000 shows needs about 1,000 random inputs to show itself once.
+  foreshadows:
+    - lesson: E1.12
+      bridge: >-
+        E1.12 builds a tool that counts words and sentences in a text, and builds its tests with
+        it: cases for an empty text and a text of one word, and properties, such as that the word
+        counts of two texts joined with a space between them add up.
+    - lesson: E3.4
+      bridge: >-
+        In a project, tests live in files of their own, whose names begin with `test_`. A runner
+        such as pytest calls every function in them whose name begins with `test` each time it is
+        started, which a team does after every change, and reports each failure with the values in
+        the assert that failed, where this lesson's runner reports only the test's name.
+    - lesson: E6.8
+      bridge: >-
+        A fast attention kernel is checked the way this lesson checks a fast function: against a
+        slow, simple version that is easy to trust, on many random inputs, including the awkward
+        sizes where the fast version's tiles do not fit exactly.
+skills: [2]

@@ -1,0 +1,27 @@
+The test of understanding is explaining it simply to someone who was not there. Your friend has written loops, functions and lists with you, from E1.1 to E1.4, and has just told you that a function of theirs must be right, since it passed 1,000 random tests.
+
+<Exercise id="explain-testing" />
+
+## Where this leads
+
+Induction, which M1.9 teaches, proves a claim about every whole number with two finite arguments, a base case and a step. A property makes the same kind of claim about every input, but a test checks it only on the inputs it tries: one input that fails disproves the claim, and any number that pass prove nothing. Where a proof is possible, it settles what testing can only sample. Where it is not, a property checked on thousands of well-chosen inputs, and every failure shrunk and kept as a test of its own, is the next best thing.
+
+<Foreshadow lesson="E1.12">
+
+E1.12 builds a tool that counts the words and sentences of a text, and builds its tests with it: cases for an empty text and a text of one word, and properties, such as that the word counts of two texts joined with a space between them add up.
+
+</Foreshadow>
+
+<Foreshadow lesson="E3.4">
+
+In a project, tests live in files of their own, whose names begin with `test_`. A runner such as pytest calls every function in them whose name begins with `test` each time it is started, which a team does after every change, and reports each failure with the values in the assert that failed, where this lesson's runner reports only the test's name.
+
+</Foreshadow>
+
+<Foreshadow lesson="E6.8">
+
+A fast attention kernel is checked the way this lesson checked a fast function: against a slow, simple version that is easy to trust, on many random inputs, including the awkward sizes where the fast version's tiles do not fit exactly.
+
+</Foreshadow>
+
+<MixedCheck />

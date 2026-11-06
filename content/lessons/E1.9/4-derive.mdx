@@ -1,0 +1,62 @@
+The Explore phase ran tests and watched them pass or fail. Now reason about them on paper: how long a list must be, or how narrow its range, for random numbers to repeat; a change that no test can catch; and why the shrinker always ends, with an input that still fails.
+
+## How long a list must be
+
+A list shows the sort's bug when two of its numbers are equal, so a property-based test of the sort needs lists long enough, for their range, to hold two equal numbers often.
+
+<Exercise id="derive-pairs" />
+
+<Reveal for="derive-pairs">
+
+So the length at which repeats become common grows only with the square root of the range: a range 100 times wider needs lists only 10 times longer. Lists of 10 numbers from 1 to 1,000,000 are far shorter than 1,414, which is why they hold a repeat only about 45 times in a million, while 100 such numbers, with 4,950 pairs, hold one about once in 200 lists.
+
+As the puzzle's birthdays showed, the average number of equal pairs is not quite the chance that a list has a repeat. While the average is far below 1, the two are close, since a list then almost never holds two equal pairs at once. When the average is near 1 the two part: for the Explore phase's lists of 5 numbers from 1 to 10, 10 pairs, each equal once in 10, make an average of 1 equal pair a list, but only about 70 lists in 100 have a repeat: the 30 with none are made up for by lists that hold two or more equal pairs at once.
+
+## Choosing the range
+
+A property-based test of the sort can keep its lists of 10 numbers and narrow the range instead, to the whole numbers from 1 to $N$.
+
+<Exercise id="derive-range" />
+
+</Reveal>
+
+<Reveal for="derive-range">
+
+Worked out exactly, numbers from 1 to 450 give a repeat in about 96 lists in 1,000, so the estimate is close, as it should be with an average of 0.1 equal pairs a list. A test of 100 such lists then sees about 10 of them reach the tie, while still trying hundreds of different values. A test can also mix its draws, with some lists from a wide range and some from a narrow one, to have the strengths of both.
+
+## A change that no test can catch
+
+Here is `largest` again, mended so that it starts from the first number. Its contract asks for a list with at least one number:
+
+```python
+def largest(xs):
+    best = xs[0]
+    for x in xs:
+        if x > best:
+            best = x
+    return best
+```
+
+<Exercise id="derive-equivalent" />
+
+</Reveal>
+
+<Reveal for="derive-equivalent">
+
+A mutant that gives the same result as the code on every input is an *equivalent mutant*. It is not a bug, so no test should kill it, and a suite that kills every other mutant is as good as mutation testing can show. `best = xs[-1]`, which starts from the last number, is another for lists of whole numbers: the loop still compares every number with `best`. Telling that a mutant is equivalent takes an argument about every input, like the one above, which no number of test runs could give, since each run tries only one input. M1.2 found the same for expressions: one value where two disagree shows that they differ, but agreement at a few values shows nothing, since a part such as $x(x - 1)(x - 2)$ can hide at exactly those values.
+
+## Why the shrinker ends
+
+The Explore phase's shrinker took `[7, 3, 9, 3, 5]` down to `[3, 3]` in five passes. A proof covers every list and every property at once, as E1.8's proof covered every run of bisection: it shows that the shrinker always ends, and that what it gives still fails.
+
+<Exercise id="derive-shrink-proof" />
+
+</Reveal>
+
+<Reveal for="derive-shrink-proof">
+
+So shrinking a failing list of 1,000 numbers costs exactly 1,000 calls of `fails`, however many items it takes out, which a test can afford even when each call is slow.
+
+The proof also shows what the shrinker does not promise. An item it kept was needed when it was tried, but the items after it were still there then, and once some of those have gone, it may be possible to take it out too. For a property that fails when a list's average is above 3, one call of `shrink` takes `[4, 4, 2]` only to `[4, 4]`, since taking out either 4 while the 2 is there leaves an average of 3, and a second call takes `[4, 4]` to `[4]`. That is why tools call the shrinker again on its own result, until a call takes nothing out. Then each item of the result, taken out on its own, makes the property hold, so no single removal can shrink the input further. For `has_repeat` one call is enough, since taking items out of a list with no repeat leaves a list with no repeat, so an item that was needed once stays needed.
+
+</Reveal>
