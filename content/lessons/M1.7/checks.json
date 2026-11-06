@@ -222,7 +222,7 @@
           "name": "test_contrapositive",
           "description": "contrapositive is False: p => q and its contrapositive agree in every row.",
           "passed": false,
-          "message": "contrapositive is {p: True, q: False}, a row where the two differ, but the contrapositive agrees with p => q in every row. Check the statement it is compared with."
+          "message": "contrapositive is a row of the truth table, not False. p => q and its contrapositive agree in every row, so a search for a row where they differ finds none and gives False: check what the search is asked to find, and what p => q is compared with."
         },
         {
           "name": "test_short_filter",
