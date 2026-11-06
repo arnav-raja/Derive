@@ -169,8 +169,8 @@ exercises:
       options:
         - { id: neither, label: 'The emails that are neither short nor in English' }
         - { id: long, label: 'The long emails, whatever their language' }
-        - { id: either-fails, label: 'The emails that are not short, or not in English, or both' }
         - { id: long-english, label: 'The long emails in English' }
+        - { id: either-fails, label: 'The emails that are not short, or not in English, or both' }
       correct: [either-fails]
     explanation: >-
       "Short and in English" fails as soon as one part fails, so the filter drops an email that is
@@ -249,6 +249,23 @@ exercises:
             $120 + 90 - 40 = 170$ runs used a large batch or a warm-up, so $200 - 170 = 30$ used
             neither.
         - prompt: >-
+            Write $P$ for the set of emails labelled spam and $Q$ for the set of emails that contain
+            a link. Which of these say the same as "if an email is labelled spam, then it contains a
+            link"? Choose all that apply.
+          answer:
+            type: choice
+            multiple: true
+            options:
+              - { id: q-in-p, label: '$Q \subseteq P$' }
+              - { id: none-out, label: '$P \cap Q^c = \varnothing$' }
+              - { id: disjoint, label: '$P \cap Q = \varnothing$' }
+              - { id: p-in-q, label: '$P \subseteq Q$' }
+            correct: [none-out, p-in-q]
+          explanation: >-
+            Every email labelled spam is in the set with a link, so $P \subseteq Q$, and no email is
+            in $P$ and outside $Q$, so $P \cap Q^c = \varnothing$. $Q \subseteq P$ is the converse,
+            and $P \cap Q = \varnothing$ would say that no email labelled spam has a link.
+        - prompt: >-
             $A$ has 10 elements and $B$ has 7, and $A \cup B$ has 12. How many elements does
             $A \cap B$ have?
           answer: { type: number, value: 5, tolerance: { abs: 0 } }
@@ -262,21 +279,21 @@ exercises:
     concept: M1.7/implication
     title: Breaking the promise
     prompt: >-
-      Which emails would make the claim "if an email is labelled spam, then it contains a link"
-      false? Choose all that apply.
+      A lab's rule says "if a job runs for more than a day, then it must be approved". Which of
+      these jobs broke the rule? Choose all that apply.
     answer:
       type: choice
       multiple: true
       options:
-        - { id: spam-link, label: 'An email labelled spam that contains a link' }
-        - { id: spam-no-link, label: 'An email labelled spam that contains no link' }
-        - { id: ham-link, label: 'An email not labelled spam that contains a link' }
-        - { id: ham-no-link, label: 'An email not labelled spam that contains no link' }
-      correct: [spam-no-link]
+        - { id: long-approved, label: 'A job that ran for two days and was approved' }
+        - { id: short-approved, label: 'A job that ran for an hour and was approved' }
+        - { id: long-not, label: 'A job that ran for two days without approval' }
+        - { id: short-not, label: 'A job that ran for an hour without approval' }
+      correct: [long-not]
     explanation: >-
-      The claim promises a link for every email labelled spam, so only an email labelled spam with
-      no link breaks it. An email that is not labelled spam cannot break a promise about the emails
-      labelled spam, whether or not it has a link.
+      The rule makes a promise about every job that runs for more than a day, so only such a job
+      without approval breaks it. A job of an hour cannot break a promise about the long jobs,
+      whether or not it was approved.
     placement: true
     review:
       variants:
@@ -294,6 +311,16 @@ exercises:
           explanation: >-
             The rule is broken only when its "if" part is true and its "then" part is false: the loss
             went up and the rate was not lowered. When the loss went down, the rule asks for nothing.
+        - prompt: $P$ is true and $Q$ is false. Is $P \Rightarrow Q$ true or false?
+          answer:
+            type: choice
+            options:
+              - { id: is-true, label: 'True' }
+              - { id: neither, label: 'Neither' }
+              - { id: is-false, label: 'False' }
+            correct: [is-false]
+          explanation: >-
+            This is the one case that breaks an implication: $P$ holds and $Q$ does not.
         - prompt: $P$ is false and $Q$ is true. Is $P \Rightarrow Q$ true or false?
           answer:
             type: choice
@@ -305,16 +332,6 @@ exercises:
           explanation: >-
             $P \Rightarrow Q$ is false only when $P$ is true and $Q$ is false. Here $P$ is false, so
             the implication is true, vacuously.
-        - prompt: $P$ is true and $Q$ is false. Is $P \Rightarrow Q$ true or false?
-          answer:
-            type: choice
-            options:
-              - { id: is-true, label: 'True' }
-              - { id: neither, label: 'Neither' }
-              - { id: is-false, label: 'False' }
-            correct: [is-false]
-          explanation: >-
-            This is the one case that breaks an implication: $P$ holds and $Q$ does not.
 
   - id: explore-same-claim
     phase: explore
@@ -331,14 +348,14 @@ exercises:
         - { id: converse, label: 'If an email contains a link, then it is labelled spam.' }
         - { id: contrapositive, label: 'If an email contains no link, then it is not labelled spam.' }
         - { id: inverse, label: 'If an email is not labelled spam, then it contains no link.' }
-        - { id: none-spam-no-link, label: 'No email is labelled spam and contains no link.' }
+        - { id: none-spam-no-link, label: 'There is no email that is labelled spam and has no link.' }
         - { id: exactly, label: 'An email is labelled spam exactly when it contains a link.' }
       correct: [contrapositive, none-spam-no-link]
     explanation: >-
       The claim is false in exactly one case, an email labelled spam with no link. "If an email
       contains no link, then it is not labelled spam" is false in that same case and no other, and
-      "no email is labelled spam and contains no link" rules out exactly that case, so both say the
-      same as the claim. The other three are all broken by a newsletter that contains a link and is
+      "there is no email that is labelled spam and has no link" rules out exactly that case, so both
+      say the same as the claim. The other three are all broken by a newsletter that contains a link and is
       not labelled spam, which the claim allows.
     review:
       variants:
@@ -378,29 +395,32 @@ exercises:
       type: choice
       options:
         - { id: none, label: 'No training run converged' }
-        - { id: some-converged, label: 'At least one training run converged' }
         - { id: some-failed, label: 'At least one training run did not converge' }
+        - { id: some-converged, label: 'At least one training run converged' }
         - { id: no-run, label: 'There were no training runs' }
       correct: [some-failed]
     explanation: >-
       "Every run converged" is false as soon as a single run did not converge, so that is all its
       denial says. It could be that no run converged, but it need not be: one failed run among a
-      hundred good ones is enough.
+      hundred good ones is enough. And with no runs at all, nothing could break "every run
+      converged", so it would be true, vacuously: for it to be false, there must be a run that did
+      not converge.
     placement: true
     review:
       variants:
-        - prompt: '"Some prediction was exactly right" is false. What must be true?'
+        - prompt: 'Which of these says exactly the same as "it is not true that some prediction was exactly right"?'
           answer:
             type: choice
             options:
               - { id: some-wrong, label: 'At least one prediction was off' }
               - { id: most-wrong, label: 'Most predictions were off' }
-              - { id: every-wrong, label: 'Every prediction was off, at least a little' }
               - { id: one-right, label: 'Exactly one prediction was right' }
+              - { id: every-wrong, label: 'Every prediction was off, at least a little' }
             correct: [every-wrong]
           explanation: >-
-            Not ($\exists x : P(x)$) is $\forall x : \neg P(x)$: if no prediction was exactly right,
-            then every prediction was off.
+            Not ($\exists x : P(x)$) is $\forall x : \neg P(x)$: no prediction was exactly right
+            says that every prediction was off. "At least one was off" and "most were off" follow
+            from it, but say less, since they allow some predictions to be exactly right.
         - prompt: Someone claims that $x^2 > 0$ for every number $x$. Which of these breaks the claim?
           answer:
             type: choice
@@ -544,7 +564,7 @@ exercises:
     concept: M1.7/connectives
     title: Or as a number
     prompt: >-
-      De Morgan's laws give $p \lor q = \neg(\neg p \land \neg q)$. Use the rules for $\neg$ and
+      De Morgan's laws and the double not give $p \lor q = \neg(\neg p \land \neg q)$. Use the rules for $\neg$ and
       $\land$ to write $p \lor q$ with $+$, $-$ and $\times$ only, with every bracket multiplied out.
     answer:
       type: expression
@@ -689,6 +709,8 @@ exercises:
             assert leaked(a, b) == set(range(0, 10000, 6)), "leaked should give the multiples of 6, the ids that are even and multiples of 3."
             assert unseen(a, b) == set(range(3, 10000, 6)), "unseen should give the odd multiples of 3."
             got = distinct(a, b)
+            assert got is not None, "Replace the None in distinct first."
+            assert isinstance(got, (int, float)), f"distinct gives a {type(got).__name__}, not a number: it should count the different ids, not list them."
             assert got == 6667, f"distinct gives {got:,}, but 5,000 even ids and 3,334 multiples of 3, with 1,667 in both, make 6,667 different ids."
       reference: |
         def leaked(train, test):
@@ -795,9 +817,9 @@ exercises:
 
         def test_width_with_no_rate():
             """When some width has no rate that trains it well, both are False."""
-            w, r = [64, 100000], [0.1, 0.01]
+            w, r = [64, 5], [0.1, 0.01]
             got = (every_width_has_a_rate(w, r), one_rate_for_all(w, r))
-            assert got == (False, False), f"For widths {w} and rates {r} the functions give {got}, not (False, False): no rate trains the width 100,000 well."
+            assert got == (False, False), f"For widths {w} and rates {r} the functions give {got}, not (False, False): no rate trains the width 5 well."
 
         def test_rate_that_suits_no_width():
             """A rate that trains no width well does not stop every width from having a rate."""
@@ -806,7 +828,7 @@ exercises:
             assert got is True, f"For widths {w} and rates {r}, every_width_has_a_rate gives {got}, but 64 trains well at 0.1 and 256 at 0.01. The rate 0.0001 suits neither, and the question does not ask about every rate."
 
         def test_one_width():
-            """With one width, a rate that suits it suits every width there is."""
+            """one_rate_for_all: with only one width, a rate that suits that width suits all of them."""
             w, r = [64], [0.1, 0.01]
             got = one_rate_for_all(w, r)
             assert got is True, f"For widths {w} and rates {r}, one_rate_for_all gives {got}, but 0.1 trains the only width well. The rate 0.01 does not, and the question does not ask about every rate."
@@ -946,7 +968,7 @@ exercises:
 
         converse = None        # a row where p => q and q => p differ, or False
         contrapositive = None  # a row where p => q and its contrapositive differ, or False
-        short_filter = None    # (p and q) or (p and not q), as simply as possible
+        short_filter = None    # short and in English, or short and not in English, as simply as possible
 
         print(de_morgan)
         print(converse)
@@ -975,6 +997,7 @@ exercises:
         def test_short_filter():
             """short_filter keeps exactly the emails the filter keeps, in every row of the truth table."""
             assert short_filter is not None, "Replace the None in short_filter first."
+            assert short_filter != q, "short_filter is q, which keeps every email in English. If you wrote the rule with Python's own and, or and not, that is what they give, since Python treats every SymPy symbol as true: build the rule with And, Or and Not."
             for P in (True, False):
                 for Q in (True, False):
                     keep = (P and Q) or (P and not Q)
@@ -1053,9 +1076,9 @@ exercises:
     title: The four cards, simply
     prompt: >-
       Explain to your friend which cards to turn over and why: what the claim promises, the one kind
-      of email that would make it false, why card 3 cannot help, and why card 4 can. Then say what it
-      would take to break the claim for a dataset of a million emails, and why a thousand emails that
-      agree with it do not prove it.
+      of email that would make it false, why card 3 cannot help, and why card 4 can. Say which set of
+      emails must be empty for the claim to hold. Then say what it would take to break the claim for
+      a dataset of a million emails, and why a thousand emails that agree with it do not prove it.
     answer:
       type: text
       rubric:
@@ -1063,6 +1086,7 @@ exercises:
         - { id: cards, criterion: 'Chooses cards 1 and 4, saying what each could reveal: card 1 might have no link, and card 4 might be labelled spam.' }
         - { id: others, criterion: 'Explains why cards 2 and 3 cannot break the claim: card 2 is not labelled spam, and card 3 already has a link, whatever its label.' }
         - { id: contrapositive, criterion: 'Connects card 4 to the contrapositive, "if an email contains no link, then it is not labelled spam", which says the same as the claim.' }
+        - { id: set, criterion: 'Says that the claim holds exactly when the set of emails labelled spam with no link is empty, or, equally, that the emails labelled spam are a subset of the emails with a link.' }
         - { id: every, criterion: 'Says that one email labelled spam with no link breaks the claim, that a thousand agreeing emails cannot prove it, and that a full check need only look at the emails labelled spam.' }
       reference: >-
         The claim is a promise about spam: every email labelled spam has a link. Only one kind of
@@ -1073,7 +1097,9 @@ exercises:
         contrapositive at work: "if an email has no link, it is not labelled spam" says exactly the
         same as the claim, so card 4 tests the claim just as card 1 does. Card 3 already has a link,
         so whatever its label, it agrees with the claim: turning it over can only confirm, never
-        refute. Card 2 is not labelled spam, so the claim says nothing about it. For a million emails,
+        refute. Card 2 is not labelled spam, so the claim says nothing about it. In the language of
+        sets, the claim says that the set of emails labelled spam with no link is empty: every email
+        labelled spam is in the set of emails with a link. For a million emails,
         a single email labelled spam with no link makes the claim false; that is a counterexample. A
         thousand emails that agree say nothing about the other 999,000, any of which could be the
         counterexample. To settle it, look at every email labelled spam, or equally at every email

@@ -57,6 +57,8 @@ export function QuantifierGrid({
   const initial = useMemo(() => rows.map((_, i) => cols.map((_, j) => Boolean(cells[i]?.[j]))), [rows, cols, cells]);
   const [ticks, setTicks] = useState(initial);
   const [shown, setShown] = useState<number | null>(null);
+  // For a screen reader: which statements a change to the grid has made true or false.
+  const [news, setNews] = useState("");
   const open = !verdictsLocked;
 
   const words: GridWords = { rows, cols, rowName, colName, joiner };
@@ -64,7 +66,20 @@ export function QuantifierGrid({
   const lit = new Set(open && shown !== null ? verdicts[shown]!.cells.map(([i, j]) => `${i},${j}`) : []);
   const changed = ticks.some((row, i) => row.some((v, j) => v !== initial[i]![j]));
 
-  const toggle = (i: number, j: number) => setTicks((prev) => prev.map((row, a) => (a === i ? row.map((v, b) => (b === j ? !v : v)) : row)));
+  const toggle = (i: number, j: number) => {
+    const next = ticks.map((row, a) => (a === i ? row.map((v, b) => (b === j ? !v : v)) : row));
+    const changes = statements.flatMap((s) => {
+      const before = verdict(s.kind, ticks, words).holds;
+      const after = verdict(s.kind, next, words).holds;
+      return before === after ? [] : [`Now ${after ? "true" : "false"}: ${s.text}`];
+    });
+    setTicks(next);
+    setNews(changes.length ? changes.join(" ") : "No statement has changed.");
+  };
+  const putBack = () => {
+    setTicks(initial);
+    setNews("The grid is as it was, and so are the statements.");
+  };
 
   return (
     <FigureFrame
@@ -152,7 +167,7 @@ export function QuantifierGrid({
                     <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
                       <p className="text-sm text-ink-muted">{v.because}</p>
                       {v.cells.length ? (
-                        <Button size="sm" variant="ghost" aria-pressed={shown === k} onClick={() => setShown(shown === k ? null : k)}>
+                        <Button size="sm" variant="ghost" onClick={() => setShown(shown === k ? null : k)}>
                           {shown === k ? "Hide the cells" : "Show the cells"}
                         </Button>
                       ) : null}
@@ -164,11 +179,14 @@ export function QuantifierGrid({
           </ol>
           {open ? (
             <div className="flex flex-wrap items-center gap-3">
-              <p className="text-sm text-ink-muted" aria-live="polite">
+              <p className="text-sm text-ink-muted">
                 {changed ? "You have changed the grid; the verdicts follow it." : "Choose a cell to add or take away its tick."}
               </p>
+              <p role="status" className="sr-only">
+                {news}
+              </p>
               {changed ? (
-                <Button size="sm" variant="secondary" onClick={() => setTicks(initial)}>
+                <Button size="sm" variant="secondary" onClick={putBack}>
                   Put the grid back
                 </Button>
               ) : null}

@@ -4,13 +4,13 @@ A *statement* is a sentence that is either true or false, such as "this email co
 
 A filter that tidies a dataset keeps or drops each email by a rule. Here is one:
 
-> Keep an email if it is short or it is in English.
+> Keep an email if it is short or it is in English, and drop every other email.
 
 <Exercise id="explore-or" />
 
 <Reveal for="explore-or">
 
-In mathematics, and in every programming language, *or* means "one or the other or both". Everyday speech sometimes uses it to mean "one or the other but not both", as in "tea or coffee?", and when that is meant it is said in full, or called *exclusive or*.
+In mathematics, and in programming languages, *or* means "one or the other or both". Everyday speech sometimes uses it to mean "one or the other but not both", as in "tea or coffee?"; in mathematics that meaning is said in full, or called *exclusive or*.
 
 A table can list every case at once. With T for true and F for false, here are the three words:
 
@@ -23,11 +23,11 @@ A table can list every case at once. With T for true and F for false, here are t
 
 Each row is a case, and the four rows are every case there is, so two statements built from $P$ and $Q$ say the same thing exactly when their columns agree in every row. Such statements are called *equivalent*, just as M1.2's expressions were when they agreed for every value of their letters, and a single row where they differ shows that they are not.
 
-## Not, across and and or
+## Denying an and
 
 A second filter is stricter:
 
-> Keep an email only if it is short and in English.
+> Keep an email if it is short and in English, and drop every other email.
 
 It drops every email for which "short and in English" is false: every email for which "not (short and in English)" is true.
 
@@ -37,7 +37,16 @@ It drops every email for which "short and in English" is false: every email for 
 
 <Reveal for="explore-drop">
 
-An email fails "short and in English" as soon as one part fails, so not ($P$ and $Q$) says the same as (not $P$) or (not $Q$), and the two columns of the truth table agree in every row. The other way round, "not ($P$ or $Q$)" says that neither is true, which is (not $P$) and (not $Q$). These are *De Morgan's laws*, after the nineteenth-century mathematician Augustus De Morgan:
+An email fails "short and in English" as soon as one part fails, so not ($P$ and $Q$) says the same as (not $P$) or (not $Q$), and their two columns of the truth table agree in every row:
+
+| $P$ | $Q$ | not ($P$ and $Q$) | (not $P$) or (not $Q$) |
+| --- | --- | --- | --- |
+| T | T | F | F |
+| T | F | T | T |
+| F | T | T | T |
+| F | F | T | T |
+
+The other way round, "not ($P$ or $Q$)" says that neither is true, which is (not $P$) and (not $Q$). These are *De Morgan's laws*, after the nineteenth-century mathematician Augustus De Morgan:
 
 $$
 \begin{aligned}
@@ -50,7 +59,7 @@ The not passes inside the brackets, and on its way and and or swap.
 
 ## Sets
 
-The emails that a rule keeps form a *set*: a collection of things, called its *elements*. $x \in A$ says that $x$ is an element of $A$, and $x \notin A$ that it is not. A set can be listed in braces, as $\{2, 3, 5, 7\}$ is, or described by a rule, as in $\{x : x^2 = 9\}$, read "the set of $x$ such that $x^2 = 9$". That set is $\{-3, 3\}$, the solutions of the recall's equation, and in the same way $\{x : x \text{ is a short email}\}$ is the set of short emails. A list's order does not matter, and an element is either in a set or not, never in it twice. The set with no elements at all is the *empty set*, $\varnothing$.
+The emails that a rule keeps form a *set*: a collection of things, called its *elements*. $x \in A$ says that $x$ is an element of $A$, and $x \notin A$ that it is not. A set can be listed in braces, as $\{2, 3, 5, 7\}$ is, or described by a rule, as in $\{x : x^2 = 9\}$, read "the set of $x$ such that $x^2 = 9$". That set is $\{-3, 3\}$, the solutions of the recall's equation, and in the same way $\{x : x \text{ is a short email}\}$ is the set of short emails. The order in which a set's elements are written does not matter, and an element is either in a set or not, never in it twice: $\{3, -3\}$ and $\{-3, 3, 3\}$ are both the set $\{-3, 3\}$. The set with no elements at all is the *empty set*, $\varnothing$.
 
 Each of the three words has a partner for sets. Write $U$ for the set of all the emails, $S$ for the short ones and $E$ for the ones in English:
 
@@ -74,11 +83,11 @@ A picture with a circle for each set, a *Venn diagram*, shows every case at once
 
 <Reveal for="explore-neither">
 
-Two of the figure's sets had the same region, $(S \cup E)^c$ and $S^c \cap E^c$, and so did $(S \cap E)^c$ and $S^c \cup E^c$: De Morgan's laws again, now for sets. Counting works region by region too. Adding the 400 short emails to the 700 English ones counts the 300 that are both twice, so $400 + 700 - 300 = 800$ emails are short or in English, and the other 200 are neither. The Derive phase shows that this always works.
+The figure's $(S \cup E)^c$ and $S^c \cap E^c$ turned out to be the same set, and so did $(S \cap E)^c$ and $S^c \cup E^c$: De Morgan's laws again, now for sets. The count above worked region by region, taking the overlap away once, and the Derive phase shows that this always works.
 
 ## If, then
 
-The labelling guide's claim joins two statements with *if* and *then*: "if an email is labelled spam, then it contains a link". With $P$ for "labelled spam" and $Q$ for "contains a link", it is written $P \Rightarrow Q$ and read "$P$ implies $Q$".
+The labelling guide's claim joins two statements with *if* and *then*: "if an email is labelled spam, then it contains a link". With $P$ for "labelled spam" and $Q$ for "contains a link", it is written $P \Rightarrow Q$ and read "$P$ implies $Q$". Another claim of the same shape comes from a lab's rules for its machines: "if a job runs for more than a day, then it must be approved".
 
 <Exercise id="explore-break-rule" />
 
@@ -95,7 +104,7 @@ So $P \Rightarrow Q$ is false in one case only, when $P$ is true and $Q$ is fals
 | F | T | T |
 | F | F | T |
 
-The last two rows surprise most people at first. The claim is a promise about the emails labelled spam, and an email that is not labelled spam cannot break it, so the claim holds for that email, though it says nothing about it. A statement that is true because its "if" part is false is said to be true *vacuously*.
+The last two rows surprise most people at first. The labelling guide's claim is a promise about the emails labelled spam, and an email that is not labelled spam cannot break it, so the claim holds for that email, though it says nothing about it. A statement that is true because its "if" part is false is said to be true *vacuously*.
 
 A claim can be reworded in many ways, and not every rewording keeps its meaning.
 
@@ -107,17 +116,17 @@ A claim can be reworded in many ways, and not every rewording keeps its meaning.
 
 Two rewordings have names. $Q \Rightarrow P$ swaps the two parts and is called the *converse*: "if an email contains a link, it is labelled spam" makes a different promise, which a newsletter with a link would break. $\text{not } Q \Rightarrow \text{not } P$ denies both parts and swaps them, and is called the *contrapositive*: "if an email contains no link, it is not labelled spam". The contrapositive always says the same as the original, since both are false in exactly one case, a spam email with no link. When both $P \Rightarrow Q$ and $Q \Rightarrow P$ are claimed, the claim is written $P \Leftrightarrow Q$ and read "$P$ if and only if $Q$".
 
-In the language of sets, the claim says that no email is in the spam set $P$ and outside the link set $Q$: $P \cap Q^c = \varnothing$. Then every element of $P$ is an element of $Q$, which is written $P \subseteq Q$, "$P$ is a *subset* of $Q$". Shade the region that would have to hold an email for the claim to be false.
+In the language of sets, write $P$ also for the set of emails labelled spam and $Q$ for the set of emails with a link, the elements for which each statement is true. The claim says that no email is in $P$ and outside $Q$: $P \cap Q^c = \varnothing$. Then every element of $P$ is an element of $Q$, which is written $P \subseteq Q$, "$P$ is a *subset* of $Q$". The figure asks instead for the set of emails that the claim allows: shade it.
 
 <SetDiagram
   title="Where the claim could break"
-  description="A rectangle for all the emails holds two overlapping circles, P for the emails labelled spam and Q for the emails that contain a link, making four regions. Each region can be shaded by choosing it. The figure asks for the set of emails that would break the claim, and says whether the shading matches it."
+  description="A rectangle for all the emails holds two overlapping circles, P for the emails labelled spam and Q for the emails that contain a link, making four regions. Each region can be shaded by choosing it. The figure asks for the set of emails that the claim allows, written with union and complement, and says whether the shading matches it."
   universe="All emails"
   sets={[{ name: "Labelled spam", not: "Not labelled spam", sym: "P" }, { name: "Contains a link", not: "Contains no link", sym: "Q" }]}
-  tasks={["P ∩ Qᶜ"]}
+  tasks={["Pᶜ ∪ Q"]}
 />
 
-Now the puzzle reads plainly. Only a spam email with no link can break the claim. Card 1 tests the claim itself, and card 4 tests its contrapositive. Cards 2 and 3 meet the claim only vacuously or not at all, so nothing on their other sides can break it.
+Now the puzzle reads plainly. Only a spam email with no link can break the claim. Card 1 tests the claim itself, and card 4 tests its contrapositive. The claim holds for card 2 vacuously, since it is not labelled spam, and for card 3 whatever its label, since it has a link, so nothing on their other sides can break it.
 
 ## For every, and there is
 
@@ -127,7 +136,7 @@ $$
 \forall x \in U : P(x) \qquad \text{and} \qquad \exists x \in U : P(x)
 $$
 
-say that $P(x)$ is true for every element of $U$, and for at least one. They are called *quantifiers*, because they say how many of the elements a statement is claimed for. The puzzle's claim, in symbols, is $\forall x \in U : P(x) \Rightarrow Q(x)$.
+say that $P(x)$ is true for every element of $U$, and for at least one. Read them "for every $x$ in $U$, $P(x)$" and "there is an $x$ in $U$ with $P(x)$". A quantifier covers everything after its colon, so in $\forall x \in U : P(x) \Rightarrow Q(x)$ the "for every" reaches the whole implication. They are called *quantifiers*, because they say how many of the elements a statement is claimed for. The puzzle's claim, in symbols, is $\forall x \in U : P(x) \Rightarrow Q(x)$.
 
 <Exercise id="explore-not-every" />
 
@@ -135,11 +144,11 @@ say that $P(x)$ is true for every element of $U$, and for at least one. They are
 
 <Reveal for="explore-not-every">
 
-"Not every" means "at least one not": not ($\forall x : P(x)$) is $\exists x : \text{not } P(x)$. In the same way, not ($\exists x : P(x)$) is $\forall x : \text{not } P(x)$, since there is no $x$ with $P(x)$ exactly when every $x$ fails it. So a single *counterexample* is enough to break a for-every claim, as one value broke M1.2's claimed identity in the recall. A single *witness* is enough to prove a there-is claim, but no number of examples proves a for-every claim about infinitely many cases.
+"Not every" means "at least one not": not ($\forall x : P(x)$) is $\exists x : \text{not } P(x)$. In the same way, not ($\exists x : P(x)$) is $\forall x : \text{not } P(x)$, since there is no $x$ with $P(x)$ exactly when every $x$ fails it. So a single *counterexample* is enough to break a for-every claim, as the pair $a = b = 1$ broke the claimed identity in the recall. A single *witness* is enough to prove a there-is claim, but no number of examples proves a for-every claim about infinitely many cases.
 
 ## Two quantifiers at once
 
-Many claims use two quantifiers. The figure records, for three models and three learning rates, whether each model trained well at each rate.
+Many claims use two quantifiers. Training a model takes a setting called the *learning rate*, the size of each step it takes as it learns from its errors. The figure records, for three models and three learning rates, whether each model trained well at each rate.
 
 <QuantifierGrid
   title="Which learning rates train which models"
@@ -166,9 +175,9 @@ Many claims use two quantifiers. The figure records, for three models and three 
 
 <Reveal for="explore-order">
 
-"Every model trains well at some learning rate" is $\forall m\ \exists r : W(m, r)$, with $W(m, r)$ for "model $m$ trains well at rate $r$". The rate is chosen after the model, so each model may have a rate of its own. "Some learning rate trains every model well" is $\exists r\ \forall m : W(m, r)$: one rate, chosen first, must suit every model. The second promises more. If one rate suits every model, then every model has a rate, that one, so $\exists r\ \forall m$ always carries $\forall m\ \exists r$ with it, but not the other way round, as the grid shows. M1.3's onto has the first shape: a function $f$ is onto when for every output $y$ there is an input $x$ with $f(x) = y$, $\forall y\ \exists x : f(x) = y$, and each output may have an input of its own.
+"Every model trains well at some learning rate" is $\forall m\ \exists r : W(m, r)$, with $W(m, r)$ for "model $m$ trains well at rate $r$". The rate is chosen after the model, so each model may have a rate of its own. "Some learning rate trains every model well" is $\exists r\ \forall m : W(m, r)$: one rate, chosen first, must suit every model. The second promises more. If one rate suits every model, then every model has a rate, that one, so $\exists r\ \forall m$ always carries $\forall m\ \exists r$ with it, but not the other way round, as the grid shows. M1.3's onto has the first shape: a function $f$ is onto when for every $y$ in the codomain there is an input $x$ with $f(x) = y$, $\forall y\ \exists x : f(x) = y$, and each $y$ may have an input of its own.
 
-The figure now shows which statements hold, with the cells that prove each one or break it, and its cells can be changed. Try to make every model train well at some rate while no single rate trains them all. Real training behaves like the grid: the rate that trains a network well usually shrinks as the network grows, so a rate tuned on a small model rarely suits a large one.
+The figure now shows which statements hold, with the cells that prove each one or break it, and its cells can be changed. Try to make "Some learning rate trains every model well" true while "Every model trains well at some learning rate" is false, and see what stops you. Real training behaves like the grid: the rate that trains a network well usually shrinks as the network grows, so a rate tuned on a small model rarely suits a large one.
 
 ## The names
 

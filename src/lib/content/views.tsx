@@ -117,7 +117,8 @@ function stateView(state: ExerciseState | undefined): ExerciseStateView {
 function answerLine(answer: Answer): string | null {
   switch (answer.type) {
     case "choice": {
-      const labels = answer.options.filter((o) => answer.correct.includes(o.id)).map((o) => o.label);
+      // An option written as a sentence ends with a full stop, which would run into the "; ".
+      const labels = answer.options.filter((o) => answer.correct.includes(o.id)).map((o) => o.label.replace(/\.$/, ""));
       return labels.length ? `**Answer:** ${labels.join("; ")}` : null;
     }
     case "number":

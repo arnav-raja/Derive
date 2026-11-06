@@ -160,7 +160,7 @@
         },
         {
           "name": "test_one_width",
-          "description": "With one width, a rate that suits it suits every width there is.",
+          "description": "one_rate_for_all: with only one width, a rate that suits that width suits all of them.",
           "passed": true,
           "message": null
         }

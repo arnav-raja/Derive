@@ -162,11 +162,15 @@ export function listWords(words: string[]): string {
   return `${words.slice(0, -1).join(", ")} and ${words.at(-1)}`;
 }
 
-/** How a shading differs from a set: the regions shaded that are not in it, and those in it left unshaded. */
+/**
+ * How a shading compares with a set: the regions rightly shaded, those shaded that are not in
+ * it, and those in it left unshaded.
+ */
 export function compareShading(shaded: ReadonlySet<Region>, target: ReadonlySet<Region>) {
+  const right = REGIONS.filter((r) => shaded.has(r) && target.has(r));
   const extra = REGIONS.filter((r) => shaded.has(r) && !target.has(r));
   const missing = REGIONS.filter((r) => !shaded.has(r) && target.has(r));
-  return { ok: extra.length === 0 && missing.length === 0, extra, missing };
+  return { ok: extra.length === 0 && missing.length === 0, right, extra, missing };
 }
 
 /** Whether two region sets are the same. */

@@ -122,7 +122,7 @@ def shown_after(e):
     if e["kind"] in ("predict", "recall", "estimate"):
         t = ans.get("type")
         if t == "choice":
-            said = "; ".join(o["label"] for o in ans["options"] if o["id"] in ans["correct"])
+            said = "; ".join(o["label"].removesuffix(".") for o in ans["options"] if o["id"] in ans["correct"])
         elif t == "number":
             said = f"{format_number(ans['value'])}{(' ' + ans['unit']) if ans.get('unit') else ''}"
         else:
