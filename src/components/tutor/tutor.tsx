@@ -8,6 +8,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { Button } from "@/components/ui/button";
 import { CrossIcon, HintIcon, PanelRightIcon, SendIcon, SparkIcon } from "@/components/ui/icons";
 import { ProgressBar } from "@/components/ui/progress";
+import { apiFetch, type ApiRoute } from "@/lib/api-client";
 import { useMedia, usePreference } from "@/lib/use-preference";
 
 /*
@@ -147,13 +148,9 @@ export type Reply =
     }
   | { ok: false; error: string };
 
-export async function post(url: string, body: unknown): Promise<Reply> {
+export async function post(route: ApiRoute, body: unknown): Promise<Reply> {
   try {
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
+    const res = await apiFetch(route, body);
     return (await res.json()) as Reply;
   } catch {
     return { ok: false, error: "The tutor could not be reached. Check your connection and try again." };
@@ -308,7 +305,7 @@ export function TutorThread({ forKey, scroll = false }: { forKey?: string; scrol
     }));
     let reply: Reply;
     if (ex && ex.hints && !discussing) {
-      reply = await post("/api/tutor/hint", {
+      reply = await post("tutor/hint", {
         lesson: tutor.lessonCode,
         exercise: ex.exerciseId,
         message: text,
@@ -319,13 +316,13 @@ export function TutorThread({ forKey, scroll = false }: { forKey?: string; scrol
         setPending(false);
         return;
       }
-      reply = await post("/api/tutor/talk", { mode: "discuss", lesson: tutor.lessonCode, exercise: ex.exerciseId, message: text, history });
+      reply = await post("tutor/talk", { mode: "discuss", lesson: tutor.lessonCode, exercise: ex.exerciseId, message: text, history });
     } else {
       if (!text) {
         setPending(false);
         return;
       }
-      reply = await post("/api/tutor/talk", { mode: "ask", lesson: tutor.lessonCode, message: text, history });
+      reply = await post("tutor/talk", { mode: "ask", lesson: tutor.lessonCode, message: text, history });
     }
     setPending(false);
     if (!reply.ok) {

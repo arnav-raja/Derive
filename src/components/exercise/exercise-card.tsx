@@ -15,6 +15,7 @@ import { MathText, Tex } from "@/components/ui/tex";
 import { inputClasses } from "@/components/ui/field";
 import { CheckIcon, CollapseIcon, HintIcon } from "@/components/ui/icons";
 import { Notice } from "@/components/ui/notice";
+import { apiFetch } from "@/lib/api-client";
 import type { AnswerPayload } from "@/lib/learning/payloads";
 import { python, type BreakitResult, type ExpressionResult, type RunResult, type RuntimeStatus } from "@/lib/python/client";
 
@@ -335,11 +336,7 @@ export function ExerciseCard({ view }: { view: ExerciseView }) {
     writeDraft(view.key, text);
     setBusy("Reading your answer. This takes up to a minute.");
     try {
-      const res = await fetch("/api/tutor/grade", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lesson: target.lessonCode, exercise: target.exerciseId, body: text, durationMs: duration() }),
-      });
+      const res = await apiFetch("tutor/grade", { lesson: target.lessonCode, exercise: target.exerciseId, body: text, durationMs: duration() });
       const body = (await res.json()) as ({ ok: true } & Grading) | { ok: false; error: string };
       if (!body.ok) {
         setError(body.error);

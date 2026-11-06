@@ -39,7 +39,7 @@ export function SocraticChat({
     setPending(true);
     setError(null);
     const history = entries.map((e) => ({ role: e.role, text: e.html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim() }));
-    const reply = await post("/api/tutor/talk", { mode: "socratic", cardId, message: text, history });
+    const reply = await post("tutor/talk", { mode: "socratic", cardId, message: text, history });
     setPending(false);
     if (!reply.ok) {
       setError(reply.error);
