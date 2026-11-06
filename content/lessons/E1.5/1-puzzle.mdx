@@ -1,0 +1,23 @@
+A function's body can call any function, including the one it belongs to:
+
+```python
+def countdown(n):
+    if n == 0:
+        print("go")
+    else:
+        print(n)
+        countdown(n - 1)
+        print(n)
+
+countdown(3)
+```
+
+`countdown(3)` prints 3 and then calls `countdown(2)`. Decide what the whole program prints before you read on.
+
+<Exercise id="puzzle-countdown" />
+
+<Reveal for="puzzle-countdown">
+
+A function that calls itself is *recursive*. Recursion is how programs walk through data that holds smaller data of its own kind, such as a folder of folders, an expression tree, or a model's weights kept as dictionaries inside dictionaries, and how many fast algorithms, such as the best ways to sort, split a big problem into smaller copies of itself. This lesson looks at how Python keeps track of the calls in progress, what makes a recursive function stop, how to trust one without following every call, and why some recursive functions are hopelessly slow until they remember their answers.
+
+</Reveal>

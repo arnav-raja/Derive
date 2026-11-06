@@ -56,9 +56,12 @@ def answer_shape(ans, kind=None):
                 f"power, and functions such as sqrt( ) for a square root. Symbols: {syms}. As you type, the box "
                 "shows how it reads your expression.")
     if t == "code":
+        files = "".join(
+            f"A read-only tab, {name}, shows a file the program can open:\n```text\n{text}```\n"
+            for name, text in (ans.get("files") or {}).items())
         return ("Edit this starter program in the editor, run it, and submit when its checks pass:\n"
-                f"```python\n{ans['starter']}```\nThe checks, as the page describes them:\n{test_docstrings(ans['tests'])}\n"
-                "A 'Show the tests' button under the editor shows the test code itself:\n"
+                f"```python\n{ans['starter']}```\n{files}The checks, as the page describes them:\n{test_docstrings(ans['tests'])}\n"
+                "A read-only tab, tests.py, shows the test code itself:\n"
                 f"```python\n{ans['tests']}```")
     if t == "breakit":
         return (f"Working program:\n```python\n{ans['code']}```\nAfter the change:\n```python\n{ans['broken']}```\n"

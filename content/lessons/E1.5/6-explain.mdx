@@ -1,0 +1,27 @@
+The test of understanding is explaining it simply to someone who was not there. Your friend worked through E1.1 to E1.4 with you, so names, loops, functions, lists and dictionaries are familiar, but they have never seen a function call itself.
+
+<Exercise id="explain-recursion" />
+
+## Where this leads
+
+Recursion comes back wherever a problem holds smaller copies of itself: in data, in algorithms and in proofs.
+
+<Foreshadow lesson="E1.10">
+
+Merge sort sorts a list by sorting each half with the same function and then merging the two sorted halves. E1.10 builds it, and finds that halving keeps the calls only about 20 deep for a million values, where `total`'s one call per value would need a million.
+
+</Foreshadow>
+
+<Foreshadow lesson="M1.9">
+
+`total` was trusted by checking its base case, and then its recursive case on the assumption that the smaller call is right. M1.9 makes that argument a tool of its own, proof by induction, which proves a statement for every whole number from 0 up in the same two steps.
+
+</Foreshadow>
+
+<Foreshadow lesson="E8.2">
+
+A language model writes one token at a time, and at each step it needs, for every earlier token, lists of numbers called its keys and values, which do not change once that token has been read. Working them out again at every step would repeat almost all the work. E8.2's KV cache keeps them instead: memoisation, at the scale of a server.
+
+</Foreshadow>
+
+<MixedCheck />

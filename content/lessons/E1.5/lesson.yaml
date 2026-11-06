@@ -1,0 +1,113 @@
+code: E1.5
+title: "Recursion"
+course: E1
+status: review
+summary: >-
+  A function prints a number, calls itself with the number one smaller, and then prints the number
+  again. What does it print, starting from 3? Functions that call themselves, the stack of calls in
+  progress, data that holds smaller data of its own kind, and how a function can remember its
+  answers.
+sittings: 2
+minutes:
+  puzzle: 10
+  recall: 10
+  explore: 50
+  derive: 35
+  build: 60
+  explain: 25
+concepts:
+  taught:
+    - id: E1.5/base-and-recursive-case
+      name: Base and recursive cases
+      summary: >-
+        A recursive function calls itself on a smaller case of its problem. A base case is answered
+        directly, and every other case calls the function on something smaller, so that every chain
+        of calls reaches a base case. To trust one, check that every call it makes is given
+        something nearer a base case, check the base case, then check that each call gives the right
+        answer whenever the smaller calls it makes do.
+      usedBy: [E1.10, M1.9, M11.3]
+    - id: E1.5/call-stack
+      name: The call stack
+      summary: >-
+        Every call in progress has names of its own, and the calls are kept as a stack: a call that
+        makes a call waits, with its names as they were, until that call returns, and then carries
+        on from where it stopped, so the latest call finishes first. Python allows about 1,000 calls
+        in progress at once and stops with RecursionError beyond that.
+      usedBy: [E1.10, E5.3]
+    - id: E1.5/recursive-structures
+      name: Recursive structures
+      summary: >-
+        A value can hold smaller values of its own kind, as a list holds lists or a dictionary holds
+        dictionaries, to any depth. A recursive function follows the value's shape, with a base case
+        for a value that holds nothing of its kind, so it handles nesting as deep as Python has room
+        for calls, about 1,000 levels, which no fixed number of loops can.
+      usedBy: [E1.10, M1.9, M11.3]
+    - id: E1.5/memoisation
+      name: Memoisation
+      summary: >-
+        A recursive function can ask for the same smaller case again and again, so that the plain
+        fib(n) makes about 1.6 times as many calls for each step up in n. Keeping each answer in a
+        dictionary the first time it is worked out, and looking it up after that, works each case
+        out once. It is safe only when the plain function is pure, so that a kept answer is the one a
+        new call would give and a call answered from the memo had nothing else to do.
+      usedBy: [L4.2, E8.2, L7.3]
+  used:
+    - E1.2/conditions
+    - E1.2/accumulator-pattern
+    - E1.3/defining-functions
+    - E1.3/scope
+    - E1.3/pure-functions
+    - E1.3/abstraction
+    - E1.4/lists
+    - E1.4/aliasing-and-mutation
+    - E1.4/dicts-and-sets
+    - E1.4/cost-of-operations
+    - M1.1/fermi-estimation
+    - M1.2/expression-trees
+links:
+  requires:
+    - lesson: E1.3
+      bridge: >-
+        E1.3 gave every call names of its own. That is what lets a function call itself: each call
+        in progress keeps its own values, so a call can wait for a smaller copy of itself and carry
+        on afterwards.
+    - lesson: E1.4
+      bridge: >-
+        E1.4's lists and dictionaries can hold lists and dictionaries, to any depth, which only a
+        function that calls itself can follow. And a dictionary is where a recursive function keeps
+        the answers it has already worked out.
+  applies:
+    - lesson: M1.1
+      bridge: >-
+        M1.1 turned a count into a time by dividing by a rate, and judged an estimate by the factor
+        it is off by. The Derive phase does the same for the calls of the plain `fib`, from one
+        measured time and the factor for each step.
+    - lesson: M1.2
+      bridge: >-
+        M1.2 worked an expression out as a tree, from the leaves up. A recursive function does the
+        same to a tree written as nested lists: each call works out its branches first, so the calls
+        at the leaves finish first.
+  contrastsWith:
+    - lesson: E1.2
+      bridge: >-
+        E1.2's loops repeat a step in place, with one set of names that change as they go.
+        Recursion hands a smaller copy of the problem to a new call with names of its own. A loop
+        suits a flat run of steps; a call that calls itself suits data nested to a depth that is not
+        known in advance.
+  foreshadows:
+    - lesson: E1.10
+      bridge: >-
+        Merge sort sorts a list by sorting its two halves, each by the same function, and merging
+        them. E1.10 builds it, and finds that halving keeps the calls only about 20 deep for a
+        million values.
+    - lesson: M1.9
+      bridge: >-
+        A recursive function was trusted by checking its base case and then each call on the
+        assumption that the smaller calls are right. M1.9 turns that argument into proof by
+        induction, which proves a statement for every whole number from 0 up in the same two steps.
+    - lesson: E8.2
+      bridge: >-
+        A language model that writes one token at a time would work out the same keys and values
+        for every earlier token at every step. E8.2's KV cache keeps them instead: memoisation, at
+        the scale of a server.
+skills: [2]

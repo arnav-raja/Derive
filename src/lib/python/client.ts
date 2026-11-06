@@ -32,6 +32,8 @@ export type BreakitResult = {
  */
 export type TraceFrame = {
   function: string;
+  /** A call of a function, as it began, such as `countdown(2)`; absent for the main program. */
+  call?: string;
   line: number;
   variables: Record<string, string>;
   refs?: Record<string, string>;
@@ -89,7 +91,7 @@ class PythonRuntime {
     worker.onmessage = (event: MessageEvent) => {
       const data = event.data as
         | { type: "status"; state: RuntimeState; detail?: string }
-        | { id: number; ok: boolean; result?: unknown; error?: string };
+        | { id: number; ok: boolean; result?: unknown; error?: string; fatal?: boolean };
       if ("type" in data && data.type === "status") {
         this.setStatus({ state: data.state, detail: data.detail });
         return;
@@ -100,7 +102,11 @@ class PythonRuntime {
       this.pending.delete(data.id);
       window.clearTimeout(entry.timer);
       if (data.ok) entry.resolve(data.result);
-      else entry.reject(new Error(data.error ?? "Python failed."));
+      else {
+        entry.reject(new Error(data.error ?? "Python failed."));
+        // Pyodide can run nothing after a fatal error, so the next request starts a new worker.
+        if (data.fatal) this.reset(new Error("Python stopped unexpectedly."));
+      }
     };
     worker.onerror = (event) => {
       this.setStatus({ state: "error", detail: event.message });

@@ -28,6 +28,7 @@ export const MDX_COMPONENT_NAMES = [
   "Staircase",
   "PartialSums",
   "FloatLine",
+  "TextBytes",
 ] as const;
 
 export type MdxComponentName = (typeof MDX_COMPONENT_NAMES)[number];

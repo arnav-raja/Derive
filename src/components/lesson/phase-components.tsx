@@ -4,7 +4,7 @@ import type { MDXComponents } from "mdx/types";
 import type { ComponentProps, ReactNode } from "react";
 
 import { ExerciseCard } from "@/components/exercise/exercise-card";
-import { ExpressionTree, FloatLine, FunctionPlot, MappingDiagram, PartialSums, ProgramTrace, ScaleLine, Staircase } from "@/components/figures";
+import { ExpressionTree, FloatLine, FunctionPlot, MappingDiagram, PartialSums, ProgramTrace, ScaleLine, Staircase, TextBytes } from "@/components/figures";
 import { HintIcon, LockIcon } from "@/components/ui/icons";
 import { loadLesson, type LoadedLesson } from "@/lib/content/lesson";
 import { exerciseView, variantView } from "@/lib/content/views";
@@ -148,6 +148,20 @@ export function phaseComponents(ctx: PhaseContext): MDXComponents {
     );
   }
 
+  /** A text-and-bytes figure whose typing waits for an exercise, so a typed text cannot answer it. */
+  function TextBytesSlot({ typingAfter, ...props }: ComponentProps<typeof TextBytes> & { typingAfter?: string }) {
+    if (typingAfter && !lesson.byId.has(typingAfter)) {
+      return <Problem>a text-and-bytes figure waits for {typingAfter}, which does not exist.</Problem>;
+    }
+    return (
+      <TextBytes
+        {...props}
+        typingLocked={typingAfter ? !states.get(typingAfter)?.done : false}
+        lockedNote={typingAfter ? opensNote(typingAfter, "Typing a text of your own") : undefined}
+      />
+    );
+  }
+
   function MixedCheck() {
     if (phase !== "explain") return <Problem>the mixed check belongs in the Explain phase.</Problem>;
     const items = ctx.check?.items ?? [];
@@ -217,5 +231,6 @@ export function phaseComponents(ctx: PhaseContext): MDXComponents {
     Staircase: StaircaseSlot,
     PartialSums: PartialSumsSlot,
     FloatLine: FloatLineSlot,
+    TextBytes: TextBytesSlot,
   };
 }

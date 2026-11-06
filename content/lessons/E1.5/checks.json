@@ -1,0 +1,172 @@
+{
+  "version": 1,
+  "expressions": {
+    "derive-depth": {
+      "source": "155a9d81f7a2c47d",
+      "points": [
+        {
+          "n": "6"
+        },
+        {
+          "n": "3"
+        },
+        {
+          "n": "9"
+        },
+        {
+          "n": "7"
+        },
+        {
+          "n": "8"
+        },
+        {
+          "n": "4"
+        }
+      ],
+      "values": [
+        "7.0000000000000000000",
+        "4.0000000000000000000",
+        "10.000000000000000000",
+        "8.0000000000000000000",
+        "9.0000000000000000000",
+        "5.0000000000000000000"
+      ]
+    },
+    "derive-fib-recurrence": {
+      "source": "795d14c7e1d3f82b",
+      "points": [
+        {
+          "a": "5",
+          "b": "6"
+        },
+        {
+          "a": "1",
+          "b": "8"
+        },
+        {
+          "a": "2",
+          "b": "1"
+        },
+        {
+          "a": "2",
+          "b": "8"
+        },
+        {
+          "a": "1",
+          "b": "9"
+        },
+        {
+          "a": "7",
+          "b": "4"
+        }
+      ],
+      "values": [
+        "12.000000000000000000",
+        "10.000000000000000000",
+        "4.0000000000000000000",
+        "11.000000000000000000",
+        "11.000000000000000000",
+        "12.000000000000000000"
+      ]
+    },
+    "derive-memo-calls": {
+      "source": "42e537efc166ab51",
+      "points": [
+        {
+          "n": "7"
+        },
+        {
+          "n": "5"
+        },
+        {
+          "n": "4"
+        },
+        {
+          "n": "9"
+        },
+        {
+          "n": "8"
+        },
+        {
+          "n": "6"
+        }
+      ],
+      "values": [
+        "13.000000000000000000",
+        "9.0000000000000000000",
+        "7.0000000000000000000",
+        "17.000000000000000000",
+        "15.000000000000000000",
+        "11.000000000000000000"
+      ]
+    }
+  },
+  "runs": {
+    "build-count-params": {
+      "tests": [
+        {
+          "name": "test_model",
+          "description": "The script's model holds 13 numbers.",
+          "passed": false,
+          "message": "count_params(model) is 3, but the model holds 13 numbers: 6 in embed, 4 + 2 in layer and 1 in scale."
+        },
+        {
+          "name": "test_number",
+          "description": "A number on its own counts as one.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_flat",
+          "description": "A list or a dict counts the numbers it holds.",
+          "passed": false,
+          "message": "count_params({'w': [0.5, -0.5], 'b': 0.25}) is 2, not 3. A dict's keys are names, and its numbers are in its values."
+        },
+        {
+          "name": "test_empty",
+          "description": "Empty lists and dicts hold no numbers, at any depth.",
+          "passed": false,
+          "message": "count_params({'a': [], 'b': {'c': []}}) is 2, not 0: it holds no numbers."
+        },
+        {
+          "name": "test_mixed",
+          "description": "Lists inside dicts, and dicts inside lists.",
+          "passed": false,
+          "message": "count_params([{'w': [[1.0, 2.0], [3.0]], 'b': [0.5]}, [{'g': 1.0}, 2.0], {}]) is 4, not 6."
+        },
+        {
+          "name": "test_deep",
+          "description": "Nesting 200 levels deep, which loops inside loops could follow only with 200 of them.",
+          "passed": false,
+          "message": "count_params of a list and dict nesting 200 levels deep is 1, not 101: the 1.0 at the bottom and a 0.5 at every other level."
+        },
+        {
+          "name": "test_unchanged",
+          "description": "count_params leaves what it is given as it was.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": "3\n"
+    },
+    "build-long-list": {
+      "tests": [],
+      "error": {
+        "type": "RecursionError",
+        "message": "maximum recursion depth exceeded",
+        "line": 6
+      },
+      "output": ""
+    },
+    "build-memo-splits": {
+      "tests": [],
+      "error": {
+        "type": "StepLimit",
+        "message": "The code ran for too long and was stopped. Is there a loop that never ends, or code that runs a very large number of times?",
+        "line": 2
+      },
+      "output": "7\n"
+    }
+  }
+}

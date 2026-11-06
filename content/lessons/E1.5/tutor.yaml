@@ -1,0 +1,276 @@
+misconceptions:
+  - id: shared-n
+    belief: All the calls of a recursive function share one `n`.
+    why: >-
+      Each call has names of its own, as E1.3 showed, so `countdown(2)` has an `n` of 2 while
+      `countdown(3)`, waiting for it, keeps its own `n` of 3.
+    cue: The learner chooses `shared-n` in the puzzle.
+  - id: first-call-finishes-first
+    belief: The first call finishes first, so the work after a recursive call happens in the order the calls began.
+    why: >-
+      A call that makes a call waits for it, so the latest call finishes first. Work after the call
+      happens as the calls come off the stack, the latest call first.
+    cue: The learner chooses `same-order` in the puzzle, or `down` in explore-print-after.
+  - id: base-ends-everything
+    belief: Reaching the base case ends the whole recursion.
+    why: >-
+      A base case ends only its own call. Each call below it is waiting, and carries on from where it
+      stopped once that call returns.
+    cue: The learner chooses `stops-at-go` in the puzzle, or `deepest` in explore-print-after.
+  - id: recursion-runs-forever
+    belief: A recursion with no base case runs for ever, like a loop that never ends.
+    why: >-
+      Every call in progress is kept, with its names, until it returns, and Python allows about
+      1,000 calls in progress at once, so it stops the program with `RecursionError`.
+    cue: The learner chooses `forever` in explore-no-base.
+  - id: base-case-enough
+    belief: A recursive function that has a base case always stops.
+    why: >-
+      Every recursive case must also take a step towards a base case. Counting down by 2 from an odd
+      number skips 0, and the slice of an empty list is the empty list again.
+    cue: The learner chooses `go` in the first review variant of explore-no-base, or `same` in build-break-base.
+  - id: slice-past-end-error
+    belief: Slicing past the end of a list, as in `[][1:]`, is an error.
+    why: >-
+      A slice takes whatever slots its range covers, so a slice past the end is the empty list. Only
+      an index past the end, such as `[][0]`, is an error.
+    cue: The learner says that `[][1:]` is an error.
+  - id: index-reached
+    belief: For the empty list, Python reaches `xs[0]` on the last line and stops with `IndexError`.
+    why: >-
+      Line 4's call comes before the last line, and for the empty list it makes the same call again
+      and never returns, so no call ever reaches `xs[0]`.
+    cue: The learner chooses `index-error` in build-break-base.
+  - id: loop-gives-values
+    belief: A `for` loop over a dict visits its values.
+    why: >-
+      It visits the keys, as E1.4 showed, and a value is reached as `d[k]`.
+    cue: In build-count-params, `count_params(model)` gives 3.
+  - id: trust-needs-tracing
+    belief: To be sure that a recursive function is right, every call has to be followed.
+    why: >-
+      Checking the base case, and then the recursive case on the assumption that the smaller call is
+      right, covers every input, one size at a time, which following calls never can.
+    cue: The learner tries to follow all the calls in explore-total-trust, or asks how to check `total` on a long list.
+  - id: right-means-runs
+    belief: A recursive function that is right works on every input.
+    why: >-
+      Being right is about what the function works out, and room is a separate question. `total` is
+      right for every list, but it needs a call in progress for each number, and Python allows about
+      1,000.
+    cue: In build-long-list, the learner looks for a mistake in what `total` adds up.
+  - id: memo-in-function
+    belief: A dict made inside a function keeps what it holds from one call to the next.
+    why: >-
+      A name assigned in a function is local to each call, so `memo = {}` in the body makes a new,
+      empty dict at every call, and no call ever sees what another kept.
+    cue: build-memo-splits with `memo = {}` in the body of `splits`, and the script stopped for running too long.
+  - id: memo-always-safe
+    belief: A memo can speed up any function without changing its answers.
+    why: >-
+      A kept answer is right only if a new call with the same arguments would give it, and a call
+      answered from the memo skips the body, so it must have had nothing else to do. Both hold for a
+      pure function. A function that reads a name that changes, reads input, or asks a model that is
+      retrained can give a different answer later, and one that prints would print only once.
+    cue: The learner chooses `b` or `c` in explore-memo-pure, or `same-text` in its second review variant.
+  - id: calls-add-up
+    belief: Each step up in $n$ adds a few calls to the plain `fib`.
+    why: >-
+      Each call makes two more, so the counts multiply, by about 1.6 for each step, and so does the
+      time: 25 steps multiply it by more than $10^5$.
+    cue: An answer of a few seconds or less in derive-estimate.
+
+exercises:
+  derive-total-proof:
+    rungs:
+      - What does each line claim, in your own words, and what in `total` or in Python makes it true?
+      - "Explore: three checks are enough: every call is given something nearer a base case, the base case is right, and the recursive case is right on the assumption that the smaller call it makes is right. E1.3: each call has names of its own."
+      - Take `xs = [7]`. Which lines does the proof need for this list, and which shorter list does it lean on?
+      - >-
+        If the line about the empty list cites Return and the line about `xs[1:]` cites Slices,
+        those are right. If the line about `rest` cites Return, ask whether anything has been worked
+        out on that line, or whether it rests on something else. If the line about `xs` after the
+        call cites Slices, ask what could have changed which list `xs` refers to, and why nothing
+        did. If a line cites Room for calls, ask whether that line is about what the call works out
+        or about whether Python can run it. If the last line's rule is wrong, ask what that line adds
+        to all the lines above it.
+      - >-
+        For `steps(n)`, which returns 0 when `n == 0` and `1 + steps(n - 1)` otherwise, the claim is
+        that `steps(n)` is `n` for every whole number from 0 up. For 0, the call returns 0 at once.
+        For a larger `n`, the call `steps(n - 1)` is given a smaller number, so it may be taken to
+        return `n - 1`; that call cannot change this call's `n`; so this call returns `1 + (n - 1)`,
+        which is `n`. True for 0, and passing from each number to the next, it holds for every whole
+        number from 0 up.
+    notes: >-
+      Return for the line about `rest` mistakes the assumption for a calculation. Room for calls
+      anywhere confuses whether Python can run the calls with what they work out. Slices for the line
+      about `xs` after the call misses that the point there is that the call's names are its own.
+  derive-depth:
+    rungs:
+      - When the deepest call of `total` begins, which calls are waiting, and how long is the list each of them was given?
+      - "Explore: a call that makes a call waits until that call returns, so the calls in progress pile up like plates."
+      - Take `total([4, 5, 6])`. Write down every call in progress at the moment the call for the empty list begins.
+      - >-
+        If your expression counts one call for each length the lists take, from $n$ down, that part
+        is right: then check which length is the shortest, and whether its call is in progress at the
+        deepest point. If it counts some calls twice, count only the calls in progress at one moment.
+      - >-
+        For `half(n)`, which returns when `n <= 0` and otherwise calls `half(n - 2)`: from
+        `half(10)` the calls are for 10, 8, 6, 4, 2 and 0, six in progress at the deepest point,
+        which is $\frac{n}{2} + 1$ for an even $n$.
+    notes: >-
+      $n$ leaves out the call for the empty list. $n - 1$ counts only the calls whose lists hold at
+      least two numbers. $2n$ or $2n + 1$ counts each call twice, once going down and once coming
+      back.
+  derive-fib-recurrence:
+    rungs:
+      - Which calls does `fib(n)` make itself, and which calls do those make?
+      - "The Derive phase: $C(n)$ counts every call that `fib(n)` makes, the first call included."
+      - Check $n = 2$. `fib(2)` calls `fib(1)` and `fib(0)`. How many calls is that, with the first? What are $a$ and $b$ here?
+      - >-
+        If your expression has a term for each of the two calls, $a$ for `fib(n - 1)` and $b$ for
+        `fib(n - 2)`, that part is right: then check that the call `fib(n)` itself is counted, and
+        counted once. If it uses $a$ twice or $b$ twice, look again at which count belongs to which
+        call. If it multiplies, ask whether the calls inside `fib(n - 2)` happen once for each call
+        inside `fib(n - 1)`, or once in all.
+      - >-
+        For `tri(n)`, which calls `tri(n - 1)` three times when $n \ge 1$: each of the three calls
+        makes $T(n - 1)$ calls, its own included, and the first call is one more, so
+        $T(n) = 3T(n - 1) + 1$.
+    notes: >-
+      $a + b$ leaves out the first call. $a + b + 2$ counts the two calls twice, once on their own and
+      once inside $a$ and $b$. $2a + 1$ treats both calls as `fib(n - 1)`. $ab$ multiplies where the
+      counts add.
+  derive-fib-double:
+    rungs:
+      - What does each line change in the line above it, in your own words?
+      - "The previous step: $C(n) = C(n - 1) + C(n - 2) + 1$, with $C(0) = C(1) = 1$."
+      - Work out $C(0)$ to $C(4)$, which are 1, 1, 3, 5 and 9. Is each at least the one before it? Is $C(4)$ more than $2C(2)$?
+      - >-
+        If the line $C(n) \ge C(n - 2) + C(n - 2) + 1$ cites the rule about a smaller term, that part
+        is right. Then, for any other line whose rule is wrong, say in your own words what it adds to
+        the line above it, and look for the rule that allows exactly that and nothing more.
+      - >-
+        For counts with $E(n) = E(n - 1) + E(n - 3) + 1$ and $E(0) = E(1) = E(2) = 1$: each count
+        from $E(3)$ on is the one before plus more, so $E(n - 1) \ge E(n - 3)$; putting the smaller
+        term in its place gives $E(n) \ge 2E(n - 3) + 1$, which is more than $2E(n - 3)$; taking that
+        step again and again gives $E(3k) > 2^k E(0) = 2^k$, so $E(30) > 2^{10} = 1{,}024$.
+    notes: >-
+      The doubling sum is the decoy: the bound comes from repeated doubling, not from adding powers of
+      two. Collect for the line with two $C(n - 2)$ terms misses that $C(n - 1)$ was replaced there.
+      Never smaller for the last line confuses working out $2^{20}$ with comparing counts.
+  derive-estimate:
+    rungs:
+      - How many steps up in $n$ is it from 25 to 50, and what does each step do to the time?
+      - "Explore: each step up in $n$ multiplies the calls by about 1.6. M1.1 turned a count into a time with powers of ten."
+      - Try five steps first. About how many times longer does `fib(30)` take than `fib(25)`?
+      - >-
+        If your factor for the 25 steps comes from multiplying by 1.6 once for each step, that part is
+        right: then check the multiplication by a quarter of a second, and the change from seconds to
+        hours. If it comes from adding, or from multiplying 1.6 by 25, look again at what each step
+        does to the time.
+      - >-
+        A job that takes 2 seconds and grows by about 1.5 times for each step takes, ten steps later,
+        about $2 \times 1.5^{10}$ seconds. $1.5^{5}$ is about 7.6, and $7.6^2$ is about 58, so that
+        is about 116 seconds, a little under 2 minutes.
+    notes: >-
+      About 32,000 to 41,000 is the time in seconds, not hours. About 0.4 uses the proof's lower
+      bound, doubling for every two steps, which is far from tight. A few seconds or less means the
+      factor was multiplied by 25 or added, not raised to the 25th power.
+  derive-memo-calls:
+    rungs:
+      - Which calls are the first call for their $n$, and what happens at every other call?
+      - "Explore counted 11 calls for `fib(6)` with the memo empty."
+      - Count the calls for `fib(3)` and for `fib(4)` by hand, with the memo empty each time.
+      - >-
+        If your expression counts one first call for each case from `fib(n)` down to `fib(1)`, that
+        part is right: then count the second calls, one for each call that makes one. For $n = 6$: if
+        it gives 12, look at `fib(1)`: does it make a second call? If it gives 6 or 7, look at what
+        each call from `fib(2)` up does after its first call returns. If it gives 13, check which
+        calls ever reach `fib(0)`.
+      - >-
+        For a memoised `h(n)` that returns 1 when $n < 3$ and `h(n - 1) + h(n - 3)` otherwise, with
+        the memo empty: the first calls run from `h(n)` down to `h(2)`, a base case, which is $n - 1$
+        calls; on the way back, each call from `h(n)` down to `h(3)` makes its second call, which is
+        a base case or is found in the memo, $n - 2$ more; so $2n - 3$ in all, and for $n = 3$ that
+        is `h(3)`, `h(2)` and `h(0)`.
+    notes: >-
+      $2n$ gives `fib(1)` a second call. $n$ counts only the first calls. $n + 1$ counts the first
+      calls and `fib(0)` but no other second calls. $2n + 1$ counts the calls for 1 and 0 both as
+      first calls on the way down.
+  build-count-params:
+    rungs:
+      - What should `count_params([1.0, [2.0, 3.0]])` give? What does a list count, in terms of what its items count?
+      - "Explore: `count(x)` returned 1 for a number, and for a list added up `count` of each item. E1.4: `for k in d:` visits a dict's keys, and `d[k]` gives the value under a key."
+      - >-
+        Leave dicts out at first, and make it work for `[1.0, [2.0, 3.0]]`. Then work out by hand
+        what `{"w": [1.0, 2.0], "b": 0.5}` should give, and which values a loop over it must reach.
+      - >-
+        If test_number passes, your base case for a number is right. Then: if the script prints 3
+        for the model, look at what a loop over a dict visits; if it prints 1, look at what happens
+        when `params` is a dict; if it prints 4, look at what the function gives back after its loop
+        over a list; if the counts are too large, look at where each count starts; if
+        test_unchanged fails, look for anything that takes items out of a list. If the script itself
+        stops with `TypeError`, look at what the function gives back for a number.
+      - >-
+        To find how deeply a list is nested: `def depth(x):`, with `if not isinstance(x, list):` and
+        `return 0` as the base case, then `deepest = 0`, a loop that keeps the largest `depth(item)`
+        seen, and finally `return 1 + deepest`. For `[1, [2, [3]]]`: `depth([3])` is 1 + 0 = 1,
+        `depth([2, [3]])` is 1 + 1 = 2, and the whole list gives 1 + 2 = 3.
+    notes: >-
+      3 for the model means the keys were counted. 1 for the model means dicts are not handled. 4
+      means a list's count is not returned. `TypeError` with `NoneType` means no base case for a
+      number. Counts too large by the number of lists and dicts mean each count starts at 1. A
+      changed input means `pop`.
+  build-long-list:
+    rungs:
+      - How many calls of `total` are in progress at once for 5,000 losses, and how many does Python allow?
+      - "The Derive phase: `total` on $n$ numbers needs $n + 1$ calls in progress. E1.2's accumulator added numbers up in one name, in a loop."
+      - Add up `[4, 5, 6]` by hand with a loop that keeps a running total in one name, writing the name's value after each pass.
+      - >-
+        If the script itself stops with `RecursionError`, follow a list of one number, and then one
+        of 5,000, through your version: is every call given a shorter list, and how many calls are in
+        progress at once? If test_short passes, your function adds correctly; then, if
+        test_unchanged fails, look for anything that takes numbers out of the list. If test_short
+        fails, check which numbers your version adds, the first and the last included.
+      - >-
+        To find the largest number in a long list without running out of room: `biggest = xs[0]`,
+        then `for x in xs:` with `if x > biggest: biggest = x` in its block, and finally
+        `return biggest`. For `[3, 8, 5]`, `biggest` starts at 3, stays 3, becomes 8 and stays 8. A
+        loop keeps one set of names however long the list is.
+    notes: >-
+      `RecursionError` in the script means the function still keeps a call in progress for every
+      number, or for every two. `RecursionError` can also mean a halving that splits a list of one
+      number into the empty list and itself. Raising the limit with `sys.setrecursionlimit` only
+      moves the wall, and test_room says so. A changed list means `pop`. A total short by the first
+      number means a loop that starts at index 1.
+  build-memo-splits:
+    rungs:
+      - Which smaller cases does `splits(5)` ask for, and how many times is `splits(2)` asked for in all?
+      - "Explore: the memoised `fib` kept each answer in a dict made once, outside the function, and looked an answer up before working it out."
+      - Work out `splits(5)` by hand, writing each answer down the first time you find it, and use what you wrote whenever the same case comes back.
+      - >-
+        If the script is stopped for running too long, or test_calls fails, the counting itself may
+        well be right, and the trouble is in how answers are kept: look at where the dict is made, at
+        whether each answer is put into it once worked out, and at whether it is looked in before any
+        work. If the script stops with `RecursionError`, look at the base cases; if it stops with
+        `IndexError`, look at the last value your loop gives `k`.
+      - >-
+        For `ways(n)`, the number of ways to climb $n$ stairs one or two at a time: a dict made once,
+        `seen = {}`, outside the function; `if n in seen: return seen[n]` before any work; and
+        `seen[n] = answer` just before `return answer`. Then each number of stairs is worked out
+        once. `ways(4)`: `ways(3)` is worked out once, from `ways(2)` and `ways(1)`, and when
+        `ways(2)` is asked for again, `seen` answers at once, so `ways(4)` is 3 + 2 = 5.
+    notes: >-
+      A script stopped for running too long means the answers are not kept between calls: a memo made
+      inside the function, or one that is never filled, or one that is looked in only after the
+      work. `RecursionError` means a missing base case for a negative length. `IndexError` means a
+      loop that stops one short. A program that uses `functools.cache` or `functools.lru_cache` is
+      right.
+
+novice:
+  - How can a function call itself before Python has finished reading it?
+  - If every call has names of its own, where are they all kept?
+  - When should I write a loop, and when a function that calls itself?
+  - Why does Python stop at about 1,000 calls, and can the limit be raised?
+  - Could Python remember a function's answers for me, without my writing a memo?

@@ -1,0 +1,41 @@
+The Derive phase proved `total` right and counted the calls of `fib`. Now write a recursive function of your own, change a base case and predict what happens, and mend two functions: one that runs out of room for its calls, and one too slow ever to finish. The tests call your functions with many different arguments, some of them nested deep or very long.
+
+## Counting a model's parameters
+
+<Exercise id="build-count-params" />
+
+<Reveal for="build-count-params">
+
+Libraries count a real model's parameters the same way. In JAX, a model's parameters are usually kept in nested dicts and lists, which JAX calls a pytree, and its tools walk a pytree by calling themselves on what each container holds. PyTorch's modules hold modules in turn, and `parameters()` gathers the parameters, blocks of numbers, of every module inside, through a function that calls itself on each module's modules.
+
+## A different base case
+
+<Exercise id="build-break-base" />
+
+</Reveal>
+
+<Reveal for="build-break-base">
+
+A base case has to be reachable from every argument the function allows, not just from the ones tried first.
+
+## A long training log
+
+<Exercise id="build-long-list" />
+
+</Reveal>
+
+<Reveal for="build-long-list">
+
+A recursive `total` can also be kept, and made shallow. Split the list in halves: with `h = len(xs) // 2`, the sum is `total(xs[:h]) + total(xs[h:])`, with base cases for a list of no numbers and of one. Each call's list is half as long as its caller's, so a list of 512 numbers takes $1 + 2 + 4 + \dots + 512 = 1{,}023$ calls, the sum from Recall, but never more than 10 are in progress at once. E1.10's merge sort splits its list in the same way.
+
+## Ways to cut a word
+
+<Exercise id="build-memo-splits" />
+
+</Reveal>
+
+<Reveal for="build-memo-splits">
+
+With the memo, `splits(60)` takes 181 calls from an empty memo, where the plain version would take more than $10^{16}$, some 500 years at a million calls a second. A tokeniser that weighs every way of cutting a word into tokens, such as SentencePiece's unigram model, does the same: it works out the best cut of the word's first $k$ characters once for each $k$, keeps it in a table, and builds each longer cut from shorter ones in the table.
+
+</Reveal>

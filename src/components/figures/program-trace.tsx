@@ -9,7 +9,7 @@ import { python, type TraceFrame, type TraceResult, type TraceStep } from "@/lib
 
 import { CodeText, FigureFrame, PredictPanel, RangeControl, type PredictPhase } from "./shell";
 import { normalise, sameAnswer } from "./trace-answer";
-import { changesBetween, finishedStep, frameHeading, frameMarks, frameStatus, MAIN, returnText, runningIn } from "./trace-frames";
+import { callName, changesBetween, finishedStep, frameHeading, frameMarks, frameStatus, MAIN, returnText, runningIn } from "./trace-frames";
 
 /*
  * A program run one line at a time by real Python in the browser. Each step
@@ -35,7 +35,7 @@ function lookup(step: TraceStep | undefined, name: string): { value: string; own
   const top = step.stack.length - 1;
   for (const i of top > 0 ? [top, 0] : [0]) {
     const v = step.stack[i]!.variables[name];
-    if (v !== undefined) return { value: v, owner: i === 0 ? MAIN : step.stack[i]!.function };
+    if (v !== undefined) return { value: v, owner: i === 0 ? MAIN : callName(step.stack[i]!) };
   }
   return undefined;
 }
@@ -292,7 +292,7 @@ export function ProgramTrace({
                               <CodeText text={frameHeading(f, i)} />
                             </span>
                             <span>
-                              <CodeText text={top ? frameStatus(current) : `waiting for \`${frames[i + 1]!.function}\` to return`} />
+                              <CodeText text={top ? frameStatus(current) : `waiting for \`${callName(frames[i + 1]!)}\` to return`} />
                             </span>
                           </p>
                           {variablesTable(f, frameMarks(previous, current, i))}

@@ -236,13 +236,18 @@ export function CodeWorkbench({
   onCollapse?: () => void;
   onReset?: () => void;
 }) {
-  const [file, setFile] = useState<"main" | "tests">("main");
+  const [file, setFile] = useState("main");
   const mod = useModKey();
   const hasTests = view.tests.trim().length > 0;
-  const files: { id: "main" | "tests"; name: string; icon: ReactNode }[] = [
+  // Your code, then the tests and each file the program can open, which are read-only.
+  const files: { id: string; name: string; icon: ReactNode; text?: string }[] = [
     { id: "main", name: "solution.py", icon: <FileIcon className="size-3.5" /> },
   ];
-  if (hasTests) files.push({ id: "tests", name: "tests.py", icon: <FlaskIcon className="size-3.5" /> });
+  if (hasTests) files.push({ id: "tests", name: "tests.py", icon: <FlaskIcon className="size-3.5" />, text: view.tests });
+  for (const [name, text] of Object.entries(view.files ?? {})) {
+    files.push({ id: `file:${name}`, name, icon: <FileIcon className="size-3.5" />, text });
+  }
+  const shown = files.find((f) => f.id === file);
   return (
     <div
       className={clsx(
@@ -251,7 +256,7 @@ export function CodeWorkbench({
       )}
     >
       <div className="flex h-10 shrink-0 items-center justify-between gap-2 border-b border-code-rule bg-code-chrome pr-1.5 pl-1">
-        <div role="tablist" aria-label="Files" className="flex h-full min-w-0 items-end">
+        <div role="tablist" aria-label="Files" className="flex h-full min-w-0 items-end overflow-x-auto">
           {files.map((f) => (
             <button
               key={f.id}
@@ -260,7 +265,7 @@ export function CodeWorkbench({
               aria-selected={file === f.id}
               onClick={() => setFile(f.id)}
               className={clsx(
-                "flex h-9 items-center gap-1.5 rounded-t-md border-x border-t px-3 font-mono text-xs transition-colors",
+                "flex h-9 shrink-0 items-center gap-1.5 rounded-t-md border-x border-t px-3 font-mono text-xs transition-colors",
                 file === f.id
                   ? "border-code-rule bg-code-bg text-code-ink"
                   : "border-transparent text-code-muted hover:text-code-ink",
@@ -268,7 +273,7 @@ export function CodeWorkbench({
             >
               {f.icon}
               {f.name}
-              {f.id === "tests" ? <span className="hidden font-sans text-code-muted sm:inline">read-only</span> : null}
+              {f.id !== "main" ? <span className="hidden font-sans text-code-muted sm:inline">read-only</span> : null}
             </button>
           ))}
         </div>
@@ -310,7 +315,7 @@ export function CodeWorkbench({
               fill ? "h-full" : "max-h-96 min-h-52",
             )}
           >
-            {view.tests.trimEnd()}
+            {(shown?.text ?? "").trimEnd()}
           </pre>
         )}
       </div>

@@ -67,13 +67,23 @@ export async function placementState(store: Store, courseCode: string): Promise<
   for (const a of own) if (a.cardId && !byCard.has(a.cardId)) byCard.set(a.cardId, a);
 
   const results = new Map<string, "passed" | "failed">();
+  // Lessons that require a failed lesson, directly or through others: they are never asked.
+  const blocked = new Set<string>();
   let next: PlacementQuestion | null = null;
   let remaining = 0;
   for (const lesson of lessons) {
     const reqs = lesson.file.links.requires.map((r) => r.lesson).filter((c) => codes.has(c));
-    // A lesson is tested only if everything it requires in this course passed.
-    if (reqs.some((r) => results.get(r) !== "passed")) continue;
+    if (reqs.some((r) => results.get(r) === "failed" || blocked.has(r))) {
+      blocked.add(lesson.code);
+      continue;
+    }
     const qs = placementQuestions(lesson);
+    // A lesson is tested only once everything it requires in this course has passed. Until then
+    // its questions still count among those that may come, if every answer is right.
+    if (reqs.some((r) => results.get(r) !== "passed")) {
+      remaining += qs.filter((q) => !byCard.has(q.cardId)).length;
+      continue;
+    }
     const answers = qs.map((q) => byCard.get(q.cardId));
     if (answers.some((a) => a && !passedAttempt(a))) {
       results.set(lesson.code, "failed");

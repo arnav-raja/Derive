@@ -174,6 +174,7 @@ export function PredictPanel({
   onReveal,
   onReset,
   canLock,
+  lockHint,
   input,
   verdict,
 }: {
@@ -183,6 +184,8 @@ export function PredictPanel({
   onReveal: () => void;
   onReset: () => void;
   canLock: boolean;
+  /** Says what to do while the lock button is unavailable, so a disabled button is never a puzzle. */
+  lockHint?: string;
   input?: ReactNode;
   verdict?: ReactNode;
 }) {
@@ -204,6 +207,7 @@ export function PredictPanel({
             Lock in my prediction
           </Button>
         ) : null}
+        {phase === "asking" && !canLock && lockHint ? <p className="text-sm text-ink-muted">{lockHint}</p> : null}
         {phase === "locked" ? (
           <Button size="sm" onClick={onReveal}>
             Show what really happens

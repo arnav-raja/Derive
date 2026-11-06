@@ -1,0 +1,1346 @@
+exercises:
+  # Puzzle ---------------------------------------------------------------------
+  - id: puzzle-countdown
+    phase: puzzle
+    kind: predict
+    concept: E1.5/call-stack
+    title: A countdown that calls itself
+    prompt: >-
+      What does the whole program print? Each `print` starts a new line; the options show the lines
+      in order, with spaces between them.
+    answer:
+      type: choice
+      options:
+        - { id: stops-at-go, label: '`3 2 1 go`' }
+        - { id: shared-n, label: '`3 2 1 go 0 0 0`' }
+        - { id: right, label: '`3 2 1 go 1 2 3`' }
+        - { id: same-order, label: '`3 2 1 go 3 2 1`' }
+      correct: [right]
+    explanation: >-
+      Each call has an `n` of its own. `countdown(3)` prints 3 and waits for `countdown(2)`, which
+      prints 2 and waits for `countdown(1)`, which prints 1 and waits for `countdown(0)`. That call
+      prints `go` and returns. Then `countdown(1)` carries on from the line after its call and prints
+      its own `n`, 1, and returns; then `countdown(2)` prints 2, and last of all `countdown(3)` prints
+      3.
+
+  # Recall ---------------------------------------------------------------------
+  - id: recall-nested-call
+    phase: recall
+    kind: recall
+    concept: E1.3/scope
+    prompt: |
+      What does this program print?
+
+      ```python
+      def double(n):
+          return 2 * n
+
+      def quad(n):
+          m = double(n)
+          return double(m)
+
+      print(quad(3))
+      ```
+    answer: { type: number, value: 12, tolerance: { abs: 0 } }
+    explanation: >-
+      `quad(3)` calls `double(3)`, which returns 6, so `m` refers to 6, and then `double(6)` returns
+      12. Each call of `double` has an `n` of its own, apart from `quad`'s.
+
+  - id: recall-print-call
+    phase: recall
+    kind: recall
+    concept: E1.3/defining-functions
+    prompt: |
+      What does this program print?
+
+      ```python
+      def add(a, b):
+          total = a + b
+
+      print(add(2, 3))
+      ```
+    answer:
+      type: choice
+      options:
+        - { id: five, label: '`5`' }
+        - { id: none, label: '`None`' }
+        - { id: error, label: 'Nothing: Python stops with an error' }
+      correct: [none]
+    explanation: >-
+      `add` makes its own `total` refer to 5 but never returns it, so the call gives back `None`,
+      and `print` shows `None`.
+
+  - id: recall-slice
+    phase: recall
+    kind: recall
+    concept: E1.4/lists
+    prompt: |
+      What does this program print?
+
+      ```python
+      xs = [4, 5, 6]
+      print(xs[0], xs[1:])
+      ```
+    answer:
+      type: choice
+      options:
+        - { id: right, label: '`4 [5, 6]`' }
+        - { id: one-based, label: '`5 [6]`' }
+        - { id: whole, label: '`4 [4, 5, 6]`' }
+        - { id: slot, label: '`4 5`' }
+      correct: [right]
+    explanation: >-
+      `xs[0]` is the first slot, 4, and `xs[1:]` is a new list of every slot from index 1 to the
+      end, `[5, 6]`.
+
+  - id: recall-dict-in
+    phase: recall
+    kind: recall
+    concept: E1.4/dicts-and-sets
+    prompt: |
+      What does this program print?
+
+      ```python
+      memo = {0: 0, 1: 1}
+      memo[2] = 1
+      print(2 in memo, 3 in memo, len(memo))
+      ```
+    answer:
+      type: choice
+      options:
+        - { id: values, label: '`False False 3`' }
+        - { id: two, label: '`True False 2`' }
+        - { id: right, label: '`True False 3`' }
+      correct: [right]
+    explanation: >-
+      `memo[2] = 1` adds the key 2. `in` asks about the keys, so `2 in memo` is `True` and
+      `3 in memo` is `False`, and `len` counts the three keys, 0, 1 and 2.
+
+  - id: recall-doubling
+    phase: recall
+    kind: recall
+    concept: E1.4/cost-of-operations
+    prompt: 'What is $1 + 2 + 4 + \dots + 512$, where each term is twice the one before?'
+    answer: { type: number, value: 1023, tolerance: { abs: 0 } }
+    explanation: >-
+      E1.4 showed that $1 + 2 + \dots + 2^{k-1} = 2^k - 1$. Here the last term is $512 = 2^9$, so
+      $k = 10$, and the sum is $2^{10} - 1 = 1{,}023$.
+
+  # Explore --------------------------------------------------------------------
+  - id: explore-print-after
+    phase: explore
+    kind: predict
+    concept: E1.5/call-stack
+    title: Printing after the call
+    placement: true
+    prompt: >-
+      What does the program print? The options show the printed lines in order, with spaces between
+      them.
+    answer:
+      type: choice
+      options:
+        - { id: down, label: '`3 2 1`' }
+        - { id: right, label: '`1 2 3`' }
+        - { id: zero, label: '`0 1 2 3`' }
+        - { id: deepest, label: '`1`' }
+      correct: [right]
+    explanation: >-
+      `show(3)` calls `show(2)` before it prints anything, `show(2)` calls `show(1)`, and `show(1)`
+      calls `show(0)`, which does nothing, since `0 > 0` is `False`, and returns. Then `show(1)`
+      carries on and prints 1, `show(2)` prints 2, and `show(3)` prints 3: the latest call finishes
+      first.
+    review:
+      variants:
+        - prompt: |
+            What does this print? The options show the printed lines in order.
+
+            ```python
+            def both(n):
+                if n > 0:
+                    print(n)
+                    both(n - 1)
+                    print(n)
+
+            both(2)
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: repeat, label: '`2 1 2 1`' }
+              - { id: zero, label: '`2 1 0 1 2`' }
+              - { id: reversed, label: '`1 2 2 1`' }
+              - { id: right, label: '`2 1 1 2`' }
+            correct: [right]
+          explanation: >-
+            `both(2)` prints 2 and calls `both(1)`, which prints 1, calls `both(0)`, which prints
+            nothing, and then prints its own 1 again. Only then does `both(2)` print its 2 again.
+        - prompt: |
+            During `show(3)`, at most how many calls of `show` are in progress at once?
+
+            ```python
+            def show(n):
+                if n > 0:
+                    show(n - 1)
+                    print(n)
+
+            show(3)
+            ```
+          answer: { type: number, value: 4, tolerance: { abs: 0 } }
+          explanation: >-
+            `show(3)`, `show(2)`, `show(1)` and `show(0)` are all in progress when `show(0)` runs,
+            since each of the others is waiting for the call it made.
+        - prompt: |
+            What does this print? The options show the printed lines in order.
+
+            ```python
+            def tree(n):
+                if n > 0:
+                    tree(n - 1)
+                    print(n)
+                    tree(n - 1)
+
+            tree(2)
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: first, label: '`2 1 1`' }
+              - { id: both-first, label: '`1 1 2`' }
+              - { id: right, label: '`1 2 1`' }
+              - { id: once, label: '`1 2`' }
+            correct: [right]
+          explanation: >-
+            `tree(2)` first calls `tree(1)`, which calls `tree(0)`, prints 1 and calls `tree(0)` again,
+            printing nothing more. Only once that `tree(1)` has returned does `tree(2)` print 2, and then
+            its second call of `tree(1)` prints 1 again.
+
+  - id: explore-no-base
+    phase: explore
+    kind: predict
+    concept: E1.5/base-and-recursive-case
+    title: A countdown with no base case
+    prompt: What happens when the program runs?
+    answer:
+      type: choice
+      options:
+        - { id: once, label: 'It prints 3 and stops, since nothing makes it go on' }
+        - { id: zero, label: 'It prints 3, 2, 1 and 0, and stops at 0' }
+        - { id: error, label: 'It prints 3, 2, 1, 0, $-1$ and so on for a while, and then Python stops it with an error' }
+        - { id: forever, label: 'It prints 3, 2, 1, 0, $-1$ and so on for ever, until someone stops it' }
+      correct: [error]
+    explanation: >-
+      With no base case, every call makes another, with `n` one smaller, past 0 and on into the
+      negative numbers. But every call stays in progress, waiting for the one it made, and Python
+      allows only about 1,000 at once, so it stops the program with `RecursionError`.
+    review:
+      variants:
+        - prompt: |
+            What happens when this runs?
+
+            ```python
+            def countdown(n):
+                if n == 0:
+                    print("go")
+                else:
+                    print(n)
+                    countdown(n - 2)
+
+            countdown(5)
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: error, label: 'It prints 5, 3, 1, $-1$ and so on, and then Python stops with `RecursionError`' }
+              - { id: go, label: 'It prints 5, 3, 1 and `go`' }
+              - { id: stops, label: 'It prints 5, 3 and 1, and stops' }
+            correct: [error]
+          explanation: >-
+            Counting down by 2 from 5 goes 5, 3, 1, $-1$, and never lands on 0, so the base case is
+            never reached, and the calls pile up until Python stops them.
+        - prompt: |
+            What happens when this runs?
+
+            ```python
+            def countdown(n):
+                if n <= 0:
+                    print("go")
+                else:
+                    print(n)
+                    countdown(n - 2)
+
+            countdown(5)
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: error, label: 'It prints 5, 3, 1, $-1$ and so on, and then Python stops with `RecursionError`' }
+              - { id: go, label: 'It prints 5, 3, 1 and `go`' }
+              - { id: stops, label: 'It prints 5, 3 and 1, and stops' }
+            correct: [go]
+          explanation: >-
+            `countdown(-1)` passes the test `n <= 0`, so it prints `go`. A base case that covers every
+            number at or below 0 is reached from every starting point, odd or even.
+
+  - id: explore-total-trust
+    phase: explore
+    kind: predict
+    concept: E1.5/base-and-recursive-case
+    title: A hundred numbers
+    placement: true
+    prompt: What does `print(total(list(range(1, 101))))` print?
+    answer: { type: number, value: 5050, tolerance: { abs: 0 } }
+    explanation: >-
+      `total` gives the sum of its list, so this is the sum of 1 to 100, which E1.2 proved is
+      $\frac{100 \times 101}{2} = 5{,}050$. Following the 101 calls one by one was never
+      needed.
+    review:
+      variants:
+        - prompt: |
+            What does this print?
+
+            ```python
+            def total(xs):
+                if xs == []:
+                    return 0
+                rest = total(xs[1:])
+                return xs[0] + rest
+
+            print(total([10, -3, 2]) + total([]))
+            ```
+          answer: { type: number, value: 9, tolerance: { abs: 0 } }
+          explanation: '`total([10, -3, 2])` is the sum, 9, and `total([])` is 0.'
+        - prompt: |
+            What does this print?
+
+            ```python
+            def f(xs):
+                if xs == []:
+                    return 0
+                return 1 + f(xs[1:])
+
+            print(f(list(range(50))))
+            ```
+          answer: { type: number, value: 50, tolerance: { abs: 0 } }
+          explanation: >-
+            `f([])` is 0, and if `f` counts the rest of a list correctly, one more than that is the
+            length of the whole list. So `f` gives the length, 50, without following 51 calls.
+
+  - id: explore-count-nested
+    phase: explore
+    kind: predict
+    concept: E1.5/recursive-structures
+    title: Numbers inside lists
+    placement: true
+    prompt: What does the program print?
+    answer:
+      type: choice
+      options:
+        - { id: top, label: '`3 2`' }
+        - { id: empty-one, label: '`5 2`' }
+        - { id: lists-too, label: '`8 3`' }
+        - { id: right, label: '`5 0`' }
+      correct: [right]
+    explanation: >-
+      Each number counts 1, and each list counts what its items count, at any depth:
+      $1 + (1 + 1) + ((1) + 1) = 5$. The second list holds lists but no numbers, so every count
+      inside it is 0.
+    review:
+      variants:
+        - prompt: |
+            What does this print?
+
+            ```python
+            def count(x):
+                if not isinstance(x, list):
+                    return 1
+                n = 0
+                for item in x:
+                    n = n + count(item)
+                return n
+
+            print(count([[1, 2], [3, [4, [5, 6]]]]))
+            ```
+          answer: { type: number, value: 6, tolerance: { abs: 0 } }
+          explanation: 'Six numbers, 1 to 6, at depths from two to four; `count` finds them all, whatever the depth.'
+        - prompt: |
+            Counting the first call itself, how many calls of `count` does `count([1, [2, 3]])` make?
+
+            ```python
+            def count(x):
+                if not isinstance(x, list):
+                    return 1
+                n = 0
+                for item in x:
+                    n = n + count(item)
+                return n
+            ```
+          answer: { type: number, value: 5, tolerance: { abs: 0 } }
+          explanation: >-
+            One call for the whole list, one for `1`, one for `[2, 3]`, and one each for `2` and `3`:
+            a call for every value, list or number, that the list holds at any depth, and one for the
+            list itself.
+
+  - id: explore-tree-value
+    phase: explore
+    kind: predict
+    concept: E1.5/recursive-structures
+    title: An expression tree
+    prompt: What does the program print?
+    answer: { type: number, value: 21, tolerance: { abs: 0 } }
+    explanation: >-
+      `value` works out both branches before it combines them: `["+", 1, 2]` gives 3, `["+", 3, 4]`
+      gives 7, and the operation at the top multiplies them, $3 \times 7 = 21$.
+    review:
+      variants:
+        - prompt: |
+            What does this print?
+
+            ```python
+            def value(tree):
+                if not isinstance(tree, list):
+                    return tree
+                left = value(tree[1])
+                right = value(tree[2])
+                if tree[0] == "+":
+                    return left + right
+                return left * right
+
+            print(value(["+", ["*", 2, 3], ["*", 4, 5]]))
+            ```
+          answer: { type: number, value: 26, tolerance: { abs: 0 } }
+          explanation: 'The branches give $2 \times 3 = 6$ and $4 \times 5 = 20$, and the top adds them: 26.'
+        - prompt: |
+            With the same `value`, which call returns first during `value(["*", ["+", 1, 2], 3])`?
+
+            ```python
+            def value(tree):
+                if not isinstance(tree, list):
+                    return tree
+                left = value(tree[1])
+                right = value(tree[2])
+                if tree[0] == "+":
+                    return left + right
+                return left * right
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: right, label: 'The call for `1`' }
+              - { id: branch, label: 'The call for `["+", 1, 2]`' }
+              - { id: top, label: 'The first call, for the whole tree' }
+              - { id: three, label: 'The call for `3`' }
+            correct: [right]
+          explanation: >-
+            The first call starts on its left branch, `["+", 1, 2]`, and that call starts on its own
+            left branch, `1`, a leaf, which returns at once. A leaf always returns before the calls
+            that are waiting on it.
+
+  - id: explore-fib-calls
+    phase: explore
+    kind: predict
+    concept: E1.5/memoisation
+    title: The calls of fib(5)
+    prompt: Counting the first call itself, how many calls of `fib` does `fib(5)` make?
+    answer: { type: number, value: 15, tolerance: { abs: 0 } }
+    explanation: >-
+      `fib(5)` calls `fib(4)` and `fib(3)`, `fib(4)` calls `fib(3)` and `fib(2)`, and so on down to
+      `fib(1)` and `fib(0)`. Counted one by one, that is one `fib(5)`, one `fib(4)`, two `fib(3)`,
+      three `fib(2)`, five `fib(1)` and three `fib(0)`: 15 calls.
+    review:
+      variants:
+        - prompt: |
+            Counting the first call itself, how many calls of `fib` does `fib(6)` make?
+
+            ```python
+            def fib(n):
+                if n < 2:
+                    return n
+                return fib(n - 1) + fib(n - 2)
+            ```
+          answer: { type: number, value: 25, tolerance: { abs: 0 } }
+          explanation: '`fib(6)` is one call, `fib(5)` makes 15 and `fib(4)` makes 9, so $1 + 15 + 9 = 25$.'
+        - prompt: |
+            During `fib(6)`, how many times is `fib(4)` called?
+
+            ```python
+            def fib(n):
+                if n < 2:
+                    return n
+                return fib(n - 1) + fib(n - 2)
+            ```
+          answer: { type: number, value: 2, tolerance: { abs: 0 } }
+          explanation: '`fib(6)` calls `fib(4)` itself, and so does `fib(5)`: twice.'
+
+  - id: explore-memo-calls
+    phase: explore
+    kind: predict
+    concept: E1.5/memoisation
+    title: The calls with a memo
+    placement: true
+    prompt: With `memo` empty, how many calls of the memoised `fib` does `fib(6)` make, counting the first call itself?
+    answer: { type: number, value: 11, tolerance: { abs: 0 } }
+    explanation: >-
+      `fib(6)` calls `fib(5)`, which calls `fib(4)`, and so on down to `fib(1)`: six calls, each the
+      first for its `n`. On the way back up, each call from `fib(2)` to `fib(6)` makes its second
+      call. `fib(2)`'s is `fib(0)` and `fib(3)`'s is `fib(1)`, both base cases, and from `fib(4)` up,
+      each finds its answer in the memo. That is five more calls, eleven in all.
+    review:
+      variants:
+        - prompt: |
+            Straight after `fib(6)` has run, with what it left in `memo`, how many calls does a second
+            `fib(6)` make, counting the first?
+
+            ```python
+            memo = {}
+
+            def fib(n):
+                if n < 2:
+                    return n
+                if n in memo:
+                    return memo[n]
+                answer = fib(n - 1) + fib(n - 2)
+                memo[n] = answer
+                return answer
+            ```
+          answer: { type: number, value: 1, tolerance: { abs: 0 } }
+          explanation: 'The first `fib(6)` kept its answer under 6, so the second call finds it in the memo and returns at once.'
+        - prompt: |
+            With `memo` already holding the answers for 2 to 5, how many calls does `fib(8)` make,
+            counting the first?
+
+            ```python
+            memo = {2: 1, 3: 2, 4: 3, 5: 5}
+
+            def fib(n):
+                if n < 2:
+                    return n
+                if n in memo:
+                    return memo[n]
+                answer = fib(n - 1) + fib(n - 2)
+                memo[n] = answer
+                return answer
+            ```
+          answer: { type: number, value: 7, tolerance: { abs: 0 } }
+          explanation: >-
+            `fib(8)`, `fib(7)` and `fib(6)` each have to be worked out, and the first call `fib(6)`
+            makes, `fib(5)`, is found in the memo: four calls so far. On the way back, each of the
+            three makes its second call, `fib(4)`, `fib(5)` and then `fib(6)`, and each of those is in
+            the memo by then: seven in all.
+
+  - id: explore-memo-pure
+    phase: explore
+    kind: predict
+    concept: E1.5/memoisation
+    title: Which answers can be kept
+    prompt: >-
+      A memo would keep each function's answer under its argument `n`. For which of the three
+      functions would a kept answer always be the one a new call gives? Choose every one that fits.
+    answer:
+      type: choice
+      multiple: true
+      options:
+        - { id: a, label: '`a`' }
+        - { id: b, label: '`b`' }
+        - { id: c, label: '`c`' }
+      correct: [a]
+    explanation: >-
+      `a` is the plain `fib` under another name, and its answer depends only on `n`. `b` reads
+      `rate`, which the script changes, so an answer kept before a change would be stale after it.
+      `c` reads a new line of input at every call, so the same `n` can give a different answer each
+      time.
+    review:
+      variants:
+        - prompt: |
+            `BASE` and `DECAY` are set once, at the top of a training script, and never changed. Is it
+            safe to keep `lr_at`'s answers in a memo?
+
+            ```python
+            BASE = 0.1
+            DECAY = 0.5
+
+            def lr_at(step):
+                return BASE * DECAY ** (step // 1000)
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: outside, label: 'No, since it reads names from outside the function' }
+              - { id: right, label: 'Yes, since with those names fixed its answer depends only on `step`' }
+            correct: [right]
+          explanation: >-
+            Reading a name from outside is harmless when the name never changes: every call with the
+            same `step` gives the same answer, so a kept answer is always right.
+        - prompt: |
+            `model` is retrained every hour, which changes its weights. Is it safe to keep `score`'s
+            answers in a memo for a day?
+
+            ```python
+            def score(text):
+                return model.predict(text)
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: same-text, label: 'Yes, since the same text always gets the same answer' }
+              - { id: right, label: 'No, since an answer kept before a retraining can differ from what the model gives after it' }
+            correct: [right]
+          explanation: >-
+            `score` depends on the model's weights as well as on `text`, and the weights change every
+            hour, so an answer kept in the morning may not be the one a new call would give in the
+            afternoon.
+
+  # Derive ---------------------------------------------------------------------
+  - id: derive-total-proof
+    phase: derive
+    kind: proof
+    concept: E1.5/base-and-recursive-case
+    title: Why total gives the sum
+    prompt: >-
+      Here is why `total(xs)` is the sum of the numbers in `xs`, for every list `xs` of numbers,
+      whenever Python has room for its calls. Each line follows from the lines above it. Choose the rule that justifies each line. A rule may
+      be used more than once or not at all.
+    answer:
+      type: steps
+      rules:
+        - { id: local, name: Local names, label: 'Each call has names of its own, so the calls it makes cannot change which values its names refer to.' }
+        - { id: one-length, name: One length at a time, label: 'A claim that holds for the empty list, and holds for each longer list whenever it holds for the lists shorter than it, holds for lists of every length.' }
+        - { id: room, name: Room for calls, label: 'Python allows about 1,000 calls in progress at once.' }
+        - { id: return-value, name: Return, label: 'A call ends at the first `return` it reaches, and the value after it is the value of the call.' }
+        - { id: add, name: Adding, label: 'The first number of a list plus the sum of the others is the sum of all of them.' }
+        - { id: slice, name: Slices, label: 'For a list that is not empty, `xs[0]` is its first value, and `xs[1:]` is a new list of the others, one slot shorter.' }
+        - { id: trust, name: Trust the smaller call, label: 'In the recursive case, take the claim as true for a list shorter than the one in hand.' }
+      start: '\text{Claim: for every list } \texttt{xs} \text{ of numbers, if Python has room for the calls, } \texttt{total(xs)} \text{ is the sum of the numbers in } \texttt{xs}'
+      lines:
+        - math: '\text{For } \texttt{xs = []} \text{, the test } \texttt{xs == []} \text{ is True, and the call gives 0, the sum of no numbers}'
+          rule: return-value
+        - math: '\text{For a list } \texttt{xs} \text{ that is not empty, } \texttt{xs[1:]} \text{ holds every number of } \texttt{xs} \text{ after its first, and is shorter than } \texttt{xs}'
+          rule: slice
+        - math: '\texttt{rest = total(xs[1:])} \text{ makes } \texttt{rest} \text{ the sum of those other numbers}'
+          rule: trust
+        - math: '\text{When that call returns, this call''s } \texttt{xs} \text{ still refers to its own list}'
+          rule: local
+        - math: '\text{The call gives } \texttt{xs[0] + rest}'
+          rule: return-value
+        - math: '\texttt{xs[0] + rest} \text{ is the sum of the numbers in } \texttt{xs}'
+          rule: add
+        - math: '\text{So } \texttt{total(xs)} \text{ is the sum for } \texttt{[]} \text{, then for every list of one number, then of two, and so on}'
+          rule: one-length
+    explanation: >-
+      The base case gives the empty list its sum, 0. For a longer list, the slice is a new list one
+      slot shorter, so the smaller call can be trusted to give the sum of the other numbers, and
+      because this call's names are its own, its `xs` still refers to its list when that call
+      returns. The call then gives the first number plus the sum of the others, which is the sum of
+      them all. A claim that holds for the empty list and passes from shorter lists to longer ones
+      holds for every length. The rule about room for calls is not needed: the claim leaves aside
+      whether the calls fit, and says what `total` gives when they do.
+
+  - id: derive-depth
+    phase: derive
+    kind: step
+    concept: E1.5/call-stack
+    title: How deep the calls go
+    prompt: >-
+      `total` is given a list of $n$ numbers. At the deepest point, how many calls of `total` are in
+      progress at once? Write it as an expression in $n$.
+    answer:
+      type: expression
+      symbols:
+        - { name: n, integer: true, positive: true }
+      lhs: '\text{calls in progress} ='
+      reference: n + 1
+      accept: ['1 + n', '(n + 1)']
+      reject: ['n', 'n - 1', '2*n', 'n + 2', '2*n + 1', 'n^2']
+    explanation: >-
+      The calls are given lists of $n$, $n - 1$, and so on down to 0 numbers, and none of them
+      returns before the call for the empty list has returned. That is $n + 1$ calls, one for each
+      length from $n$ down to 0.
+
+  - id: derive-fib-recurrence
+    phase: derive
+    kind: step
+    concept: E1.5/memoisation
+    title: The calls of fib(n)
+    prompt: For $n \ge 2$, write $C(n)$ in terms of $a = C(n - 1)$ and $b = C(n - 2)$.
+    answer:
+      type: expression
+      symbols:
+        - { name: a, integer: true, positive: true }
+        - { name: b, integer: true, positive: true }
+      lhs: 'C(n) ='
+      reference: a + b + 1
+      accept: ['1 + a + b', 'b + a + 1', '(a + b) + 1']
+      reject: ['a + b', 'a + b + 2', '2*a + 1', '2*b + 1', 'a*b', 'a + 1', '2*(a + b)', 'a + b - 1']
+    explanation: >-
+      The call `fib(n)` is one call. `fib(n - 1)` makes $a$ calls, counting its own, and
+      `fib(n - 2)` makes $b$, so $C(n) = a + b + 1$.
+
+  - id: derive-fib-double
+    phase: derive
+    kind: proof
+    concept: E1.5/memoisation
+    title: More than double for every two steps
+    prompt: >-
+      Here is why the calls of the plain `fib` more than double for every two steps up in $n$, and
+      what that means for `fib(40)`. Each line follows from the lines above it. Choose the rule that
+      justifies each line. A rule may be used more than once or not at all.
+    answer:
+      type: steps
+      rules:
+        - { id: work-out, name: Work it out, label: 'Work out a power, a product or a comparison of known numbers.' }
+        - { id: collect, name: Collect, label: 'For any number $v$, $v + v = 2v$, and adding 1 to a number makes it larger.' }
+        - { id: doubling, name: Doubling sum, label: '$1 + 2 + 4 + \dots + 2^{k-1} = 2^k - 1$, as E1.4 showed.' }
+        - { id: never-smaller, name: Never smaller, label: 'Each count from $C(2)$ on is the count before it plus more, so the counts never get smaller as $n$ grows.' }
+        - { id: repeat, name: Repeat, label: 'A step that holds for every $n \ge 2$ can be taken again and again, each time with $n$ two smaller, for as long as $n$ stays at least 2.' }
+        - { id: smaller-term, name: A smaller term, label: 'Replacing a term of a sum by a number no larger than it gives a sum no larger.' }
+      start: 'C(n) = C(n - 1) + C(n - 2) + 1 \text{ for } n \ge 2 \text{, and } C(0) = C(1) = 1'
+      lines:
+        - math: 'C(n - 1) \ge C(n - 2) \text{ for every } n \ge 2'
+          rule: never-smaller
+        - math: 'C(n) \ge C(n - 2) + C(n - 2) + 1'
+          rule: smaller-term
+        - math: 'C(n) > 2\,C(n - 2)'
+          rule: collect
+        - math: 'C(2k) > 2\,C(2k - 2) > 2^2\,C(2k - 4) > \dots > 2^k\,C(0) = 2^k \text{ for every } k \ge 1'
+          rule: repeat
+        - math: 'C(40) > 2^{20} = 1{,}048{,}576 > 10^{6}'
+          rule: work-out
+    explanation: >-
+      The counts never shrink, so $C(n - 1)$ is at least $C(n - 2)$, and putting the smaller term in
+      its place gives $C(n) \ge 2C(n - 2) + 1 > 2C(n - 2)$. Taking that step again and again, down to
+      $C(0) = 1$, gives $C(2k) > 2^k$, so `fib(40)` makes more than $2^{20}$ calls, over a million.
+      The doubling sum is not needed: the calls are bounded by repeated doubling, not by adding
+      powers of two.
+
+  - id: derive-estimate
+    phase: derive
+    kind: estimate
+    concept: E1.5/memoisation
+    title: Fifty, the plain way
+    prompt: >-
+      On a computer where the plain `fib(25)` takes a quarter of a second, each step up in $n$
+      multiplies its calls, and so its time, by about 1.6. About how many hours does the plain
+      `fib(50)` take there? An answer within a factor of 2 counts.
+    answer: { type: number, value: 11, tolerance: { factor: 2 }, unit: hours }
+    explanation: >-
+      From 25 to 50 is 25 steps. $1.6^{5}$ is about 10.5, so $1.6^{25}$ is about
+      $10.5^{5} \approx 1.3 \times 10^{5}$, and a quarter of a second times that is about 32,000
+      seconds, nearly 9 hours. The exact count, 40,730,022,147 calls at a million a second, gives
+      40,730 seconds, about 11 hours.
+
+  - id: derive-memo-calls
+    phase: derive
+    kind: step
+    concept: E1.5/memoisation
+    title: The calls with a memo, for any n
+    prompt: >-
+      With the memo empty, how many calls does the memoised `fib(n)` make, counting the first call
+      itself, for $n \ge 1$? Write it as an expression in $n$.
+    answer:
+      type: expression
+      symbols:
+        - { name: n, integer: true, positive: true }
+      lhs: '\text{calls} ='
+      reference: 2*n - 1
+      accept: ['2n - 1', 'n + (n - 1)', '2*(n - 1) + 1']
+      reject: ['2*n', 'n', 'n + 1', '2*n + 1', 'n - 1', '2*n - 2']
+    explanation: >-
+      The first calls run down from `fib(n)` to `fib(1)`, one for each case: $n$ calls. On the way
+      back, each call from `fib(n)` down to `fib(2)` makes its second call, which is a base case or
+      is found in the memo and returns at once: $n - 1$ more. That is $n + (n - 1) = 2n - 1$.
+
+  # Build ----------------------------------------------------------------------
+  - id: build-count-params
+    phase: build
+    kind: build
+    concept: E1.5/recursive-structures
+    covers: [E1.5/base-and-recursive-case]
+    title: Counting a model's parameters
+    prompt: >-
+      A model keeps its parameters, its numbers, in lists and dicts nested inside each other, and its
+      size is how many numbers they hold. Write the body of `count_params(params)`, which counts
+      them. `isinstance(x, dict)` asks whether `x` is a dict, as `isinstance(x, list)` asks whether it
+      is a list. The tests call it with many shapes of nesting, some of them deep.
+    answer:
+      type: code
+      starter: |
+        def count_params(params):
+            """The number of numbers in params, which is a number, a list or a dict. A list's items
+            and a dict's values are again numbers, lists or dicts, to any depth. A dict's keys are
+            names, and are not counted."""
+
+
+        model = {
+            "embed": [[0.1, -0.4], [0.7, 0.2], [-0.3, 0.5]],
+            "layer": {"w": [[0.5, -1.2], [0.3, 0.8]], "b": [0.0, 0.1]},
+            "scale": 1.5,
+        }
+        print(count_params(model))   # 6 in embed, 4 + 2 in layer and 1 in scale: 13
+      tests: |
+        def test_model():
+            """The script's model holds 13 numbers."""
+            got = count_params(model)
+            assert got == 13, f"count_params(model) is {got!r}, but the model holds 13 numbers: 6 in embed, 4 + 2 in layer and 1 in scale."
+
+        def test_number():
+            """A number on its own counts as one."""
+            for x in [2.5, -1.0, 7]:
+                got = count_params(x)
+                assert got == 1, f"count_params({x!r}) is {got!r}, not 1: a number on its own is one number."
+
+        def test_flat():
+            """A list or a dict counts the numbers it holds."""
+            for params, expected in [([0.1, 0.2, 0.3], 3), ({"w": [0.5, -0.5], "b": 0.25}, 3), ([4], 1)]:
+                got = count_params(params)
+                note = " A dict's keys are names, and its numbers are in its values." if isinstance(params, dict) else ""
+                assert got == expected, f"count_params({params!r}) is {got!r}, not {expected}.{note}"
+
+        def test_empty():
+            """Empty lists and dicts hold no numbers, at any depth."""
+            for params in [[], {}, [[], {}], {"a": [], "b": {"c": []}}]:
+                got = count_params(params)
+                assert got == 0, f"count_params({params!r}) is {got!r}, not 0: it holds no numbers."
+
+        def test_mixed():
+            """Lists inside dicts, and dicts inside lists."""
+            params = [{"w": [[1.0, 2.0], [3.0]], "b": [0.5]}, [{"g": 1.0}, 2.0], {}]
+            got = count_params(params)
+            assert got == 6, f"count_params({params!r}) is {got!r}, not 6."
+
+        def test_deep():
+            """Nesting 200 levels deep, which loops inside loops could follow only with 200 of them."""
+            # Each pass wraps params in one more level: a list that adds a 0.5 beside it, or a dict.
+            params = 1.0
+            for depth in range(200):
+                if depth % 2 == 0:
+                    params = [params, 0.5]
+                else:
+                    params = {"inner": params}
+            got = count_params(params)
+            assert got == 101, f"count_params of a list and dict nesting 200 levels deep is {got!r}, not 101: the 1.0 at the bottom and a 0.5 at every other level."
+
+        def test_unchanged():
+            """count_params leaves what it is given as it was."""
+            params = {"w": [1.0, [2.0, 3.0]], "b": [4.0]}
+            count_params(params)
+            assert params == {"w": [1.0, [2.0, 3.0]], "b": [4.0]}, f"After count_params(params), params is {params!r}: the function changed what it was given."
+      reference: |
+        def count_params(params):
+            """The number of numbers in params, which is a number, a list or a dict. A list's items
+            and a dict's values are again numbers, lists or dicts, to any depth. A dict's keys are
+            names, and are not counted."""
+            if isinstance(params, dict):
+                n = 0
+                for name in params:
+                    n = n + count_params(params[name])
+                return n
+            if isinstance(params, list):
+                n = 0
+                for item in params:
+                    n = n + count_params(item)
+                return n
+            return 1
+
+
+        model = {
+            "embed": [[0.1, -0.4], [0.7, 0.2], [-0.3, 0.5]],
+            "layer": {"w": [[0.5, -1.2], [0.3, 0.8]], "b": [0.0, 0.1]},
+            "scale": 1.5,
+        }
+        print(count_params(model))   # 6 in embed, 4 + 2 in layer and 1 in scale: 13
+      wrong:
+        - code: |
+            def count_params(params):
+                if isinstance(params, dict) or isinstance(params, list):
+                    n = 0
+                    for item in params:
+                        n = n + count_params(item)
+                    return n
+                return 1
+
+            model = {
+                "embed": [[0.1, -0.4], [0.7, 0.2], [-0.3, 0.5]],
+                "layer": {"w": [[0.5, -1.2], [0.3, 0.8]], "b": [0.0, 0.1]},
+                "scale": 1.5,
+            }
+            print(count_params(model))   # 6 in embed, 4 + 2 in layer and 1 in scale: 13
+          why: Loops over a dict as over a list, which visits its keys, so it counts the names instead of the numbers under them.
+        - code: |
+            def count_params(params):
+                if not isinstance(params, list):
+                    return 1
+                n = 0
+                for item in params:
+                    n = n + count_params(item)
+                return n
+
+            model = {
+                "embed": [[0.1, -0.4], [0.7, 0.2], [-0.3, 0.5]],
+                "layer": {"w": [[0.5, -1.2], [0.3, 0.8]], "b": [0.0, 0.1]},
+                "scale": 1.5,
+            }
+            print(count_params(model))   # 6 in embed, 4 + 2 in layer and 1 in scale: 13
+          why: Handles lists only, so a whole dict counts as a single number.
+        - code: |
+            def count_params(params):
+                if isinstance(params, dict):
+                    n = 0
+                    for name in params:
+                        n = n + count_params(params[name])
+                    return n
+                if isinstance(params, list):
+                    n = 0
+                    for item in params:
+                        n = n + count_params(item)
+                return 1
+
+            model = {
+                "embed": [[0.1, -0.4], [0.7, 0.2], [-0.3, 0.5]],
+                "layer": {"w": [[0.5, -1.2], [0.3, 0.8]], "b": [0.0, 0.1]},
+                "scale": 1.5,
+            }
+            print(count_params(model))   # 6 in embed, 4 + 2 in layer and 1 in scale: 13
+          why: Forgets to return a list's count, so every list counts as one number.
+        - code: |
+            def count_params(params):
+                if isinstance(params, dict):
+                    n = 0
+                    for name in params:
+                        n = n + count_params(params[name])
+                    return n
+                if isinstance(params, list):
+                    n = 0
+                    for item in params:
+                        n = n + count_params(item)
+                    return n
+
+            model = {
+                "embed": [[0.1, -0.4], [0.7, 0.2], [-0.3, 0.5]],
+                "layer": {"w": [[0.5, -1.2], [0.3, 0.8]], "b": [0.0, 0.1]},
+                "scale": 1.5,
+            }
+            print(count_params(model))   # 6 in embed, 4 + 2 in layer and 1 in scale: 13
+          why: Has no base case for a number, so a number gives `None`, and adding it stops Python with `TypeError`.
+        - code: |
+            def count_params(params):
+                if isinstance(params, dict):
+                    n = 1
+                    for name in params:
+                        n = n + count_params(params[name])
+                    return n
+                if isinstance(params, list):
+                    n = 1
+                    for item in params:
+                        n = n + count_params(item)
+                    return n
+                return 1
+
+            model = {
+                "embed": [[0.1, -0.4], [0.7, 0.2], [-0.3, 0.5]],
+                "layer": {"w": [[0.5, -1.2], [0.3, 0.8]], "b": [0.0, 0.1]},
+                "scale": 1.5,
+            }
+            print(count_params(model))   # 6 in embed, 4 + 2 in layer and 1 in scale: 13
+          why: Starts each count at 1, so it counts the lists and dicts as well as the numbers.
+        - code: |
+            def count_params(params):
+                if isinstance(params, dict):
+                    n = 0
+                    for name in params:
+                        n = n + count_params(params[name])
+                    return n
+                if isinstance(params, list):
+                    if params == []:
+                        return 0
+                    first = params.pop(0)
+                    return count_params(first) + count_params(params)
+                return 1
+
+            model = {
+                "embed": [[0.1, -0.4], [0.7, 0.2], [-0.3, 0.5]],
+                "layer": {"w": [[0.5, -1.2], [0.3, 0.8]], "b": [0.0, 0.1]},
+                "scale": 1.5,
+            }
+            print(count_params(model))   # 6 in embed, 4 + 2 in layer and 1 in scale: 13
+          why: Takes each list's first item out with `pop`, so the caller's lists are emptied.
+    explanation: >-
+      A number is the base case, and counts 1. A list counts what each of its items holds, and a dict
+      what each of its values holds, by calling `count_params` on them, whatever they are, so the
+      function follows the nesting as deep as Python has room for calls. Looping over a dict visits its keys, so the values
+      are reached as `params[name]`. Nothing changes a list or dict, so the caller's parameters are
+      left as they were.
+
+  - id: build-break-base
+    phase: build
+    kind: breakit
+    concept: E1.5/base-and-recursive-case
+    title: A different base case
+    prompt: Predict what happens after the change, then run both versions to see.
+    answer:
+      type: breakit
+      code: |
+        def total(xs):
+            if xs == []:
+                return 0
+            rest = total(xs[1:])
+            return xs[0] + rest
+
+        a = total([4, 5, 6])
+        print(a)
+        b = total([])
+        print(b)
+      broken: |
+        def total(xs):
+            if len(xs) == 1:
+                return xs[0]
+            rest = total(xs[1:])
+            return xs[0] + rest
+
+        a = total([4, 5, 6])
+        print(a)
+        b = total([])
+        print(b)
+      change: 'The base case becomes a list of one number: `if len(xs) == 1:` and `return xs[0]`.'
+      options:
+        - { id: same, label: 'It prints 15 and then 0, as before', when: "error is None and output.split() == ['15', '0']" }
+        - { id: index-error, label: 'It prints 15, and then Python stops with `IndexError`, since `[]` has no first slot', when: "error == 'IndexError' and output.split() == ['15']" }
+        - { id: at-once, label: 'Python stops with an error before it prints anything', when: "error is not None and output.split() == []" }
+        - { id: recursion, label: 'It prints 15, and then Python stops with `RecursionError`', when: "error == 'RecursionError' and output.split() == ['15']" }
+        - { id: other, label: 'Something else happens', when: "not ((error is None and output.split() == ['15', '0']) or (error in ('IndexError', 'RecursionError') and output.split() == ['15']) or (error is not None and output.split() == []))" }
+    explanation: >-
+      `total([4, 5, 6])` still reaches the new base case, `total([6])`, and gives 15. But
+      `total([])` never reaches it. The empty list's length is 0, not 1, and its slice `[][1:]` is the
+      empty list again, since a slice past the end is empty rather than an error. So every call makes
+      the same call again, never one nearer a base case, until Python runs out of room for calls.
+      And `xs[0]` on the last line, which would stop with `IndexError`, is never reached: every call
+      is still waiting on line 4.
+
+  - id: build-long-list
+    phase: build
+    kind: debug
+    concept: E1.5/call-stack
+    title: A long training log
+    prompt: >-
+      Run the script: `total` stops with `RecursionError` on a list of 5,000 losses, the log of a
+      short training run. Fix `total` so that it works on a list of any length, recursive or not.
+      The tests call it with short lists and with long ones.
+    answer:
+      type: code
+      starter: |
+        def total(xs):
+            """The sum of the numbers in the list xs, which may be long."""
+            if xs == []:
+                return 0
+            rest = total(xs[1:])
+            return xs[0] + rest
+
+
+        losses = []
+        for step in range(5000):
+            losses.append(2.0 / (step + 1))
+        print(total(losses))
+      tests: |
+        # close(a, b) is True when a and b agree to about 9 significant figures, as in E1.1.
+        # output is everything your program printed.
+
+        def test_short():
+            """Short lists, and the empty list."""
+            for xs, expected in [([4, 5, 6], 15), ([2.5], 2.5), ([], 0), ([1.0, -1.0, 0.25], 0.25)]:
+                got = total(list(xs))
+                assert close(got, expected), f"total({xs}) is {got!r}, not {expected}."
+
+        def test_long():
+            """A list of 20,000 numbers, far more than Python has room for at one call each."""
+            xs = []
+            for i in range(20000):
+                xs.append(0.5)
+            got = total(xs)
+            shown = f"{got:,}" if isinstance(got, (int, float)) else repr(got)
+            assert close(got, 10000.0), f"total of 20,000 copies of 0.5 is {shown}, not 10,000."
+
+        def test_unchanged():
+            """total leaves the list it is given as it was."""
+            xs = [3.0, 1.0, 2.0]
+            total(xs)
+            assert xs == [3.0, 1.0, 2.0], f"After total(xs), xs is {xs!r}, not [3.0, 1.0, 2.0]: the function changed its caller's list."
+
+        def test_script():
+            """The script prints the total of its 5,000 losses, about 18.189."""
+            assert "18.189" in output, f"The script printed {output!r}, not the total of its losses, about 18.189."
+
+        def test_room():
+            """total works within Python's usual room for calls in progress."""
+            import sys
+            limit = sys.getrecursionlimit()
+            assert limit <= 1000, f"The script raised Python's limit on calls in progress, which is 1,000. That only moves the wall: take the raise out, and make sure total does not need a call in progress for every number."
+      reference: |
+        def total(xs):
+            """The sum of the numbers in the list xs, which may be long."""
+            s = 0
+            for x in xs:
+                s = s + x
+            return s
+
+
+        losses = []
+        for step in range(5000):
+            losses.append(2.0 / (step + 1))
+        print(total(losses))
+      wrong:
+        - code: |
+            def total(xs):
+                if xs == []:
+                    return 0
+                if len(xs) == 1:
+                    return xs[0]
+                return xs[0] + xs[1] + total(xs[2:])
+
+
+            losses = []
+            for step in range(5000):
+                losses.append(2.0 / (step + 1))
+            print(total(losses))
+          why: Takes two numbers in each call, which halves the depth, but 5,000 numbers still need about 2,500 calls in progress.
+        - code: |
+            def total(xs):
+                s = 0
+                while xs != []:
+                    s = s + xs.pop()
+                return s
+
+
+            losses = []
+            for step in range(5000):
+                losses.append(2.0 / (step + 1))
+            print(total(losses))
+          why: Empties the caller's list with `pop` as it adds.
+        - code: |
+            def total(xs):
+                if xs == []:
+                    return 0
+                h = len(xs) // 2
+                return total(xs[:h]) + total(xs[h:])
+
+
+            losses = []
+            for step in range(5000):
+                losses.append(2.0 / (step + 1))
+            print(total(losses))
+          why: Splits a list of one number into the empty list and itself, so it never reaches a base case.
+        - code: |
+            def total(xs):
+                s = 0
+                for i in range(1, len(xs)):
+                    s = s + xs[i]
+                return s
+
+
+            losses = []
+            for step in range(5000):
+                losses.append(2.0 / (step + 1))
+            print(total(losses))
+          why: Starts at index 1, so it leaves out the first number.
+    explanation: >-
+      The loop adds the numbers one at a time into `s`, E1.2's accumulator, with one set of names
+      however long the list is, so it never runs out of room. The recursive version needed a call in
+      progress for every number, and Python allows about 1,000.
+
+  - id: build-memo-splits
+    phase: build
+    kind: debug
+    concept: E1.5/memoisation
+    title: Ways to cut a word
+    prompt: >-
+      A tokeniser that knows tokens of 1, 2 and 3 characters can cut a word into tokens in many ways,
+      and `splits(n)` counts them for a word of $n$ characters. Run the script: `splits(4)` comes out
+      at once, but `splits(60)` runs until the editor stops it. Fix `splits` so that it works
+      each case out only once. The tests count the calls that `splits` makes.
+    answer:
+      type: code
+      starter: |
+        def splits(n):
+            """The number of ways to cut a word of n characters into tokens of 1, 2 or 3 characters,
+            keeping their order. n is a whole number, 0 or more. A word of no characters has one way,
+            with no tokens at all."""
+            if n < 0:
+                return 0
+            if n == 0:
+                return 1
+            return splits(n - 1) + splits(n - 2) + splits(n - 3)
+
+
+        print(splits(4))    # 7: 1+1+1+1, 1+1+2, 1+2+1, 2+1+1, 2+2, 1+3 and 3+1
+        print(splits(60))
+      tests: |
+        def test_small():
+            """The counts for words of 0 to 6 characters."""
+            for n, expected in [(0, 1), (1, 1), (2, 2), (3, 4), (4, 7), (5, 13), (6, 24)]:
+                got = splits(n)
+                assert got == expected, f"splits({n}) is {got!r}, not {expected}."
+
+        def test_sixty():
+            """splits(60) is 4,680,045,560,037,375."""
+            got = splits(60)
+            shown = f"{got:,}" if isinstance(got, int) else repr(got)
+            assert got == 4680045560037375, f"splits(60) is {shown}, not 4,680,045,560,037,375."
+
+        def test_calls():
+            """splits(150) takes fewer than 1,000 calls of splits."""
+            # Your program's own names are kept in splits.__globals__ (for a function made by
+            # functools.cache, in splits.__wrapped__.__globals__), so putting a counting version of
+            # splits there counts every call that splits makes of itself. counted is a function made
+            # inside this test, and it can use the test's own names calls and plain. *args and
+            # **kwargs pass on whatever arguments a call is given. The lines under finally: run even
+            # if counted(150) stops with an error, so the real splits is always put back.
+            names = getattr(splits, "__wrapped__", splits).__globals__
+            plain = names["splits"]
+            calls = [0]
+
+            def counted(*args, **kwargs):
+                calls[0] = calls[0] + 1
+                assert calls[0] <= 1000, "splits(150) made more than 1,000 calls of splits, so some cases are being worked out again and again."
+                return plain(*args, **kwargs)
+
+            names["splits"] = counted
+            try:
+                counted(150)
+            finally:
+                names["splits"] = plain
+
+        def test_rule():
+            """From 3 characters on, each count is the sum of the three counts before it."""
+            for n in range(3, 151):
+                a, b, c, d = splits(n), splits(n - 1), splits(n - 2), splits(n - 3)
+                assert a == b + c + d, f"splits({n}) is {a!r}, but splits({n - 1}) + splits({n - 2}) + splits({n - 3}) is {b + c + d:,}."
+      reference: |
+        memo = {}
+
+        def splits(n):
+            """The number of ways to cut a word of n characters into tokens of 1, 2 or 3 characters,
+            keeping their order. n is a whole number, 0 or more. A word of no characters has one way,
+            with no tokens at all."""
+            if n < 0:
+                return 0
+            if n == 0:
+                return 1
+            if n in memo:
+                return memo[n]
+            answer = splits(n - 1) + splits(n - 2) + splits(n - 3)
+            memo[n] = answer
+            return answer
+
+
+        print(splits(4))    # 7: 1+1+1+1, 1+1+2, 1+2+1, 2+1+1, 2+2, 1+3 and 3+1
+        print(splits(60))
+      wrong:
+        - code: |
+            def splits(n):
+                memo = {}
+                if n < 0:
+                    return 0
+                if n == 0:
+                    return 1
+                if n in memo:
+                    return memo[n]
+                answer = splits(n - 1) + splits(n - 2) + splits(n - 3)
+                memo[n] = answer
+                return answer
+
+
+            print(splits(4))
+            print(splits(60))
+          why: Makes a new, empty memo at every call, so no call ever finds an answer that another call kept.
+        - code: |
+            memo = {}
+
+            def splits(n):
+                if n < 0:
+                    return 0
+                if n == 0:
+                    return 1
+                if n in memo:
+                    return memo[n]
+                return splits(n - 1) + splits(n - 2) + splits(n - 3)
+
+
+            print(splits(4))
+            print(splits(60))
+          why: Looks answers up in the memo but never keeps one there.
+        - code: |
+            memo = {}
+
+            def splits(n):
+                if n == 0:
+                    return 1
+                if n in memo:
+                    return memo[n]
+                answer = splits(n - 1) + splits(n - 2) + splits(n - 3)
+                memo[n] = answer
+                return answer
+
+
+            print(splits(4))
+            print(splits(60))
+          why: Drops the base case for a negative length, so the call for $-1$ calls $-2$, $-3$ and so on without end.
+        - code: |
+            def splits(n):
+                ways = [1, 1, 2]
+                for k in range(3, n):
+                    ways.append(ways[k - 1] + ways[k - 2] + ways[k - 3])
+                return ways[n]
+
+
+            print(splits(4))
+            print(splits(60))
+          why: Stops the loop one short, so the list has no slot for `n` itself.
+    explanation: >-
+      The memo is made once, outside the function, so every call shares it. The first call for each
+      `n` works its answer out and keeps it, and every later call for that `n` hands it back at once,
+      so each case is worked out only once: about three calls for each `n` instead of a number of
+      calls that multiplies by about 1.8 with each step. `splits` is pure, so a kept answer is always
+      the one a new call would give.
+
+  # Explain --------------------------------------------------------------------
+  - id: explain-recursion
+    phase: explain
+    kind: explain
+    concept: E1.5/memoisation
+    covers: [E1.5/base-and-recursive-case, E1.5/call-stack, E1.5/recursive-structures]
+    title: Functions that call themselves
+    prompt: >-
+      Explain to your friend how a function can call itself without its calls getting mixed up, what
+      makes such a function stop and what Python does when one never stops, how you can trust one
+      without following every call, why it suits data nested inside data, why the plain `fib` is hopelessly slow, and how a memo fixes
+      that and when a memo is safe.
+    answer:
+      type: text
+      rubric:
+        - { id: stack, criterion: 'Explains that each call has names of its own and waits for the calls it makes, so that the calls in progress form a stack: the latest call finishes first and the one below carries on where it stopped; and that Python allows about 1,000 calls in progress, stopping with `RecursionError` beyond that.' }
+        - { id: base, criterion: 'Explains base and recursive cases: a base case is answered without a further call, every recursive case calls the function on something smaller, so every chain of calls reaches a base case; and that a recursive function is trusted by checking its base case, and its recursive case on the assumption that the smaller calls are right.' }
+        - { id: structures, criterion: 'Says that lists of lists or dicts of dicts can nest to any depth, which a fixed number of loops cannot follow, while a recursive function follows the shape of the data, with a base case for a value that holds nothing of its kind.' }
+        - { id: memo-cost, criterion: 'Explains why the plain `fib` is slow: each call makes two more, the same smaller cases are worked out again and again, and the calls grow by about 1.6 times for each step in n, so fib(50) takes hours; and that a memo keeps each answer in a dict the first time and looks it up after that, so each case is worked out once, about 2n calls.' }
+        - { id: memo-pure, criterion: 'Says that a memo is safe only for a pure function, whose answer depends on nothing but its arguments and which does nothing else, such as printing, since a kept answer must be the one a new call would give and a call answered from the memo does nothing else.' }
+      reference: >-
+        Each call of a function gets names of its own, so when countdown(3) calls countdown(2), the
+        new call has its own n, 2, and the first call keeps its n, 3, and waits. The calls in
+        progress pile up like plates: a new call goes on top, only the top one runs, and when it
+        returns it comes off and the one below carries on from where it stopped. That is the
+        call stack, and it is why countdown(3) prints 3 2 1 go and then 1 2 3 on the way back. A
+        recursive function needs a base case, a case it answers without calling itself, like the
+        empty list for total, whose sum is 0. Every other case must call the function on something
+        smaller, a shorter list or a smaller number, so that every chain of calls reaches a base case.
+        Without one the calls never end, and Python, which allows about 1,000 calls in progress,
+        stops with RecursionError. To trust a recursive function you do not follow its calls. You
+        check the base case, and then check the recursive case assuming the smaller call is right:
+        if total(xs[1:]) is the sum of the rest, then xs[0] plus it is the sum of the whole list.
+        Recursion suits nested data, such as a model's weights in dicts inside lists inside dicts,
+        because each call handles one level and calls itself on what that level holds, as deep as
+        Python has room for calls, while loops inside loops reach only as deep as there are loops. The plain fib is slow because
+        each call makes two more, and the same cases are worked out again and again: fib(5) works
+        out fib(3) twice and fib(2) three times. The calls grow by about 1.6 times for each step up in
+        n, so fib(50) would take hours. A memo is a dict that keeps each answer the first
+        time it is worked out, so each later call for the same n looks it up, and fib(n) takes about
+        2n calls. That is only safe for a pure function, whose answer depends only on its arguments and
+        which does nothing else, such as printing, because otherwise a kept answer could differ from
+        what a new call would give, or a skipped call would leave something undone.
+      minWords: 100
+      maxWords: 400

@@ -8,6 +8,14 @@ import type { TraceFrame, TraceStep } from "@/lib/python/client";
 
 export const MAIN = "(main program)";
 
+/**
+ * A call as the figure names it: with the arguments it began with, such as `countdown(2)`, so
+ * that several calls of one function can be told apart. A trace without them gives the function.
+ */
+export function callName(frame: TraceFrame): string {
+  return frame.call ?? frame.function;
+}
+
 /** Whether the frame at this depth is the same call at both steps, not a new call of the same function. */
 export function sameCall(prev: TraceStep | undefined, cur: TraceStep, index: number): boolean {
   const before = prev?.stack[index];
@@ -79,7 +87,7 @@ export function changesBetween(a: TraceStep, b: TraceStep | undefined): string {
       const tag = frame.refs?.[name];
       if (marks[name] === "changed" && tag && was?.refs?.[name] === tag) {
         const entry = inPlace.get(tag) ?? { value: frame.variables[name]!, names: [] };
-        entry.names.push(i === 0 ? `\`${name}\`` : `\`${name}\` in \`${frame.function}\``);
+        entry.names.push(i === 0 ? `\`${name}\`` : `\`${name}\` in \`${callName(frame)}\``);
         inPlace.set(tag, entry);
       } else {
         names.push(name);
@@ -87,7 +95,7 @@ export function changesBetween(a: TraceStep, b: TraceStep | undefined): string {
     }
     if (same) {
       if (!names.length) return;
-      parts.push(assignments(frame, names, marks) + (i === 0 ? "" : ` in \`${frame.function}\``));
+      parts.push(assignments(frame, names, marks) + (i === 0 ? "" : ` in \`${callName(frame)}\``));
     } else if (i > 0) {
       parts.push(names.length ? `calls \`${frame.function}\` with ${assignments(frame, names, marks, true)}` : `calls \`${frame.function}\``);
     } else if (names.length) {
@@ -96,6 +104,11 @@ export function changesBetween(a: TraceStep, b: TraceStep | undefined): string {
   });
   for (const [tag, { value, names }] of inPlace) {
     parts.push(`${tag}, which ${inWords(names)} ${names.length === 1 ? "refers" : "refer"} to, is now \`${value}\``);
+  }
+  // What the line printed, line by line as print showed it.
+  if (b.output.length > a.output.length && b.output.startsWith(a.output)) {
+    const printed = b.output.slice(a.output.length).replace(/\n$/, "").split("\n");
+    parts.push(`prints ${inWords(printed.map((p) => (p === "" ? "an empty line" : `\`${p}\``)))}`);
   }
   return parts.join("; ");
 }
@@ -109,9 +122,10 @@ export function finishedStep(steps: TraceStep[], at: number): number {
   return Math.max(0, steps.length - 1);
 }
 
-/** The function a step is in, or the main program. */
+/** The call a step is in, such as `countdown(2)`, or the main program. */
 export function runningIn(step: TraceStep | undefined): string {
-  return step?.stack.at(-1)?.function ?? MAIN;
+  const top = step?.stack.at(-1);
+  return top ? (top.function === MAIN ? MAIN : callName(top)) : MAIN;
 }
 
 /** What a step that is not a line does, in words with code in backticks: a call returns, or an error stops it. */
@@ -129,5 +143,5 @@ export function frameStatus(step: TraceStep | undefined): string {
 
 /** The heading over one frame of the stack. */
 export function frameHeading(frame: TraceFrame, index: number): string {
-  return index === 0 ? "Main program" : `Call to \`${frame.function}\``;
+  return index === 0 ? "Main program" : `Call \`${callName(frame)}\``;
 }

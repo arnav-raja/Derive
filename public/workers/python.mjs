@@ -104,6 +104,10 @@ self.onmessage = async (event) => {
     }
     self.postMessage({ id, ok: true, result });
   } catch (error) {
-    self.postMessage({ id, ok: false, error: String(error?.message ?? error) });
+    // After a fatal error Pyodide can run nothing more, and an overflow of the JavaScript stack
+    // can leave it unsound, so the page starts a new worker for the next request.
+    const message = String(error?.message ?? error);
+    const fatal = Boolean(error?.pyodide_fatal_error) || /fatal|maximum call stack/i.test(message);
+    self.postMessage({ id, ok: false, error: message, fatal });
   }
 };

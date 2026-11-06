@@ -673,10 +673,10 @@
         "M1.6",
         "M1.8"
       ],
-      "buildsOn": [],
-      "leadsTo": [
+      "buildsOn": [
         "E1.5"
-      ]
+      ],
+      "leadsTo": []
     },
     "M1.10": {
       "title": "Counting: permutations, combinations and the binomial theorem",
@@ -3258,7 +3258,9 @@
         "M1.6",
         "M5.7"
       ],
-      "buildsOn": [],
+      "buildsOn": [
+        "E1.5"
+      ],
       "leadsTo": [
         "L7.4"
       ]
@@ -3666,13 +3668,14 @@
       "title": "Recursion",
       "course": "E1",
       "requires": [
-        "E1.3"
+        "E1.3",
+        "E1.4"
       ],
-      "buildsOn": [
-        "M1.9"
-      ],
+      "buildsOn": [],
       "leadsTo": [
-        "E1.10"
+        "E1.10",
+        "M1.9",
+        "E8.2"
       ]
     },
     "E1.6": {

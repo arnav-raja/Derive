@@ -6,8 +6,9 @@ CLAUDE.md and carry on from "Resume here".
 ## Where things stand
 
 Phase 0 (set-up) is done apart from the steps waiting on Arnav. Phase 1 (the first slice of 12
-lessons) is under way: ten lessons written (M1.1 to M1.6 and E1.1 to E1.4), two to go. E1.5 is
-drafted and checked, and E1.6 comes after it.
+lessons) is under way: eleven lessons written (M1.1 to M1.6 and E1.1 to E1.5), one to go. E1.6 is
+drafted, checked and reviewed by the simulated learner; its independent review was still running
+at the last update.
 
 ### Done
 
@@ -178,8 +179,35 @@ drafted and checked, and E1.6 comes after it.
   `[1, 2, 3]`") and compares a fingerprint of each tagged value, so a change past the 80th
   character still shows; the form check counts operations on the answer as typed; and a
   RecursionError is reported at the call that went one too deep, not at the `def` line.
-- Curriculum changes from these reviews: E1.7 Classes and objects now requires E1.4 as well as
-  E1.3, since objects need aliasing; E1.4's concepts gained later uses in E1.11, E8.4 and E6.2;
+- E1.5 Recursion: written on 6 November, walked end to end, and reviewed by both (the simulated
+  learner, 24 of 24 right with 15 findings; the independent reviewer, 3 blockers, 8 should-fix
+  findings and nits; in `derive-resume/review/E1.5-*.md`). Every finding applied: the memo
+  build's call-counting test now finds a function made by `functools.cache`, and a new test of
+  the rule itself fails a typed-in table; a new test fails a script that raises Python's limit on
+  calls in progress; a recall question renamed, since its name gave its answer; claims put right
+  (a call carries on from where it stopped, nested data is followed as deep as Python has room
+  for calls, a memo is safe only for a function that does nothing else, the proof's claim covers
+  the lists whose calls fit, and three checks, not two, trust a recursive function); the puzzle
+  no longer rules out one option; the scale line no longer shows two points either side of its
+  kept-back value; times given as measured (in Chromium here, `fib(25)` takes 0.13 s, about 1.8
+  million calls a second, so the lesson says one to two million, and the figure and the estimate
+  work at a million); review variants that repeated their item replaced, so placement's
+  questions cannot be answered from their wording; rewritten rungs and two new misconceptions.
+  All 42 items pass `check:exercises`, and the lesson was walked again end to end with no errors
+  (`store-after-E1.5-rewalk.json`). Engine changes from its review: Python's limit on calls in
+  progress is capped at 2,000 and put back after every run, test and trace (in Chromium's worker
+  an endless recursion survives a limit of 3,000 but not 4,000, and a raised limit had carried
+  into later runs); a worker that Pyodide reports as fatally failed is replaced for the next
+  request; the step-through figure names each call by its arguments ("Call `countdown(2)`", "about
+  to run line 7 in `countdown(1)`") and its table says what each line prints; and the scale
+  line's guess starts at the left end, with "Move the slider to set your guess" beside the
+  waiting Lock button.
+- Placement: the check's "at most n to go" counted only the lessons it could ask about yet, so the
+  number grew as lessons passed (3 to go, then 7). It now counts every question still reachable
+  if every answer is right. Found by the new placement unit tests.
+- Curriculum changes from these reviews: E1.5 requires E1.3 and E1.4, and M1.9 (induction) and
+  L7.3 (dynamic programming) now build on E1.5, where the plan had E1.5 build on M1.9; E1.7
+  Classes and objects now requires E1.4 as well as E1.3, since objects need aliasing; E1.4's concepts gained later uses in E1.11, E8.4 and E6.2;
   and "the Derive phase" replaces a bare "Derive" in E1.1 to E1.4 wherever it could be read as
   the school.
 
@@ -192,23 +220,19 @@ learner views come from `python3 -I scripts/learner-view.py . <code> <scratch di
 answer key in a separate folder). The briefs given to the reviewer and the simulated learner are
 in `derive-resume/review/prompts/`; change the lesson and the paths in them for another lesson.
 
-1. Finish E1.5 and write E1.6 from `docs/phase-1-lessons.md`, the same way, keeping the uses
-   that earlier lessons promise (listed there). Fix on the way: E1.6 unicode-and-bytes not
-   M11.7. Codes are the new ones from the course update. E1.5 Recursion is drafted in
-   `derive-resume/e15-draft/` (all six phases, 29 exercises, the rungs; its 42 items pass
-   `check:exercises` and `check:content` in a scratch copy, and its probes are in
-   `derive-resume/e15-probe/`). Copy it to `content/lessons/E1.5/`; in `curriculum.json`, make
-   E1.5 require E1.3 and E1.4 with no `buildsOn` (M1.9 comes after it and is foreshadowed), and
-   drop E1.5 from M1.9's `leadsTo`; then tell Arnav about that graph change. Each lesson: write
-   it, pass `check:content` and `check:exercises -- --write <code>`, walk it end to end (copy
-   `walk-e13.cjs` and `e14figs2.cjs` as the pattern), screenshot its figures, run the independent
-   reviewer and the simulated learner (briefs for E1.5 in `derive-resume/review/prompts/`),
-   apply both, walk the changed parts, and commit. E1.5's walk starts from
-   `store-after-E1.4-walk.json`, with `prep-store.py` moving E1.4's start to the day before (one
-   new lesson a day, three a week from Monday).
-2. Tests and CI: Playwright end-to-end tests (no config yet) with axe and screenshots in both
-   themes; unit tests for the mixed check, placement and the review queue; add
-   `check:exercises` to CI; update the commands table in CLAUDE.md.
+1. Finish E1.6 Text, files and strings. Its draft is in `derive-resume/e16-draft/` (all six
+   phases, 25 exercises, the rungs; 44 items pass `check:exercises` in a scratch copy). The
+   simulated learner's findings are in `derive-resume/review/E1.6-learner-findings.md`; if
+   `E1.6-findings.md` is missing there, run the independent reviewer again from its brief in
+   `derive-resume/review/prompts/`. Copy the draft to `content/lessons/E1.6/`, run
+   `npm run check:graph -- --fix`, `check:content` and `check:exercises -- E1.6 --write`, apply
+   both reviews, walk it end to end with `walk-e16.cjs` and `e16figs.cjs` (its store: run
+   `prep-store.py` on `store-after-E1.5-rewalk.json` with E1.4 and E1.5 moved to the two days
+   before, then `provisional.py` for E1.5), and commit. The learner's finding 14 asks the
+   harness to give the line of an error raised inside a test, as it does for the program.
+2. Tests and CI: unit tests for the mixed check, the review queue and placement are written.
+   Still to do: Playwright end-to-end tests (no config yet) with axe and screenshots in both
+   themes; add `check:exercises` to CI; update the commands table in CLAUDE.md.
 3. Tutor leak tests (the Anthropic key is in Vercel; see below), recorded in each lesson's
    leaks.json; then set lessons to `ready`.
 4. Finish phase 1: build, push, check the deployment and `/api/health`, and remove the test

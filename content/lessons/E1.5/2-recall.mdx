@@ -1,0 +1,61 @@
+This lesson builds on E1.3's functions and their names, and E1.4's lists, dictionaries and costs. Five quick questions check that they are ready. Answer from memory, without running anything. A miss opens a short re-teach straight away.
+
+<Exercise id="recall-nested-call" />
+
+<Reteach for="recall-nested-call">
+
+<Callback lesson="E1.3">
+
+A call that makes a call waits for it. `quad(3)` makes its own `n` refer to 3, and its first line calls `double(3)`, a new call with an `n` of its own, which returns 6. Only then does `quad` carry on: `m` refers to 6, and `double(6)` returns 12, which `quad` returns. Each call's names are its own, so `double`'s `n` never touches `quad`'s.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-print-call" />
+
+<Reteach for="recall-print-call">
+
+<Callback lesson="E1.3">
+
+A function that ends without reaching a `return` gives back `None`. `add` works out `a + b` and makes its own `total` refer to 5, but never returns it, so `add(2, 3)` is `None`, and that is what `print` shows. Only `return` hands a value back to the line that made the call.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-slice" />
+
+<Reteach for="recall-slice">
+
+<Callback lesson="E1.4">
+
+Indexes start at 0, so `xs[0]` is the first slot, 4. A slice `xs[a:b]` is a new list of the slots from `a` up to, but not including, `b`, and leaving out `b` takes every slot to the end, so `xs[1:]` is the new list `[5, 6]`: everything after the first slot.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-dict-in" />
+
+<Reteach for="recall-dict-in">
+
+<Callback lesson="E1.4">
+
+`memo[2] = 1` adds the key 2, so the dictionary has the keys 0, 1 and 2. `k in memo` asks whether `k` is one of the keys: 2 is, and 3 is not. `len(memo)` counts the keys, 3.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-doubling" />
+
+<Reteach for="recall-doubling">
+
+<Callback lesson="E1.4">
+
+E1.4 doubled the sum, $2S = 2 + 4 + \dots + 2^{k}$, and subtracted, so that every term but two cancelled: $S = 2^k - 1$. Here the last term is $512 = 2^9$, so $k - 1 = 9$, $k = 10$, and the sum is $2^{10} - 1 = 1{,}023$.
+
+</Callback>
+
+</Reteach>

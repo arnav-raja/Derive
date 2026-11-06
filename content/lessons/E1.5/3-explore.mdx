@@ -1,0 +1,246 @@
+## A stack of calls
+
+Each call of `countdown` is a new call, with an `n` of its own, and a call that makes a call waits for it to return. Step through the puzzle in the figure. It lists the main program's names and then every call in progress, each in a box of its own, with the running call last.
+
+<ProgramTrace
+  title="The puzzle, one call inside another"
+  description="The program defines `countdown` and calls it with 3. Each call that is not given 0 prints its `n`, calls `countdown` with `n - 1` and waits for that call to return. While calls are in progress, the figure lists the main program's names and then each call's `n`, in a box of its own, in the order the calls began, with the running call last."
+  code={"def countdown(n):\n    if n == 0:\n        print(\"go\")\n    else:\n        print(n)\n        countdown(n - 1)\n        print(n)\n\ncountdown(3)"}
+/>
+
+The calls in progress pile up like plates. A new call goes on top, only the call on top runs, and when it returns it comes off, and the call below carries on from where it stopped, finishing the line that made the call, with its names as they were. Python calls the pile the *call stack*. The figures draw the pile growing down the page: the top plate, the call running now, is the last box. Here is a function that prints only after its call:
+
+```python
+def show(n):
+    if n > 0:
+        show(n - 1)
+        print(n)
+
+show(3)
+```
+
+<Exercise id="explore-print-after" />
+
+<Reveal for="explore-print-after">
+
+Where a recursive function does its work decides the order of that work. Work before the call, like `countdown`'s first `print`, happens as the calls pile up, the first call first. Work after the call, like `show`'s `print`, happens as they come off, the latest call first.
+
+## Base cases
+
+`countdown(0)` makes no call: it prints `go` and returns. A case that a recursive function answers without calling itself is a *base case*, and a case that calls the function again is a *recursive case*. Each recursive case of `countdown` calls it with a smaller `n`, so from any whole number of 0 or more the calls reach the base case. Here is `countdown` with its base case taken out:
+
+```python
+def countdown(n):
+    print(n)
+    countdown(n - 1)
+
+countdown(3)
+```
+
+<Exercise id="explore-no-base" />
+
+</Reveal>
+
+<Reveal for="explore-no-base">
+
+Here Python stops the program after 995 numbers, the last of them $-991$, with `RecursionError: maximum recursion depth exceeded`. A loop that never ends, as in E1.2, runs until something stops it, but a recursion that never ends soon runs out of room. So a recursive function needs a base case, and every recursive case must take a step towards one.
+
+## Trusting a recursive function
+
+A list is either empty, or a first value followed by the rest of the list, `xs[1:]`, which is a new list one slot shorter. A slice is never an error: one that starts at or past the end is empty, so `[5][1:]` is `[]`. So the sum of a list can be worked out without a loop: the sum of an empty list is 0, and the sum of any other list is its first value plus the sum of the rest.
+
+```python
+def total(xs):
+    if xs == []:
+        return 0
+    rest = total(xs[1:])
+    return xs[0] + rest
+
+print(total([4, 5, 6]))
+```
+
+Step through it in the figure. It stops once to ask you first.
+
+<ProgramTrace
+  title="A sum, one call at a time"
+  description="The program calls `total` with the list `[4, 5, 6]`. Each call that is given a list that is not empty calls `total` with the rest of its list, `xs[1:]`, and waits for it. The figure lists the main program's names and then each call's names, in the order the calls began, with the running call last, and labels each list, so that the calls' lists can be told apart."
+  code={"def total(xs):\n    if xs == []:\n        return 0\n    rest = total(xs[1:])\n    return xs[0] + rest\n\nprint(total([4, 5, 6]))"}
+  predict={[{ line: 4, variable: "rest", prompt: "Line 4 is about to run in the first call, whose `xs` is `[4, 5, 6]`. Once the line has finished in this call, what will its `rest` refer to?" }]}
+/>
+
+Here is `total` given a longer list. `list(range(1, 101))` is the list of the whole numbers from 1 to 100:
+
+```python
+print(total(list(range(1, 101))))
+```
+
+<Exercise id="explore-total-trust" />
+
+</Reveal>
+
+<Reveal for="explore-total-trust">
+
+Three checks are enough to trust a recursive function. First, every call it makes is given something nearer a base case: here a list one slot shorter, so every chain of calls reaches the empty list. Then the base case: `total([])` returns 0, the sum of an empty list. Then the recursive case, on the assumption that the smaller call it makes is right, as E1.3 relied on a function's contract without reading its body: if `total(xs[1:])` gives the sum of the rest, then `xs[0] + rest` is the sum of the whole list. The Derive phase sets this out as a proof.
+
+## Data inside data
+
+A list can hold lists. A model's weights are often kept that way, one list for each layer: `[[0.5, -1.2], [0.3]]`. A list inside can hold lists in turn, to any depth. Counting the numbers in such a list needs more than a loop over its slots, since a slot can hold another list, and loops inside loops handle only as many levels as there are loops. A recursive function follows the shape of the data, as deep as Python has room for calls. `isinstance(x, list)` is `True` when `x` is a list:
+
+```python
+def count(x):
+    if not isinstance(x, list):
+        return 1
+    n = 0
+    for item in x:
+        n = n + count(item)
+    return n
+
+print(count([1, [2, 3], [[4], 5]]), count([[], [[]]]))
+```
+
+<Exercise id="explore-count-nested" />
+
+</Reveal>
+
+<Reveal for="explore-count-nested">
+
+The base case is a value that holds nothing of its kind, here a number, and the recursive case is a list, whatever its items are. A dictionary whose values are dictionaries can be handled the same way, and Build does that for a model's parameters.
+
+M1.2 drew an expression as a tree, with an operation at each branch point and numbers at the leaves, and worked it out from the leaves up. Nested lists can hold such a tree, with the operation first: `["+", 2, ["*", 3, 4]]` is $2 + 3 \times 4$.
+
+```python
+def value(tree):
+    if not isinstance(tree, list):
+        return tree
+    left = value(tree[1])
+    right = value(tree[2])
+    if tree[0] == "+":
+        return left + right
+    return left * right
+
+print(value(["*", ["+", 1, 2], ["+", 3, 4]]))
+```
+
+<Exercise id="explore-tree-value" />
+
+</Reveal>
+
+<Reveal for="explore-tree-value">
+
+`value` works a tree out as M1.2 did, from the leaves up: the calls for the leaves return first, and the first call, for the operation at the top, finishes last. The tree decides what is done first, not the order of writing. Python itself reads every expression you type into a tree like this one before it runs it.
+
+## The Fibonacci numbers
+
+The Fibonacci numbers start 0 and 1, and each one after that is the sum of the two before it: 0, 1, 1, 2, 3, 5, 8, 13, and so on. The definition is already recursive:
+
+```python
+def fib(n):
+    if n < 2:
+        return n
+    return fib(n - 1) + fib(n - 2)
+```
+
+Each recursive case makes two calls, and each of those can make two more.
+
+<Exercise id="explore-fib-calls" />
+
+</Reveal>
+
+<Reveal for="explore-fib-calls">
+
+Nothing is remembered from one call to the next, so the same questions are asked again and again, and the repeats multiply as $n$ grows: each step up in $n$ multiplies the calls by about 1.6. The Derive phase shows that the calls more than double for every two steps.
+
+In the Python that runs these lessons, the plain `fib` makes about one to two million calls a second, depending on the computer, so `fib(25)` takes between an eighth and a quarter of a second. The editor stops a program after about two million lines have run, so there you can time the plain `fib` only up to `fib(27)`. The figure puts the times for larger $n$ at a million calls a second, the slow end, on one line, where each tick mark is ten times the one before it, as in M1.1.
+
+<ScaleLine
+  title="The plain fib, in seconds"
+  description="The time the plain fib takes for n of 25 and 35, at a million calls a second, placed beside a minute, an hour, a day and a year on a line where each tick mark is ten times the one before it."
+  unit="s"
+  items={[
+    { label: "fib(25)", value: 0.24 },
+    { label: "fib(35)", value: 30 },
+    { label: "A minute", value: 60 },
+    { label: "An hour", value: 3600 },
+    { label: "A day", value: 86400 },
+    { label: "A year", value: 31557600 }
+  ]}
+  predict={{ prompt: "Before it appears: where does fib(45) fall? Set your guess, lock it in, then reveal.", label: "fib(45)", value: 3700 }}
+/>
+
+The fix is to remember. A dictionary, `memo`, keeps each answer the first time it is worked out, under its `n`, and every later call for the same `n` looks the answer up instead of working it out again:
+
+```python
+memo = {}
+
+def fib(n):
+    if n < 2:
+        return n
+    if n in memo:
+        return memo[n]
+    answer = fib(n - 1) + fib(n - 2)
+    memo[n] = answer
+    return answer
+```
+
+`fib` changes `memo` in place, as E1.4's functions changed their lists, so it needs no `global`.
+
+<Exercise id="explore-memo-calls" />
+
+</Reveal>
+
+<Reveal for="explore-memo-calls">
+
+Keeping answers in order to look them up later is called *memoisation*, and the dictionary is a *memo*. Each `n` from 2 up is worked out only once, and asking for it again is answered from the memo in one step. `fib(65)` takes a fraction of a millisecond, where the plain `fib` would take about a year or two. The Derive phase counts the calls.
+
+A memo hands back an answer it kept from an earlier call. Here are three functions:
+
+```python
+rate = 0.1   # the script changes rate from time to time
+
+def a(n):
+    if n < 2:
+        return n
+    return a(n - 1) + a(n - 2)
+
+def b(n):
+    return n * rate
+
+def c(n):
+    return n + float(input())
+```
+
+<Exercise id="explore-memo-pure" />
+
+</Reveal>
+
+<Reveal for="explore-memo-pure">
+
+A kept answer is right only if a new call with the same argument would give the same answer, and a call that is skipped must have had nothing else to do, such as printing. Both hold for what E1.3 called a pure function. The memoised `fib` does change something outside itself, `memo`, but only to keep answers that the plain `fib` would give anyway, so every call still gives what the plain `fib` gives, only sooner.
+
+## The names
+
+<Definition term="Recursion">
+
+A *recursive* function calls itself. A *base case* is answered directly; a *recursive case* calls the function on something smaller, so that every chain of calls reaches a base case. To trust a recursive function, check that from every argument it allows, each call moves nearer a base case; check each base case; and check each recursive case on the assumption that the smaller calls it makes are right.
+
+</Definition>
+
+<Definition term="The call stack">
+
+Every call in progress has names of its own. The calls form the *call stack*: a call that makes a call waits until that call returns, then carries on from where it stopped, so the latest call finishes first. Python allows about 1,000 calls in progress at once and stops with `RecursionError` beyond that.
+
+</Definition>
+
+<Definition term="Recursive structure">
+
+A *recursive structure* holds smaller values of its own kind, as a list holds lists or a dictionary holds dictionaries, to any depth. A recursive function follows its shape, with a base case for a value that holds nothing of its kind.
+
+</Definition>
+
+<Definition term="Memoisation">
+
+*Memoisation* keeps each answer a function has worked out, in a dictionary called a *memo*, and looks it up when the same question comes again, so that each case is worked out once. It is safe only for a pure function, whose answer depends on nothing but its arguments and which does nothing else, such as printing, since a call answered from the memo skips the body.
+
+</Definition>
+
+</Reveal>

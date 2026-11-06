@@ -70,6 +70,16 @@ function checkCode(py: NodePython, where: string, spec: CodeSpec, errors: string
   spec.wrong.forEach((wrong, i) => {
     const result = py.run({ code: wrong.code, ...base });
     if (result.passed) errors.push(`${where}: wrong solution ${i + 1} passes every test (${wrong.why}).`);
+    // A wrong solution should fail only for the reason it gives. A NameError usually means it left
+    // out a name the script defines, such as the data its tests use.
+    const unnamed = result.tests.filter((t) => !t.passed && /^NameError\b/.test(t.message ?? "")).map((t) => t.name);
+    if (result.error?.type === "NameError") unnamed.push("the script");
+    if (unnamed.length && !/NameError/.test(wrong.why)) {
+      errors.push(
+        `${where}: wrong solution ${i + 1} fails with NameError (${unnamed.join(", ")}), so it leaves out a name the ` +
+          `reference defines; it should fail only for the reason it gives (${wrong.why}).`,
+      );
+    }
     if (i === 0) {
       firstWrong = {
         tests: result.tests.map((t) => ({

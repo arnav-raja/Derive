@@ -45,7 +45,7 @@ lists `E1.1/values-and-types`, E1.9 (floats compared within a tolerance in tests
 | E1.2 | conditions (E1.3, E1.5, M4.1); loops (E1.3, E1.4, M4.1); loop-invariants (E1.10, E1.9); accumulator-pattern (E1.4, E1.6, M4.11) |
 | E1.3 | defining-functions (E1.4, E1.5, E1.7, L1.1); scope (E1.5, E1.7); pure-functions (E1.9, E5.10); abstraction (E1.7, E1.12, E3.4) |
 | E1.4 | lists (E1.6, E1.10, E2.1, E1.11); dicts-and-sets (E1.6, E1.10, E9.3, E8.4); aliasing-and-mutation (E2.3, E5.2); cost-of-operations (E1.10, E2.7, E6.2) |
-| E1.5 | base-and-recursive-case (E1.10, M11.3); call-stack (E1.10, M11.3); recursive-structures (E1.10, M11.3); memoisation (E1.10, L4.2, E8.2). Drafted; E1.5 will require E1.3 and E1.4, with M1.9 foreshadowed rather than built on |
+| E1.5 | base-and-recursive-case (E1.10, M1.9, M11.3); call-stack (E1.10, E5.3); recursive-structures (E1.10, M1.9, M11.3); memoisation (L4.2, E8.2, L7.3). E1.5 requires E1.3 and E1.4, and M1.9 and L7.3 build on it |
 | E1.6 | strings-as-sequences (L4.2, E1.12); unicode-and-bytes (L4.2, E9.2; not M11.7); files (E1.12, E2.8, E9.2); parsing-and-formatting (E1.12, E2.8) |
 
 Targets marked "not" failed the descendant check and must be replaced when that lesson is
@@ -53,7 +53,7 @@ written; check candidates against the graph before writing `usedBy`.
 
 ## Written so far
 
-M1.1 to M1.6 and E1.1 to E1.4 are written, and every review finding is applied; their files in
+M1.1 to M1.6 and E1.1 to E1.5 are written, and every review finding is applied; their files in
 `content/lessons/` are now the source, and the outlines that were here have been removed. E1.2
 kept the draft concepts and later uses above, and its foreshadows are E1.3, M4.1 and E1.10. So
 E1.3 lists `E1.2/conditions` and `E1.2/loops` in `used`, E1.4 lists `E1.2/loops` and
@@ -61,6 +61,8 @@ E1.3 lists `E1.2/conditions` and `E1.2/loops` in `used`, E1.4 lists `E1.2/loops`
 `E1.2/accumulator-pattern`. E1.3's concepts are as in the table, so E1.5 lists
 `E1.3/defining-functions` and `E1.3/scope`. E1.4's are as in the table, with the extra later
 uses added in its review, so E1.6 lists `E1.4/lists` and `E1.4/dicts-and-sets`. E1.7 now
-requires E1.4 as well as E1.3. M1.4 and M1.5 carry both sides of the contrast
+requires E1.4 as well as E1.3. E1.5 also lists `E1.3/pure-functions`, `E1.3/abstraction` and
+`E1.4/aliasing-and-mutation`, and its review moved its later uses to the table above: M1.9
+(induction) and L7.3 (dynamic programming) now build on E1.5, so they are descendants. M1.4 and M1.5 carry both sides of the contrast
 between linear change (the same amount each step) and exponential change (the same factor
 each step).

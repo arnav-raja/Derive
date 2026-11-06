@@ -86,7 +86,11 @@ export function ScaleLine({
   const [selected, setSelected] = useState<string | null>(null);
   const [linear, setLinear] = useState(false);
   const [phase, setPhase] = useState<PredictPhase>("asking");
-  const [guess, setGuess] = useState(Math.round(((lo + hi) / 2) * 10) / 10);
+  // The slider starts at the left end of the axis, which says nothing about the kept-back value:
+  // the content check keeps that value off the ends. The middle can sit near it by chance, and a
+  // nudge would then lock in a good guess. A guess counts only once the learner has moved it.
+  const [guess, setGuess] = useState(lo);
+  const [moved, setMoved] = useState(false);
 
   const inner = Math.max(120, width - 2 * MARGIN);
   const revealed = !predict || phase === "revealed";
@@ -99,9 +103,9 @@ export function ScaleLine({
   const all = useMemo(() => {
     const list: (ScaleItem & { x: number; hidden?: boolean; guess?: boolean })[] = items.map((i) => ({ ...i, x: 0 }));
     if (predict && revealed) list.push({ label: predict.label, value: predict.value, sym: predict.sym, x: 0 });
-    if (predict && !linear) list.push({ label: "Your guess", value: 10 ** guess, x: 0, guess: true });
+    if (predict && !linear && moved) list.push({ label: "Your guess", value: 10 ** guess, x: 0, guess: true });
     return list;
-  }, [items, predict, revealed, guess, linear]);
+  }, [items, predict, revealed, guess, linear, moved]);
   const placed = placeLabels(all.map((i) => ({ ...i, x: xOf(i.value) })), inner + 2 * MARGIN);
   const rows = Math.max(1, ...placed.map((p) => p.row + 1));
   const above = Math.ceil(rows / 2);
@@ -128,7 +132,8 @@ export function ScaleLine({
           <PredictPanel
             prompt={predict.prompt}
             phase={phase}
-            canLock
+            canLock={moved}
+            lockHint="Move the slider to set your guess."
             onLock={() => setPhase("locked")}
             onReveal={() => setPhase("revealed")}
             onReset={() => setPhase("asking")}
@@ -139,20 +144,27 @@ export function ScaleLine({
                 max={hi}
                 step={0.1}
                 value={guess}
-                onChange={(v) => phase === "asking" && setGuess(v)}
-                display={`${formatValue(10 ** guess, 2)}${unit ? ` ${unit}` : ""}`}
+                onChange={(v) => {
+                  if (phase !== "asking") return;
+                  setGuess(v);
+                  setMoved(true);
+                }}
+                display={moved ? `${formatValue(10 ** guess, 2)}${unit ? ` ${unit}` : ""}` : "not set"}
               />
             }
             verdict={
               <p>
                 {predict.label} is {formatValue(predict.value)}
-                {unit ? ` ${unit}` : ""}. Your guess was {formatValue(10 ** guess, 2)}, off by a factor of{" "}
+                {unit ? ` ${unit}` : ""}. Your guess was {formatValue(10 ** guess, 2)}
+                {unit ? ` ${unit}` : ""}, off by a factor of{" "}
                 <span className="tabular font-semibold">{formatValue(factor, 2)}</span>
                 {factor <= 3
                   ? ": within a factor of 3, which is a good estimate."
                   : factor <= 10
                     ? ": within one power of ten."
-                    : `: about ${Math.round(Math.log10(factor))} powers of ten away. Where did the reasoning slip?`}
+                    : Math.round(Math.log10(factor)) === 1
+                      ? ": about one power of ten away. Where did the reasoning slip?"
+                      : `: about ${Math.round(Math.log10(factor))} powers of ten away. Where did the reasoning slip?`}
               </p>
             }
           />

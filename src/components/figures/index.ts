@@ -6,3 +6,4 @@ export { PartialSums } from "./partial-sums";
 export { ProgramTrace } from "./program-trace";
 export { ScaleLine } from "./scale-line";
 export { Staircase } from "./staircase";
+export { TextBytes } from "./text-bytes";

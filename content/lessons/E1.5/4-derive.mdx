@@ -1,0 +1,69 @@
+## Why `total` is right
+
+Explore trusted `total` with three checks: every call is given a shorter list, the base case is right, and the recursive case is right on the assumption that the smaller call it makes is right. Here the checks are set out as a proof, line by line.
+
+<Exercise id="derive-total-proof" />
+
+<Reveal for="derive-total-proof">
+
+The base case settles the empty list. The recursive case then settles every list of one number, since each of them leans only on the empty list, then every list of two numbers, which lean on lists of one, and so on, one length at a time, so that no length is ever left out. M1.9 makes this way of proving things a tool of its own.
+
+How long a list Python has room for is a question about the stack.
+
+## How deep the stack goes
+
+A call of `total` cannot return until the call it makes has returned, and that call is waiting for one of its own, and so on down to the call for the empty list.
+
+<Exercise id="derive-depth" />
+
+</Reveal>
+
+<Reveal for="derive-depth">
+
+So a list of 5,000 losses, from a short training run, needs 5,001 calls of `total` in progress at once, about five times what Python allows. The proof says what `total` gives when its calls fit. These do not, so Python stops with `RecursionError` before `total` gives anything. Build mends `total` for long lists.
+
+## Counting the calls of `fib`
+
+Write $C(n)$ for the number of calls that the plain `fib(n)` makes, counting the first call itself. `fib(0)` and `fib(1)` call nothing, so $C(0) = C(1) = 1$. For $n \ge 2$, `fib(n)` calls `fib(n - 1)` and then `fib(n - 2)`, and each of those makes calls of its own.
+
+<Exercise id="derive-fib-recurrence" />
+
+</Reveal>
+
+<Reveal for="derive-fib-recurrence">
+
+From $C(0) = C(1) = 1$ the rule gives $C(2) = 3$, $C(3) = 5$, $C(4) = 9$ and $C(5) = 15$, the 15 calls that Explore counted, and each count after that follows from the two before it, much as each Fibonacci number does. How fast do the counts grow? A lower bound is enough to show that the plain `fib` is hopeless.
+
+<Exercise id="derive-fib-double" />
+
+</Reveal>
+
+<Reveal for="derive-fib-double">
+
+The bound is far from tight. `fib(40)` makes 331,160,281 calls, not just over a million, since each step up in $n$ multiplies the calls by about 1.6, while doubling for every two steps is only about 1.41 for each step. But a lower bound is all it takes to rule a program out: `fib(100)` makes more than $2^{50} \approx 1.1 \times 10^{15}$ calls, so at a million calls a second it would take more than 35 years.
+
+A count like this turns into a running time with one measured time and the factor for each step.
+
+<Exercise id="derive-estimate" />
+
+</Reveal>
+
+<Reveal for="derive-estimate">
+
+The factor compounds with every step, and that compounding is what the memo removes.
+
+## Counting the calls with a memo
+
+With the memo, the first call for each $n$ from 2 up works its answer out, and every later call for that $n$ finds it in the memo. `fib(n)` calls `fib(n - 1)` first, and that call returns only once the answer for every case from 2 to $n - 1$ is in the memo. Count the calls that the memoised `fib(n)` makes when the memo starts empty.
+
+<Exercise id="derive-memo-calls" />
+
+</Reveal>
+
+<Reveal for="derive-memo-calls">
+
+For $n = 50$ that is 99 calls in place of 40,730,022,147. Without the memo, each step up in $n$ multiplies the calls by about 1.6; with it, each step adds two. That is the difference between many hours and a fraction of a millisecond.
+
+The memo does not make the calls shallower. The first calls still run one inside another, from `fib(n)` down to `fib(1)`, so from an empty memo `fib(1000)` stops with `RecursionError`.
+
+</Reveal>

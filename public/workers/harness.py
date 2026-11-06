@@ -32,6 +32,29 @@ class InputUnavailable(Exception):
     pass
 
 
+# Python's limit on calls in progress. A program may raise it, but never above _SAFE_LIMIT: much
+# deeper, a recursion overflows the JavaScript stack that Pyodide runs on (in Chromium's worker
+# at about 4,000 calls, in Node at about 7,000), and Pyodide may be unable to run anything more.
+# The limit is put back after every run, so that a raise never carries into the next program.
+_SAFE_LIMIT = 2000
+
+
+@contextlib.contextmanager
+def _guarded_limit():
+    before = sys.getrecursionlimit()
+    real = sys.setrecursionlimit
+
+    def capped(limit):
+        real(min(int(limit), _SAFE_LIMIT))
+
+    sys.setrecursionlimit = capped
+    try:
+        yield
+    finally:
+        sys.setrecursionlimit = real
+        real(before)
+
+
 def _counting_tracer(limit):
     """A trace function that stops learner code after `limit` line events."""
     count = 0
@@ -227,6 +250,11 @@ def _run_tests(ns, output, tests, max_steps, code=None, files=None):
 
 
 def run(payload):
+    with _guarded_limit():
+        return _run(payload)
+
+
+def _run(payload):
     code = payload["code"]
     tests = payload.get("tests")
     max_steps = int(payload.get("maxSteps", 2_000_000))
@@ -239,6 +267,11 @@ def run(payload):
 
 
 def breakit(payload):
+    with _guarded_limit():
+        return _breakit(payload)
+
+
+def _breakit(payload):
     max_steps = int(payload.get("maxSteps", 2_000_000))
     base_ns, base_output, base_error = _execute(payload["code"], max_steps)
     ns, output, error = _execute(payload["broken"], max_steps)
@@ -299,6 +332,11 @@ _TAGGED = (("list", list), ("dict", dict), ("set", set))
 
 
 def trace(payload):
+    with _guarded_limit():
+        return _trace(payload)
+
+
+def _trace(payload):
     code = payload["code"]
     max_events = int(payload.get("maxEvents", 1000))
     steps = []
@@ -339,6 +377,10 @@ def trace(payload):
                 "line": f.f_lineno,
                 "variables": {k: _safe_repr(v) for k, v in names},
             }
+            if f.f_code.co_name != "<module>":
+                # The call as it began, such as countdown(2), so that calls of one function can be
+                # told apart.
+                entry["call"] = f"{f.f_code.co_name}({begun.get(id(f), '')})"
             refs = {k: t for k, t in ((k, tag(v)) for k, v in names) if t}
             if refs:
                 entry["refs"] = refs
@@ -351,10 +393,20 @@ def trace(payload):
     # An error seen in a frame, kept until that frame runs another line. A return straight after
     # it means that the error stopped the frame, which then gave back no value.
     raising = {}
+    # Each call's arguments as it began, by frame. The frames are kept alive, so that no later
+    # frame reuses an id.
+    begun = {}
 
     def tracer(frame, event, arg):
         if frame.f_code.co_filename != LEARNER_FILE:
             return None
+        if event == "call":
+            fc = frame.f_code
+            count = fc.co_argcount + fc.co_kwonlyargcount + bool(fc.co_flags & 0x04) + bool(fc.co_flags & 0x08)
+            params = fc.co_varnames[:count]
+            begun[id(frame)] = ", ".join(_safe_repr(frame.f_locals[p], 24) for p in params if p in frame.f_locals)
+            kept.append(frame)
+            return tracer
         if event == "exception":
             raising[id(frame)] = arg[0].__name__
             return tracer

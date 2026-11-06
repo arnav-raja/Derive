@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { TraceStep } from "@/lib/python/client";
 
-import { changesBetween, finishedStep, frameMarks, frameStatus, returnText, sameCall } from "./trace-frames";
+import { changesBetween, finishedStep, frameHeading, frameMarks, frameStatus, returnText, runningIn, sameCall } from "./trace-frames";
 
 const main = (variables: Record<string, string>, line = 1, refs?: Record<string, string>, digests?: Record<string, number>) => ({
   function: "(main program)",
@@ -83,6 +83,50 @@ const stopped: TraceStep[] = [
   { ...at(4, [main({ count: "0", tick: "<function tick>" }, 6), call("tick", {}, 4)], "return"), raised: "UnboundLocalError" },
   { ...at(6, [main({ count: "0", tick: "<function tick>" }, 6)], "return"), raised: "UnboundLocalError" },
 ];
+
+// def countdown(n): if n == 0: print("go"); return / print(n) / countdown(n - 1) / print(n)
+// countdown(2): three calls in progress, each named by the argument it began with.
+const counting = (n: string, line: number) => ({ function: "countdown", call: `countdown(${n})`, line, variables: { n } });
+const countdownMain = main({ countdown: "<function countdown>" }, 9);
+const nested: TraceStep[] = [
+  { ...at(4, [countdownMain, counting("2", 6), counting("1", 4)]), output: "2\n" },
+  { ...at(6, [countdownMain, counting("2", 6), counting("1", 6)]), output: "2\n1\n" },
+  { ...at(3, [countdownMain, counting("2", 6), counting("1", 6), counting("0", 3)]), output: "2\n1\n" },
+  { ...at(3, [countdownMain, counting("2", 6), counting("1", 6), counting("0", 3)], "return", "None"), output: "2\n1\ngo\n" },
+  { ...at(7, [countdownMain, counting("2", 6), counting("1", 7)]), output: "2\n1\ngo\n" },
+  { ...at(7, [countdownMain, counting("2", 6), counting("1", 7)], "return", "None"), output: "2\n1\ngo\n1\n" },
+];
+
+describe("calls of one function", () => {
+  it("are named by the arguments each began with", () => {
+    expect(frameHeading(nested[2]!.stack[3]!, 3)).toBe("Call `countdown(0)`");
+    expect(frameHeading(nested[2]!.stack[0]!, 0)).toBe("Main program");
+    expect(runningIn(nested[0])).toBe("countdown(1)");
+    expect(runningIn(halveRun[1])).toBe("(main program)");
+    expect(returnText(nested[3]!)).toBe("`countdown(0)` returns `None`");
+  });
+
+  it("fall back to the function's name in a trace without arguments", () => {
+    expect(frameHeading(halveRun[3]!.stack[1]!, 1)).toBe("Call `halve`");
+    expect(runningIn(halveRun[3])).toBe("halve");
+  });
+});
+
+describe("what a line prints", () => {
+  it("is part of what the line changed", () => {
+    expect(changesBetween(nested[0]!, nested[1])).toBe("prints `1`");
+    expect(changesBetween(nested[4]!, nested[5])).toBe("prints `1`");
+  });
+
+  it("is given for every line printed, and only by the line that printed it", () => {
+    const twoLines: TraceStep[] = [
+      { ...at(1, [main({})]), output: "" },
+      { ...at(1, [main({})], "return", "None"), output: "a\n\nb\n" },
+    ];
+    expect(changesBetween(twoLines[0]!, twoLines[1])).toBe("prints `a`, an empty line and `b`");
+    expect(changesBetween(nested[1]!, nested[2])).toBe("calls `countdown` with `n = 0`");
+  });
+});
 
 describe("frame marks", () => {
   it("marks a name made by a line as new and a name it rebinds as changed", () => {
