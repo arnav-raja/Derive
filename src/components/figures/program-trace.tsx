@@ -9,11 +9,14 @@ import { python, type TraceResult, type TraceStep } from "@/lib/python/client";
 
 import { CodeText, FigureFrame, PredictPanel, RangeControl, type PredictPhase } from "./shell";
 import { normalise, sameAnswer } from "./trace-answer";
+import { changesBetween, finishedStep, frameHeading, frameMarks, MAIN, returnText, runningIn } from "./trace-frames";
 
 /*
  * A program run one line at a time by real Python in the browser. Each step
  * shows the line about to run, every variable as it stands and what has been
- * printed so far, so the learner can predict a value before seeing it.
+ * printed so far, so the learner can predict a value before seeing it. While a
+ * function is running, the names of the main program and of every call in
+ * progress are shown side by side, each call with its own.
  */
 
 /** A pause before a line runs, the first time or the given time it is reached, to ask for a value. */
@@ -22,15 +25,12 @@ type Stop = { line: number; variable: string; prompt?: string; pass?: number };
 /** A value the program reads with input(), which the learner can change and run again. */
 type TraceInput = { label: string; value: string; presets?: string[] };
 
-function topVariables(step: TraceStep | undefined): Record<string, string> {
-  return step?.stack.at(-1)?.variables ?? {};
-}
-
-function lookup(step: TraceStep | undefined, name: string): string | undefined {
+/** A name's value as the running code sees it, and the function whose name it is. */
+function lookup(step: TraceStep | undefined, name: string): { value: string; owner: string } | undefined {
   if (!step) return undefined;
   for (let i = step.stack.length - 1; i >= 0; i--) {
     const v = step.stack[i]!.variables[name];
-    if (v !== undefined) return v;
+    if (v !== undefined) return { value: v, owner: i === 0 ? MAIN : step.stack[i]!.function };
   }
   return undefined;
 }
@@ -69,7 +69,8 @@ export function ProgramTrace({
   const [asked, setAsked] = useState<Set<number>>(new Set());
   const [question, setQuestion] = useState<{ stop: Stop; at: number } | null>(null);
   const [answer, setAnswer] = useState("");
-  const [results, setResults] = useState<{ stop: Stop; said: string; actual: string }[]>([]);
+  // owner is the function whose own name was asked about, or null for the main program's.
+  const [results, setResults] = useState<{ stop: Stop; said: string; actual: string; owner: string | null; later: boolean }[]>([]);
   const [outPhase, setOutPhase] = useState<PredictPhase>("asking");
   const [outGuess, setOutGuess] = useState("");
   const [typed, setTyped] = useState<string[]>(() => (inputs ?? []).map((i) => i.value));
@@ -131,21 +132,43 @@ export function ProgramTrace({
 
   function answerStop() {
     if (!question) return;
-    const actual = lookup(steps[step + 1], question.stop.variable) ?? "(not defined yet)";
-    setResults((r) => [...r, { stop: question.stop, said: answer, actual }]);
+    // A line that calls a function finishes only once the call has returned, so the value is read
+    // there, while the figure goes on into the call one step at a time.
+    const done = finishedStep(steps, step);
+    const found = lookup(steps[done], question.stop.variable);
+    const actual = found?.value ?? "(not defined yet)";
+    const owner = found && found.owner !== MAIN ? found.owner : null;
+    setResults((r) => [...r, { stop: question.stop, said: answer, actual, owner, later: done > step + 1 }]);
     setAsked((a) => new Set(a).add(question.at));
     returnFocus.current = true;
     setQuestion(null);
     setStep(step + 1);
   }
 
-  const vars = topVariables(current);
-  const before = topVariables(previous);
   const frames = current?.stack ?? [];
   const lastResult = results.at(-1);
   const blocked = Boolean(predictOutput) && outPhase === "asking";
 
-  const changed = (name: string) => previous !== undefined && before[name] !== vars[name];
+  const variablesTable = (variables: Record<string, string>, marks: Record<string, "new" | "changed">) =>
+    Object.keys(variables).length ? (
+      <table className="w-full text-left text-sm">
+        <tbody>
+          {Object.entries(variables).map(([k, v]) => (
+            <tr key={k} className="border-t border-rule first:border-t-0" data-sym={syms[k]}>
+              <th scope="row" className="py-1 pr-3 font-mono font-normal text-ink">
+                {k}
+              </th>
+              <td className={clsx("py-1 font-mono wrap-anywhere", marks[k] ? "font-semibold text-accent-strong" : "text-ink")}>
+                {v}
+                {marks[k] ? <span className="ml-2 font-sans text-xs font-normal text-ink-muted">{marks[k]}</span> : null}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    ) : (
+      <p className="text-sm text-ink-muted">None yet.</p>
+    );
 
   // A stop still to come, in this run: until every one has been answered, the learner steps
   // line by line, so a jump cannot carry them past a question.
@@ -240,35 +263,43 @@ export function ProgramTrace({
           <div className="flex min-w-0 flex-col gap-3">
             {trace ? (
               <>
-                <div>
-                  <p className="mb-1 text-xs font-semibold tracking-wide text-ink-muted uppercase">
-                    {frames.length > 1 ? `Variables in ${frames.at(-1)?.function}` : "Variables"}
-                  </p>
-                  {Object.keys(vars).length ? (
-                    <table className="w-full text-left text-sm">
-                      <tbody>
-                        {Object.entries(vars).map(([k, v]) => (
-                          <tr key={k} className="border-t border-rule first:border-t-0" data-sym={syms[k]}>
-                            <th scope="row" className="py-1 pr-3 font-mono font-normal text-ink">
-                              {k}
-                            </th>
-                            <td className={clsx("py-1 font-mono break-all", changed(k) ? "font-semibold text-accent-strong" : "text-ink")}>
-                              {v}
-                              {changed(k) ? <span className="ml-2 font-sans text-xs font-normal text-ink-muted">changed</span> : null}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  ) : (
-                    <p className="text-sm text-ink-muted">None yet.</p>
-                  )}
-                </div>
                 {frames.length > 1 ? (
-                  <p className="text-sm text-ink-muted">
-                    Calls in progress: {frames.map((f) => f.function).join(" → ")}
-                  </p>
-                ) : null}
+                  <ol className="flex flex-col gap-2" aria-label="The main program and the calls in progress, the one running now last">
+                    {frames.map((f, i) => {
+                      const top = i === frames.length - 1;
+                      return (
+                        <li
+                          key={i}
+                          aria-current={top ? "true" : undefined}
+                          className={clsx("rounded-md border px-3 py-2", top ? "border-accent/50 bg-accent-soft" : "border-rule bg-surface")}
+                        >
+                          <p className="mb-1 flex flex-wrap items-baseline gap-x-2 text-xs text-ink-muted">
+                            <span className="font-semibold tracking-wide uppercase">
+                              <CodeText text={frameHeading(f, i)} />
+                            </span>
+                            <span>
+                              <CodeText
+                                text={
+                                  top
+                                    ? current?.event === "return"
+                                      ? `returning \`${current.returned ?? "None"}\``
+                                      : "running"
+                                    : `waiting for \`${frames[i + 1]!.function}\` to return`
+                                }
+                              />
+                            </span>
+                          </p>
+                          {variablesTable(f.variables, frameMarks(previous, current, i))}
+                        </li>
+                      );
+                    })}
+                  </ol>
+                ) : (
+                  <div>
+                    <p className="mb-1 text-xs font-semibold tracking-wide text-ink-muted uppercase">Variables</p>
+                    {variablesTable(frames[0]?.variables ?? {}, frameMarks(previous, current, 0))}
+                  </div>
+                )}
                 <div>
                   <p className="mb-1 text-xs font-semibold tracking-wide text-ink-muted uppercase">Printed so far</p>
                   <pre className="max-h-32 overflow-auto rounded-md border border-rule bg-surface px-2 py-1 font-mono text-sm whitespace-pre-wrap text-ink">
@@ -367,8 +398,15 @@ export function ProgramTrace({
               {lastResult ? (
                 <p role="status" className={clsx("text-sm", sameAnswer(lastResult.said, lastResult.actual) ? "text-correct" : "text-ink")}>
                   {sameAnswer(lastResult.said, lastResult.actual) ? "Right: " : "Not quite: "}
-                  you said <code className="font-mono">{lastResult.said}</code>, and <code className="font-mono">{lastResult.stop.variable}</code> is{" "}
-                  <code className="font-mono">{lastResult.actual}</code>.
+                  you said <code className="font-mono">{lastResult.said}</code>, and{" "}
+                  {lastResult.later ? `once line ${lastResult.stop.line} has finished, ` : ""}
+                  <code className="font-mono">{lastResult.stop.variable}</code>
+                  {lastResult.owner ? (
+                    <>
+                      {" "}in <code className="font-mono">{lastResult.owner}</code>
+                    </>
+                  ) : null}{" "}
+                  is <code className="font-mono">{lastResult.actual}</code>.
                 </p>
               ) : null}
               <div className="flex flex-wrap items-center gap-2">
@@ -383,13 +421,18 @@ export function ProgramTrace({
                 </Button>
                 <p className="tabular text-sm text-ink-muted" aria-live="polite">
                   Step {step + 1} of {steps.length}
-                  {current
-                    ? current.event === "line"
-                      ? `: about to run line ${current.line}`
-                      : (frames.at(-1)?.function ?? "(main program)") === "(main program)"
-                        ? ": the program has finished"
-                        : `: returning from ${frames.at(-1)?.function}`
-                    : ""}
+                  {current ? (
+                    current.event === "line" ? (
+                      `: about to run line ${current.line}${runningIn(current) === MAIN ? "" : ` in ${runningIn(current)}`}`
+                    ) : (
+                      <>
+                        {": "}
+                        <CodeText text={returnText(current)} />
+                      </>
+                    )
+                  ) : (
+                    ""
+                  )}
                 </p>
               </div>
               {!stopsLeft ? (
@@ -421,20 +464,9 @@ export function ProgramTrace({
               // answer the question ahead. Each row shows what its own line changed: the names as
               // they stand at the next step, against the names as they stood at this one.
               rows: steps.slice(0, stopsLeft ? step : 200).map((s, i) => {
-                const now = topVariables(s);
-                const after = topVariables(steps[i + 1]);
-                const diff = Object.entries(after)
-                  .filter(([k, v]) => now[k] !== v)
-                  .map(([k, v]) => `\`${k} = ${v}\``)
-                  .join(", ");
-                const fn = s.stack.at(-1)?.function ?? "(main program)";
-                const code =
-                  s.event === "line"
-                    ? `\`${(lines[s.line - 1] ?? "").trim()}\``
-                    : fn === "(main program)"
-                      ? "the program has finished"
-                      : `returning from \`${fn}\``;
-                return [i + 1, s.event === "line" ? s.line : "end", code, diff || "none"];
+                const code = s.event === "line" ? `\`${(lines[s.line - 1] ?? "").trim()}\`` : returnText(s);
+                const line = s.event === "line" ? s.line : runningIn(s) === MAIN ? "end" : s.line;
+                return [i + 1, line, code, changesBetween(s, steps[i + 1]) || "none"];
               }),
             }
           : undefined

@@ -1,0 +1,61 @@
+This lesson builds on E1.1's names, E1.2's conditions and loops, and M1.3's functions. Five quick questions check that they are ready. Answer from memory, without running anything. A miss opens a short re-teach straight away.
+
+<Exercise id="recall-rebind" />
+
+<Reteach for="recall-rebind">
+
+<Callback lesson="E1.1">
+
+An assignment makes the name on its left refer to a value, and it changes no other name. `b = a` makes `b` refer to the value that `a` refers to at that moment, 3. Then `a = a + 1` works out 4 and makes `a` refer to it. Nothing in that line mentions `b`, so `b` still refers to 3.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-one-output" />
+
+<Reteach for="recall-one-output">
+
+<Callback lesson="M1.3">
+
+A function is a rule that gives every input exactly one output. A rule that sends 4 to both 2 and $-2$ gives the input 4 two outputs, so it is not a function. Choosing one of the two, say the positive square root, makes it one: $\sqrt{4}$ is 2 alone.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-compose" />
+
+<Reteach for="recall-compose">
+
+<Callback lesson="M1.3">
+
+In $f(g(4))$ the inner function goes first: $g(4) = 2 \times 4 = 8$, and then $f(8) = 8 + 3 = 11$. The other order gives $g(f(4)) = g(7) = 14$, so the order in which two functions are composed matters.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-while" />
+
+<Reteach for="recall-while">
+
+<Callback lesson="E1.2">
+
+A `while` loop checks its test before every pass. Here `n` goes 1, 2, 4, 8, 16, and `16 < 20` is still `True`, so one more pass makes `n` 32. Then `32 < 20` is `False`, the loop stops, and the program prints 32.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-chain" />
+
+<Reteach for="recall-chain">
+
+<Callback lesson="E1.2">
+
+Python tries the tests of a chain from the top and runs the block of the first one that is `True`, then skips the rest. `15 > 10` is `True`, so `size` refers to `"large"`, and the test `15 > 5` is never tried, although it would be `True` as well.
+
+</Callback>
+
+</Reteach>

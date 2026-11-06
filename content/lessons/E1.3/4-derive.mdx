@@ -1,0 +1,79 @@
+## Working out a call on paper
+
+A call makes each parameter a name for its argument's value, and then works out the body. So a call of a function whose body is a single `return` can be worked out on paper: write out the expression after `return`, with each parameter replaced by its argument. With M1.3's `double`, whose body is `return 2 * x`, the call `double(21)` is $2 \times 21 = 42$. The arguments can be letters as well as numbers.
+
+The simplest layer of a neural network takes a number $x$, multiplies it by a *weight* $w$ and adds a *bias* $b$:
+
+```python
+def layer(x, w, b):
+    return w * x + b
+```
+
+A network passes the output of each layer to the next, as one call's value becomes the next call's argument.
+
+<Exercise id="derive-two-layers" />
+
+<Reveal for="derive-two-layers">
+
+The two layers together act as a single layer, with weight 6 and bias $-1$. Is that so for any two layers? Write $w_1$ and $b_1$ for the inner layer's weight and bias, and $w_2$ and $b_2$ for the outer layer's, typed as `w1`, `b1`, `w2` and `b2`.
+
+<Exercise id="derive-stacked" />
+
+</Reveal>
+
+<Reveal for="derive-stacked">
+
+So `layer(layer(x, w1, b1), w2, b2)` has the same value as `layer(x, w1 * w2, w2 * b1 + b2)`: two layers make one layer, with weight $w_1 w_2$ and bias $w_2 b_1 + b_2$. The same step turns three layers into two, and then into one, and so on for any number. However many such layers are stacked, the whole is still a single layer, and its output plotted against $x$ is still a straight line. That is why real networks put a function of another kind between their layers, such as `relu`, which returns `x` when `x` is positive and 0 otherwise. The ML course takes it from there.
+
+## Two calls or one
+
+Working on paper relied on something: that a call could be replaced by the value it works out, wherever the call stood. For a pure function that is always safe. Here is the reason, for the commonest case, two calls with the same argument.
+
+<Exercise id="derive-pure-twice" />
+
+</Reveal>
+
+<Reveal for="derive-pure-twice">
+
+Every line of the proof leaned on purity. Without it, the two can differ:
+
+```python
+def reading():
+    return float(input())
+
+print(reading() + reading())
+print(2 * reading())
+```
+
+Typed 1, 2 and 5, one per line, the first `print` shows 3.0 and the second shows 10.0. Each call reads the next line, so the two calls on the first line give different values, and the single call on the second line reads yet another. A program, or a compiler, may keep the value of a call and reuse it only when the function is pure. E1.5 does that on purpose, to make a slow function fast. JAX, a library for training models that E5.10 uses, compiles a function once and reuses the result, which gives the right answers only for pure functions.
+
+## A contract proved once
+
+E1.2 proved, with an invariant, that a loop adding the whole numbers from 1 to $n$ ends with $\frac{n(n+1)}{2}$. Here is that loop as a function:
+
+```python
+def triangle(n):
+    """1 + 2 + ... + n, for any whole number n from 0 up."""
+    total = 0
+    for k in range(1, n + 1):
+        total = total + k
+    return total
+```
+
+E1.2's proof holds for every whole number $n$, so it is a contract that never needs checking again: `triangle(n)` returns $\frac{n(n+1)}{2}$. Some training losses compare every pair of examples in a batch, and the next function counts those pairs. Number the examples from 1 to $n$, and pair each one with every example after it. The first is paired with the $n - 1$ examples after it, the second with $n - 2$, and so on, down to the last, which is paired with none. So there are $(n - 1) + (n - 2) + \dots + 1 + 0$ pairs, which is `triangle(n - 1)`:
+
+```python
+def pairs(n):
+    """The number of pairs of different examples in a batch of n, for n from 1 up."""
+    return triangle(n - 1)
+```
+
+<Exercise id="derive-pairs" />
+
+</Reveal>
+
+<Reveal for="derive-pairs">
+
+So a batch of 256 examples has $\frac{255 \times 256}{2} = 32{,}640$ pairs. Nothing inside `triangle` was looked at again. Its contract, proved once in E1.2, did the work, and it does the same at every call, inside `pairs` or anywhere else. That is the payoff of abstraction: a large program can be trusted one function at a time.
+
+</Reveal>

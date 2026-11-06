@@ -184,11 +184,14 @@ function Console({ run, fill, hasTests }: { run: RunResult | null; fill: boolean
             <p className="font-mono text-sm text-code-muted">This run had no tests. Run the tests to check your code.</p>
           )
         ) : (
+          // In the order Python gives them: what was printed, then the error that stopped it.
           <div className="flex flex-col gap-2">
+            {run.output || !run.error ? (
+              <pre className="font-mono text-sm whitespace-pre-wrap text-code-ink">
+                {run.output || <span className="text-code-muted">(nothing printed)</span>}
+              </pre>
+            ) : null}
             {run.error ? <ErrorLine error={run.error} /> : null}
-            <pre className="font-mono text-sm whitespace-pre-wrap text-code-ink">
-              {run.output || (run.error ? "" : <span className="text-code-muted">(nothing printed)</span>)}
-            </pre>
           </div>
         )}
       </div>
@@ -441,12 +444,12 @@ export function BreakitInput({
       </fieldset>
       {result ? (
         <div className="flex flex-col gap-2">
+          <Output text={result.output} label="What the changed program printed" />
           {result.error ? (
             <div className="rounded-lg border border-code-rule bg-code-bg px-3 py-2">
               <ErrorLine error={result.error} />
             </div>
           ) : null}
-          <Output text={result.output} label="What the changed program printed" />
         </div>
       ) : null}
     </div>

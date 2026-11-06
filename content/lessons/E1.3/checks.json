@@ -1,0 +1,262 @@
+{
+  "version": 1,
+  "expressions": {
+    "derive-pairs": {
+      "source": "318451a18a6f22e9",
+      "points": [
+        {
+          "n": "2"
+        },
+        {
+          "n": "-8"
+        },
+        {
+          "n": "1"
+        },
+        {
+          "n": "-5"
+        },
+        {
+          "n": "5"
+        },
+        {
+          "n": "3"
+        }
+      ],
+      "values": [
+        "1.0000000000000000000",
+        "36.000000000000000000",
+        "0",
+        "15.000000000000000000",
+        "10.000000000000000000",
+        "3.0000000000000000000"
+      ]
+    },
+    "derive-stacked": {
+      "source": "951302b04efba12b",
+      "points": [
+        {
+          "x": "37/3",
+          "w1": "15",
+          "b1": "-10",
+          "w2": "-3/4",
+          "b2": "9"
+        },
+        {
+          "x": "-3",
+          "w1": "-19/2",
+          "b1": "-4/3",
+          "w2": "-37/3",
+          "b2": "29"
+        },
+        {
+          "x": "-27",
+          "w1": "-40",
+          "b1": "-5",
+          "w2": "-35/4",
+          "b2": "-11/6"
+        },
+        {
+          "x": "37",
+          "w1": "7/3",
+          "b1": "32/7",
+          "w2": "-31/6",
+          "b2": "-37/5"
+        },
+        {
+          "x": "13",
+          "w1": "-24",
+          "b1": "-8/3",
+          "w2": "9/2",
+          "b2": "-23/3"
+        },
+        {
+          "x": "-13/7",
+          "w1": "-14",
+          "b1": "-16",
+          "w2": "-10",
+          "b2": "37/6"
+        }
+      ],
+      "values": [
+        "-122.25000000000000000",
+        "-306.05555555555555556",
+        "-9408.0833333333333333",
+        "-477.07460317460317460",
+        "-1423.6666666666666667",
+        "-93.833333333333333333"
+      ]
+    },
+    "derive-two-layers": {
+      "source": "acc273ae761a0195",
+      "points": [
+        {
+          "x": "-25/7"
+        },
+        {
+          "x": "-11/2"
+        },
+        {
+          "x": "23"
+        },
+        {
+          "x": "35/3"
+        },
+        {
+          "x": "-16"
+        },
+        {
+          "x": "4/3"
+        }
+      ],
+      "values": [
+        "-22.428571428571428571",
+        "-34.000000000000000000",
+        "137.00000000000000000",
+        "69.000000000000000000",
+        "-97.000000000000000000",
+        "7.0000000000000000000"
+      ]
+    }
+  },
+  "runs": {
+    "build-lr-schedule": {
+      "tests": [
+        {
+          "name": "test_warmup",
+          "description": "During warm-up the rate rises evenly from 0.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_after_warmup",
+          "description": "From the end of warm-up on, the rate holds at the peak.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_settings",
+          "description": "Other peaks and warm-ups, given by position or by name.",
+          "passed": false,
+          "message": "lr_at(50, peak=0.01, warmup=100) is 5e-05, but halfway through a warm-up of 100 steps to 0.01 the rate is 0.005."
+        },
+        {
+          "name": "test_update",
+          "description": "update is the rate at the step times the clipped gradient.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_update_uses_the_functions",
+          "description": "update is built from calls of lr_at and clip.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": "0.0005 0.0005\n"
+    },
+    "build-mean-return": {
+      "tests": [
+        {
+          "name": "test_returns",
+          "description": "mean(2.0, 6.0) returns 4.0.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_other_numbers",
+          "description": "The mean of other pairs, negative numbers included.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_silent",
+          "description": "mean prints nothing, so that it can be called anywhere.",
+          "passed": false,
+          "message": "mean(2.0, 6.0) printed '4.0\\n'. Return the mean, and print it where a person needs to see it."
+        },
+        {
+          "name": "test_script",
+          "description": "The script prints the distance from the centre.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": "4.0\ndistance from the centre: 2.0\n"
+    },
+    "build-smooth-pure": {
+      "tests": [
+        {
+          "name": "test_defined",
+          "description": "There is a function called smoothed.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_values",
+          "description": "smoothed moves previous a tenth of the way towards loss.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_pure",
+          "description": "smoothed leaves the main program's smooth alone, and uses only its arguments.",
+          "passed": false,
+          "message": "Calling smoothed changed the main program's smooth. Return the new value instead, and let the loop assign it."
+        },
+        {
+          "name": "test_silent",
+          "description": "smoothed prints nothing.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_script",
+          "description": "The script still ends with the smoothed loss, for other losses too.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": "3\n2.0\n1.0\n1.5\nsmoothed loss: 0.4020000000000001\n"
+    },
+    "build-steps-to": {
+      "tests": [
+        {
+          "name": "test_halving",
+          "description": "Halving from 1.0 down to 0.001 takes 10 steps.",
+          "passed": false,
+          "message": "steps_to(0.001, 1.0, 0.5) gave None. Does the function return its count, or only print it?"
+        },
+        {
+          "name": "test_other_schedules",
+          "description": "Other starts and factors give their own counts.",
+          "passed": false,
+          "message": "steps_to(1.0, 4.0, 0.9) is None, but a value of 4.0 multiplied by 0.9 at each step first reaches 1.0 or below after 14 steps."
+        },
+        {
+          "name": "test_already_there",
+          "description": "A start at or below the target takes no steps.",
+          "passed": false,
+          "message": "steps_to(4.0, 4.0, 0.9) is None, but 4.0 is not above 4.0, so no step is needed."
+        },
+        {
+          "name": "test_same_twice",
+          "description": "Calling it twice with the same arguments gives the same count.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_silent",
+          "description": "steps_to prints nothing; the caller prints if it needs to.",
+          "passed": false,
+          "message": "steps_to printed '2\\n'. Return the count and leave the printing to the caller."
+        }
+      ],
+      "error": null,
+      "output": "10\nNone\n"
+    }
+  }
+}

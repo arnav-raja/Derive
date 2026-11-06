@@ -434,7 +434,9 @@ export function ExerciseCard({ view }: { view: ExerciseView }) {
             : oneShot
               ? null
               : a.type === "code"
-                ? "Read the message under the first failing test, change that line, and run the tests again."
+                ? run?.error && run.tests.length === 0
+                  ? `The script stopped with ${run.error.type}${run.error.line ? ` on line ${run.error.line}` : ""} before any test could run. Read the message in the Console, fix what it points to, and run the tests again.`
+                  : "Read the message under the first failing test, change that line, and run the tests again."
                 : "Look again, or ask for a hint."}
       </Notice>
     ) : null;

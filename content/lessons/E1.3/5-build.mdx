@@ -1,0 +1,55 @@
+Derive worked calls out on paper. Now write functions of your own. The tests call your functions directly, with many different arguments, so each function must work for every argument its contract allows, and must return its answer, not print it.
+
+## Steps to a target, at any rate
+
+E1.2 counted steps with the start and the factor written into the loop. Make them parameters, so that one function counts the steps for any schedule of that kind.
+
+<Exercise id="build-steps-to" />
+
+<Reveal for="build-steps-to">
+
+One function now answers E1.2's puzzle, its build and any schedule like them, and each call's `value` and `steps` are its own. The tests called `steps_to` again and again and got the same answers every time, which is the mark of a pure function.
+
+## Moving the count out
+
+<Exercise id="build-break-shared-count" />
+
+</Reveal>
+
+<Reveal for="build-break-shared-count">
+
+`count = count + 1` assigns `count`, so `count` is local throughout `halvings`, and the right side asks for the call's own `count` before it has a value. Even with `global count`, the move would be wrong. The second call would carry on from where the first stopped, so `halvings(0.0001)` would give 24 instead of 14, and the program would print 34. An accumulator that belongs to one call is set inside the function, so that every call starts afresh.
+
+## A mean that only prints
+
+<Exercise id="build-mean-return" />
+
+</Reveal>
+
+<Reveal for="build-mean-return">
+
+The fix is small, but it changes what kind of thing `mean` is. A function that prints its answer is a dead end: the answer reaches a person and nothing else. A function that returns its answer can be printed, stored, compared and passed to another function.
+
+## A schedule with settings
+
+Explore used `warmup_lr` through its contract alone. Now write the body of such a function, with defaults for its usual settings, and build an update rule from it and E1.2's gradient clip.
+
+<Exercise id="build-lr-schedule" />
+
+</Reveal>
+
+<Reveal for="build-lr-schedule">
+
+The last test swapped `lr_at` and `clip` for stand-ins and checked that `update` followed them. That is abstraction seen from the other side: `update` relies only on what `lr_at` and `clip` promise, so either of them can be rewritten, or replaced by a better one, without touching `update`. Libraries for training models are built this way, which is why a schedule can be swapped for another with a change to one line.
+
+## Making a function pure
+
+<Exercise id="build-smooth-pure" />
+
+</Reveal>
+
+<Reveal for="build-smooth-pure">
+
+The pure `smoothed` does the same arithmetic as `record`, but now everything it uses comes in as arguments, and everything it produces goes out as its value. It can be tested on its own, as the tests just did, with any previous value and any loss, and the loop that calls it says plainly which name changes: `smooth = smoothed(smooth, float(input()))`.
+
+</Reveal>

@@ -434,6 +434,14 @@ def _parse(text, names, evaluate=True):
                       evaluate=evaluate)
 
 
+def _unevaluated(text, names):
+    """The answer read as typed, without SymPy's own rearranging, or None if it cannot be."""
+    try:
+        return _parse(text, names, evaluate=False)
+    except Exception:  # noqa: BLE001 - the evaluated parse is still checked
+        return None
+
+
 def _read_as(text, names, expr):
     """LaTeX for the answer as the learner wrote it, so the brackets shown are the ones typed."""
     import re
@@ -496,12 +504,34 @@ def _is_completed_square(expr, x):
     return base.is_polynomial(x) and sympy.degree(base, x) == 1
 
 
-def check_form(expr, form, names):
-    """Returns a message when the expression has the wrong shape, else None."""
+def _multiplies_a_sum(raw):
+    """True when the answer as written still has a bracketed sum multiplied or raised to a power.
+
+    SymPy multiplies a number into a sum as it reads it, so 3*(2*x + 1) arrives as 6*x + 3 and
+    looks expanded. The answer as typed, read without evaluating, still shows the bracket. A
+    minus sign in front of a bracket, as in -(x + 1), is multiplied in even then, so it passes."""
+    import sympy
+
+    if raw is None:
+        return False
+    for sub in sympy.preorder_traversal(raw):
+        if isinstance(sub, sympy.Mul) and any(isinstance(arg, sympy.Add) for arg in sub.args):
+            return True
+        if (isinstance(sub, sympy.Pow) and isinstance(sub.base, sympy.Add)
+                and sub.exp.is_Integer and sub.exp > 1):
+            return True
+    return False
+
+
+def check_form(expr, form, names, raw=None):
+    """Returns a message when the expression has the wrong shape, else None.
+
+    raw is the answer read without evaluating, when there is one, for the checks that care
+    about the brackets as typed."""
     import sympy
 
     message = form.get("message")
-    if form.get("expanded") and sympy.expand(expr) != expr:
+    if form.get("expanded") and (sympy.expand(expr) != expr or _multiplies_a_sum(raw)):
         return message or "That is equal, but this step asks for the expanded form."
     if form.get("factored") and sympy.factor(expr) != expr:
         return message or "That is equal, but this step asks for the factored form."
@@ -575,7 +605,7 @@ def check_expression(payload):
         if got is None or abs(got - expected) > sympy.Float("1e-9") * max(1, abs(expected)):
             return {"status": "different", "latex": shown,
                     "message": _different_message(payload, table, expr)}
-    shape = check_form(expr, payload.get("form") or {}, names)
+    shape = check_form(expr, payload.get("form") or {}, names, _unevaluated(text, names))
     if shape:
         return {"status": "form", "latex": shown, "message": shape}
     return {"status": "correct", "latex": shown}
@@ -614,7 +644,8 @@ def fingerprint(payload):
         values.append(str(sympy.N(value, 20)))
     if len(points) < wanted:
         raise ValueError("Could not find enough points where the reference is defined.")
-    shape = check_form(expr, payload.get("form") or {}, names)
+    shape = check_form(expr, payload.get("form") or {}, names,
+                       _unevaluated(payload["reference"], names))
     unknown = _undefined_names(expr, table)
     return {"points": points, "values": values, "formMessage": shape, "unknown": unknown,
             "latex": sympy.latex(expr)}

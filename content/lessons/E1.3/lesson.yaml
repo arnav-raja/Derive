@@ -1,0 +1,96 @@
+code: E1.3
+title: "Functions and abstraction"
+course: E1
+status: review
+summary: >-
+  A function halves the learning rate it is given. After the call, the program prints the rate it
+  passed in and the rate that came back. Has the call changed the rate it was given? Defining and
+  calling functions, the names a call keeps to itself, functions that behave like the mathematical
+  ones of M1.3, and building a program from small named jobs that can each be trusted.
+sittings: 2
+minutes:
+  puzzle: 10
+  recall: 10
+  explore: 45
+  derive: 35
+  build: 60
+  explain: 25
+concepts:
+  taught:
+    - id: E1.3/defining-functions
+      name: Defining and calling functions
+      summary: >-
+        def makes a name refer to a function, a block of lines that runs only when the function is
+        called. A call works out its arguments, makes each parameter a new name for its argument's
+        value, runs the body and ends at the first return it reaches, whose value becomes the value
+        of the call. A function that ends without return gives None, and printing a value is not
+        returning it.
+      usedBy: [E1.4, E1.5, E1.7, L1.1]
+    - id: E1.3/scope
+      name: Local and global names
+      summary: >-
+        Every call has names of its own: its parameters and each name it assigns are local, made
+        when the call starts and gone when it returns, so they never touch a name with the same
+        spelling outside. A name that a function uses without assigning is looked up among the main
+        program's names as they stand when the call runs, and a name assigned anywhere in a function
+        is local throughout it.
+      usedBy: [E1.5, E1.7]
+    - id: E1.3/pure-functions
+      name: Pure functions
+      summary: >-
+        A pure function's value depends on nothing but its arguments, and calling it changes nothing
+        outside it: it reads no outside name that can change, assigns none, prints nothing and reads
+        no input. Like a function in M1.3, it gives the same output for the same input, so a call can
+        be replaced by its value, and two calls with equal arguments by one.
+      usedBy: [E1.9, E5.10]
+    - id: E1.3/abstraction
+      name: Abstraction
+      summary: >-
+        A function names a job, so that its callers rely on what it does, its contract, and not on
+        how it does it. Turning a fixed value into a parameter makes one function serve many cases,
+        functions combine by passing the value of one call to the next, and a contract proved once
+        holds at every call.
+      usedBy: [E1.7, E1.12, E3.4]
+  used:
+    - E1.1/variables-as-names
+    - E1.1/evaluation-order
+    - E1.2/conditions
+    - E1.2/loops
+    - E1.2/accumulator-pattern
+    - E1.2/loop-invariants
+    - M1.3/function-as-mapping
+    - M1.3/composition
+links:
+  requires:
+    - lesson: E1.2
+      bridge: >-
+        E1.2's loops and tests did each job where it was written. A function wraps such a job, like
+        E1.2's count of halvings, under a name of its own, so that it is written once and runs
+        wherever it is called.
+    - lesson: M1.3
+      bridge: >-
+        M1.3 wrote functions with def and fed the output of one function into another. This lesson
+        looks inside a call: where its names live, what it can change, and when a Python function
+        behaves like a mathematical one.
+  contrastsWith:
+    - lesson: M1.3
+      bridge: >-
+        A function in M1.3 gives each input exactly one output. A Python function can also read
+        names that change, print or read input, so two calls with the same argument can disagree;
+        only a pure function behaves like M1.3's.
+  foreshadows:
+    - lesson: E1.4
+      bridge: >-
+        Numbers, strings and bools cannot be changed in place, so a call could change its caller's
+        values only by returning new ones. E1.4's lists can be changed in place, and a function given
+        a list can change the very list its caller holds.
+    - lesson: E1.5
+      bridge: >-
+        Each call has names of its own, so a function can call itself, and every call in progress
+        keeps its own values. E1.5 uses that to solve a problem by solving smaller copies of it.
+    - lesson: L1.1
+      bridge: >-
+        A model is a function with parameters, such as a straight line with its slope and its
+        intercept, and learning is choosing the parameters that fit the data. L1.1 fits one, first
+        by hand and then by rule.
+skills: []
