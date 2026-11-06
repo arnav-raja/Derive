@@ -6,7 +6,7 @@ Explore found that `lr * 2 ** halvings` is 1 before the puzzle's loop starts and
 
 <Reveal for="derive-halving-proof">
 
-The invariant turns a question about running the loop into a question about numbers. The loop stops at the first $h$ with $2^h \ge 1{,}000$, and the first power of two that large is $2^{10} = 1{,}024$, so the program prints 10. Nothing had to run. The floats in this loop are exact, too: `lr` is always a power of two, which a float holds exactly, so the proof describes what Python really does.
+The invariant turns a question about running the loop into a question about numbers, and nothing had to run. The floats in this loop behave, too. `lr` is always a power of two, which a float holds exactly. The floor is not exact: 0.001 is stored as the nearest float, which is a little above 0.001. But no power of two lies between the two, so at every check the test gives the answer it would give with 0.001 itself, and the proof describes what Python really does.
 
 ## Any rate that shrinks by a factor
 
@@ -28,7 +28,7 @@ Here `a` is the starting rate and `r` is a number between 0 and 1, such as 0.5 f
 
 <Reveal for="derive-decay-invariant">
 
-`lr` is $a r^h$ at every check. It starts as $a = a r^0$, and each pass multiplies it by one more factor of $r$, since $a r^h \times r = a r^{h+1}$. When the loop stops, its test has failed as well, so it stops at the first $h$ with $a r^h \le$ `floor`. For the puzzle, with $a = 1$ and $r = \frac{1}{2}$, that is the first $h$ with $\frac{1}{2^h} \le 0.001$, which is 10 again.
+When the loop stops, its test has failed as well, so it stops at the first $h$ with $a r^h \le$ `floor`. For the puzzle, with $a = 1$ and $r = \frac{1}{2}$, that is the first $h$ with $\frac{1}{2^h} \le 0.001$, which is 10 again. For $r = 0.9$ the floats are not exact: 0.9 is not held exactly, and each multiplication rounds a little, so `lr` is $a r^h$ only up to rounding. That can change the count only when $a r^h$ lands within a rounding error of the floor.
 
 Ten halvings shrink a number by a factor of $2^{10} = 1{,}024$, a little more than a thousand. That one fact makes other floors quick to estimate.
 
@@ -38,7 +38,7 @@ Ten halvings shrink a number by a factor of $2^{10} = 1{,}024$, a little more th
 
 <Reveal for="derive-floor-estimate">
 
-$10^{-9}$ is $10^{-3} \times 10^{-3} \times 10^{-3}$, and each factor of $10^{-3}$ takes about 10 halvings, so it takes about 30. It is in fact exactly 30, since $2^{30} = 1{,}073{,}741{,}824$ is the first power of two past $10^9$, while $2^{29} = 536{,}870{,}912$ falls short. Computing uses the same near-match all the time: $2^{10}$ bytes, a kibibyte, is close to a thousand bytes, and $2^{30}$ bytes is close to a billion.
+Computing uses the same near-match all the time: $2^{10}$ bytes, a kibibyte, is close to a thousand bytes, and $2^{30}$ bytes is close to a billion.
 
 ## A running total, proved
 
@@ -58,7 +58,7 @@ Here is a claim: after the pass for $k$, `total` is $\frac{k(k+1)}{2}$. Before t
 
 <Reveal for="derive-sum-step">
 
-The new total is $\frac{(k+1)(k+2)}{2}$, the claim again with $k + 1$ in place of $k$. So the claim is true before the first pass, and every pass keeps it true: it is an invariant. The last pass is the one for $k = n$, so the loop ends with
+So the claim is true before the first pass, and every pass keeps it true: it is an invariant. The last pass is the one for $k = n$, so the loop ends with
 
 $$
 \texttt{total} = \frac{n(n+1)}{2}.

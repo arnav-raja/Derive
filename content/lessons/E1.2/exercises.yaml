@@ -80,6 +80,14 @@ exercises:
       The floats for 0.1 and 0.2 are each a little more than the decimals, and their sum lands one
       float above the float for 0.3. `==` asks for an exact match, so it says `False`.
 
+  - id: recall-exponent
+    phase: recall
+    kind: recall
+    concept: M1.2/exponent-rules
+    prompt: For any whole number $h$, what is $2^{h+1} \div 2^{h}$?
+    answer: { type: number, value: 2, tolerance: { abs: 0 } }
+    explanation: '$2^{h+1} = 2^{h} \times 2^{1}$, by the rule $a^m \times a^n = a^{m+n}$, so dividing by $2^h$ leaves 2.'
+
   # Explore --------------------------------------------------------------------
   - id: explore-boundary
     phase: explore
@@ -176,6 +184,56 @@ exercises:
       `500 < 10000` is `True`, so the first block runs and makes `lr` refer to 0.001, and Python
       skips the rest of the chain. Only the first test that is `True` counts, so the warm-up block
       can now never run, for any step.
+    review:
+      variants:
+        - prompt: |
+            What does this program print?
+
+            ```python
+            score = 85
+            if score >= 50:
+                grade = "pass"
+            elif score >= 80:
+                grade = "distinction"
+            else:
+                grade = "fail"
+            print(grade)
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: distinction, label: '`distinction`' }
+              - { id: pass, label: '`pass`' }
+              - { id: fail, label: '`fail`' }
+            correct: [pass]
+          explanation: >-
+            `85 >= 50` is `True`, so the first block runs and the rest of the chain is skipped. The
+            `distinction` block can never run, since every score of 80 or more is also 50 or more:
+            the narrower test has to come first.
+        - prompt: |
+            What does this program print?
+
+            ```python
+            g = 2.5
+            if g > 1:
+                clipped = 1.0
+            if g < -1:
+                clipped = -1.0
+            else:
+                clipped = g
+            print(clipped)
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: one, label: '`1.0`' }
+              - { id: minus-one, label: '`-1.0`' }
+              - { id: g, label: '`2.5`' }
+            correct: [g]
+          explanation: >-
+            The second `if` starts a new chain. `2.5 > 1` makes `clipped` refer to 1.0, then
+            `2.5 < -1` is `False`, so that chain's `else` runs and makes `clipped` refer to 2.5
+            again.
 
   - id: explore-logged
     phase: explore
@@ -201,7 +259,7 @@ exercises:
     phase: explore
     kind: predict
     concept: E1.2/conditions
-    title: A guard in front
+    title: When the count is 0
     prompt: What does the program print?
     answer:
       type: choice
@@ -244,7 +302,7 @@ exercises:
           explanation: >-
             `not` comes after the comparison, so this is `not (3 > 5)`, which is `not False`, which is
             `True`.
-        - prompt: What does `print(1 < 2 and 2 < 1 or 3 < 4)` show?
+        - prompt: What does `print(3 < 4 or 2 < 1 and 1 > 2)` show?
           answer:
             type: choice
             options:
@@ -252,14 +310,15 @@ exercises:
               - { id: shows-true, label: '`True`' }
             correct: [shows-true]
           explanation: >-
-            `and` comes before `or`, so this is `(1 < 2 and 2 < 1) or 3 < 4`, which is
-            `False or True`, which is `True`.
+            `and` comes before `or`, so this is `3 < 4 or (2 < 1 and 1 > 2)`, which is
+            `True or False`, which is `True`. Worked strictly from the left, it would be
+            `(3 < 4 or 2 < 1) and 1 > 2`, which is `False`.
 
   - id: explore-never-ends
     phase: explore
     kind: predict
     concept: E1.2/loops
-    title: A loop that steps over its stop
+    title: Counting down in threes
     prompt: What does the program print?
     answer:
       type: choice
@@ -412,6 +471,48 @@ exercises:
             Every pass sets `total` back to 0 before adding, so it ends with only the last value, 3.
             A total must be set once, before the loop.
 
+  - id: explore-smallest-start
+    phase: explore
+    kind: predict
+    concept: E1.2/accumulator-pattern
+    title: The smallest of 3, 4 and 5
+    prompt: What does the program print?
+    answer: { type: number, value: 0, tolerance: { abs: 0 } }
+    explanation: >-
+      `smallest` starts at 0, and none of 3, 4 and 5 is below 0, so `k < smallest` is `False` on
+      every pass and `smallest` is never replaced. The program prints 0, which is not one of the
+      numbers at all.
+    review:
+      variants:
+        - prompt: |
+            What does this program print?
+
+            ```python
+            largest = 0
+            for k in range(-5, -1):
+                if k > largest:
+                    largest = k
+            print(largest)
+            ```
+          answer: { type: number, value: 0, tolerance: { abs: 0 } }
+          explanation: >-
+            `k` runs from $-5$ up to $-2$, and none of them is above 0, so `largest` is never
+            replaced and the program prints 0, which is not one of the numbers. A largest so far
+            starts from a real value, such as the first one.
+        - prompt: |
+            What does this program print?
+
+            ```python
+            product = 0
+            for k in range(1, 5):
+                product = product * k
+            print(product)
+            ```
+          answer: { type: number, value: 0, tolerance: { abs: 0 } }
+          explanation: >-
+            `product` starts at 0, and 0 times any number is 0, so it stays 0 on every pass. A
+            product starts at 1, since multiplying by 1 changes nothing.
+
   - id: explore-invariant-product
     phase: explore
     kind: predict
@@ -476,7 +577,8 @@ exercises:
             correct: [triangle]
           explanation: >-
             `n` and `s` go (0, 0), (1, 1), (2, 3), (3, 6), (4, 10), and $\frac{n(n+1)}{2}$ matches
-            every pair. `s == n` holds only for the first two, and the others fail at once.
+            every pair. `s == n` holds only for the first two pairs, `s == 2 * n` only for the first and
+            fourth, and `s < n` for none.
 
   # Derive ---------------------------------------------------------------------
   - id: derive-halving-proof
@@ -485,7 +587,7 @@ exercises:
     concept: E1.2/loop-invariants
     title: Why the loop prints 10
     prompt: >-
-      Each line follows from the one before. Choose the rule that justifies each line. A rule may
+      Each line follows from the lines above it. Choose the rule that justifies each line. A rule may
       be used more than once or not at all.
     answer:
       type: steps
@@ -535,7 +637,7 @@ exercises:
         - { name: h, integer: true }
       lhs: '\texttt{lr} ='
       reference: a*r**h
-      accept: ['a*r^h', 'r^h*a', 'a r^h']
+      accept: ['a*r^h', 'r^h*a', 'a r^h', 'a*(r^h)', 'r**h*a']
       reject: ['a*r', 'a*r^(h - 1)', 'a*r^(h + 1)', 'a*h*r', 'a + h*r', 'r^h', 'a^h*r', 'a/r^h', 'a*(1 - r)^h']
     explanation: >-
       Before the first pass, `lr` is $a = a r^0$. Each pass multiplies `lr` by $r$ and adds 1 to $h$,
@@ -563,14 +665,14 @@ exercises:
     title: The next pass of the total
     prompt: >-
       After the pass for $k$, `total` is $\frac{k(k+1)}{2}$, and the next pass adds $k + 1$. Write the
-      new `total` as one fraction with its top factored, in the same shape as $\frac{k(k+1)}{2}$.
+      new `total` as one fraction with its top factored.
     answer:
       type: expression
       symbols:
         - { name: k, integer: true }
       lhs: '\texttt{total} ='
       reference: (k + 1)*(k + 2)/2
-      accept: ['(k + 2)(k + 1)/2', '(k+1)*(k+2)/2']
+      accept: ['(k + 2)(k + 1)/2', '(k+1)*(k+2)/2', '(k+1)(k+2)/2', '((k+1)*(k+2))/2']
       reject: ['k*(k + 1)/2 + k + 1', '(k^2 + 3*k + 2)/2', 'k*(k + 1)/2', '(k + 1)^2/2', 'k*(k + 1)/2 + 1', '(k + 1)*(k + 2)']
       form:
         factored: true
@@ -589,8 +691,8 @@ exercises:
     title: Clipping a gradient
     prompt: >-
       The script reads one value of a gradient, typed by whoever runs it. Add an `if` chain that
-      makes `clipped` refer to 1.0 when `g` is above 1, to -1.0 when `g` is below -1, and to `g`
-      itself otherwise. The tests type other gradients too, including -1 and 1 exactly.
+      makes `clipped` refer to `1.0` when `g` is above 1, to `-1.0` when `g` is below $-1$, and to
+      `g` itself otherwise. The tests type other gradients too, including $-1$ and 1 exactly.
     answer:
       type: code
       stdin: ["2.5"]
@@ -608,6 +710,8 @@ exercises:
 
         def test_below():
             """For a gradient of -3, clipped is -1."""
+            # rerun("-3") runs your program again with -3 typed at input(). names["clipped"] is what
+            # clipped refers to at the end, and printed is what the program printed.
             names, printed = rerun("-3")
             assert names["clipped"] == -1, f"Typing -3, clipped is {names['clipped']!r}, but anything below -1 becomes -1."
 
@@ -720,10 +824,11 @@ exercises:
                 assert names["steps"] == expected, f"Typing {typed}, steps is {names['steps']}, but it should be {expected}."
 
         def test_already_there():
-            """A target above 4.0 takes no steps."""
-            names, printed = rerun("5")
-            assert names["steps"] == 0, f"Typing 5, steps is {names['steps']}, but the loss starts at 4.0, already below the target."
-            assert names["loss"] == 4.0, f"Typing 5, loss is {names['loss']}, but with no step taken it should still be 4.0."
+            """A target of 4.0 or above takes no steps."""
+            for typed in ["4", "5"]:
+                names, printed = rerun(typed)
+                assert names["steps"] == 0, f"Typing {typed}, steps is {names['steps']}, but a loss of 4.0 is not above a target of {float(typed)}, so no step is taken."
+                assert names["loss"] == 4.0, f"Typing {typed}, loss is {names['loss']}, but with no step taken it should still be 4.0."
       reference: |
         target = float(input())    # the person types 1.0
         loss = 4.0
@@ -781,6 +886,17 @@ exercises:
           why: >-
             Tests `loss < target`, which is `False` at once for a target below 4.0, so no step is
             taken; for a target above 4.0 the loop never stops.
+        - code: |
+            target = float(input())    # the person types 1.0
+            loss = 4.0
+            steps = 0
+
+            while loss >= target:
+                loss = loss * 0.9
+                steps = steps + 1
+
+            print(steps, "steps to a loss of", loss)
+          why: Tests `loss >= target`, so a loss equal to the target still takes a step, and a target of 4.0 takes one.
     explanation: >-
       `while loss > target:` checks before every step, so the loop stops at the first check where
       the loss is at or below the target, and a target above 4.0 takes no steps at all.
@@ -842,6 +958,14 @@ exercises:
             assert names["best"] == 3.3 and names["best_step"] == 1, (
                 f"Typing a single loss, 3.3, best is {names['best']!r} and best_step is "
                 f"{names['best_step']!r}, not 3.3 and 1."
+            )
+
+        def test_large_losses():
+            """Losses in the hundreds are handled too."""
+            names, printed = rerun("3", "250.0", "180.5", "320.0")
+            assert names["best"] == 180.5 and names["best_step"] == 2, (
+                f"Typing the losses 250.0, 180.5 and 320.0, best is {names['best']!r} and best_step is "
+                f"{names['best_step']!r}, not 180.5 and 2."
             )
       reference: |
         n = int(input())    # the person types 5, then 2.31, 1.87, 1.92, 1.64 and 1.70, one per line
@@ -907,6 +1031,19 @@ exercises:
 
             print("best loss", best, "at step", best_step)
           why: Starts `best` at 0, as for a total, but no loss is below 0, so none ever replaces it.
+        - code: |
+            n = int(input())    # the person types 5, then 2.31, 1.87, 1.92, 1.64 and 1.70, one per line
+
+            best = 100
+            best_step = 0
+            for step in range(1, n + 1):
+                loss = float(input())
+                if loss < best:
+                    best = loss
+                    best_step = step
+
+            print("best loss", best, "at step", best_step)
+          why: Starts `best` at a guess, 100, that no loss in the hundreds can beat.
     explanation: >-
       Reading the first loss before the loop gives `best` a real starting value, and the loop from
       step 2 to `n` compares each later loss with it. `<` replaces the best only when a loss is
@@ -916,7 +1053,7 @@ exercises:
     phase: build
     kind: breakit
     concept: E1.2/loops
-    title: Waiting for an exact floor
+    title: A tidier test
     prompt: Predict what happens after the change, then run both versions to see.
     answer:
       type: breakit
@@ -950,7 +1087,7 @@ exercises:
     kind: debug
     concept: E1.2/loops
     covers: [E1.2/accumulator-pattern]
-    title: A total one short
+    title: A total one term short
     prompt: >-
       This script should add up the whole numbers from 1 to `n`, and the person types 100. Run it:
       the loop's total is 4,950, but Python's `sum` says 5,050. Fix the loop so that the two agree
@@ -968,6 +1105,10 @@ exercises:
         print("the loop's total:", total)
         print("Python's sum:    ", sum(range(1, n + 1)))
       tests: |
+        def show(value):
+            """A number with its digits grouped in threes, as the lesson writes it."""
+            return f"{value:,}" if isinstance(value, (int, float)) and not isinstance(value, bool) else repr(value)
+
         def test_typed():
             """For n = 100, total is 5,050."""
             assert total == 5050, f"For n = 100, total is {total:,}, but 1 + 2 + ... + 100 is 5,050."
@@ -976,12 +1117,12 @@ exercises:
             """For n = 1 and n = 4, total is 1 and 10."""
             for typed, expected in [("1", 1), ("4", 10)]:
                 names, printed = rerun(typed)
-                assert names["total"] == expected, f"Typing {typed}, total is {names['total']}, but it should be {expected}."
+                assert names["total"] == expected, f"Typing {typed}, total is {show(names['total'])}, but it should be {expected}."
 
         def test_zero():
             """For n = 0 there is nothing to add, so total is 0."""
             names, printed = rerun("0")
-            assert names["total"] == 0, f"Typing 0, total is {names['total']}, but with nothing to add it should stay 0."
+            assert names["total"] == 0, f"Typing 0, total is {show(names['total'])}, but with nothing to add it should stay 0."
       reference: |
         n = int(input())    # the person types 100
         total = 0
@@ -1053,7 +1194,7 @@ exercises:
       rubric:
         - { id: conditions, criterion: 'Says that a condition is a test whose value is `True` or `False`, that `if` runs its block only when its test is `True`, and that in a chain of `if`, `elif` and `else` only the first block whose test is `True` runs.' }
         - { id: while, criterion: 'Explains that a `while` loop checks its test before every pass, and only then, and stops at the first check where the test is `False`, so something in the loop must move the test towards `False`.' }
-        - { id: accumulator, criterion: 'Describes an accumulator, such as a running total or a count: a name set once before the loop and updated on every pass, which after the loop holds the result over all the passes.' }
+        - { id: accumulator, criterion: 'Describes an accumulator, such as a running total or a count: a name set once before the loop and updated by its passes, a total on every pass and a count only when its test is `True`, which after the loop holds the result over all the passes.' }
         - { id: invariant, criterion: 'Names the invariant of the puzzle''s loop, that `lr` times 2 to the power `halvings` stays 1, and explains why each pass keeps it: halving `lr` and doubling the power cancel out.' }
         - { id: answer, criterion: 'Puts the invariant and the failed test together: the loop stops at the first number of halvings h with 2^h at least 1,000, and 2^10 = 1,024 is the first, so it prints 10.' }
       reference: >-

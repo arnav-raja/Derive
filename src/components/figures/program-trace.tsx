@@ -1,13 +1,14 @@
 "use client";
 
 import { clsx } from "clsx";
-import { useId, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { inputClasses } from "@/components/ui/field";
 import { python, type TraceResult, type TraceStep } from "@/lib/python/client";
 
 import { CodeText, FigureFrame, PredictPanel, RangeControl, type PredictPhase } from "./shell";
+import { normalise, sameAnswer } from "./trace-answer";
 
 /*
  * A program run one line at a time by real Python in the browser. Each step
@@ -32,10 +33,6 @@ function lookup(step: TraceStep | undefined, name: string): string | undefined {
     if (v !== undefined) return v;
   }
   return undefined;
-}
-
-function normalise(s: string): string {
-  return s.replace(/\s+/g, "").replace(/"/g, "'");
 }
 
 export function ProgramTrace({
@@ -78,6 +75,22 @@ export function ProgramTrace({
   const [typed, setTyped] = useState<string[]>(() => (inputs ?? []).map((i) => i.value));
   const [ranWith, setRanWith] = useState<string[] | null>(null);
 
+  // Keyboard and screen-reader users keep their place at a stop: the question takes focus when it
+  // appears, and once it is answered focus goes back to what they were stepping with.
+  const groupRef = useRef<HTMLDivElement>(null);
+  const stopRef = useRef<HTMLInputElement>(null);
+  const steppedWith = useRef<"keys" | "button">("button");
+  const returnFocus = useRef(false);
+  useEffect(() => {
+    if (question) {
+      stopRef.current?.focus();
+    } else if (returnFocus.current) {
+      returnFocus.current = false;
+      const next = groupRef.current?.closest("figure")?.querySelector<HTMLButtonElement>("[data-next-line]");
+      (steppedWith.current === "keys" || !next || next.disabled ? groupRef.current : next)?.focus();
+    }
+  }, [question]);
+
   const steps = trace?.steps ?? [];
   const current = steps[step];
   const previous = step > 0 ? steps[step - 1] : undefined;
@@ -100,8 +113,9 @@ export function ProgramTrace({
     }
   }
 
-  function forward() {
+  function forward(from: "keys" | "button" = "button") {
     if (!trace || step >= steps.length - 1) return;
+    steppedWith.current = from;
     const s = steps[step]!;
     const reached = (line: number) => steps.slice(0, step + 1).filter((t) => t.event === "line" && t.line === line).length;
     const stopIndex = predict.findIndex(
@@ -120,6 +134,7 @@ export function ProgramTrace({
     const actual = lookup(steps[step + 1], question.stop.variable) ?? "(not defined yet)";
     setResults((r) => [...r, { stop: question.stop, said: answer, actual }]);
     setAsked((a) => new Set(a).add(question.at));
+    returnFocus.current = true;
     setQuestion(null);
     setStep(step + 1);
   }
@@ -189,6 +204,7 @@ export function ProgramTrace({
       }
       picture={({ titleId, descId }) => (
         <div
+          ref={groupRef}
           role="group"
           aria-labelledby={titleId}
           aria-describedby={descId}
@@ -197,7 +213,7 @@ export function ProgramTrace({
             if (!trace || question) return;
             if (e.key === "ArrowRight") {
               e.preventDefault();
-              forward();
+              forward("keys");
             } else if (e.key === "ArrowLeft") {
               e.preventDefault();
               setStep((s) => Math.max(0, s - 1));
@@ -275,7 +291,7 @@ export function ProgramTrace({
               {inputs.map((input, i) => (
                 <div key={input.label} className="flex flex-col gap-1">
                   <label htmlFor={`${uid}-in-${i}`} className="text-sm font-medium text-ink">
-                    {input.label}
+                    <CodeText text={input.label} />
                   </label>
                   <div className="flex flex-wrap items-center gap-2">
                     <input
@@ -287,7 +303,7 @@ export function ProgramTrace({
                       className={clsx(inputClasses, "h-9 w-32 font-mono")}
                     />
                     {input.presets?.length ? (
-                      <div className="flex flex-wrap gap-2" role="group" aria-label={`${input.label}: values to try`}>
+                      <div className="flex flex-wrap gap-2" role="group" aria-label={`${input.label.replace(/`/g, "")}: values to try`}>
                         {input.presets.map((p) => (
                           <Button
                             key={p}
@@ -309,7 +325,7 @@ export function ProgramTrace({
                   <Button size="sm" onClick={() => void run()} disabled={running}>
                     {running ? "Running" : "Run it again with these values"}
                   </Button>
-                  <p className="text-sm text-ink-muted">The steps below are still from {ranWith.join(", ")}.</p>
+                  <p className="text-sm text-ink-muted">The trace is still from typing {ranWith.join(", ")}.</p>
                 </div>
               ) : null}
             </div>
@@ -331,6 +347,7 @@ export function ProgramTrace({
                   </label>
                   <div className="flex flex-wrap items-center gap-2">
                     <input
+                      ref={stopRef}
                       id={`${uid}-stop`}
                       value={answer}
                       onChange={(e) => setAnswer(e.target.value)}
@@ -348,8 +365,8 @@ export function ProgramTrace({
                 </div>
               ) : null}
               {lastResult ? (
-                <p role="status" className={clsx("text-sm", normalise(lastResult.said) === normalise(lastResult.actual) ? "text-correct" : "text-ink")}>
-                  {normalise(lastResult.said) === normalise(lastResult.actual) ? "Right: " : "Not quite: "}
+                <p role="status" className={clsx("text-sm", sameAnswer(lastResult.said, lastResult.actual) ? "text-correct" : "text-ink")}>
+                  {sameAnswer(lastResult.said, lastResult.actual) ? "Right: " : "Not quite: "}
                   you said <code className="font-mono">{lastResult.said}</code>, and <code className="font-mono">{lastResult.stop.variable}</code> is{" "}
                   <code className="font-mono">{lastResult.actual}</code>.
                 </p>
@@ -361,7 +378,7 @@ export function ProgramTrace({
                 <Button size="sm" variant="secondary" onClick={() => setStep((s) => Math.max(0, s - 1))} disabled={step === 0 || Boolean(question)}>
                   Back
                 </Button>
-                <Button size="sm" onClick={forward} disabled={step >= steps.length - 1 || Boolean(question)}>
+                <Button size="sm" data-next-line="" onClick={() => forward("button")} disabled={step >= steps.length - 1 || Boolean(question)}>
                   Next line
                 </Button>
                 <p className="tabular text-sm text-ink-muted" aria-live="polite">
@@ -396,15 +413,28 @@ export function ProgramTrace({
       table={
         trace
           ? {
-              columns: ["Step", "Line", "Code", "Changed"],
-              rows: steps.slice(0, 200).map((s, i) => {
-                const prev = i > 0 ? topVariables(steps[i - 1]) : {};
+              columns: ["Step", "Line", "Code", "Changed by this line"],
+              caption: stopsLeft
+                ? "The lines run so far. The rest are listed once every question in this run is answered."
+                : undefined,
+              // While a stop is still to come, list only the lines already run, so the table cannot
+              // answer the question ahead. Each row shows what its own line changed: the names as
+              // they stand at the next step, against the names as they stood at this one.
+              rows: steps.slice(0, stopsLeft ? step : 200).map((s, i) => {
                 const now = topVariables(s);
-                const diff = Object.entries(now)
-                  .filter(([k, v]) => prev[k] !== v)
-                  .map(([k, v]) => `${k} = ${v}`)
+                const after = topVariables(steps[i + 1]);
+                const diff = Object.entries(after)
+                  .filter(([k, v]) => now[k] !== v)
+                  .map(([k, v]) => `\`${k} = ${v}\``)
                   .join(", ");
-                return [i + 1, s.event === "line" ? s.line : "end", s.event === "line" ? (lines[s.line - 1] ?? "").trim() : "(return)", diff || "none"];
+                const fn = s.stack.at(-1)?.function ?? "(main program)";
+                const code =
+                  s.event === "line"
+                    ? `\`${(lines[s.line - 1] ?? "").trim()}\``
+                    : fn === "(main program)"
+                      ? "the program has finished"
+                      : `returning from \`${fn}\``;
+                return [i + 1, s.event === "line" ? s.line : "end", code, diff || "none"];
               }),
             }
           : undefined

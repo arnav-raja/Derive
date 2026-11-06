@@ -377,7 +377,7 @@ export function ExpressionTree({
           const hidden = concealed ? "after you predict" : "not worked out yet";
           return [
             i + 1,
-            n.text,
+            notation === "python" ? `\`${n.text}\`` : n.text,
             isShown(n) ? show(n.value) : hidden,
             ...(units
               ? [isShown(n) ? (n.unit ? (n.unit.ok ? unitText(n.unit.unit) : `clash: ${n.unit.message}`) : "") : hidden]

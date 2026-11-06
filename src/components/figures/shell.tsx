@@ -32,6 +32,7 @@ export function useWidth<T extends HTMLElement>(fallback = 640): [RefObject<T | 
   return [ref, width];
 }
 
+/** A figure's numbers. In a string cell, `name` is set in the code font, as in the figure's sentences. */
 export type DataTable = { columns: string[]; rows: (string | number)[][]; caption?: string };
 
 export function FigureFrame({
@@ -143,11 +144,11 @@ function NumbersTable({ table }: { table: DataTable }) {
                 {r.map((cell, j) =>
                   j === 0 ? (
                     <th key={j} scope="row" className="px-3 py-1.5 font-normal text-ink">
-                      {cell}
+                      {typeof cell === "string" ? <CodeText text={cell} /> : cell}
                     </th>
                   ) : (
                     <td key={j} className="px-3 py-1.5 text-ink">
-                      {cell}
+                      {typeof cell === "string" ? <CodeText text={cell} /> : cell}
                     </td>
                   ),
                 )}

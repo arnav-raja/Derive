@@ -5,8 +5,8 @@ status: review
 summary: >-
   A schedule halves the learning rate again and again until it is no longer above 0.001. How many
   halvings does that take? Conditions that choose which lines run, loops that run lines again and
-  again, totals built up one pass at a time, and the one statement that every pass keeps true,
-  which proves what a loop computes without running it.
+  again, totals built up one pass at a time, and a statement that every pass keeps true, which
+  proves what a loop computes without running it.
 sittings: 2
 minutes:
   puzzle: 10
@@ -20,10 +20,11 @@ concepts:
     - id: E1.2/conditions
       name: Conditions
       summary: >-
-        A comparison such as step < 1000 gives a bool, and and, or and not join bools, stopping as
-        soon as the answer is known. An if statement runs its indented block only when its
-        condition is True. In a chain of if, elif and else exactly one block runs, the first whose
-        test is True, so when the tests overlap their order is part of the meaning.
+        A comparison such as step < 1000 gives a bool. The words and and or join bools, stopping as
+        soon as the answer is known, and not turns True into False and back. An if statement runs
+        its indented block only when its condition is True. In a chain of if, elif and else exactly
+        one block runs, the first whose test is True, so when the tests overlap their order is part
+        of the meaning.
       usedBy: [E1.3, E1.5, M4.1]
     - id: E1.2/loops
       name: Loops
@@ -43,10 +44,10 @@ concepts:
     - id: E1.2/accumulator-pattern
       name: Accumulators
       summary: >-
-        A name set once before a loop and updated on every pass, such as a running total, a count
+        A name set once before a loop, which each pass may update, such as a running total, a count
         or the best value so far, holds after the loop the result over every pass. Set inside the
         loop instead, it starts again on every pass.
-      usedBy: [E1.4, E1.6, M4.11]
+      usedBy: [E1.4, E1.6, M4.1, M4.11]
   used:
     - E1.1/values-and-types
     - E1.1/variables-as-names
@@ -68,8 +69,8 @@ links:
   anotherViewOf:
     - lesson: M1.6
       bridge: >-
-        M1.6 added 1 + 2 + ... + n in one stroke and found n(n + 1)/2. A for loop with a running
-        total adds the same numbers one at a time, and its invariant proves the same formula.
+        M1.6 adds 1 + 2 + ... + n in one stroke, by pairing, and finds n(n + 1)/2. A for loop with a
+        running total adds the same numbers one at a time, and its invariant proves the same formula.
   foreshadows:
     - lesson: E1.3
       bridge: >-

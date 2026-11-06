@@ -73,6 +73,30 @@ function gapText(gap: number): string {
   return `2${superscript(Math.round(Math.log2(gap)))}, about ${formatValue(gap)}`;
 }
 
+/**
+ * The size of an exact difference, as formatValue writes a number, even when it is smaller than
+ * the smallest float: 5e-324 as written is about 5.94 × 10⁻³²⁶ more than the float it becomes.
+ */
+export function sizeText(r: Ratio): string {
+  const n = r.num < 0n ? -r.num : r.num;
+  if (n === 0n) return "0";
+  const v = toNumber({ num: n, den: r.den });
+  if (v >= 1e-300) return formatValue(v);
+  // Here a JavaScript number cannot carry the size, so the leading digits come from the exact
+  // fraction. First the power of ten k with 10^k <= n / den < 10^(k + 1).
+  const atLeast = (k: number) => (k >= 0 ? n >= r.den * 10n ** BigInt(k) : n * 10n ** BigInt(-k) >= r.den);
+  let k = n.toString().length - r.den.toString().length;
+  while (!atLeast(k)) k--;
+  while (atLeast(k + 1)) k++;
+  // Then three significant figures, rounded: n / den × 10^(2 - k), and 2 - k is positive here.
+  let lead = ((n * 10n ** BigInt(2 - k) * 2n + r.den) / (2n * r.den)).toString();
+  if (lead.length > 3) {
+    lead = lead.slice(0, 3);
+    k++;
+  }
+  return `${Number(`${lead[0]}.${lead.slice(1)}`)} × 10${superscript(k)}`;
+}
+
 /** A whole number with its digits grouped, or a fraction over a power of two: 3,602,879,701,896,397 / 2⁵⁵. */
 function fractionText(r: Ratio): string {
   const top = groupDecimal(r.num.toString());
@@ -422,7 +446,7 @@ export function FloatLine({
     const below = r.float - nextDown(r.float);
     const changes = below !== gap;
     const writtenAt = placeOf(r.value, r.float, gap);
-    const off = toNumber(subtract(stored, r.value));
+    const off = subtract(stored, r.value);
     const isInt = !/[.eE]/.test(r.text);
     line = {
       ticks,
@@ -443,7 +467,7 @@ export function FloatLine({
           ) : (
             <>
               <code className="font-mono">{r.text}</code> cannot be held exactly. The nearest float is {fractionText(stored)}, which is exactly{" "}
-              <span className="font-mono break-words">{longDecimal(stored)}</span>, about {formatValue(Math.abs(off))} {off > 0 ? "more" : "less"}{" "}
+              <span className="font-mono break-words">{longDecimal(stored)}</span>, about {sizeText(off)} {off.num > 0n ? "more" : "less"}{" "}
               than {r.text}.
             </>
           )}{" "}

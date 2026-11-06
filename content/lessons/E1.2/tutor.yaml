@@ -45,8 +45,12 @@ misconceptions:
     cue: The learner chooses `ZeroDivisionError` in explore-short-circuit.
   - id: and-or-left-to-right
     belief: '`and` and `or` are worked out strictly from the left, with no order between them.'
-    why: '`and` comes before `or`, as multiplication comes before addition, so `a and b or c` is `(a and b) or c`.'
-    cue: The learner gets `1 < 2 and 2 < 1 or 3 < 4` wrong, or brackets it from the right.
+    why: '`and` comes before `or`, as multiplication comes before addition, so `a or b and c` is `a or (b and c)`.'
+    cue: The learner answers `False` for `3 < 4 or 2 < 1 and 1 > 2`.
+  - id: runs-before-test
+    belief: A `while` loop runs its block once before it first checks its test.
+    why: The test is checked before the first pass too, so a loop whose test is `False` from the start never runs its block.
+    cue: The learner answers 1 for the loop that starts with `k = 10` and tests `k < 10`, or expects a target of 4.0 or above to take a step in build-steps.
   - id: equals-in-test
     belief: '`=` can be used in a test, as in `if x = 3:`.'
     why: '`=` makes a name refer to a value; `==` asks whether two values are equal. Python stops with a `SyntaxError` at `if x = 3:`.'
@@ -72,9 +76,11 @@ misconceptions:
       test with `<`, `<=`, `>` or `>=` still stops when the value is passed.
     cue: The learner chooses 10 or 9 in build-break-never.
   - id: best-starts-at-zero
-    belief: The best value so far starts at 0, like a total.
-    why: For a smallest value, 0 is below every loss, so nothing ever replaces it. Start from a real value, such as the first loss.
-    cue: '`best` stays 0 in build-best-loss.'
+    belief: The best value so far starts at 0, like a total, or at a guess that looks large enough.
+    why: >-
+      For a smallest value, 0 is below every loss, so nothing ever replaces it, and a guess such as
+      100 is below every loss in the hundreds. Start from a real value, such as the first loss.
+    cue: '`best` stays 0, or stays at a guess, in build-best-loss, or the learner answers 3 for explore-smallest-start.'
   - id: invariant-is-the-test
     belief: The invariant of a loop is its test, such as `lr > 0.001`.
     why: >-
@@ -90,15 +96,17 @@ exercises:
       - >-
         Explore: an invariant is true before the loop and kept by every pass, and when the loop stops,
         the invariant and the failed test are true together.
-      - Take only the first pass. What are `lr` and $h$ after it, and what is their product?
+      - Take only the first pass. What are `lr` and $h$ after it, and what is $\texttt{lr} \times 2^h$ then?
       - >-
-        For each line, ask what changed since the line before. A new fact about every check comes
-        from the invariant; a line that solves for `lr`, or turns the test around, rearranges; plain
-        numbers are worked out.
+        If the lines made only of numbers cite the rule for working numbers out, that part is right,
+        and the trouble is in the lines about `lr` and $h$: for each of them, say in words what it
+        adds to the lines above it, and find the rule that allows exactly that. If the number lines
+        do not, start with them.
       - >-
-        For `x = 10` and `y = 0`, with each pass doing `x = x - 1` and `y = y + 1` while `x > 0`:
-        $x + y = 10$ before the loop, each pass keeps it, so it holds at every check; the loop stops
-        when $x = 0$, so then $y = 10$.
+        For `x = 12` and `y = 0`, with each pass doing `x = x - 3` and `y = y + 3` while `x > 0`:
+        $x + y = 12$ before the loop, and each pass keeps it, since it takes 3 from one name and adds
+        3 to the other, so it holds at every check. `x` goes 12, 9, 6, 3, 0, so the loop stops with
+        $x = 0$, and the invariant then says $y = 12$.
     notes: >-
       Citing Work it out for line 2 misses that it is the exponent rule that makes halving and
       doubling cancel. Citing Work it out for line 4 or line 5 misses that both rearrange an equation
@@ -109,11 +117,14 @@ exercises:
       - Explore found that `lr * 2 ** halvings` stays 1 in the halving loop. What does that make `lr` in terms of `halvings`?
       - Take $a = 3$ and $r = \frac{1}{2}$. What is `lr` after 1, 2 and 3 passes?
       - >-
-        Each pass multiplies `lr` by $r$ once. After $h$ passes, how many factors of $r$ has `lr`
-        been multiplied by?
+        If your expression gives $a$ when $h = 0$, that part is right, and the trouble is in how it
+        changes from one check to the next: one pass must turn it into $r$ times itself, with $h$ one
+        larger. If it does not give $a$ at $h = 0$, start from what `lr` is before the first pass.
       - >-
-        A schedule that starts at $a$ and adds $d$ on every pass has $\texttt{lr} = a + d h$ at every
-        check: it is $a$ when $h = 0$, and each pass adds one more $d$.
+        A colony of cells starts at 50 and triples every hour. After 0 hours it has
+        $50 = 50 \times 3^0$ cells, and each hour multiplies the count by one more 3, since
+        $50 \times 3^t \times 3 = 50 \times 3^{t+1}$. So after $t$ hours it has $50 \times 3^t$ cells:
+        150 after 1 hour and 450 after 2.
     notes: >-
       $a r$ forgets that the factor is applied once per pass. $a r^{h - 1}$ or $a r^{h + 1}$ is one
       factor out, so check the case $h = 0$, where `lr` must be $a$. $a + h r$ adds where the loop
@@ -123,7 +134,10 @@ exercises:
       - How many halvings did the puzzle's floor of 0.001, which is $10^{-3}$, take?
       - Derive found that `lr` is $\frac{1}{2^h}$, so the loop stops at the first $h$ with $2^h \ge 10^9$.
       - How many factors of $10^{-3}$ make $10^{-9}$?
-      - '$2^{10} = 1{,}024$ is about $10^3$. What power of two is about $10^3 \times 10^3 \times 10^3$?'
+      - >-
+        If your answer is a multiple of 10, the method is right, and the trouble is in how many
+        factors of $10^{-3}$ make $10^{-9}$. If it is near 1,000 or more, it counts how much the rate
+        must shrink, not how many halvings shrink it that much.
       - >-
         To fall to $10^{-6}$ or below, two factors of $10^{-3}$, takes about $2 \times 10 = 20$
         halvings.
@@ -136,8 +150,9 @@ exercises:
       - "E1.1's rule for assignment: the new `total` is the old one plus what the pass adds."
       - Take $k = 3$. The claim gives 6, and the next pass adds 4. Does the claim with $k = 4$ give the result?
       - >-
-        Write $\frac{k(k+1)}{2} + (k + 1)$ over the common bottom 2, then look for a factor that both
-        parts of the top share.
+        If your answer has the right value but is marked for its shape, the algebra so far is right:
+        the top is a sum of two parts, and they have a factor in common. If the value is wrong, check
+        that you added all of $k + 1$ to $\frac{k(k+1)}{2}$, and not half of it.
       - >-
         If after the pass for $k$ a total is $k^2$ and the next pass adds $2k + 1$, the new total is
         $k^2 + 2k + 1 = (k + 1)^2$, the claim with $k + 1$ in place of $k$.
@@ -153,8 +168,10 @@ exercises:
         Run your script by hand for 2.5, for -3 and for 0.3. Which line sets `clipped` in each case,
         and does every case set it?
       - >-
-        If a test fails only for values inside the range, look at what happens when neither of the
-        first two tests is `True`. If it fails for -3, look at the test meant for values below -1.
+        If test_typed passes, your clip from above is right. Then, if a test fails only for values
+        inside the range, look at what happens when neither of the first two tests is `True`; if it
+        fails for -3, look at the test meant for values below -1. If test_typed fails although your
+        first test clips 2.5, look for a later line that sets `clipped` again.
       - >-
         To give `result` the word "pass" for a score of 50 or more and "fail" otherwise:
         `if score >= 50:` with `result = "pass"` in its block, then `else:` with `result = "fail"`.
@@ -168,15 +185,21 @@ exercises:
       - The puzzle's loop halved `lr` while it was above a floor, and counted the halvings as it went.
       - Work the first three steps out by hand for a target of 3.0. What are `loss` and `steps` after each?
       - >-
-        The two lines that make a step belong inside the loop's block, indented under the `while`
-        line, and the test belongs on the `while` line itself.
+        If test_already_there passes, your loop already leaves a target of 4.0 or above alone. Then,
+        if `steps` comes out as 1, look at which lines run on every pass and which run only once; if
+        it is 0 for a target of 1.0 while `loss` has fallen below 1.0, look at what each pass does to
+        `steps`. If test_already_there fails or never finishes, look at the test on the `while`
+        line: which way round it compares the loss with the target, and what it does when the two
+        are equal.
       - >-
         To count how many doublings take 1 past 100: `x = 1` and `count = 0`, then `while x <= 100:`
         with `x = x * 2` and `count = count + 1` in its block. It ends with `count` at 7 and `x` at 128.
     notes: >-
       `steps` of 1 means an `if` in place of the `while`, or `steps = 0` inside the loop. `steps` of 0
-      for a target of 1.0 means the test is the wrong way round. A step limit for a target of 5
-      means a test that is always `True` once the loss is below the target.
+      for a target of 1.0 means the test is the wrong way round if `loss` is still 4.0, or that the
+      loop never adds to `steps` if `loss` has fallen. A step limit for a target of 5 means a test
+      that is always `True` once the loss is below the target. One step for a target of 4 means
+      `>=` where the prompt asks for a loss above the target.
   build-best-loss:
     rungs:
       - Before any loss has been read, what should `best` be? And what should a pass do with each new loss?
@@ -187,30 +210,37 @@ exercises:
         Run your script by hand for the losses 1.0, 0.6, 0.9 and 0.6. What are `best` and `best_step`
         after each one?
       - >-
-        If the first loss is never read, or read twice, look at where the reading happens and where
-        the range starts. If the tie test fails, look at the comparison that decides when to replace
-        the best.
+        If `best` is right in test_typed, your reading and your comparison are right, and the
+        trouble is in `best_step`: check that it changes exactly when `best` does. If `best` is 0,
+        or only the test with large losses fails, look at where `best` starts. If the first loss is
+        never read, or is read twice, look at where the reading happens and where the range starts.
+        If only the tie test fails, look at the comparison that decides when to replace the best.
       - >-
         To find the largest of three typed numbers: `top = float(input())`, then a loop over the
-        other two that reads each into `x` and runs `top = x` only when `x > top`.
+        other two that reads each into `x` and runs `top = x` only when `x > top`. For the typed
+        numbers 4, 9 and 7, `top` goes 4, then 9, and stays 9.
     notes: >-
-      `best` stuck at 0 means it started at 0, which no loss beats. A tie that keeps the later step
+      `best` stuck at 0 means it started at 0, which no loss beats, and `best` stuck at 100 in the
+      test with large losses means it started at a guess. A tie that keeps the later step
       means `<=`. `best_step` stuck at 1 means it is never updated. A last loss that is never read
       means a range that stops one step early, such as `range(2, n)`. An error saying that input()
       was called again after all the typed lines were read means the loop reads one loss too many.
   build-sum-fencepost:
     rungs:
       - For `n = 4`, which numbers should be added, and which numbers does the loop add?
-      - Explore warned that running one pass too many or too few is the commonest mistake in loops, so check the last pass.
+      - Explore warned that running one pass too many or too few is the commonest mistake in loops.
       - Run the loop by hand for `n = 1`. Does the block run at all?
       - >-
-        The numbers added are right except at one end. Look at the test on the `while` line: is it
-        `True` for the last number that should be added?
+        If the loop adds the right numbers for `n = 4` apart from one end, that part is right, and
+        the trouble is at that end: run the `while` test by hand for the last number that should be
+        added. If it adds the wrong numbers all the way through, look at where `k` starts and at
+        whether `total` grows before or after `k` moves on.
       - >-
-        To print the numbers 5 to 8 with `i` starting at 5 and going up by 1, the `while` test must
-        be `True` for 8 itself and `False` for 9.
+        To print the numbers 5 to 8: `i = 5`, then `while i <= 8:` with `print(i)` and
+        `i = i + 1` in its block. The test is `True` for 8 itself, so 8 is printed, and `False` for
+        9, so the loop stops after four passes.
     notes: >-
-      4,950 means `n` itself is never added. 5,151 means one pass too many. 5,149 means the pass adds
+      4,950 means `n` itself is never added. 5,151 means one pass too many. 5,150 means the pass adds
       after moving `k` on, so it adds 2 up to `n + 1`. A total of 1 for `n = 0` means the total started
       at 1.
 

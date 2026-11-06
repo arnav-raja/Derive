@@ -1,4 +1,4 @@
-This lesson builds on E1.1's names, values and types. Four quick questions check that they are ready. Answer from memory, without running anything. A miss opens a short re-teach straight away.
+This lesson builds on E1.1's names, values and types, and on M1.2's rules for powers. Five quick questions check that they are ready. Answer from memory, without running anything. A miss opens a short re-teach straight away.
 
 <Exercise id="recall-reassign" />
 
@@ -42,7 +42,19 @@ An assignment works in two moves. First Python works out the right side, using t
 
 <Callback lesson="E1.1">
 
-A float holds a whole number times a power of two. 0.1, 0.2 and 0.3 are not of that form, so each is stored as the nearest float, and the sum of the floats for 0.1 and 0.2 lands one float above the float for 0.3. `==` asks for an exact match, so `0.1 + 0.2 == 0.3` is `False`. Floats are compared within a tolerance instead, as in `math.isclose(0.1 + 0.2, 0.3)`, which is `True`.
+A float holds a whole number of at most 53 binary digits times a power of two. 0.1, 0.2 and 0.3 are not of that form, so each is stored as the nearest float, and the sum of the floats for 0.1 and 0.2 lands one float above the float for 0.3. `==` asks for an exact match, so `0.1 + 0.2 == 0.3` is `False`. Floats are compared within a tolerance instead, as in `math.isclose(0.1 + 0.2, 0.3)`, which is `True`.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-exponent" />
+
+<Reteach for="recall-exponent">
+
+<Callback lesson="M1.2">
+
+M1.2's rule $a^m \times a^n = a^{m+n}$ gives $2^{h+1} = 2^{h} \times 2^{1} = 2 \times 2^{h}$: one more in the power is one more factor of 2. So $2^{h+1} \div 2^{h} = 2$, whatever $h$ is, and $2^{10} = 2 \times 2^{9} = 2 \times 512 = 1{,}024$.
 
 </Callback>
 

@@ -868,6 +868,8 @@ exercises:
 
         def test_reads_what_is_typed():
             """lr follows whatever batch size the person types."""
+            # rerun("512") runs your program again with 512 typed at input(). names["lr"] is what lr
+            # refers to at the end, and printed is what the program printed.
             names, printed = rerun("512")
             assert close(names.get("lr", 0), 0.2), f"When the person types 512, lr is {names.get('lr')}, but half the batch should give 0.2. The batch size must come from what is typed."
       reference: |

@@ -1,6 +1,6 @@
 ## Choosing which lines run
 
-A *comparison* asks a question about two values and answers with a `bool`, `True` or `False`. E1.1 used one of them, `==`. Python has six:
+A *comparison* asks a question about two values and answers with a `bool`, `True` or `False`. E1.1 used `==`, and met `<`, `>`, `<=` and `>=` in its tolerance checks. Python has six:
 
 | Comparison | `True` when |
 | --- | --- |
@@ -13,7 +13,7 @@ A *comparison* asks a question about two values and answers with a `bool`, `True
 
 Every comparison comes after the arithmetic in Python's order, so `step % 100 == 0` works out `step % 100` first and compares after.
 
-An `if` statement uses a `bool` to decide whether some lines run at all:
+An `if` statement uses a `bool` to decide whether some lines run at all. Here `loss` is the number a training script uses to measure how wrong a model's answers are, so lower is better:
 
 ```python
 if loss > 10:
@@ -40,16 +40,16 @@ print(lr)
 
 <Reveal for="explore-boundary">
 
-`10000 < 1000` is `False`, and so is `10000 < 10000`, since no number is less than itself. With both tests `False`, the `else` block runs and the script prints `0.0001`. A boundary such as step 10,000 is exactly where a condition is most often wrong, so it is the first value to try. Type a step into the figure, or choose one of the buttons, then step through the script to see which tests Python tries and which block runs.
+A boundary such as step 10,000 is exactly where a condition is most often wrong, so it is the first value to try. Type a step into the figure in digits only, as `int()` reads it, such as `10000`, or choose one of the buttons. Then step through the script to see which tests Python tries and which block runs.
 
 <ProgramTrace
   title="The warm-up schedule, at a step you choose"
-  description="The script reads a step number, tests it against 1,000 and then against 10,000, and prints the learning rate set by the block it runs. Each step of the figure shows the line about to run, the names as they stand and what has been printed so far, starting with the step that was typed."
+  description="The script reads a step number and tests it against 1,000 and, if that test is `False`, against 10,000, then prints the learning rate set by the block it runs. Each step of the figure shows the line about to run, the names as they stand and what has been printed so far, which starts with the number typed, as a terminal shows it."
   code={"step = int(input())\nif step < 1000:\n    lr = 0.001 * step / 1000\nelif step < 10000:\n    lr = 0.001\nelse:\n    lr = 0.0001\nprint(lr)"}
-  inputs={[{ label: "The step typed at input()", value: "500", presets: ["0", "500", "999", "1000", "9999", "10000", "20000"] }]}
+  inputs={[{ label: "The step typed at `input()`, in digits only", value: "500", presets: ["0", "500", "999", "1000", "9999", "10000", "20000"] }]}
 />
 
-Whatever the step, exactly one of the three blocks runs. A colleague tidies the script and writes the tests the other way round:
+A colleague tidies the script and writes the tests the other way round:
 
 ```python
 step = int(input())
@@ -70,9 +70,11 @@ print(lr)
 
 Python tries the tests from the top and runs the block of the first one that is `True`. The rest of the chain is skipped, even a test that would also be `True`. So in the reordered script the warm-up block can never run: every step below 1,000 is also below 10,000, and the first test catches it. When the tests in a chain overlap, their order is part of the meaning. The original script put the narrowest test first, which is the usual cure.
 
+So whatever the step, exactly one block of a chain runs. Each `if` starts a new chain, though. Two `if`s in a row are two separate choices, and both of their blocks can run, and an `else` belongs only to the chain it ends.
+
 ## Joining conditions
 
-Three words join `bool`s into one. `a and b` is `True` when both are. `a or b` is `True` when at least one is. `not a` is `True` when `a` is `False`. They come after the comparisons in Python's order, `not` first, then `and`, then `or`. So `step >= 1000 and step % 100 == 0` makes both comparisons first and joins them after. A training script might use exactly that test to decide when to print the loss: once warm-up is over, and then only every 100 steps. Python also chains comparisons, as maths does: `0 < x < 1` means `0 < x and x < 1`.
+Three words join `bool`s into one. `a and b` is `True` when both are. `a or b` is `True` when at least one is. `not a` is `True` when `a` is `False`. They come after the comparisons in Python's order, `not` first, then `and`, then `or`. So `step >= 1000 and step % 100 == 0` groups as `(step >= 1000) and (step % 100 == 0)`: the two comparisons are the parts that `and` joins. A training script might use exactly that test to decide when to print the loss: once warm-up is over, and then only every 100 steps. Python also chains comparisons, as maths does: `0 < x < 1` means `0 < x and x < 1`.
 
 <Exercise id="explore-logged" />
 
@@ -80,7 +82,7 @@ Three words join `bool`s into one. `a and b` is `True` when both are. `a or b` i
 
 <Reveal for="explore-logged">
 
-With `and`, each part can rule a step out on its own: 900 fails the first part and 1,050 the second. Here is a test with a guard in front, for a count that may still be 0:
+Here is a test for a count that may still be 0:
 
 ```python
 count = 0
@@ -93,7 +95,7 @@ print(count > 0 and 100 / count > 2)
 
 <Reveal for="explore-short-circuit">
 
-`count > 0` is `False`, so the `and` is `False` whatever comes after it, and Python stops without working out `100 / count`. This is called *short-circuiting*: `and` stops at the first `False`, and `or` stops at the first `True`. It makes the order of the parts matter. Written the other way round, as `100 / count > 2 and count > 0`, the same line stops with `ZeroDivisionError`. Putting the guard first is a common pattern.
+Stopping as soon as the answer is known is called *short-circuiting*: `and` stops at the first `False`, and `or` stops at the first `True`. So `and` and `or` are the exception to M1.2's rule of working an expression out from the leaves up. They work out their left part first, and their right part only when the answer still depends on it. That makes the order of the parts matter. Written the other way round, as `100 / count > 2 and count > 0`, the same line stops with `ZeroDivisionError`. A first part that keeps a later part from running when it would fail, as `count > 0` does here, is called a *guard*, and putting the guard first is a common pattern.
 
 ## Running lines again
 
@@ -121,7 +123,7 @@ print(x)
 
 <Reveal for="explore-never-ends">
 
-`x` goes 10, 7, 4, 1, then $-2$: it steps over 0 without landing on it. So `x != 0` is `True` at every check, and the loop runs for ever. A test that waits for one exact value is fragile, because the value can be stepped over. With `while x > 0:`, the loop would stop after four passes, with `x` at $-2$.
+A test that waits for one exact value is fragile, because the value can be stepped over. With `while x > 0:`, the loop would stop after four passes, with `x` at $-2$.
 
 To be sure that a loop stops, find a whole number that every pass makes smaller and that cannot fall below some floor. Here is one.
 
@@ -140,7 +142,7 @@ print(count)
 
 <Reveal for="explore-halve-count">
 
-`n` goes 100, 50, 25, 12, 6, 3, 1, since `//` rounds down, so the loop makes 6 passes, and at the next check `1 > 1` is `False`. Every pass makes the whole number `n` smaller, and a whole number above 1 can shrink only so many times before it reaches 1. So this loop must stop, whatever whole number `n` starts at.
+Every pass makes the whole number `n` smaller, and a whole number above 1 can shrink only so many times before it reaches 1. So this loop must stop, whatever whole number `n` starts at.
 
 ## One pass for each number
 
@@ -159,7 +161,7 @@ for k in range(1, 5):
 
 <Reveal for="explore-range">
 
-`k` takes the values 3 to 9, which is 7 values. In general `range(a, b)` has $b - a$ values, and `range(n)` has exactly $n$. Leaving the end out makes those counts easy. The price is that running one pass too many or too few, an *off-by-one* mistake, is the commonest mistake in loops, so the first and last values are always worth checking.
+Leaving the end out makes the counts easy: `range(a, b)` has $b - a$ values, and `range(n)` has exactly $n$. The price is that running one pass too many or too few, an *off-by-one* mistake, is the commonest mistake in loops, so the first and last values are always worth checking.
 
 A loop often builds up an answer one pass at a time. Here `total` is set to 0 before the loop, and each pass adds the next number to it. Step through it; the figure stops once.
 
@@ -186,7 +188,25 @@ print(count)
 
 <Reveal for="explore-count-multiples">
 
-The multiples of 7 from 1 to 1,000 are $1 \times 7$ up to $142 \times 7 = 994$, since $143 \times 7 = 1{,}001$ is past the end, so `count` ends at 142. A total, a count, and the largest or smallest value so far are all built the same way: set once before the loop, and updated by every pass.
+A total, a count, and the largest or smallest value so far are all built the same way: set once before the loop, then updated by the passes, on every pass for a running total, and only on the passes whose test is `True` for a count or the best value so far.
+
+Here a loop looks for the smallest of the numbers 3, 4 and 5:
+
+```python
+smallest = 0
+for k in range(3, 6):
+    if k < smallest:
+        smallest = k
+print(smallest)
+```
+
+<Exercise id="explore-smallest-start" />
+
+</Reveal>
+
+<Reveal for="explore-smallest-start">
+
+A total starts at 0 because adding 0 changes nothing, and a product starts at 1 because multiplying by 1 changes nothing. The smallest value so far has no such starting value. 0 is below every number here, so nothing ever replaces it, and any other guess could be below all the numbers too. So the smallest so far starts from a real value, such as the first one, and the loop compares the rest with it.
 
 ## What every pass keeps
 
@@ -198,7 +218,7 @@ Look again at the puzzle's loop. On every pass both names change: `lr` halves, a
 
 <Reveal for="explore-invariant-product">
 
-`lr * 2 ** halvings` is 1 before the first pass, and every pass keeps it at 1, since halving `lr` and doubling `2 ** halvings` cancel out. A statement that is true before a loop starts, and that every pass keeps true, is called an *invariant* of the loop. `lr` and `halvings` change on every pass, but the invariant does not, so it holds at every check, including the last.
+A statement that is true before a loop starts, and that every pass keeps true, is called an *invariant* of the loop. Here it is `lr * 2 ** halvings == 1`. `lr` and `halvings` change on every pass, but the invariant does not, so it holds at every check, including the last.
 
 That last check is the useful one. When the loop stops, two things are true at once: the invariant, and the failure of the test `lr > 0.001`. The Derive phase puts the two together to prove what the loop prints, without running it.
 
@@ -206,7 +226,7 @@ That last check is the useful one. When the loop stops, two things are true at o
 
 <Definition term="Condition">
 
-A *condition* is an expression whose value is a `bool`, such as `step < 1000` or `step >= 1000 and step % 100 == 0`. An `if` statement runs its indented block only when its condition is `True`. In a chain of `if`, `elif` and `else`, Python tries the tests from the top and runs exactly one block: that of the first test that is `True`, or the `else` block when none is. `and` and `or` stop as soon as their answer is known.
+A *condition* is an expression whose value is a `bool`, such as `step < 1000` or `step >= 1000 and step % 100 == 0`. An `if` statement runs its indented block only when its condition is `True`. In a chain of `if`, `elif` and `else`, Python tries the tests from the top and runs exactly one block: that of the first test that is `True`, or the `else` block when none is. `and` and `or` stop as soon as their answer is known. The condition after `if`, `elif` or `while` is also called its *test*.
 
 </Definition>
 
@@ -218,7 +238,7 @@ A *loop* runs a block of lines again and again. A `while` loop checks its test b
 
 <Definition term="Accumulator">
 
-An *accumulator* is a name set once before a loop and updated on every pass, such as a running total, a count or the best value so far. After the loop it holds the result over all the passes. Set inside the loop instead, it would start again on every pass.
+An *accumulator* is a name set once before a loop and updated by its passes, such as a running total, a count or the best value so far: a total changes on every pass, and a count or a best only on the passes whose test is `True`. After the loop it holds the result over all the passes. Set inside the loop instead, it would start again on every pass.
 
 </Definition>
 

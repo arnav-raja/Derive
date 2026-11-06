@@ -1,16 +1,16 @@
-Derive proved what two loops compute. Now write conditions and loops of your own, and meet the two mistakes that loops are famous for: a loop that never stops, and a loop that runs one pass too many or too few.
+Derive proved what two loops compute. Now write conditions and loops of your own, then break one on purpose and mend another.
 
 Each script here reads its input with `input()`, as E1.1's batch-size script did. The tests then run your script again, typing other values, so it must work for every value, not only the one shown.
 
 ## Clipping a gradient
 
-Now and then, training produces a gradient so large that a single step throws the model far off course. A common guard is to *clip* each value of the gradient: anything above 1 becomes 1, anything below $-1$ becomes $-1$, and anything in between is left alone.
+Training improves a model by nudging each of its settings, and the *gradient* says how: it has one number for each setting, giving which way and how steeply the loss changes as that setting changes. Now and then, training produces a gradient so large that a single step throws the model far off course. A common guard is to *clip* each value of the gradient: anything above 1 becomes 1, anything below $-1$ becomes $-1$, and anything in between is left alone.
 
 <Exercise id="build-clip" />
 
 <Reveal for="build-clip">
 
-One chain covers the three cases, and the edges need no case of their own: at exactly 1 or $-1$, clipping and leaving alone give the same value. Python also has this choice built in, as two functions. `min(a, b)` gives the smaller of two values and `max(a, b)` the larger, so `max(-1.0, min(1.0, g))` clips in one line: `min` brings anything above 1 down to 1, then `max` brings anything below $-1$ up to $-1$. Writing the chain first is how you know what the one-liner means, and the tests that typed $-1$ and 1 are how you know that it gets the edges right.
+The edges need no case of their own: at exactly 1 or $-1$, clipping and leaving alone give the same value. Python also has this choice built in, as two functions. `min(a, b)` gives the smaller of two values and `max(a, b)` the larger, so `max(-1.0, min(1.0, g))` clips in one line: `min` brings anything above 1 down to 1, then `max` brings anything below $-1$ up to $-1$. Writing the chain first is how you know what the one-liner means, and the checks that typed $-1$ and 1 are how you know that it gets the edges right.
 
 ## Steps to a target
 
@@ -22,7 +22,7 @@ A model's loss falls quickly at first, then more and more slowly. A rough pictur
 
 <Reveal for="build-steps">
 
-A target of 1.0 takes 14 steps: $4 \times 0.9^{13}$ is about 1.02, still above it, and $4 \times 0.9^{14}$ is about 0.92. That is Derive's invariant at work, since at every check `loss` is $4 \times 0.9^{\texttt{steps}}$. A target above the starting loss takes no steps at all: the test is checked before the first pass, gives `False`, and the block never runs.
+A target of 1.0 takes 14 steps: $4 \times 0.9^{13}$ is about 1.02, still above it, and $4 \times 0.9^{14}$ is about 0.92. That is Derive's invariant at work: at every check `loss` is $4 \times 0.9^{\texttt{steps}}$, up to rounding, since 0.9 is not held exactly and each multiplication rounds a little. The rounding is far too small to change the counts the tests ask for. It matters only at a target the loss could reach exactly. $4 \times 0.9^7$ is exactly 1.9131876, but after 7 steps `loss` is 1.9131876000000005, a little above the float for 1.9131876, so a target of 1.9131876 takes an eighth step.
 
 ## The best loss so far
 
@@ -34,9 +34,9 @@ During training, a script usually keeps the best result so far, so that the best
 
 <Reveal for="build-best-loss">
 
-The best loss so far is an accumulator guarded by a condition: a pass changes it only when the new loss beats it. Two choices need care. Before the loop, `best` must start from a real loss, such as the first one, and not from 0, the start of a total, which every loss fails to beat. And `<` keeps the earlier step in a tie, while `<=` would keep the later one. Python's `min(best, loss)` gives the smaller of the two in one call, but it cannot tell you at which step the smallest came, which is why the loop updates `best_step` alongside.
+The best loss so far is an accumulator guarded by a condition: a pass changes it only when the new loss beats it. Two choices need care. As Explore found, `best` must start from a real loss, such as the first one: not from 0, the start of a total, which every loss fails to beat, nor from a guess such as 100, which a large loss never beats. And `<` keeps the earlier step in a tie, while `<=` would keep the later one. Python's `min(best, loss)` gives the smaller of the two in one call, but it cannot tell you at which step the smallest came, which is why the loop updates `best_step` alongside.
 
-## A loop that waits for an exact value
+## Changing the puzzle's test
 
 The puzzle's test was `lr > 0.001`. A tidier-looking test asks for the floor exactly.
 
@@ -46,9 +46,9 @@ The puzzle's test was `lr > 0.001`. A tidier-looking test asks for the floor exa
 
 <Reveal for="build-break-never">
 
-`lr` goes from about 0.00195 straight to about 0.000977, past 0.001 without ever equalling it, so `lr != 0.001` stays `True`. The loop keeps halving until, after 1,075 halvings, `lr` is too small for any float other than 0.0, and 0.0 halved is 0.0 for ever. The test never becomes `False`, so the program has to be stopped from outside. E1.1 found that floats rarely land exactly where the decimals say. So a loop should never wait for a float to equal a value: test with `<`, `<=`, `>` or `>=`, so that stepping past the floor still stops the loop.
+The halving goes on. A float's power of two cannot go below $2^{-1074}$, so after 1,074 halvings `lr` is $2^{-1074}$, about $5 \times 10^{-324}$, the smallest float above 0. The 1,075th halving gives 0.0, and 0.0 halved is 0.0 for ever, so the program has to be stopped from outside. E1.1 found that floats rarely land exactly where the decimals say. So a loop should never wait for a float to equal a value: test with `<`, `<=`, `>` or `>=`, so that stepping past the floor still stops the loop.
 
-## A total one short
+## A total one term short
 
 Derive proved that adding the whole numbers from 1 to $n$ gives $\frac{n(n+1)}{2}$, which is 5,050 for $n = 100$. The script in this exercise also prints Python's own `sum(range(1, n + 1))`, which adds up every number in the range, as a check on its loop.
 
@@ -58,6 +58,6 @@ Derive proved that adding the whole numbers from 1 to $n$ gives $\frac{n(n+1)}{2
 
 <Reveal for="build-sum-fencepost">
 
-The test `k < n` stops the loop before the pass for `k` equal to `n`, so 100 is never added, and the total comes out 100 short, at 4,950. With `k <= n` the last pass is the one for `n`, and the loop agrees with `sum(range(1, n + 1))` and with $\frac{n(n+1)}{2}$ for every $n$, including 0, when the loop never runs and the total stays 0. A `while` loop that starts `k` at 1 and runs while `k <= n` makes exactly the passes of `for k in range(1, n + 1)`, which is the shorter way to write it. When a loop's count is in doubt, check the smallest cases, 0 and 1, by hand: off-by-one mistakes show up there first.
+With `k <= n` the loop agrees with `sum(range(1, n + 1))` and with $\frac{n(n+1)}{2}$ for every $n$, including 0, when the loop never runs. A `while` loop that starts `k` at 1 and runs while `k <= n` makes exactly the passes of `for k in range(1, n + 1)`, which is the shorter way to write it. When a loop's count is in doubt, check the smallest cases, 0 and 1, by hand: off-by-one mistakes show up there first.
 
 </Reveal>

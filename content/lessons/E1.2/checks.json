@@ -108,6 +108,12 @@
           "description": "With a single step, that step is the best.",
           "passed": true,
           "message": null
+        },
+        {
+          "name": "test_large_losses",
+          "description": "Losses in the hundreds are handled too.",
+          "passed": true,
+          "message": null
         }
       ],
       "error": null,
@@ -159,7 +165,7 @@
         },
         {
           "name": "test_already_there",
-          "description": "A target above 4.0 takes no steps.",
+          "description": "A target of 4.0 or above takes no steps.",
           "passed": true,
           "message": null
         }
