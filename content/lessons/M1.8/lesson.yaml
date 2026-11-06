@@ -1,12 +1,12 @@
 code: M1.8
 title: "Proof I: direct proof, contrapositive and contradiction"
 course: M1
-status: draft
+status: ready
 summary: >-
-  The formula $n^2 + n + 41$ gives a prime for each whole number from 0 to 39, forty primes in a
-  row. Is it prime for every whole number? Why agreeing cases prove nothing, and how a proof covers
-  every case at once: starting from definitions, proving a claim directly, by its contrapositive
-  and by contradiction, and the ways an argument that looks like a proof can fail.
+  The formula n² + n + 41 gives at least forty primes in a row. Is it prime for every whole
+  number? How a proof covers every case at once: starting from definitions, proving a claim
+  directly, by its contrapositive and by contradiction, and the ways an argument that looks like a
+  proof can fail.
 sittings: 2
 minutes:
   puzzle: 10
@@ -21,11 +21,12 @@ concepts:
       name: What a proof is
       summary: >-
         A proof is a chain of statements, each following from definitions, from results already
-        proved or from what is assumed, by a stated rule, so that it covers every case at once.
+        proved or from what is assumed, by a rule that can be named, so that it covers every case
+        at once.
         Checking cases settles a claim only when every case can be checked. For a claim about
         infinitely many cases, agreeing cases are evidence, never proof, while one counterexample
-        disproves it. An argument fails when it proves the converse, divides by something that may be 0, or
-        assumes what it set out to prove.
+        disproves it. An argument fails when it reasons from the converse, divides by something that
+        may be 0, or assumes what it set out to prove.
       usedBy: [M1.9, M3.2, M9.7]
     - id: M1.8/direct-proof
       name: Direct proof and proof by cases
@@ -45,10 +46,10 @@ concepts:
     - id: M1.8/contradiction
       name: Proof by contradiction
       summary: >-
-        To prove a claim, assume that it is false and show that the assumption leads to something
-        impossible, such as a statement and its denial both true. Then the assumption was false, and
+        To prove a claim, suppose that it is false and show that the supposition leads to something
+        impossible, such as a statement and its denial both true. Then the supposition was false, and
         the claim is true. So $\sqrt{2}$ is not a fraction, there are infinitely many primes, and a
-        whole number that is not prime has a factor no larger than its square root.
+        whole number of at least 2 that is not prime has a factor from 2 up to its square root.
       usedBy: [M1.9, M3.2, M9.7]
   used:
     - M1.2/equivalence
@@ -69,8 +70,9 @@ links:
     - lesson: E1.2
       bridge: >-
         E1.2 proved what a loop computes with an invariant, a statement that every pass keeps true.
-        That is a direct proof about every pass at once, where running the loop checks only the
-        passes it makes.
+        Its key step, that a pass which starts with the statement true ends with it true, is a direct
+        proof about any pass at once, where running the loop checks only the passes it makes. M1.9
+        shows why the steps chain together.
   foreshadows:
     - lesson: M1.9
       bridge: >-
@@ -81,7 +83,8 @@ links:
       bridge: >-
         A limit is defined with for every and there is, and its proofs are direct proofs that choose
         a distance for each tolerance. That a function has only one limit at a point is proved by
-        contradiction.
+        contradiction, and M3.2's completeness fills the gaps between the fractions, such as the one
+        at $\sqrt{2}$ that this lesson proves is there.
     - lesson: M9.7
       bridge: >-
         A hypothesis test reasons like a proof by contradiction: assume the model is no better than

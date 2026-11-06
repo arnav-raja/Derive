@@ -2,7 +2,7 @@
   "version": 1,
   "expressions": {
     "derive-odd-square": {
-      "source": "1e31b9d3fb234b63",
+      "source": "9a86e46dbb175eac",
       "points": [
         {
           "k": "-8"
@@ -33,7 +33,7 @@
       ]
     },
     "derive-three-square": {
-      "source": "1bc7c9ac56851add",
+      "source": "bf7ed69a10ed7038",
       "points": [
         {
           "k": "1"
@@ -83,7 +83,7 @@
           "name": "test_six",
           "description": "For the first six primes, Euclid's number is 30,031, whose smallest factor is 59.",
           "passed": false,
-          "message": "euclid_number([2, 3, 5, 7, 11, 13]) gives 30030, not 30031."
+          "message": "euclid_number([2, 3, 5, 7, 11, 13]) gives 30,030, not 30,031."
         },
         {
           "name": "test_missing",
@@ -96,12 +96,6 @@
           "description": "The argument works for any list of primes: for [3, 5] the number is 16, and 2 is missing from the list.",
           "passed": false,
           "message": "euclid_number([3, 5]) gives 15, not 16."
-        },
-        {
-          "name": "test_list_unchanged",
-          "description": "The list given is left as it was.",
-          "passed": true,
-          "message": null
         }
       ],
       "error": null,
@@ -119,7 +113,7 @@
           "name": "test_euler",
           "description": "The puzzle's formula first fails at n = 40.",
           "passed": false,
-          "message": "first_failure(euler, 100) gives 1681, not 40. It should give n, the number put into the formula, not the formula's value."
+          "message": "first_failure(euler, 100) gives 1,681, not 40. It should give n, the number put into the formula, not the formula's value."
         },
         {
           "name": "test_no_failure",
@@ -131,7 +125,7 @@
           "name": "test_moved_along",
           "description": "n² − n + 41 first fails at n = 41.",
           "passed": false,
-          "message": "first_failure(legendre, 100) gives 1681, not 41."
+          "message": "first_failure(shifted, 100) gives 1,681, not 41."
         },
         {
           "name": "test_starts_at_zero",
@@ -160,14 +154,14 @@
         {
           "name": "test_smallest_factor",
           "description": "smallest_factor finds the smallest factor from 2 up.",
-          "passed": false,
-          "message": "smallest_factor(4) gives 4, not 2."
+          "passed": true,
+          "message": null
         },
         {
           "name": "test_square_root_itself",
-          "description": "The search tries isqrt(n) itself, so 1,681 = 41 × 41 and 1,763 = 41 × 43 are caught.",
+          "description": "The search tries isqrt(n) itself, so a square such as 49 = 7 × 7 is caught.",
           "passed": false,
-          "message": "smallest_factor(9) gives 9, not 3: the search must try every d up to and including isqrt(9), which is 3."
+          "message": "smallest_factor(9) gives 9, not 3: 9 = 3 × 3, and 3 is isqrt(9)."
         },
         {
           "name": "test_prime_is_its_own_factor",
@@ -179,7 +173,7 @@
           "name": "test_primes_below_sixty",
           "description": "is_prime picks out exactly the primes below 60.",
           "passed": false,
-          "message": "The whole numbers below 60 that is_prime calls prime are [2, 3, 4, 5, 6, 7, 8, 9, 11, 13, 15, 17, 19, 23, 25, 29, 31, 35, 37, 41, 43, 47, 49, 53, 59], not [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59]."
+          "message": "is_prime says that these numbers below 60 are prime, and they are not: [4, 6, 8, 9, 15, 25, 35, 49]."
         },
         {
           "name": "test_below_two",

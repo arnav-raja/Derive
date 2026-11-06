@@ -6,7 +6,7 @@ Each exercise in this phase has tests, in the tab `tests.py`. You need not read 
 
 `n % d` is the remainder when `n` is divided by `d`, so `17 % 5` is 2, and `d` divides `n` exactly when `n % d == 0`. `isqrt(n)`, from Python's `math` module, is the square root of a whole number rounded down to a whole number, so `isqrt(1681)` is 41, and so is `isqrt(1700)`. A program that uses it starts with the line `from math import isqrt`.
 
-A `for` statement runs the lines indented below it once for each value that its `range` gives, and `if` runs the lines indented below it only when its condition is `True`. A `return` ends the function at once, wherever it is, even inside a loop:
+A `for` statement runs the lines indented below it once for each value that its `range` gives: `range(a, b)` gives the whole numbers from `a` up to but not including `b`, as in M1.7, so a search that must include a last value ends its range one past it. With one number, `range(b)` starts at 0, so `range(41)` gives 0 to 40, the same as `range(0, 41)`. `if` runs the lines indented below it only when its condition is `True`. A `return` ends the function at once, wherever it is, even inside a loop:
 
 ```python
 def first_even(a, b):
@@ -18,15 +18,15 @@ def first_even(a, b):
 print(first_even(7, 12), first_even(7, 8))   # prints 8 None
 ```
 
-When no `k` in the range passes the test, the loop runs to its end without a `return`, and the last line gives `None`.
+When no `k` in the range passes the test, the loop runs to its end without a `return`, and the last line gives `None`. That `return None` sits level with `for`, after the loop: indented under it, it would end the function after the first `k`.
 
 <Exercise id="build-prime-test" />
 
 <Reveal for="build-prime-test">
 
-`smallest_factor(999983)` tries the 998 divisors from 2 to 999, finds none, and gives 999,983 itself, so 999,983 is prime. `is_prime` checks a claim about every $d$ from 2 to $\sqrt{n}$, that none of them divides $n$, one $d$ at a time, and the Derive phase's proof is what makes stopping at $\sqrt{n}$ enough. A search that tried every $d$ up to $n$ would need ten million divisions for 10,000,019, and the test for it would have been stopped for running too long.
+`smallest_factor(999983)` tries each $d$ from 2 to 999, 998 of them, finds none that divides it, and gives 999,983 itself, so 999,983 is prime. `is_prime` checks a claim about every $d$ from 2 to $\sqrt{n}$, that none of them divides $n$, one $d$ at a time, and the Derive phase's proof is what makes stopping at $\sqrt{n}$ enough. A search that tried every $d$ up to $n$ would need ten million divisions for 10,000,019, and the test for it would have been stopped for running too long.
 
-## Looking one value further
+## A minus sign
 
 M1.7's `all` turns a claim about many values into a single check. This program checks the puzzle's formula from $n = 0$ to $n = 40$, and prints `False`, since $n = 40$ breaks it.
 
@@ -36,7 +36,7 @@ M1.7's `all` turns a claim about many values into a single check. This program c
 
 <Reveal for="build-break-shift">
 
-$n^2 - n + 41$ is the puzzle's formula moved along by one. Put $n - 1$ in place of $n$ in $n^2 + n + 41$: $(n - 1)^2 + (n - 1) + 41 = n^2 - 2n + 1 + n - 1 + 41 = n^2 - n + 41$. So the new formula takes at $n$ the value that the old one took at $n - 1$: the same forty primes at $n = 1$ to $40$, with 41 at $n = 0$ as well, and its first failure is at $n = 41$, where $41^2 - 41 + 41 = 41^2$. The same check said `False` for one formula and `True` for the other, and neither result is a proof of anything about every $n$: `True` says only that no counterexample lies below 41.
+Here is why it is moved along by one: put $n - 1$ in place of $n$ in $n^2 + n + 41$, and $(n - 1)^2 + (n - 1) + 41 = n^2 - 2n + 1 + n - 1 + 41 = n^2 - n + 41$. Its first failure, at $n = 41$, is $41^2 - 41 + 41 = 41^2$. This is the form in which Euler himself wrote it, in 1772: $41 - x + xx$. `False` disproves the claim that the first formula gives a prime for every $n$, since one counterexample is enough, while `True` proves nothing about every $n$: it says only that no counterexample lies below 41.
 
 ## Hunting for counterexamples
 
@@ -58,7 +58,7 @@ print(twice(add_three, 10))   # prints 16
 
 <Reveal for="build-first-failure">
 
-A search like `first_failure` can disprove a claim about every $n$, by finding a counterexample, but it can never prove one. `first_failure(euler, 40)` gives `None`, and the very next value, $n = 40$, fails. A computer can push such a search far past a billion, as people have done for famous claims about primes, and every such search leaves its claim unproved.
+A search like `first_failure` can disprove a claim about every $n$, by finding a counterexample, but it can never prove one. `first_failure(euler, 40)` gives `None`, and the very next value, $n = 40$, fails. A computer can push such a search far past a billion, as people have done for famous claims about primes, and a search that finds nothing leaves its claim unproved.
 
 ## A shorter search
 
@@ -70,7 +70,7 @@ A search like `first_failure` can disprove a claim about every $n$, by finding a
 
 <Reveal for="build-break-square">
 
-$1{,}681 = 41 \times 41$ and $1{,}763 = 41 \times 43$ both have 41 as their smallest factor, and 41 is exactly `isqrt` of each: $41^2 = 1{,}681$ is at most both, and $42^2 = 1{,}764$ is more than both. That is the one divisor the shorter range leaves out. The Derive phase's proof gives a factor $d$ with $d \le \sqrt{n}$, and $d$ may equal $\sqrt{n}$, so the search must include `isqrt(n)` itself. Below 60, the shorter range also calls 4, 6, 8, 9, 15, 25, 35 and 49 prime: each has its smallest factor at exactly `isqrt(n)`. A bug in a search that should match a proof is caught by asking which case the proof covers and the code does not.
+The Derive phase's proof gives a factor $d$ with $d \le \sqrt{n}$, and $d$ may equal $\sqrt{n}$, so the search must include `isqrt(n)` itself. Below 60, the shorter range also calls 4, 6, 8, 9, 15, 25, 35 and 49 prime: each has its smallest factor at exactly `isqrt(n)`. A bug in a search that should match a proof is caught by asking which case the proof covers and the code does not.
 
 ## Euclid's numbers
 
@@ -84,6 +84,6 @@ $1{,}681 = 41 \times 41$ and $1{,}763 = 41 \times 43$ both have 41 as their smal
 
 For the first five lists of primes, Euclid's number is itself prime: 3, 7, 31, 211 and 2,311. For the first six it is $30{,}031 = 59 \times 509$, for the first seven $510{,}511 = 19 \times 97 \times 277$, and for the first eight $9{,}699{,}691 = 347 \times 27{,}953$. In every case the smallest factor is a prime missing from the list, as Euclid's proof says it must be, and the tests checked that for each of the first eight lists, and for a list such as $[3, 5]$, whose number is $16 = 2^4$. Checking a proof's claim by machine is a good way to catch a misreading of it, as long as the checks are not mistaken for the proof.
 
-SymPy, the algebra library of M1.2 and M1.3, has faster tools for primes than trial division. `factorint(30031)` gives `{59: 1, 509: 1}`, each prime factor with its power, and `isprime` answers at once for a prime with 40 digits, $10^{39} + 3$, where trial division up to its square root would need more than $3 \times 10^{19}$ divisions, about ten thousand years at a hundred million a second. For numbers below $2^{64}$, about $1.8 \times 10^{19}$, its method is proved always right, by a computer search that covered every number in that range that could fool it: finitely many cases, all checked. Above that it uses a test that has never been known to fail, though experts expect that some number fools it: strong evidence, and not a proof, the very difference this lesson is about.
+SymPy, the algebra library of M1.2 and M1.3, has faster tools for primes than trial division. `factorint(30031)` gives `{59: 1, 509: 1}`, each prime factor with its power, and `isprime` answers at once for a prime with 40 digits, $10^{39} + 3$, where trial division up to its square root would need more than $3 \times 10^{19}$ divisions, about ten thousand years at a hundred million a second. For numbers below $2^{64}$, about $1.8 \times 10^{19}$, its method is proved always right, by a computer search that covered every number in that range that could fool it: finitely many cases, all checked. For numbers as large as $10^{39} + 3$ it uses a test that has never been known to fail, though experts expect that some number fools it: strong evidence, and not a proof, the very difference this lesson is about.
 
 </Reveal>

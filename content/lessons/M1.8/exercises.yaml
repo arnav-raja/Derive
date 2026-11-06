@@ -9,10 +9,10 @@ exercises:
     answer:
       type: choice
       options:
-        - { id: pattern, label: 'Yes: forty primes in a row cannot happen by chance' }
-        - { id: by-hand, label: 'No, and a whole number $n$ for which it is not prime can be found without a computer' }
-        - { id: computer, label: 'No, but only a long computer search could find where it fails' }
-        - { id: unknowable, label: 'No one can know without checking every whole number' }
+        - { id: pattern, label: 'Yes: forty primes in a row is far too many to happen by chance' }
+        - { id: by-hand, label: 'No, and a value of $n$ where it fails can be found without a computer' }
+        - { id: computer, label: 'No, but only a long computer search could find a value of $n$ where it fails' }
+        - { id: unknowable, label: 'No one can know, short of checking every whole number one by one' }
       correct: [by-hand]
     explanation: >-
       At $n = 41$, every term of $41^2 + 41 + 41$ has a factor of 41, so the value is
@@ -29,9 +29,9 @@ exercises:
     answer:
       type: choice
       options:
-        - { id: p-false, label: 'Whenever $P$ is false' }
-        - { id: both-false, label: 'When $P$ and $Q$ are both false' }
-        - { id: q-false, label: 'Whenever $Q$ is false' }
+        - { id: p-false, label: 'Whenever $P$ is false, whatever $Q$ is' }
+        - { id: both-false, label: 'Only when $P$ and $Q$ are both false' }
+        - { id: q-false, label: 'Whenever $Q$ is false, whatever $P$ is' }
         - { id: p-true-q-false, label: 'Only when $P$ is true and $Q$ is false' }
       correct: [p-true-q-false]
     explanation: >-
@@ -70,8 +70,8 @@ exercises:
         - { id: some-prime, label: 'For some whole number $n$, $n^2 + n + 41$ is prime' }
       correct: [some-not]
     explanation: >-
-      Not for every is there is with a not: the denial needs a single exception, one whole number
-      for which the value is not prime. The puzzle's $n = 41$ is one.
+      "Not for every" is "there is" with a "not": the denial needs a single exception, one whole
+      number for which the value is not prime. The puzzle's $n = 41$ is one.
 
   - id: recall-de-morgan
     phase: recall
@@ -82,9 +82,9 @@ exercises:
       type: choice
       options:
         - { id: at-least-one, label: '$p$ is not even, or $q$ is not even, or both' }
-        - { id: both-not, label: '$p$ is not even, and $q$ is not even' }
-        - { id: exactly-one, label: 'Exactly one of $p$ and $q$ is even' }
-        - { id: p-not, label: '$p$ is not even' }
+        - { id: both-not, label: '$p$ is not even, and $q$ is not even either' }
+        - { id: exactly-one, label: 'Exactly one of $p$ and $q$ is even, not both' }
+        - { id: p-not, label: '$p$ is not even, whatever $q$ may be' }
       correct: [at-least-one]
     explanation: >-
       By De Morgan's laws, not ($P$ and $Q$) is (not $P$) or (not $Q$): "both even" fails as soon as
@@ -130,26 +130,28 @@ exercises:
     placement: true
     review:
       variants:
-        - prompt: Which of these proves that the product of any two even integers is even?
+        - prompt: A direct proof of "if $n$ is odd, then $n + 1$ is even" starts from which statement?
           answer:
             type: choice
             options:
-              - { id: same, label: 'Write both as $2k$. Their product is $4k^2 = 2(2k^2)$, which is even.' }
-              - { id: examples, label: '$2 \times 4 = 8$, $6 \times 10 = 60$ and $-2 \times 8 = -16$ are all even.' }
-              - { id: two, label: 'Write them as $2j$ and $2k$. Their product is $4jk = 2(2jk)$, and $2jk$ is an integer, so it is even.' }
-            correct: [two]
+              - { id: goal, label: '$n + 1 = 2k$ for some integer $k$' }
+              - { id: odd, label: '$n = 2k + 1$ for some integer $k$' }
+              - { id: even, label: '$n = 2k$ for some integer $k$' }
+              - { id: example, label: '$n = 3$, so that $n + 1 = 4$' }
+            correct: [odd]
           explanation: >-
-            Separate letters cover every pair. One letter for both covers only an even integer times
-            itself, and examples cover only themselves.
+            A direct proof assumes the first part and works forward to the second: from $n = 2k + 1$,
+            $n + 1 = 2k + 2 = 2(k + 1)$, which is even. Starting from $n + 1 = 2k$ assumes what is to be
+            shown, and one example covers only itself.
         - prompt: >-
             A proof begins: "Let $a$ and $b$ be odd integers, so that $a = 2k + 1$ and $b = 2k + 1$ for
             some integer $k$." What is wrong with it?
           answer:
             type: choice
             options:
-              - { id: fine, label: 'Nothing: every odd integer can be written as $2k + 1$' }
-              - { id: equal, label: 'It makes $a$ and $b$ equal, so it covers only an odd integer paired with itself' }
-              - { id: even, label: '$2k + 1$ is even when $k$ is odd' }
+              - { id: fine, label: 'Nothing: every odd integer can be written as $2k + 1$ for some integer $k$' }
+              - { id: equal, label: 'It makes $a$ and $b$ equal, so it covers only an odd number paired with itself' }
+              - { id: even, label: 'It fails when $k$ is odd, since then $2k + 1$ is an even number' }
             correct: [equal]
           explanation: >-
             Each odd integer is $2k + 1$ for some $k$, but not for the same $k$: 3 needs $k = 1$, and 5
@@ -158,10 +160,10 @@ exercises:
           answer:
             type: choice
             options:
-              - { id: same, label: 'Write both as $2k$. Their sum is $4k = 2(2k)$.' }
               - { id: two, label: 'Write them as $2j$ and $2k$. Their sum is $2j + 2k = 2(j + k)$, and $j + k$ is an integer.' }
-              - { id: checked, label: 'Every pair of even integers from $-1{,}000$ to $1{,}000$ has an even sum.' }
-              - { id: obvious, label: 'Even plus even is even, so their sum is even.' }
+              - { id: same, label: 'Write both as $2k$. Their sum is $2k + 2k = 4k = 2(2k)$, and $2k$ is an integer.' }
+              - { id: checked, label: 'Every pair of even integers from $-1{,}000$ to $1{,}000$ was checked, and each sum was even.' }
+              - { id: obvious, label: 'Adding two even integers always gives an even integer, so the sum of these two is even.' }
             correct: [two]
           explanation: >-
             $2(j + k)$ is even by the definition, since $j + k$ is an integer, and the letters $j$ and
@@ -176,10 +178,10 @@ exercises:
     answer:
       type: choice
       options:
-        - { id: forty, label: 'It is: it was odd for all forty values checked' }
-        - { id: product, label: 'It is: $n^2 + n = n(n + 1)$, and one of $n$ and $n + 1$ is even, so $n^2 + n$ is even and adding 41 makes it odd' }
-        - { id: odd-even, label: 'It is not: when $n$ is odd, $n^2$ and $n$ are odd, so $n^2 + n + 41$ is even' }
-        - { id: forty-one, label: 'It is: 41 is odd, so $n^2 + n + 41$ is odd whatever $n$ is' }
+        - { id: forty, label: 'It is: it was odd for all forty values checked, from 41 up to 1,601' }
+        - { id: product, label: 'It is: $n^2 + n = n(n + 1)$ has an even factor, so it is even, and adding 41 makes it odd' }
+        - { id: odd-even, label: 'It is not: for odd $n$, $n^2$ and $n$ are both odd, so $n^2 + n + 41$ comes out even' }
+        - { id: forty-one, label: 'It is: 41 is odd, so $n^2 + n + 41$ is odd whatever whole number $n$ is' }
       correct: [product]
     explanation: >-
       Of two neighbouring integers one is even, so $n(n + 1)$ is even: if $n$ is even it is, and if
@@ -192,9 +194,9 @@ exercises:
           answer:
             type: choice
             options:
-              - { id: odd-minus-odd, label: 'No: when $n$ is odd, $n^2 - n$ is odd minus odd, which is odd' }
-              - { id: neighbours, label: 'Yes: $n^2 - n = (n - 1)n$, a product of two neighbouring integers, one of which is even' }
-              - { id: only-even, label: 'Only when $n$ is even' }
+              - { id: neighbours, label: 'Yes: $n^2 - n = (n - 1)n$, and one of two neighbouring integers is even' }
+              - { id: odd-minus-odd, label: 'No: for odd $n$, $n^2 - n$ is odd minus odd, which is an odd number' }
+              - { id: only-even, label: 'Only for even $n$, since then both $n^2$ and $n$ are even' }
             correct: [neighbours]
           explanation: >-
             $(n - 1)n$ is a product of two neighbouring integers, and one of any two neighbouring
@@ -205,9 +207,9 @@ exercises:
           answer:
             type: choice
             options:
-              - { id: yes, label: 'Yes: each case is proved' }
-              - { id: overlap, label: 'No: the cases overlap, since 4 is in both' }
-              - { id: gap, label: 'No: an integer that is odd and not positive, such as $-3$, is in neither case' }
+              - { id: yes, label: 'Yes: each of the two cases is proved, so every integer is covered' }
+              - { id: overlap, label: 'No: the cases overlap, since 4 is both even and positive' }
+              - { id: gap, label: 'No: an odd integer that is not positive, such as $-3$, is in neither' }
             correct: [gap]
           explanation: >-
             Cases may overlap, which only proves some integers twice, but together they must cover
@@ -216,9 +218,9 @@ exercises:
           answer:
             type: choice
             options:
-              - { id: checked, label: 'Yes: it is for every $n$ from 1 to 10' }
+              - { id: checked, label: 'Yes: it is a multiple of 3 for every $n$ from 1 to 10, all of which were checked' }
               - { id: no, label: 'No: $1 \times 2 \times 3 = 6$ and $2 \times 3 \times 4 = 24$ are not multiples of 3' }
-              - { id: cases, label: 'Yes: $n$ is $3k$, $3k + 1$ or $3k + 2$, and in each case one of the three factors is a multiple of 3' }
+              - { id: cases, label: 'Yes: $n$ is $3k$, $3k + 1$ or $3k + 2$, and each case gives a factor that is a multiple of 3' }
             correct: [cases]
           explanation: >-
             If $n = 3k$, $n$ itself is a multiple of 3; if $n = 3k + 1$, then $n + 2 = 3(k + 1)$; and if
@@ -240,10 +242,11 @@ exercises:
         - { id: contrapositive, label: 'If $n$ is odd, then $n^2$ is odd' }
       correct: [contrapositive]
     explanation: >-
-      Denying both parts and swapping them gives the contrapositive, "if $n$ is odd, then $n^2$ is
-      odd", which says exactly the same as the claim. The converse swaps the parts without denying
-      them, "if $n^2$ is odd, then $n$ is odd" denies them without swapping, which says the same as
-      the converse, and an example proves nothing about every integer.
+      "If $n$ is odd, then $n^2$ is odd" denies both parts and swaps them: it is the contrapositive,
+      and says exactly the same as the claim. "If $n$ is even, then $n^2$ is even" is the converse:
+      it swaps the parts without denying them. "If $n^2$ is odd, then $n$ is odd" denies them without
+      swapping, which says the same as the converse. And one example, 4 and its square 16, proves
+      nothing about every integer.
     placement: true
     review:
       variants:
@@ -263,7 +266,8 @@ exercises:
             laws, not ($x$ odd and $y$ odd) is $x$ even or $y$ even, so you suppose that, and prove that
             $xy$ is even.
         - prompt: >-
-            A proof of "if a training run diverged, then its learning rate was above 0.1" begins
+            A proof of "if a training run diverged, its loss growing without bound, then its learning
+            rate was above 0.1" begins
             "Suppose that the learning rate was at most 0.1." What must it go on to show?
           answer:
             type: choice
@@ -273,19 +277,21 @@ exercises:
               - { id: not-diverged, label: 'That the run did not diverge' }
             correct: [not-diverged]
           explanation: >-
-            Starting from not $Q$, a rate of at most 0.1, a proof by the contrapositive must reach
-            not $P$: the run did not diverge.
+            Starting from $\neg Q$, a rate of at most 0.1, a proof by the contrapositive must reach
+            $\neg P$: the run did not diverge.
         - prompt: Which pair of statements says exactly the same?
           answer:
             type: choice
             options:
               - { id: converse, label: '"If $n$ is a multiple of 4, then $n$ is even" and "if $n$ is even, then $n$ is a multiple of 4"' }
+              - { id: contrapositive, label: '"If $n$ is a multiple of 6, then $n$ is even" and "if $n$ is not even, then $n$ is not a multiple of 6"' }
               - { id: inverse, label: '"If $n$ is a multiple of 6, then $n$ is even" and "if $n$ is not a multiple of 6, then $n$ is not even"' }
-              - { id: contrapositive, label: '"If $n^2$ is a multiple of 3, then $n$ is a multiple of 3" and "if $n$ is not a multiple of 3, then $n^2$ is not a multiple of 3"' }
             correct: [contrapositive]
           explanation: >-
-            The third pair is a claim and its contrapositive. The first pairs a true claim with its
-            converse, which 6 breaks, and the second pairs a true claim with its inverse, which 2 breaks.
+            The second pair is a claim and its contrapositive, which denies both parts and swaps
+            them. The first pairs a true claim with its converse, which 6 breaks, and the third
+            pairs it with the statement that denies both parts without swapping them, which 2
+            breaks.
 
   - id: explore-root-two
     phase: explore
@@ -304,7 +310,8 @@ exercises:
     explanation: >-
       The supposition said that $p$ and $q$ are not both even, and valid steps led to both even: a
       statement and its denial, both true. So the supposition is false, and no fraction equals
-      $\sqrt{2}$. The step about $p^2$ rests on a claim that is proved, so it is not the culprit, and
+      $\sqrt{2}$. The step about $p^2$ rests on a claim that the Derive phase proves, so it is not
+      the culprit, and
       squaring runs one way only here, from $\sqrt{2} = \frac{p}{q}$ to $p^2 = 2q^2$, which is all the
       reasoning needs.
     placement: true
@@ -339,9 +346,9 @@ exercises:
           answer:
             type: choice
             options:
-              - { id: small, label: 'Only to keep the numbers small' }
-              - { id: contradiction, label: 'Because the contradiction is with it: the steps show that $p$ and $q$ are both even, which lowest terms rules out' }
-              - { id: needless, label: 'It does not need it: any fraction would do' }
+              - { id: small, label: 'Only to keep $p$ and $q$ small, so that the steps are easier to follow' }
+              - { id: needless, label: 'It does not need it: the steps make $p$ and $q$ both even, which no fraction can be' }
+              - { id: contradiction, label: 'The contradiction is with it: lowest terms rules out $p$ and $q$ both even' }
             correct: [contradiction]
           explanation: >-
             Without it, $p$ and $q$ both even would be no contradiction, since $\frac{2}{2}$ has both
@@ -352,19 +359,19 @@ exercises:
     kind: predict
     concept: M1.8/contradiction
     title: Euclid's number for six primes
-    prompt: Is 30,031 prime?
+    prompt: What does Euclid's argument say about 30,031?
     answer:
       type: choice
       options:
-        - { id: always, label: "Yes: Euclid's proof shows that such a number is always prime" }
-        - { id: no-small, label: 'Yes: no prime up to 13 divides it, so no prime divides it' }
-        - { id: thirteen, label: 'No: 13 divides it' }
-        - { id: bigger, label: 'No: it has a prime factor larger than 13' }
-      correct: [bigger]
+        - { id: always, label: 'That it is prime, since a number made this way from a list of primes is always prime' }
+        - { id: missing, label: 'That each of its prime factors is missing from the list, whether or not it is prime' }
+        - { id: no-small, label: 'That it is prime, since none of the six primes on the list divides it' }
+        - { id: nothing, label: 'Nothing, since the six primes are not the complete list it was made for' }
+      correct: [missing]
     explanation: >-
-      $30{,}031 = 59 \times 509$. No prime on the list divides it, since each leaves a remainder of
-      1, but its prime factors, 59 and 509, are primes that are not on the list. The proof said only
-      that $N$ has a prime factor missing from the list, never that $N$ is prime.
+      No prime on the list divides $N$, since each leaves a remainder of 1, so every prime factor of
+      $N$ is missing from the list. The argument never says that $N$ is prime, and here it is not:
+      $30{,}031 = 59 \times 509$. It works for any list of primes, complete or not.
     review:
       variants:
         - prompt: >-
@@ -373,13 +380,14 @@ exercises:
           answer:
             type: choice
             options:
-              - { id: prime, label: '$N$ is prime' }
               - { id: remainder, label: 'Each prime on the list leaves a remainder of 1 when it divides $N$' }
-              - { id: largest, label: '$P$ is the largest number that is not prime' }
+              - { id: prime, label: '$N$ is prime, since no prime on the list divides it' }
+              - { id: square, label: '$N$ is smaller than the square of the largest prime on the list' }
             correct: [remainder]
           explanation: >-
             The remainder of 1 shows that no prime on the list divides $N$. Whether $N$ itself is prime
-            is never needed: its prime factors are missing from the list either way.
+            is never needed, and neither is its size: its prime factors are missing from the list
+            either way.
         - prompt: What is $2 \times 3 \times 5 \times 7 + 1$, and is it prime?
           answer:
             type: choice
@@ -410,10 +418,10 @@ exercises:
     answer:
       type: choice
       options:
-        - { id: valid, label: 'Yes: the conclusion follows from the first two sentences' }
+        - { id: valid, label: 'Yes: the conclusion follows from the first two sentences, as in any proof' }
         - { id: either-way, label: 'Yes: the first sentence and its contrapositive say the same, so it can be read either way' }
-        - { id: converse, label: 'No: the first sentence promises nothing about a model that has not memorised, and such a model could have the same gap' }
-        - { id: false-premise, label: 'No: the first sentence is false, so nothing follows from it' }
+        - { id: converse, label: 'No: the first sentence says nothing about models that have not memorised, which could show the same gap' }
+        - { id: false-premise, label: 'No: the first sentence is false, since some models that memorise show no gap, so nothing follows' }
       correct: [converse]
     explanation: >-
       The argument has the shape "$P \Rightarrow Q$, and $Q$, so $P$", which needs the converse,
@@ -427,9 +435,9 @@ exercises:
           answer:
             type: choice
             options:
-              - { id: valid, label: 'Yes: the conclusion follows' }
-              - { id: converse, label: 'No: it needs the converse, and a garden sprinkler wets the grass too' }
-              - { id: only-if, label: 'Only if it really did rain' }
+              - { id: converse, label: 'No: it needs the converse, and a sprinkler wets the grass too' }
+              - { id: valid, label: 'Yes: the conclusion follows from the two sentences before it' }
+              - { id: only-if, label: 'Only if it really did rain, which the grass cannot tell us' }
             correct: [converse]
           explanation: >-
             From $P \Rightarrow Q$ and $Q$, nothing follows about $P$. Wet grass agrees with rain, and
@@ -440,9 +448,9 @@ exercises:
           answer:
             type: choice
             options:
-              - { id: converse, label: 'No: it proves the converse' }
-              - { id: passing, label: 'No: a passing test never proves anything' }
-              - { id: valid, label: 'Yes: by the contrapositive, a passing test rules the bug out' }
+              - { id: converse, label: 'No: it reasons from the converse, which the first sentence never gave' }
+              - { id: passing, label: 'No: a passing test never proves anything about the code at all' }
+              - { id: valid, label: 'Yes: by the contrapositive, a passing test rules this bug out' }
             correct: [valid]
           explanation: >-
             The first sentence's contrapositive is "if the test passes, the code does not have this
@@ -450,8 +458,10 @@ exercises:
             That is the valid form: from $P \Rightarrow Q$ and $\neg Q$, conclude $\neg P$.
         - prompt: >-
             "If a model is overfitting, its validation loss rises while its training loss falls. Our
-            validation loss rose while the training loss fell. So our model is overfitting." Which
-            form does the argument have?
+            validation loss rose while the training loss fell. So our model is overfitting." A model
+            overfits when it fits its training examples so closely that it does worse on new ones,
+            and its validation loss is its loss on examples kept back from training. Which form does
+            the argument have?
           answer:
             type: choice
             options:
@@ -489,9 +499,9 @@ exercises:
           answer:
             type: choice
             options:
-              - { id: nothing, label: 'Nothing: 3 is the only solution' }
-              - { id: zero, label: 'Dividing by $x$ assumes that $x$ is not 0, and $x = 0$ is a solution too' }
-              - { id: negative, label: 'It lost the solution $x = -3$' }
+              - { id: zero, label: 'Dividing by $x$ assumes $x$ is not 0, and $x = 0$ is a solution too' }
+              - { id: nothing, label: 'Nothing: dividing both sides by the same $x$ keeps the equation true' }
+              - { id: negative, label: 'It lost the solution $x = -3$, since $(-3)^2 = 9$ as well' }
             correct: [zero]
           explanation: >-
             $x^2 = 3x$ is $x(x - 3) = 0$, so $x = 0$ or $x = 3$. Dividing by $x$ is allowed only where
@@ -523,7 +533,10 @@ exercises:
       lhs: 'm ='
       reference: 2*k**2 + 2*k
       accept: ['2*k*(k + 1)', '2*k^2 + 2*k', '2k^2+2k']
-      reject: ['4*k**2 + 4*k', '2*k**2 + 2*k + 1', 'k**2 + k', '4*k**2 + 4*k + 1', '2*k**2 + k', '4*k**2 + 2*k']
+      reject: ['4*k**2 + 4*k', '2*k**2 + 2*k + 1', 'k**2 + k', '4*k**2 + 4*k + 1', '2*k**2 + k', '4*k**2 + 2*k', '((2*k + 1)**2 - 1)/2']
+      form:
+        forbid: ['(2*k + 1)**2']
+        message: That is the right value, but it still has the square in it. Multiply the square out, and read $m$ off the result.
     explanation: >-
       $n^2 = (2k + 1)^2 = 4k^2 + 4k + 1 = 2(2k^2 + 2k) + 1$, so $m = 2k^2 + 2k$, an integer whenever
       $k$ is one.
@@ -548,12 +561,15 @@ exercises:
         - { id: contradiction, name: Contradiction, label: 'If supposing a statement leads to a statement and its denial, the supposition is false.' }
         - { id: multiply-out, name: Multiply out, label: 'Multiplying out a bracket gives an equal expression.' }
         - { id: factor, name: Take out a factor, label: 'Taking a common factor out of several terms gives an equal expression, as $2a + 2b = 2(a + b)$.' }
+        - { id: suppose, name: Suppose, label: 'A direct proof of "if $P$ then $Q$" starts by supposing $P$, and works forward to $Q$.' }
       start: '\text{Claim: if } n^2 \text{ is even, then } n \text{ is even.}'
       lines:
         - math: '\text{It is enough to prove: if } n \text{ is not even, then } n^2 \text{ is not even.}'
           rule: contrapositive
-        - math: '\text{That is: if } n \text{ is odd, then } n^2 \text{ is odd. Suppose that } n \text{ is odd.}'
+        - math: '\text{That is: if } n \text{ is odd, then } n^2 \text{ is odd.}'
           rule: not-even
+        - math: '\text{Suppose that } n \text{ is odd.}'
+          rule: suppose
         - math: 'n = 2k + 1 \text{ for some integer } k'
           rule: def-odd
         - math: 'n^2 = 4k^2 + 4k + 1'
@@ -563,9 +579,37 @@ exercises:
         - math: 'n^2 \text{ is odd, since } 2k^2 + 2k \text{ is an integer}'
           rule: def-odd
     explanation: >-
-      The proof swaps the claim for its contrapositive, reads "not even" as "odd", writes the odd $n$
-      out by the definition, multiplies out, takes the factor 2 out of the first two terms, and reads
-      the result by the definition of odd. Even and Contradiction are never needed.
+      The proof swaps the claim for its contrapositive, reads "not even" as "odd", supposes the first
+      part of the new if-then, writes the odd $n$ out by the definition, multiplies out, takes the
+      factor 2 out of the first two terms, and reads the result by the definition of odd. Even and
+      Contradiction are never needed.
+
+  - id: derive-odd-product
+    phase: derive
+    kind: proof
+    concept: M1.8/direct-proof
+    title: Odd times odd
+    prompt: Prove that the product of any two odd integers is odd.
+    answer:
+      type: text
+      rubric:
+        - { id: letters, criterion: 'Writes each of the two odd integers out by the definition of odd, with a letter of its own.' }
+        - { id: multiply, criterion: 'Multiplies the product out correctly.' }
+        - { id: form, criterion: 'Puts the product in the form that the definition of odd asks for, and says why the part that 2 multiplies is an integer.' }
+        - { id: conclude, criterion: 'Concludes, by the definition of odd, that the product is odd, for every pair at once.' }
+      reference: >-
+        Let the two odd integers be $a = 2j + 1$ and $b = 2k + 1$, for integers $j$ and $k$, by the
+        definition of odd, with a letter for each, since the two need not be equal. Multiplying
+        out, $ab = 4jk + 2j + 2k + 1 = 2(2jk + j + k) + 1$. Since $j$ and $k$ are integers, so is
+        $2jk + j + k$, so $ab$ is 2 times an integer, plus 1, and is odd by the definition. The
+        letters stood for any integers, so this covers every pair of odd integers.
+      minWords: 30
+      maxWords: 200
+    explanation: >-
+      Let $a = 2j + 1$ and $b = 2k + 1$, for integers $j$ and $k$, by the definition of odd, with a
+      letter for each. Then $ab = 4jk + 2j + 2k + 1 = 2(2jk + j + k) + 1$. Sums and products of
+      integers are integers, so $2jk + j + k$ is one, and $ab$ is odd by the definition. The letters
+      stand for any integers, so the proof covers every pair.
 
   - id: derive-root-two
     phase: derive
@@ -574,8 +618,9 @@ exercises:
     covers: [M1.8/contrapositive-proof]
     title: Root two is not a fraction
     prompt: >-
-      Each line follows from the lines above it. Choose the rule that justifies each line. A rule may
-      be used more than once or not at all.
+      Here is the proof that $\sqrt{2}$ is not a fraction. Each line follows from the lines above
+      it. Choose the rule that justifies each line. A rule may be used more than once or not at
+      all.
     answer:
       type: steps
       rules:
@@ -585,7 +630,7 @@ exercises:
         - { id: contradiction, name: Contradiction, label: 'If supposing a statement leads to a statement and its denial, the supposition is false.' }
         - { id: both-sides, name: Same on both sides, label: 'Doing the same to both sides of an equation, such as squaring them, or multiplying or dividing them by the same number other than 0, keeps it true.' }
         - { id: substitute, name: Substitute, label: 'A letter may be replaced by what it equals.' }
-      start: '\text{Suppose } \sqrt{2} = \tfrac{p}{q}\text{, with } p, q \text{ integers, } q \neq 0\text{, not both even.}'
+      start: '\text{Suppose } \sqrt{2} = \tfrac{p}{q}\text{, with } p, q \text{ integers, } q \neq 0\text{, in lowest terms, so not both even.}'
       lines:
         - math: 'p^2 = 2q^2'
           rule: both-sides
@@ -595,7 +640,7 @@ exercises:
           rule: even-square
         - math: 'p = 2r \text{ for some integer } r'
           rule: def-even
-        - math: '4r^2 = 2q^2'
+        - math: '(2r)^2 = 2q^2 \text{, that is, } 4r^2 = 2q^2'
           rule: substitute
         - math: 'q^2 = 2r^2'
           rule: both-sides
@@ -626,7 +671,10 @@ exercises:
       lhs: 'm ='
       reference: 3*k**2 + 4*k + 1
       accept: ['(3*k + 1)*(k + 1)', '3*k^2 + 4*k + 1', '3k^2+4k+1']
-      reject: ['3*k**2 + 4*k', '9*k**2 + 12*k + 3', '3*k**2 + 4*k + 4', '3*k**2 + 2*k', '9*k**2 + 12*k + 4', '3*k**2 + 12*k + 1', '3*k**2 + 4*k + 3']
+      reject: ['3*k**2 + 4*k', '9*k**2 + 12*k + 3', '3*k**2 + 4*k + 4', '3*k**2 + 2*k', '9*k**2 + 12*k + 4', '3*k**2 + 12*k + 1', '3*k**2 + 4*k + 3', '((3*k + 2)**2 - 1)/3']
+      form:
+        forbid: ['(3*k + 2)**2']
+        message: That is the right value, but it still has the square in it. Multiply the square out, and read $m$ off the result.
     explanation: >-
       $n^2 = 9k^2 + 12k + 4 = (9k^2 + 12k + 3) + 1 = 3(3k^2 + 4k + 1) + 1$, so $m = 3k^2 + 4k + 1$.
       The 4 splits into $3 + 1$: the 3 joins the multiple of 3, and the 1 is the remainder.
@@ -635,30 +683,38 @@ exercises:
     phase: derive
     kind: proof
     concept: M1.8/contradiction
-    title: A factor below the square root
+    title: A factor up to the square root
     prompt: >-
       Prove that every whole number $n$ of at least 2 that is not prime has a factor $d$ with
-      $2 \le d \le \sqrt{n}$. Start from what "not prime" means, write $n = ab$, and suppose, for a
-      contradiction, that $a$ and $b$ are both greater than $\sqrt{n}$.
+      $2 \le d \le \sqrt{n}$. Start from what "not prime" means, argue by contradiction, and justify
+      each step.
     answer:
       type: text
       rubric:
-        - { id: setup, criterion: 'Writes $n = ab$ with whole numbers $a$ and $b$, each at least 2 and less than $n$, because $n$ is at least 2 and not prime.' }
-        - { id: suppose, criterion: 'Supposes, for a contradiction, that $a > \sqrt{n}$ and $b > \sqrt{n}$.' }
-        - { id: multiply, criterion: 'Multiplies the two inequalities, which is allowed because every number in them is positive, to get $ab > \sqrt{n} \times \sqrt{n} = n$.' }
-        - { id: contradiction, criterion: 'Says that $ab > n$ contradicts $ab = n$, so the supposition is false.' }
-        - { id: conclude, criterion: 'Concludes that $a \le \sqrt{n}$ or $b \le \sqrt{n}$, so one of them is a factor $d$ with $2 \le d \le \sqrt{n}$.' }
+        - { id: setup, criterion: 'Writes out what "not prime" gives: $n$ as a product of two whole numbers, each at least 2.' }
+        - { id: suppose, criterion: 'Supposes, for a contradiction, that the claim is false, and says what that supposition means for the two factors.' }
+        - { id: multiply, criterion: 'Reasons from the supposition to something that cannot be true, and says why each step is allowed.' }
+        - { id: contradiction, criterion: 'Says what that contradicts, and so which statement is false.' }
+        - { id: conclude, criterion: 'Concludes with a factor $d$ in the range asked for.' }
       reference: >-
         Since $n$ is at least 2 and not prime, it has a factor other than 1 and $n$, so $n = ab$ for
-        whole numbers $a$ and $b$ with $2 \le a \le n - 1$ and $2 \le b \le n - 1$. Suppose, for a
+        whole numbers $a$ and $b$, each at least 2. Suppose, for a
         contradiction, that $a > \sqrt{n}$ and $b > \sqrt{n}$. Every number in these two inequalities
         is positive, so they can be multiplied, giving $ab > \sqrt{n} \times \sqrt{n} = n$. But
         $ab = n$, and $n > n$ is impossible. So the supposition is false: $a \le \sqrt{n}$ or
         $b \le \sqrt{n}$. Whichever it is, that number is a factor $d$ of $n$ with $2 \le d \le \sqrt{n}$.
         So to test whether $n$ is prime, it is enough to try the divisors from 2 to $\sqrt{n}$: if none
-        of them divides $n$, then $n$ is prime.
+        of them divides $n$, then $n$ is prime. A proof may instead suppose that no whole number from 2
+        to $\sqrt{n}$ divides $n$, which makes both $a$ and $b$ greater than $\sqrt{n}$, and go on in
+        the same way.
       minWords: 40
       maxWords: 250
+    explanation: >-
+      Since $n$ is at least 2 and not prime, $n = ab$ for whole numbers $a$ and $b$, each at least 2.
+      Suppose, for a contradiction, that $a > \sqrt{n}$ and $b > \sqrt{n}$. All four numbers in these
+      inequalities are positive, so they can be multiplied: $ab > \sqrt{n} \times \sqrt{n} = n$. That
+      contradicts $ab = n$, so the supposition is false, and $a \le \sqrt{n}$ or $b \le \sqrt{n}$.
+      Whichever it is, it is a factor $d$ of $n$ with $2 \le d \le \sqrt{n}$.
 
   # Build ----------------------------------------------------------------------
   - id: build-prime-test
@@ -668,7 +724,8 @@ exercises:
     title: A test for primes
     prompt: >-
       Replace each `None`. `smallest_factor(n)` gives the smallest whole number from 2 up that divides
-      `n`: it tries each `d` from 2 to `isqrt(n)`, and gives `n` itself when none of them divides it.
+      `n`: it tries each `d` from 2 up to and including `isqrt(n)`, and gives `n` itself when none of
+      them divides it.
       `is_prime(n)` says whether `n` is prime.
     answer:
       type: code
@@ -677,7 +734,7 @@ exercises:
 
         def smallest_factor(n):
             """The smallest whole number from 2 up that divides n, for a whole number n of at
-            least 2. When no d from 2 to isqrt(n) divides n, n is prime and is its own smallest
+            least 2. When no d from 2 up to and including isqrt(n) divides n, n is prime and is its own smallest
             factor."""
             return None
 
@@ -688,7 +745,9 @@ exercises:
         print(smallest_factor(91), smallest_factor(97))
         print(is_prime(97), is_prime(91), is_prime(1))
       tests: |
-        from math import isqrt
+        def grouped(v):
+            """A whole number with its digits grouped in threes, or anything else as Python shows it."""
+            return f"{v:,}" if type(v) is int else str(v)
 
         def test_filled():
             """smallest_factor and is_prime both give an answer, not None."""
@@ -697,27 +756,30 @@ exercises:
 
         def test_smallest_factor():
             """smallest_factor finds the smallest factor from 2 up."""
-            for n, right in ((4, 2), (15, 3), (91, 7), (221, 13), (30031, 59)):
+            for n, right in ((10, 2), (21, 3), (91, 7), (221, 13), (30031, 59)):
                 got = smallest_factor(n)
-                assert got == right, f"smallest_factor({n}) gives {got}, not {right}."
+                assert got == right, f"smallest_factor({n}) gives {grouped(got)}, not {right}."
 
         def test_square_root_itself():
-            """The search tries isqrt(n) itself, so 1,681 = 41 × 41 and 1,763 = 41 × 43 are caught."""
-            for n, right in ((9, 3), (49, 7), (1681, 41), (1763, 41)):
+            """The search tries isqrt(n) itself, so a square such as 49 = 7 × 7 is caught."""
+            for n, right in ((9, 3), (49, 7), (121, 11), (169, 13)):
                 got = smallest_factor(n)
-                assert got == right, f"smallest_factor({n}) gives {got}, not {right}: the search must try every d up to and including isqrt({n}), which is {isqrt(n)}."
+                assert got == right, f"smallest_factor({n}) gives {got}, not {right}: {n} = {right} × {right}, and {right} is isqrt({n})."
 
         def test_prime_is_its_own_factor():
             """A prime is its own smallest factor."""
-            for n in (2, 3, 13, 97, 999983):
+            for n in (2, 3, 13, 97, 9973):
                 got = smallest_factor(n)
-                assert got == n, f"smallest_factor({n}) gives {got}, but {n} is prime, so it should give {n}."
+                assert got == n, f"smallest_factor({n}) gives {grouped(got)}, but {grouped(n)} is prime, so it should give {grouped(n)}."
 
         def test_primes_below_sixty():
             """is_prime picks out exactly the primes below 60."""
             right = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59]
             got = [n for n in range(60) if is_prime(n)]
-            assert got == right, f"The whole numbers below 60 that is_prime calls prime are {got}, not {right}."
+            wrong = [n for n in got if n not in right]
+            missed = [n for n in right if n not in got]
+            assert not wrong, f"is_prime says that these numbers below 60 are prime, and they are not: {wrong}."
+            assert not missed, f"is_prime says that these numbers below 60 are not prime, and they are: {missed}."
 
         def test_below_two():
             """0 and 1 are not prime."""
@@ -740,7 +802,7 @@ exercises:
 
         def smallest_factor(n):
             """The smallest whole number from 2 up that divides n, for a whole number n of at
-            least 2. When no d from 2 to isqrt(n) divides n, n is prime and is its own smallest
+            least 2. When no d from 2 up to and including isqrt(n) divides n, n is prime and is its own smallest
             factor."""
             for d in range(2, isqrt(n) + 1):
                 if n % d == 0:
@@ -887,8 +949,12 @@ exercises:
         def euler(n):
             return n * n + n + 41
 
-        def legendre(n):
+        def shifted(n):
             return n * n - n + 41
+
+        def grouped(v):
+            """A whole number with its digits grouped in threes, or anything else as Python shows it."""
+            return f"{v:,}" if type(v) is int else str(v)
 
         def double(n):
             return 2 * n
@@ -898,12 +964,17 @@ exercises:
 
         def test_filled():
             """first_failure gives an answer for the puzzle's formula, not None."""
-            assert first_failure(euler, 100) is not None, "Replace the None in first_failure: the puzzle's formula fails below 100."
+            assert first_failure(euler, 100) is not None, "first_failure(euler, 100) gives None, but the puzzle's formula is not prime for some n below 100. If you have replaced the None, ask when your code reaches its return None."
 
         def test_euler():
             """The puzzle's formula first fails at n = 40."""
             got = first_failure(euler, 100)
-            assert got == 40, f"first_failure(euler, 100) gives {got}, not 40. It should give n, the number put into the formula, not the formula's value."
+            hint = ""
+            if got == euler(40):
+                hint = " It should give n, the number put into the formula, not the formula's value."
+            elif got is None:
+                hint = " It found no failure: does the loop reach n = 40 before a return ends it?"
+            assert got == 40, f"first_failure(euler, 100) gives {grouped(got)}, not 40.{hint}"
 
         def test_no_failure():
             """When f(n) is prime for every n below limit, first_failure gives None."""
@@ -912,8 +983,8 @@ exercises:
 
         def test_moved_along():
             """n² − n + 41 first fails at n = 41."""
-            got = first_failure(legendre, 100)
-            assert got == 41, f"first_failure(legendre, 100) gives {got}, not 41."
+            got = first_failure(shifted, 100)
+            assert got == 41, f"first_failure(shifted, 100) gives {grouped(got)}, not 41."
 
         def test_starts_at_zero():
             """The search starts at n = 0."""
@@ -1110,6 +1181,10 @@ exercises:
       tests: |
         FIRST = [2, 3, 5, 7, 11, 13, 17, 19]
 
+        def grouped(v):
+            """A whole number with its digits grouped in threes, or anything else as Python shows it."""
+            return f"{v:,}" if type(v) is int else str(v)
+
         def test_filled():
             """euclid_number and new_prime both give an answer, not None."""
             assert euclid_number([2, 3]) is not None, "Replace the None in euclid_number."
@@ -1124,17 +1199,17 @@ exercises:
         def test_six():
             """For the first six primes, Euclid's number is 30,031, whose smallest factor is 59."""
             got = euclid_number(FIRST[:6])
-            assert got == 30031, f"euclid_number({FIRST[:6]}) gives {got}, not 30031."
+            assert got == 30031, f"euclid_number({FIRST[:6]}) gives {grouped(got)}, not 30,031."
             got = new_prime(FIRST[:6])
-            assert got == 59, f"new_prime({FIRST[:6]}) gives {got}, not 59: 30,031 = 59 × 509 is not prime, and its smallest factor is 59."
+            assert got == 59, f"new_prime({FIRST[:6]}) gives {grouped(got)}, not 59: 30,031 = 59 × 509 is not prime, and its smallest factor is 59."
 
         def test_missing():
             """For each of the first eight lists of primes, new_prime is a prime missing from the list."""
             for k in range(1, 9):
-                primes = FIRST[:k]
-                got = new_prime(primes)
-                assert is_prime(got), f"new_prime({primes}) gives {got}, which is not prime."
-                assert got not in primes, f"new_prime({primes}) gives {got}, which is in the list."
+                got = new_prime(FIRST[:k])
+                assert got is not None, f"new_prime({FIRST[:k]}) gives None."
+                assert is_prime(got), f"new_prime({FIRST[:k]}) gives {grouped(got)}, which is not prime."
+                assert got not in FIRST[:k], f"new_prime({FIRST[:k]}) gives {grouped(got)}, which is in the list."
 
         def test_any_list():
             """The argument works for any list of primes: for [3, 5] the number is 16, and 2 is missing from the list."""
@@ -1143,12 +1218,6 @@ exercises:
             got = new_prime([3, 5])
             assert got == 2, f"new_prime([3, 5]) gives {got}, not 2."
 
-        def test_list_unchanged():
-            """The list given is left as it was."""
-            primes = [2, 3, 5]
-            euclid_number(primes)
-            new_prime(primes)
-            assert primes == [2, 3, 5], f"After the calls, the list is {primes}, not [2, 3, 5]."
       reference: |
         from math import isqrt, prod
 
@@ -1259,15 +1328,16 @@ exercises:
     prompt: >-
       Explain to your friend why forty primes in a row prove nothing about every whole number, and
       how anyone can see without a computer that $n^2 + n + 41$ is not prime at $n = 41$. Say what a
-      proof does that checking cannot. Then walk your friend through the proof that $\sqrt{2}$ is not
-      a fraction: where it supposes the opposite of what it proves, where it uses the claim about
-      even squares and how that claim was proved, and where the contradiction comes.
+      proof does that checking cannot. Then walk your friend through the proof that
+      $\sqrt{2}$ is not a fraction: where it supposes the opposite of what it proves, and why it may
+      take the fraction in lowest terms; where it uses the claim about even squares, and how that
+      claim was proved; and where the contradiction comes.
     answer:
       type: text
       rubric:
-        - { id: evidence, criterion: 'Says that agreeing cases are evidence and not proof: however many are checked, the next one could break a claim about every whole number, as $n = 40$ and $n = 41$ do here.' }
+        - { id: evidence, criterion: 'Says that agreeing cases are evidence and not proof: however many are checked, the next one could break a claim about every whole number, as $n = 41$ does here.' }
         - { id: forty-one, criterion: 'Shows that at $n = 41$ every term has a factor of 41, so the value is $41 \times 43$, which is not prime.' }
-        - { id: proof, criterion: 'Says that a proof reasons from definitions about a letter that stands for any case, each step justified, so that it covers every case at once.' }
+        - { id: proof, criterion: 'Says that a proof reasons about a letter that stands for any case, by steps that are each justified, so that it covers every case at once.' }
         - { id: suppose, criterion: 'Begins the proof for $\sqrt{2}$ by supposing the opposite, $\sqrt{2} = \frac{p}{q}$ with integers $p$ and $q$ not both even, and says why lowest terms costs nothing.' }
         - { id: chain, criterion: 'Gives the chain from $p^2 = 2q^2$ to $p$ even, $q^2 = 2r^2$ and $q$ even, using "if $n^2$ is even, then $n$ is even", proved by its contrapositive: an odd $n = 2k + 1$ has an odd square.' }
         - { id: contradiction, criterion: 'Names the contradiction, $p$ and $q$ both even against not both even, and concludes that the supposition is false, so $\sqrt{2}$ is not a fraction.' }
@@ -1291,3 +1361,11 @@ exercises:
         false: no fraction equals $\sqrt{2}$.
       minWords: 100
       maxWords: 400
+    explanation: >-
+      A strong answer keeps evidence and proof apart: forty agreeing cases, or a billion, leave the
+      next case open, and $n = 41$ breaks the claim at a glance, since every term of
+      $41^2 + 41 + 41$ has the factor 41. A proof reasons about a letter that stands for any case.
+      The proof for $\sqrt{2}$ supposes the opposite, a fraction $\frac{p}{q}$ in lowest terms,
+      which every fraction can be put in; squares it to $p^2 = 2q^2$; uses the claim that an even
+      square has an even root, proved by its contrapositive, to make $p$ and then $q$ even; and so
+      contradicts lowest terms.

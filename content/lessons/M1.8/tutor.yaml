@@ -25,18 +25,33 @@ misconceptions:
       The cases must between them cover everything. "$n$ is even" and "$n$ is positive" leave out
       $-3$, which is odd and not positive, so proving those two cases says nothing about it.
       Cases that overlap do no harm, but a gap does.
-    cue: The learner chooses "each case is proved" or "the cases overlap" in the review of explore-always-odd, or treats the case $n = 3k + 1$ alone as the whole proof for root three.
+    cue: >-
+      The learner chooses "Yes: each of the two cases is proved" in the second review of
+      explore-always-odd.
+  - id: cases-must-not-overlap
+    belief: The cases of a proof by cases must not overlap.
+    why: >-
+      Cases that overlap only prove some values twice. What a proof by cases needs is that the
+      cases together cover everything.
+    cue: The learner chooses "the cases overlap" in the second review of explore-always-odd.
   - id: odd-plus-odd-odd
     belief: An odd number plus an odd number is odd.
     why: >-
       $(2j + 1) + (2k + 1) = 2(j + k + 1)$, which is even: the two ones make a two. Odd minus odd
       is even for the same reason.
-    cue: The learner chooses "It is not" in explore-always-odd, or "odd minus odd, which is odd" in its review.
+    cue: The learner chooses "odd minus odd, which is an odd number" in the first review of explore-always-odd.
+  - id: odd-sum-even
+    belief: A sum of odd numbers is even, however many there are.
+    why: >-
+      Two odd numbers make an even one, but a third makes the total odd again:
+      $(2i + 1) + (2j + 1) + (2k + 1) = 2(i + j + k + 1) + 1$. For odd $n$, $n^2 + n$ is even, and
+      adding the odd 41 makes the value odd.
+    cue: The learner chooses "It is not" in explore-always-odd.
   - id: converse-proves
     belief: From "if $P$ then $Q$" and $Q$, it follows that $P$.
     why: >-
       That needs the converse, $Q \Rightarrow P$, a different claim. Wet grass agrees with rain and
-      with a sprinkler. The valid forms run from $P$ to $Q$, and from not $Q$ to not $P$.
+      with a sprinkler. The valid forms run from $P$ to $Q$, and from $\neg Q$ to $\neg P$.
     cue: The learner calls the team's argument valid in explore-converse-argument, or chooses the converse in explore-which-to-prove.
   - id: inverse-equivalent
     belief: Denying both parts of an if-then, without swapping them, says the same as the original.
@@ -56,7 +71,7 @@ misconceptions:
     why: >-
       The proof shows only that no prime on the list divides $N$, so the prime factors of $N$ are
       missing from the list. $N$ itself may be prime or not: $30{,}031 = 59 \times 509$.
-    cue: The learner chooses "always prime" or "no prime up to 13 divides it" in explore-euclid, or returns Euclid's number itself from `new_prime` in build-euclid.
+    cue: The learner chooses "always prime" or "none of the six primes on the list divides it" in explore-euclid, or returns Euclid's number itself from `new_prime` in build-euclid.
   - id: divide-by-expression
     belief: Both sides of an equation may always be divided by the same expression.
     why: >-
@@ -88,10 +103,10 @@ exercises:
         Try $k = 1$: then $n = 3$, and $n^2 = 9 = 2m + 1$. What is $m$? Try $k = 2$ as well, and
         check that your expression gives both.
       - >-
-        If you multiplied out to $4k^2 + 4k + 1$, that part is right, and the trouble is in reading
-        off $m$: the $+ 1$ stays outside $2m$, and $m$ is what is left once the factor 2 is taken out
-        of the rest. If your expression gives the wrong $m$ at $k = 1$, check the middle term of the
-        multiplying out.
+        If you multiplied out to $4k^2 + 4k + 1$, that part is right, and the trouble is in
+        reading off $m$: put your $m$ into $2m + 1$, multiply it out, and compare it with
+        $4k^2 + 4k + 1$ term by term. If you did not get $4k^2 + 4k + 1$, multiply
+        $(2k + 1)(2k + 1)$ out again, every term of one bracket by every term of the other.
       - >-
         With $n = 2k$, to write $n^2$ in the form $2m$: $n^2 = 4k^2 = 2(2k^2)$, so $m = 2k^2$, an
         integer whenever $k$ is one, and $n^2$ is even.
@@ -99,7 +114,8 @@ exercises:
       $4k^2 + 4k$ is $2m$, not $m$: the factor 2 is still in it. An answer with $+ 1$ keeps the 1,
       which sits outside $2m$. $k^2 + k$ takes out a factor of 4 instead of 2. $2k^2 + k$ and
       $4k^2 + 2k$ come from multiplying out with one middle term, $4k^2 + 2k + 1$. $4k^2 + 4k + 1$
-      is $n^2$ itself. The checker compares values at whole numbers $k$, so a factorised form is
+      is $n^2$ itself, and $\frac{(2k + 1)^2 - 1}{2}$ only solves for $m$ without multiplying out.
+      The checker compares values at integers $k$, positive and negative, so a factorised form is
       accepted.
   derive-contrapositive-proof:
     rungs:
@@ -108,41 +124,66 @@ exercises:
         In Explore, "if $n^2$ is even, then $n$ is even" was turned round, and even and odd were
         defined as $n = 2k$ and $n = 2k + 1$ for some integer $k$.
       - >-
-        Look at the first two lines alone. The first changes which statement is to be proved, and
-        the second only puts "not even" in other words. Which rule does each?
+        Look at the first line alone, and compare it with the claim above it, part by part: what
+        happened to each part, and where did it go? Then find the rule that does exactly that.
       - >-
         If your rule for the first line lets a proof prove another statement in place of the claim,
-        that part is right, and the trouble is in a later line: for each, say whether a word became a
-        formula, a formula was rewritten, or a formula was read back as a word, and find the rule
-        that does exactly that. If your first line uses Contradiction, look again: this proof never
-        supposes that the claim is false.
+        that part is right, and the trouble is in a later line: for each, say whether words were put
+        in other words, something was supposed, a word became a formula, a formula was rewritten, or
+        a formula was read back as a word, and find the rule that does exactly that. If your first
+        line uses Contradiction, look again: this proof never supposes that the claim is false. If it
+        uses another rule, compare the claim with line 1 part by part, and ask what was done to each
+        part.
       - >-
         To show that the sum of two even integers is even: $a = 2j$ and $b = 2k$ for integers $j$
         and $k$, by the definition of even; $a + b = 2j + 2k = 2(j + k)$, by taking out a factor; and
-        $a + b$ is even, since $j + k$ is an integer.
+        $a + b$ is even by the definition of even, since $j + k$ is an integer.
     notes: >-
       Contradiction for the first line mistakes proving the contrapositive for supposing the claim
       false. Odd for the second line misses that the line only rewords not even as odd, and the
-      definition comes in the next line. Even for the last line reads the result by the wrong
-      definition, since $2(\dots) + 1$ is the form of an odd integer. Multiply out for the fifth line
-      misses that the bracket was put in, by taking out the factor 2, not opened.
+      definition comes two lines later. Contradiction for the third line mistakes the supposition of
+      a direct proof, the first part of an if-then, for the denial of the claim. Even for the last
+      line reads the result by the wrong definition, since $2(\dots) + 1$ is the form of an odd
+      integer. Multiply out for the sixth line misses that the bracket was put in, by taking out the
+      factor 2, not opened.
+  derive-odd-product:
+    rungs:
+      - What does the definition of odd let you write for each of the two integers, and what must the product look like to be odd?
+      - >-
+        In Explore, the third argument for the odd sum gave each odd integer a letter of its own,
+        and at the start of this phase an odd square was written as $2m + 1$.
+      - >-
+        Try $3 \times 5 = 15$. Write 3 and 5 in the form $2j + 1$ and $2k + 1$: what are $j$ and
+        $k$, and what is $m$ in $15 = 2m + 1$? Does your expression in $j$ and $k$ give that $m$?
+      - >-
+        If you gave the two integers separate letters, that start is right. If your product is
+        written as 2 times something, plus 1, ask whether the something is an integer, and say
+        why. If it is not yet in that form, ask which of its terms have a factor 2.
+      - >-
+        To prove that an even integer times any integer is even: write the even one as $2j$ and the
+        other as $k$, for integers $j$ and $k$; their product is $2jk = 2(jk)$; and $jk$ is an
+        integer, so the product is even by the definition of even.
+    notes: >-
+      One letter for both, $(2k + 1)^2$, proves the claim only for an odd integer times itself.
+      Checking examples such as $3 \times 5$ and $7 \times 9$ is evidence, not the proof. An answer
+      that stops at $4jk + 2j + 2k + 1$ has not yet shown the form $2m + 1$, and one that writes
+      $2(2jk + j + k) + 1$ should say why $2jk + j + k$ is an integer.
   derive-root-two:
     rungs:
       - For each line, what changed from the lines above, and which rule allows exactly that change?
       - >-
         In Explore, the same reasoning was written out in words, from $p^2 = 2q^2$ to $p$ and $q$
         both even, and each of its steps is one of the rules listed here.
+      - Take the lines about $p$ alone, lines 1 to 4, and find a rule for each before you look at the rest.
       - >-
-        Take the lines about $p$ first, lines 1 to 4. Then lines 6 to 8 do for $q$ what lines 1 to 3
-        did for $p$, so the same rules come back in the same order.
+        If your rules for lines 1 to 4 are right, that part is right, and the trouble is in lines 5
+        to 9: for each, ask whether a letter was replaced by what it equals, both sides were changed
+        in the same way, an equation was read by a definition, a result proved earlier was used, or
+        two earlier statements were set against each other, and find the rule that does exactly
+        that. If one of lines 1 to 4 is wrong, ask the same of each of them, and notice that
+        "$p^2$ is even" and "$p$ is even" come about in different ways.
       - >-
-        If your rules for lines 1 to 4 are right, the pattern is right, and the trouble is later: ask
-        in line 5 what happened to $p$, in line 6 what was done to both sides, and in line 9 what the
-        start said that the line now denies. If one of lines 1 to 4 is wrong, ask for each whether it
-        does something to both sides, reads an equation by a definition, or uses a result proved
-        earlier: "$p^2$ is even" needs only the definition, since $q^2$ is an integer.
-      - >-
-        Suppose that $\frac{a}{b} = 3$, with $b \neq 0$. Multiplying both sides by $b$ gives
+        Suppose that $\frac{a}{b} = 3$, with $a$, $b$ and $c$ integers and $b \neq 0$. Multiplying both sides by $b$ gives
         $a = 3b$, by the same on both sides. If also $b = 2c$, replacing $b$ gives $a = 6c$, by
         substituting, and $a = 2(3c)$ is even by the definition, since $3c$ is an integer.
     notes: >-
@@ -160,12 +201,13 @@ exercises:
         $n^2 = 9k^2 + 6k + 1 = 3(3k^2 + 2k) + 1$, and at the start of this phase an odd square was
         written as $2m + 1$ in the same way.
       - >-
-        Try $k = 0$: then $n = 2$, and $n^2 = 4 = 3m + 1$, so $m = 1$. Try $k = 1$, where $n = 5$:
-        what is $m$ there? Check that your expression gives both.
+        Try $k = 0$: then $n = 2$, and $n^2 = 4 = 3m + 1$. What is $m$? Try $k = 1$, where $n = 5$,
+        as well, and check that your expression gives both.
       - >-
-        If you multiplied out to $9k^2 + 12k + 4$, that part is right, and the trouble is in the
-        constant: only the 1 of $3m + 1$ may sit outside the multiple of 3, so ask where the rest of
-        the 4 must go.
+        If you multiplied out to $9k^2 + 12k + 4$, that part is right, and the trouble is in
+        reading off $m$: put your $m$ into $3m + 1$, multiply it out, and compare it with
+        $9k^2 + 12k + 4$ term by term. If you did not get $9k^2 + 12k + 4$, multiply
+        $(3k + 2)(3k + 2)$ out again, every term of one bracket by every term of the other.
       - >-
         With $n = 5k + 3$, to write $n^2$ in the form $5m + 4$:
         $n^2 = 25k^2 + 30k + 9 = 25k^2 + 30k + 5 + 4 = 5(5k^2 + 6k + 1) + 4$, so
@@ -173,24 +215,25 @@ exercises:
     notes: >-
       $3k^2 + 4k$ treats $n^2$ as $3m + 4$, forgetting that 3 of the 4 belong to the multiple of 3.
       $9k^2 + 12k + 3$ is $3m$, not $m$, and $9k^2 + 12k + 4$ is $n^2$ itself. $3k^2 + 2k$ is the
-      first case's $m$. $3k^2 + 12k + 1$ divides only the first term by 3. The checker compares
-      values at whole numbers $k$, so a factorised form is accepted.
+      first case's $m$. $3k^2 + 12k + 1$ divides only the first term by 3, and
+      $\frac{(3k + 2)^2 - 1}{3}$ only solves for $m$ without multiplying out. The checker compares
+      values at integers $k$, positive and negative, so a factorised form is accepted.
   derive-small-factor:
     rungs:
-      - What does "not prime" give you to work with, and what would be true of $ab$ if $a$ and $b$ were both greater than $\sqrt{n}$?
+      - What does "not prime" give you to work with, and what would the claim's denial say about the factors of $n$?
       - >-
         In Explore, a proof by contradiction supposed the opposite of its claim and reasoned until a
-        statement and its denial were both true. Just before this exercise, two inequalities between
-        positive numbers were multiplied.
+        statement and its denial were both true. Just before this exercise, the lesson said when two
+        inequalities can be multiplied.
       - >-
         Try $n = 36$, where $\sqrt{36} = 6$. If $a$ and $b$ were whole numbers both greater than 6,
         how small could $ab$ be, and could it be 36?
       - >-
-        If your proof writes $n = ab$ and supposes that both factors are greater than $\sqrt{n}$,
-        that is the right start, and what is left is to multiply the two inequalities, compare the
-        result with $n$, and say what the contradiction shows about $a$ and $b$. If it starts
-        elsewhere, begin from what "not prime" gives: two whole numbers, each at least 2, whose
-        product is $n$.
+        If your proof writes $n = ab$ with $a$ and $b$ each at least 2, and supposes that both are
+        greater than $\sqrt{n}$, that start is right. Ask what the supposition says about $ab$,
+        which fact from just before the exercise lets you say it, and whether that can agree with
+        $ab = n$. If your proof ends with $d < \sqrt{n}$, test it on 49. If it starts elsewhere,
+        ask what "not prime" says about the factors of $n$.
       - >-
         To prove that if $x + y > 10$, then $x > 5$ or $y > 5$: suppose, for a contradiction, that
         $x \le 5$ and $y \le 5$. Adding the two inequalities gives $x + y \le 10$, which denies
@@ -198,9 +241,12 @@ exercises:
     notes: >-
       The setup needs $a$ and $b$ each at least 2, since $n = 1 \times n$ always holds and gives no
       small factor. Multiplying the inequalities is allowed because every number in them is
-      positive, and an answer should say so. A conclusion of $d < \sqrt{n}$ is too strong: $49 = 7
-      \times 7$ has no factor below 7. Supposing only that $a > \sqrt{n}$ proves nothing, since one
-      factor may be large. Checking examples such as 36 and 100 is evidence, not the proof.
+      positive, and an answer should say so. A conclusion of $d < \sqrt{n}$ is too strong:
+      $49 = 7 \times 7$ has no factor from 2 to 6. Supposing only that $a > \sqrt{n}$ proves nothing
+      in a proof by contradiction, but a direct route works: $a > \sqrt{n}$ gives
+      $b = \frac{n}{a} < \sqrt{n}$, so one of $a$ and $b$ is at most $\sqrt{n}$ in either case, a
+      correct proof by cases. A proof that supposes no whole number from 2 to $\sqrt{n}$ divides $n$
+      is also correct. Checking examples such as 36 and 100 is evidence, not the proof.
   build-prime-test:
     rungs:
       - >-
@@ -216,24 +262,28 @@ exercises:
         first to divide 91? Then do the same for 97.
       - >-
         If test_smallest_factor passes, the loop and its test are right, and the trouble is at an
-        edge. If test_square_root_itself fails, `range` stops before its second number, so ask
-        whether `isqrt(n)` itself is tried. If test_prime_is_its_own_factor fails, check where
-        `return n` sits: it belongs after the loop, once every `d` has failed. If test_below_two
-        fails, `is_prime` needs a second condition. If test_large_prime runs too long, the search
-        goes past `isqrt(n)`.
+        edge: if test_square_root_itself fails, ask which values of `d` your `range` really gives,
+        and whether `isqrt(n)` is one of them; if test_prime_is_its_own_factor says `None`, ask what
+        your function gives when the loop ends without a `return`; if test_below_two fails, ask
+        what `is_prime` should say for a number below 2; if a test runs too long, ask how far your
+        search goes. If test_smallest_factor fails and gives the number itself, follow your loop by
+        hand for 15: which values of `d` does it try before it gives an answer?
       - >-
         To find the first multiple of 7 from `a` to `b`, both included: `for k in range(a, b + 1):`,
         then `if k % 7 == 0:` and `return k` inside the loop, and `return None` after it, which runs
         only when no `k` passed. The `+ 1` is what makes `b` itself one of the values tried.
     notes: >-
       `range(2, isqrt(n))` stops one short and calls prime every number whose smallest factor is
-      `isqrt(n)`, such as 4, 6, 9 and 1,681: it fails test_smallest_factor, test_square_root_itself
-      and test_primes_below_sixty. Leaving out `n >= 2` fails test_primes_below_sixty and
-      test_below_two, since 0 and 1 come out as their own smallest factor. A `return n` in an `else`
-      inside the loop gives `n` as soon as 2 fails to divide it, and fails test_smallest_factor,
-      test_square_root_itself and test_primes_below_sixty. A search up to `n` gives right answers
-      but is stopped for running too long on 999,983 and 10,000,019, failing
-      test_prime_is_its_own_factor and test_large_prime.
+      `isqrt(n)`, such as 4, 6, 9 and 1,681, the puzzle's value at $n = 40$: it passes
+      test_smallest_factor, whose numbers all have a smaller factor, and fails
+      test_square_root_itself and test_primes_below_sixty. Leaving out `n >= 2` fails
+      test_primes_below_sixty and test_below_two, since 0 and 1 come out as their own smallest
+      factor. A `return n` in an `else` inside the loop gives `n` as soon as 2 fails to divide it,
+      and fails test_smallest_factor, test_square_root_itself and test_primes_below_sixty. A search
+      up to `n` gives right answers but is stopped for running too long on 10,000,019, and fails
+      only test_large_prime. Starting the range at 1 gives 1 for every `n`, since 1 divides
+      everything. A `return None` left at the end in place of `return n` makes every prime fail
+      test_prime_is_its_own_factor.
   build-first-failure:
     rungs:
       - Which values of `n` must the search try, what does it check for each, what does it give as soon as one fails, and what does it give if none does?
@@ -245,15 +295,15 @@ exercises:
         Try a small case by hand: for $f(n) = n + 2$ and a limit of 10, $f(0) = 2$ and $f(1) = 3$
         are prime and $f(2) = 4$ is not. What should the search give: the $n$, or the value?
       - >-
-        If test_euler passes, the loop and its test are right, and the trouble is at an edge: check
-        that the search starts at 0, and that `None` comes only after the loop. If test_euler gets
-        1,681, the code gives the formula's value instead of `n`. If it gets 0, ask whether the code
-        tests `f(n)` or `n` itself. If test_filled fails, look at where `return None` sits.
+        If test_euler passes, the loop and its test are right, and the trouble is at an edge: read
+        the failing test's message, and ask which `n` your search tries first and last, and when it
+        gives `None`. If test_euler gets 1,681, ask what 1,681 is: an `n`, or a value of the
+        formula? If it gets 0, work out by hand what your code does at $n = 0$, where $f(0) = 41$ is
+        prime. If test_filled fails, ask when your code reaches `return None`.
       - >-
-        To find the first word in a list `words` that is longer than 5 letters:
-        `for w in words:`, then `if len(w) > 5:` and `return w` inside the loop, and `return None`
-        after it. A function passed in is called like any other: if `check` is a function,
-        `check(w)` runs it on `w`.
+        To find the first number in a list `xs` whose square is more than 50: `for x in xs:`, then
+        `if x * x > 50:` and `return x` inside the loop, and `return None` after it. A function
+        passed in is called like any other: if `check` is a function, `check(x)` runs it on `x`.
     notes: >-
       Returning `f(n)` gives 1,681 for the puzzle's formula, and fails test_euler, test_moved_along
       and test_starts_at_zero. Starting at 1 fails only test_starts_at_zero. A `return None` inside
@@ -276,8 +326,9 @@ exercises:
         If test_small fails, compare `euclid_number([2, 3])` with 7, and check both that it
         multiplies and that it adds the 1.
       - >-
-        To give the largest number in a list `xs`, plus 1, write `max(xs) + 1`, and to ask whether
-        that number is prime, pass it straight to the function that answers: `is_prime(max(xs) + 1)`.
+        To give one more than the square of `n`, write `n * n + 1`, and to ask whether that number
+        is prime, pass it straight to the function that answers: `is_prime(n * n + 1)`. If a
+        function `next_square(n)` gives `n * n + 1`, then `is_prime(next_square(n))` does the same.
     notes: >-
       `prod(primes)` without the 1 fails test_small, test_six, test_missing and test_any_list, since
       every prime on the list divides it. Returning Euclid's number itself from `new_prime` fails

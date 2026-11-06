@@ -1,6 +1,6 @@
 # Status
 
-Updated 6 November 2026 at about 15:00 UTC, when E1.7 went live. On "Pause" or "Resume",
+Updated 6 November 2026 at about 15:45 UTC, when M1.8 went live. On "Pause" or "Resume",
 follow CLAUDE.md and carry on from "Resume here" (phase 1) and "Phase 2: resume here" (phase 2).
 
 ## Where things stand
@@ -22,9 +22,10 @@ Phase 2 (the full learning loop, and the lessons after the first slice) began on
 its own thread. M1.7 Logic, sets and quantifiers is live (`ready`): written, reviewed by both
 reviewers, every finding applied, walked again and tested end to end, with two new figure
 components, the set diagram and the quantifier grid. E1.7 Classes and objects is live too,
-reviewed by both, every finding applied, walked and tested end to end. M1.8 Proof I is written
-as a `draft` (drafts show only with `DERIVE_SHOW_DRAFTS=1`): its simulated learner has reported,
-and its independent review was running when this was written. E1.8 is designed, not written.
+reviewed by both, every finding applied, walked and tested end to end. M1.8 Proof I is live
+too, on the same terms. E1.8 Debugging as an experiment is planned, and its lesson.yaml and
+puzzle are written but kept out of the repository (in `derive-resume/e18-wip/`) until the whole
+lesson passes its checks, since an incomplete lesson folder fails the checks and the build.
 
 ### Done
 
@@ -371,23 +372,43 @@ Done so far:
   in E1.6. A figure's stop can now ask for an attribute that an object finds in its class, or a
   class's own, such as `self.losses` or `Run.losses`, since the harness records the attributes
   that reading finds, not only an object's own.
-- M1.8 Proof I: direct proof, contrapositive and contradiction, at `draft`: all six phases and
-  24 exercises, tutor notes with 12 misconceptions, and checks.json; it leads to M1.9. Its
-  checks pass (44 exercise items). The simulated learner got all 24 right and reported 21
-  findings (`derive-resume/review/M1.8-learner-findings.md`); the independent review was
-  running when this was written, its brief in `derive-resume/review/prompts/`.
+- M1.8 Proof I: direct proof, contrapositive and contradiction, live (`ready`) since 6
+  November: all six phases and 25 exercises (a puzzle on Euler's n² + n + 41, 5 recall, 7
+  explore predictions, 2 derivation steps, 4 proofs, 2 of them rules to cite and 2 written, 3
+  builds and 2 break-its, and the explain-back), tutor notes with 14 misconceptions, and
+  checks.json. It requires M1.7 and leads to M1.9. Reviewed by both (the simulated learner, 24 of
+  24 right with 21 findings; the independent reviewer, 1 blocker, 17 should-fix findings and 16
+  nits; in `derive-resume/review/M1.8-*.md`), and every finding applied apart from three
+  optional nits (below): the explain-back's prompt now asks everything its rubric checks; no
+  prose before a question names the method it asks about, and the names of direct proof, proof
+  by cases, the contrapositive and contradiction come after their questions; a new written proof,
+  odd times odd, gives the learner a direct proof of their own; the proof of the contrapositive
+  has a line for "Suppose that n is odd", with a rule of its own; the small-factor proof is
+  written in full, with a generic rubric; Euclid's item asks what the argument says about
+  30,031, and Euclid's own direct form follows it; the Explore phase proves that no prime below 41
+  divides any value of the formula (197 remainders); the prime test's tests catch a range that
+  stops one short with squares such as 49, and no longer give away the break-it on 1,681, nor
+  depend on a margin of steps; and rewritten options (no right option is longer than every other
+  by 15% or more, and four right answers moved first), rungs and notes. The lesson summary is now
+  plain text, since the overview and Today show it without maths, and `check:content` now
+  rejects TeX in a lesson's title or summary. `check:exercises` passes all its 45 items, the
+  lesson was walked in all six phases with no page errors (store from
+  `store-after-E1.7-walk.json`, with M1.7 and E1.7 a day earlier and their concepts provisional),
+  and its end-to-end tests pass at all three widths. Optional nits not done: a figure of factor
+  pairs, an optional `factorint` item, and a superscript for k² in the checker's "Read as" line.
 - The tutor's and the grader's calls go through `apiFetch`, the one way the browser calls
   Derive's server (commits `84b50c0` and `c925474`), ready for the hosting move.
 
 Next, in order:
 
-1. M1.8: when its independent review finishes (the findings go to
-   `derive-resume/review/M1.8-findings.md`; if they are missing, run the reviewer again with
-   `derive-resume/review/prompts/M1.8-reviewer-prompt.md`), apply every finding of both reviews,
-   walk the lesson, set it to `ready`, run its end-to-end tests, and push.
-2. E1.8 Debugging as an experiment: write it to the design in
-   `derive-resume/design/E1.8-design.md`, run the checks and both reviews, walk it and release
-   it. Then M1.9 and E1.9 onwards.
+1. E1.8 Debugging as an experiment: copy `derive-resume/e18-wip/E1.8/` (lesson.yaml and the
+   puzzle, written) to `content/lessons/E1.8/`, write the other phases, exercises.yaml and
+   tutor.yaml to the plan in `derive-resume/design/E1.8-plan-v2.md` (it supersedes
+   E1.8-design.md), fix the empty-message error line it needs (`ErrorLine` in
+   `src/components/exercise/inputs/code.tsx` and the error line in
+   `src/components/figures/program-trace.tsx` print ": " before an empty message, as an
+   `assert` with no message gives), run the checks and both reviews, walk it and release it. Then
+   M1.9 and E1.9 onwards.
 3. When the hosting pull request lands: pages move to `src/server/app/` (a new page needs a line
    in `src/server/routes.ts` and a static shell in `src/app/`, copied from
    `src/app/today/page.tsx`); server components cannot use state or effects; client components
