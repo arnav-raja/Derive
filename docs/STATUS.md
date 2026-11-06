@@ -1,6 +1,6 @@
 # Status
 
-Updated 5 November 2026, at Arnav's "Pause" of 18:57 UTC. On "Pause" or "Resume", follow
+Updated 6 November 2026, after Arnav's "Resume" of 04:19 UTC. On "Pause" or "Resume", follow
 CLAUDE.md and carry on from "Resume here".
 
 ## Where things stand
@@ -108,8 +108,10 @@ lessons) is under way: eight lessons written (M1.1 to M1.6, E1.1 and E1.2), four
   comparison operators, the one-sided tolerance trap, choices reordered and new variants, a
   typed-in rerun test for the batch program, rewritten rungs and three new misconceptions. The
   float figure now opens typing your own number only after the gap question, and has clear
-  messages at the edges of the float range. All 44 items pass `check:exercises`; the changed
-  parts are not yet walked in the browser. Left as they are on purpose: a program that hard-codes
+  messages at the edges of the float range. All 44 items pass `check:exercises`. The changed
+  parts were walked on 6 November with no errors, and the figures screenshotted again in both
+  themes at 1,100 and 390 px (`store-after-E1.1-walk.json` is that walk). Left as they are on
+  purpose: a program that hard-codes
   the typed values still passes build-formulas and build-check-probabilities (testing that needs
   `def`, and M1.3 is not an ancestor of E1.1), and M1.5 and M1.6 still explain int, float and
   `//` themselves, since they do not come after E1.1.
@@ -127,6 +129,19 @@ lessons) is under way: eight lessons written (M1.1 to M1.6, E1.1 and E1.2), four
   code font (in the sans font, `lr` reads as "Ir"); tests can call `rerun(*lines)` to run the
   learner's program again with other typed lines; and `input()` called after every typed line
   is read now says how many lines were typed.
+  Both reviews applied on 6 November in commit 70158ea: the four blockers (the trace table, the
+  give-away titles and prose, Build's introduction answering the break-it, and 0.001 called
+  exact) and every should-fix finding and nit, across all six phases, the exercises, the rungs
+  and the tutor notes. Left out on purpose: the reviewer's optional M1.9 foreshadow. All 48 items
+  pass `check:exercises`; the lesson was walked again end to end with no errors, and its figures
+  and E1.1's screenshotted in both themes at 1,100 and 390 px with nothing overflowing.
+  `store-after-E1.2-walk.json` is that walk. Engine changes from the reviews: while a predict
+  stop waits, the trace's table lists only the lines run so far, and each row shows what its own
+  line changed; at a stop focus moves to the answer box, and after answering back to Next line
+  (or to the figure, when stepping with the arrow keys); a stop accepts any way of writing the
+  same number (1/8, .125, 1.25e-1) but still tells an int from a float (`trace-answer.ts`); the
+  float figure gives differences too small for a float, such as at 5e-324, from the exact
+  fraction instead of "about 0"; and code in figure tables is set in the code font.
 - Engine and checks from this round: the content check skips fenced code when it looks for
   imports and components, and requires the Connect phase to preview 1 to 3 later lessons; the
   SymPy answer checker treats S, N, O, Q and I as plain letters and reports an answer it cannot
@@ -141,42 +156,20 @@ learner views come from `python3 -I scripts/learner-view.py . <code> <scratch di
 answer key in a separate folder). The briefs given to the reviewer and the simulated learner are
 in `derive-resume/review/prompts/`; change the lesson and the paths in them for another lesson.
 
-1. E1.1: walk the parts the reviews changed, fix anything the walk finds, and commit. Start the
-   development server (see Working notes), then from the scratchpad:
-   `python3 -I prep-store.py store-before-E1.1-walk.json /home/claude/derive/.derive-local/store.json
-   M1.6=<the day before today>`, `node walk-e11.cjs overview puzzle recall explore` and
-   `node walk-e11.cjs derive build explain`. The script already has the new choices, the swap
-   trace with a third name (its second stop is a deliberate miss), and probes of the float
-   figure's typing. Check in its log that the float figure's text box is read-only, with its note,
-   until explore-float-gap is answered, and opens after it; and that 0.5, 2^53, 0, 5e-324, 1e400,
-   1e-400, the largest float and 1e20 each get the right words. Then update `e11figs.cjs` for the
-   new trace and the typing lock, screenshot the figures in both themes at 1,100 and 390 px, and
-   save the walked store as a new `store-after-E1.1-walk.json`.
-2. E1.2: apply its two reviews, `E1.2-learner-findings.md` (12 findings) and `E1.2-findings.md`.
-   The reviewer's blockers come first: the trace's "Show the numbers" table answers the predict
-   stops and puts each change on the wrong row (an engine fix in `program-trace.tsx`; E1.1's
-   traces have the same table, so look at them again after it), titles and prose that answer two
-   Explore items and the break-it, and 0.001 said to be exact. Both reviews found the same
-   give-aways and the out-of-date "E1.1 used one of them, `==`" at `3-explore.mdx` line 3. Most
-   of the reviewer's "Not yet covered" is what the walk does anyway (the browser, both themes,
-   phone width); check the rest while applying: type equivalent forms into derive-decay-invariant
-   and derive-sum-step, try the number forms for explore-boundary's first variant, and mark a
-   weak and a strong sample answer against the explain-back rubric. Re-run `check:content` and
-   `check:exercises -- --write E1.2`, walk the changed parts and commit. Its walk starts from
-   `store-before-E1.2-walk.json` (E1.1 moved to the day before, and the concepts of E1.1 and M1.4
-   to M1.6 set provisional), then `node walk-e12.cjs overview puzzle recall explore` (explore
-   runs explore2 after it; explore2 alone continues a walk whose early Explore answers are saved)
-   and `derive build explain`; `node e12figs.cjs` screenshots its figures.
-   `store-after-E1.2-walk.json` has E1.2 walked, for E1.3's walk.
-3. Write E1.3 to E1.6 from `docs/phase-1-lessons.md`, the same way, keeping the uses that M1.1,
+1. Write E1.3 to E1.6 from `docs/phase-1-lessons.md`, the same way, keeping the uses that M1.1,
    E1.1 and E1.2 promise (listed there). Fix these descendant targets on the way: E1.5 not L3.4
    or L7.3, E1.6 unicode-and-bytes not M11.7. Codes are the new ones from the course update.
-4. Tests and CI: Playwright end-to-end tests (no config yet) with axe and screenshots in both
+   Each lesson: write it, pass `check:content` and `check:exercises -- --write <code>`, walk it
+   end to end (copy `walk-e12.cjs` and `e12figs.cjs` as the pattern), screenshot its figures,
+   run the independent reviewer and the simulated learner, apply both, walk the changed parts,
+   and commit. E1.3's walk starts from `store-after-E1.2-walk.json`, with `prep-store.py` moving
+   E1.2's start to the day before (one new lesson a day, three a week from Monday).
+2. Tests and CI: Playwright end-to-end tests (no config yet) with axe and screenshots in both
    themes; unit tests for the mixed check, placement and the review queue; add
    `check:exercises` to CI; update the commands table in CLAUDE.md.
-5. Tutor leak tests (the Anthropic key is in Vercel; see below), recorded in each lesson's
+3. Tutor leak tests (the Anthropic key is in Vercel; see below), recorded in each lesson's
    leaks.json; then set lessons to `ready`.
-6. Finish phase 1: build, push, check the deployment and `/api/health`, and remove the test
+4. Finish phase 1: build, push, check the deployment and `/api/health`, and remove the test
    address from `private.allowed_emails` (needs Arnav's approval on the prompt).
 
 ### Working notes
