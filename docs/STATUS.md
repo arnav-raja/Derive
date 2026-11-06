@@ -1,6 +1,6 @@
 # Status
 
-Updated 6 November 2026, after Arnav's "Resume" of 04:19 UTC. On "Pause" or "Resume", follow
+Updated 6 November 2026, at Arnav's "Pause" of 11:45 UTC. On "Pause" or "Resume", follow
 CLAUDE.md and carry on from "Resume here".
 
 ## Where things stand
@@ -328,5 +328,12 @@ no longer matters now that the one account exists.
 
 ## Notes
 
+- The approved plan's Claude Doc would not open from the session of 6 November (access denied;
+  it read fine on 5 November). Word-for-word copies are in the project files folder,
+  `derive-resume/plan/`: the Plan tab as text (`plan-2026-11-05.txt`, read on 5 November at
+  06:08 UTC, before the course update, so its codes, stages and hours are superseded by
+  `docs/course-update.md`), the Lessons tab after the update, and `plan-excerpts.md` with the
+  roadmap, content production, tutor, surfaces, practice types and figure components. Phase 2
+  (the next lessons and the phase 2 features) has its own thread, started on 6 November.
 - This container cannot reach `*.supabase.co` or `*.vercel.app`; the deployed site is checked
   through the Vercel tools.
