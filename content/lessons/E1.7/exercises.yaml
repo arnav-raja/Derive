@@ -1,0 +1,1714 @@
+exercises:
+  # Puzzle ---------------------------------------------------------------------
+  - id: puzzle-equal-configs
+    phase: puzzle
+    kind: predict
+    concept: E1.7/special-methods
+    title: Two equal configs
+    prompt: What does the program print?
+    answer:
+      type: choice
+      options:
+        - { id: all-true, label: '`True True True`' }
+        - { id: last-false, label: '`True True False`' }
+        - { id: error, label: 'Nothing: Python stops with an error, since it cannot compare two configs' }
+        - { id: all-false, label: '`False False False`' }
+      correct: [last-false]
+    explanation: >-
+      `a.lr == b.lr` compares two floats, 0.01 and 0.01, and `a.batch == b.batch` two ints, 32 and
+      32, so both are `True`. But `a == b` is `False`: nothing in `Config` says when two configs are
+      equal, so Python asks only whether `a` and `b` are one and the same object, and the two calls
+      of `Config` made two.
+
+  # Recall ---------------------------------------------------------------------
+  - id: recall-alias
+    phase: recall
+    kind: recall
+    concept: E1.4/aliasing-and-mutation
+    prompt: |
+      What does this program print?
+
+      ```python
+      a = [1, 2]
+      b = a
+      b.append(3)
+      print(len(a))
+      ```
+    answer: { type: number, value: 3, tolerance: { abs: 0 } }
+    explanation: >-
+      `b = a` makes `b` a second name for the same list, so `b.append(3)` changes the one list that
+      both names refer to, and `a` has three slots.
+
+  - id: recall-is-equal
+    phase: recall
+    kind: recall
+    concept: E1.4/aliasing-and-mutation
+    prompt: |
+      What does this program print?
+
+      ```python
+      x = [1, 2]
+      y = [1, 2]
+      print(x == y, x is y)
+      ```
+    answer:
+      type: choice
+      options:
+        - { id: both-true, label: '`True True`' }
+        - { id: both-false, label: '`False False`' }
+        - { id: right, label: '`True False`' }
+        - { id: wrong-way, label: '`False True`' }
+      correct: [right]
+    explanation: >-
+      The two lists hold equal values, so `==` gives `True`, but each was made by a list written out
+      in brackets, so they are two objects, and `is` gives `False`.
+
+  - id: recall-none
+    phase: recall
+    kind: recall
+    concept: E1.3/defining-functions
+    prompt: |
+      What does this program print?
+
+      ```python
+      def setup(x):
+          y = x * 2
+
+      print(setup(5))
+      ```
+    answer:
+      type: choice
+      options:
+        - { id: none, label: '`None`' }
+        - { id: ten, label: '`10`' }
+        - { id: five, label: '`5`' }
+        - { id: error, label: 'Nothing: Python stops with an error, since `setup` has no `return`' }
+      correct: [none]
+    explanation: >-
+      `setup` works out `y` but never reaches a `return`, so the value of the call is `None`, and
+      `print` shows `None`. `y` was a local name, gone when the call ended.
+
+  - id: recall-local
+    phase: recall
+    kind: recall
+    concept: E1.3/scope
+    prompt: |
+      What does this program print?
+
+      ```python
+      total = 0
+
+      def add(x):
+          total = x
+
+      add(5)
+      print(total)
+      ```
+    answer: { type: number, value: 0, tolerance: { abs: 0 } }
+    explanation: >-
+      `total = x` inside `add` makes a local name of the call's own, which never touches the main
+      program's `total`, so that is still 0.
+
+  - id: recall-tree
+    phase: recall
+    kind: recall
+    concept: E1.1/evaluation-order
+    prompt: In `x - y * z`, which operation does Python work out first?
+    answer:
+      type: choice
+      options:
+        - { id: left, label: '`x - y`' }
+        - { id: whole, label: 'Neither: Python works out the whole expression in one step' }
+        - { id: times, label: '`y * z`' }
+      correct: [times]
+    explanation: >-
+      `*` comes before `-` in Python's order, so the tree of `x - y * z` is $x - (y \times z)$, and
+      Python works it out from the leaves: the product first, then the difference.
+
+  # Explore --------------------------------------------------------------------
+  - id: explore-own-attributes
+    phase: explore
+    kind: predict
+    concept: E1.7/classes-and-instances
+    title: An attribute for one config
+    prompt: What does the program print?
+    answer:
+      type: choice
+      options:
+        - { id: shared, label: '`0.9 0.9`' }
+        - { id: none, label: '`0.9 None`' }
+        - { id: error-set, label: 'Nothing: Python stops with an error at `a.momentum = 0.9`, since `__init__` gave the config no `momentum`' }
+        - { id: error-read, label: 'Nothing: Python stops with an error when it reaches `b.momentum`' }
+      correct: [error-read]
+    explanation: >-
+      `a.momentum = 0.9` gives the object that `a` refers to an attribute it did not have, and gives
+      `b`'s object nothing. Working out the arguments of `print`, Python reads `a.momentum`, 0.9,
+      then `b.momentum`, which `b`'s object does not have, so it stops with `AttributeError: 'Config'
+      object has no attribute 'momentum'` before `print` runs.
+    review:
+      variants:
+        - prompt: |
+            What does this print?
+
+            ```python
+            class Point:
+                def __init__(self, x, y):
+                    self.x = x
+                    self.y = y
+
+            p = Point(1, 2)
+            q = Point(3, 4)
+            p.x = 10
+            print(p.x + q.x)
+            ```
+          answer: { type: number, value: 13, tolerance: { abs: 0 } }
+          explanation: 'Setting `p.x` changes only the object that `p` refers to, so `p.x` is 10 while `q.x` is still 3.'
+        - prompt: |
+            What does this print?
+
+            ```python
+            class Box:
+                def __init__(self, size):
+                    self.size = size
+                    print("made", size)
+
+            a = Box(2)
+            b = Box(5)
+            print(a.size * b.size)
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: product, label: '`10` alone' }
+              - { id: none, label: '`made 2`, then `made 5`, then `None`' }
+              - { id: right, label: '`made 2`, then `made 5`, then `10`' }
+            correct: [right]
+          explanation: >-
+            Each call of `Box` runs `__init__`, which prints its line, and then gives back the new
+            object, whatever `__init__` returns, so `a.size` is 2 and `b.size` is 5.
+
+  - id: explore-alias-object
+    phase: explore
+    kind: predict
+    concept: E1.7/classes-and-instances
+    title: Three names, two configs
+    placement: true
+    prompt: What does the program print?
+    answer:
+      type: choice
+      options:
+        - { id: copy, label: '`0.01 0.01`' }
+        - { id: right, label: '`0.1 0.01`' }
+        - { id: all, label: '`0.1 0.1`' }
+      correct: [right]
+    explanation: >-
+      `b = a` copies nothing, so `a` and `b` are two names for one object, and setting its `lr`
+      through `b` shows through `a`. `c` was made by a call of its own, so it is another object,
+      which nothing changed.
+    review:
+      variants:
+        - prompt: |
+            What does this print?
+
+            ```python
+            class Counter:
+                def __init__(self):
+                    self.n = 0
+
+            def bump(c):
+                c.n = c.n + 1
+
+            k = Counter()
+            bump(k)
+            bump(k)
+            print(k.n)
+            ```
+          answer: { type: number, value: 2, tolerance: { abs: 0 } }
+          explanation: 'The parameter `c` is a second name for the object that `k` refers to, so each call of `bump` changes that object''s `n`.'
+        - prompt: |
+            What does this print?
+
+            ```python
+            class Config:
+                def __init__(self, lr):
+                    self.lr = lr
+
+            a = Config(0.1)
+            b = Config(0.1)
+            c = b
+            c.lr = 0.5
+            print(a.lr, b.lr, a is b, b is c)
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: right, label: '`0.1 0.5 False True`' }
+              - { id: all-same, label: '`0.5 0.5 True True`' }
+              - { id: copy, label: '`0.1 0.1 False False`' }
+              - { id: equal-is, label: '`0.1 0.5 True True`' }
+            correct: [right]
+          explanation: >-
+            `c = b` makes `c` a second name for `b`'s object, so `c.lr = 0.5` changes that object.
+            `a` was made by a call of its own, so it is another object, with an `lr` of its own.
+
+  - id: explore-forgot-self
+    phase: explore
+    kind: predict
+    concept: E1.7/methods-and-self
+    title: A method without self
+    placement: true
+    prompt: What does the program print?
+    answer:
+      type: choice
+      options:
+        - { id: works, label: '`8 2`' }
+        - { id: last, label: '`5 1`' }
+        - { id: error, label: 'Nothing: Python stops with an error, since `total` and `count` are not attributes' }
+        - { id: right, label: '`0 0`' }
+      correct: [right]
+    explanation: >-
+      `total` and `count`, written without `self.`, are names of each call's own, as in E1.3: they
+      are given 3 and 1 in the first call and 5 and 1 in the second, and are gone when each call
+      returns. Nothing assigns `self.total` or `self.count`, so the object's attributes stay 0.
+    review:
+      variants:
+        - prompt: |
+            What does this print?
+
+            ```python
+            class Steps:
+                def __init__(self):
+                    self.n = 0
+
+                def tick(self):
+                    self.n = self.n + 1
+                    return self.n
+
+            s = Steps()
+            s.tick()
+            s.tick()
+            print(s.tick())
+            ```
+          answer: { type: number, value: 3, tolerance: { abs: 0 } }
+          explanation: 'Each call of `tick` adds 1 to the object''s own `n`, which it keeps from one call to the next, so the third call returns 3.'
+        - prompt: |
+            What happens when this runs?
+
+            ```python
+            class Meter:
+                def __init__(self):
+                    self.total = 0
+
+                def add(loss):
+                    self.total = self.total + loss
+
+            m = Meter()
+            m.add(3)
+            print(m.total)
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: three, label: 'It prints `3`' }
+              - { id: error, label: 'Python stops with an error at `m.add(3)`' }
+              - { id: zero, label: 'It prints `0`' }
+            correct: [error]
+          explanation: >-
+            `m.add(3)` passes the object as the first argument and 3 as the second, but `add` has
+            only one parameter, so Python stops with `TypeError: Meter.add() takes 1 positional
+            argument but 2 were given`. A method's first parameter is the object, which is why it is
+            called `self`.
+        - prompt: |
+            What does this print?
+
+            ```python
+            class Best:
+                def __init__(self):
+                    self.low = 100
+
+                def see(self, x):
+                    if x < self.low:
+                        low = x
+
+            b = Best()
+            b.see(5)
+            b.see(50)
+            print(b.low)
+            ```
+          answer: { type: number, value: 100, tolerance: { abs: 0 } }
+          explanation: '`low = x` makes a local name of the call, gone when it returns. Only `self.low = x` would change the object, so `b.low` is still 100.'
+
+  - id: explore-eq
+    phase: explore
+    kind: predict
+    concept: E1.7/special-methods
+    title: Configs with __eq__
+    placement: true
+    prompt: With this `Config`, which of these are `True`? Choose every one that is.
+    answer:
+      type: choice
+      multiple: true
+      options:
+        - { id: eq, label: '`a == b`' }
+        - { id: is, label: '`a is b`' }
+        - { id: in, label: '`a in [b]`' }
+        - { id: ne, label: '`a != b`' }
+      correct: [eq, in]
+    explanation: >-
+      `a == b` calls `a.__eq__(b)`, which compares the settings, so it is `True`, and `in` compares
+      by `==`, so `a in [b]` is `True` too. `is` still asks whether `a` and `b` are one object, and
+      they are two, so `a is b` is `False`. Python works out `a != b` as the opposite of `a == b`,
+      so it is `False`.
+    review:
+      variants:
+        - prompt: |
+            What does this print?
+
+            ```python
+            class Card:
+                def __init__(self, rank):
+                    self.rank = rank
+
+            x = Card(7)
+            y = Card(7)
+            print(x == y, x == x)
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: both-true, label: '`True True`' }
+              - { id: both-false, label: '`False False`' }
+              - { id: right, label: '`False True`' }
+            correct: [right]
+          explanation: >-
+            `Card` has no `__eq__`, so `==` asks whether the two names refer to one object: `x` and
+            `y` are two objects, while `x` is itself.
+        - prompt: |
+            What does this print?
+
+            ```python
+            class Card:
+                def __init__(self, rank):
+                    self.rank = rank
+
+                def __eq__(self, other):
+                    return self.rank == other.rank
+
+            hand = [Card(3), Card(9)]
+            print(Card(9) in hand, Card(5) in hand)
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: right, label: '`True False`' }
+              - { id: identity, label: '`False False`' }
+              - { id: all, label: '`True True`' }
+            correct: [right]
+          explanation: >-
+            `in` compares the new `Card(9)` with each card in `hand` by `==`, which calls `__eq__`
+            and compares ranks, so the second card matches. No card has rank 5.
+
+  - id: explore-call-order
+    phase: explore
+    kind: predict
+    concept: E1.7/special-methods
+    title: Which method runs first
+    prompt: What does the program print?
+    answer:
+      type: choice
+      options:
+        - { id: written, label: '`add 2 3`, then `mul 5 4`, then `20`' }
+        - { id: self-wrong, label: '`mul 3 4`, then `add 12 2`, then `14`' }
+        - { id: no-lines, label: '`14` alone, since `+` and `*` do not call the methods by name' }
+        - { id: right, label: '`mul 3 4`, then `add 2 12`, then `14`' }
+      correct: [right]
+    explanation: >-
+      E1.1's tree puts `b * c` below `+`, so `b.__mul__(c)` runs first and prints `mul 3 4`, giving
+      a new `Num` holding 12. Then `a.__add__` is called, with `a`, on the left, as `self` and the
+      new `Num` as `other`, and prints `add 2 12`. `d` holds 14.
+    review:
+      variants:
+        - prompt: |
+            What does this print?
+
+            ```python
+            class Num:
+                def __init__(self, v):
+                    self.v = v
+
+                def __add__(self, other):
+                    print("add", self.v, other.v)
+                    return Num(self.v + other.v)
+
+                def __mul__(self, other):
+                    print("mul", self.v, other.v)
+                    return Num(self.v * other.v)
+
+            d = (Num(2) + Num(3)) * Num(4)
+            print(d.v)
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: right, label: '`add 2 3`, then `mul 5 4`, then `20`' }
+              - { id: mul-first, label: '`mul 3 4`, then `add 2 12`, then `14`' }
+              - { id: no-lines, label: '`20` alone' }
+            correct: [right]
+          explanation: 'The brackets put `+` below `*` in the tree, so `__add__` runs first, giving a `Num` holding 5, which `__mul__` then multiplies by 4.'
+        - prompt: |
+            What does this print?
+
+            ```python
+            class Vec:
+                def __init__(self, x):
+                    self.x = x
+
+                def __add__(self, other):
+                    return Vec(self.x + other.x)
+
+            a = Vec(1)
+            b = a + Vec(2)
+            print(a.x, b.x, a is b)
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: changed, label: '`3 3 True`' }
+              - { id: changed-copy, label: '`3 3 False`' }
+              - { id: right, label: '`1 3 False`' }
+            correct: [right]
+          explanation: '`__add__` makes a new `Vec` and changes neither of the two it adds, so `a.x` is still 1, and `b` refers to the new object.'
+
+  - id: explore-class-list
+    phase: explore
+    kind: predict
+    concept: E1.7/attribute-lookup
+    title: A list in the class
+    placement: true
+    prompt: What does the program print?
+    answer:
+      type: choice
+      options:
+        - { id: own, label: '`[0.9]`' }
+        - { id: empty, label: '`[]`' }
+        - { id: right, label: '`[0.9, 0.7]`' }
+        - { id: error, label: 'Nothing: Python stops with an error, since `a` has no attribute `losses`' }
+      correct: [right]
+    explanation: >-
+      Neither run has an attribute `losses` of its own, so `self.losses` finds the class's list, the
+      same list in both calls, and `append` changes it in place. `a.losses` finds that list too,
+      holding both losses.
+    review:
+      variants:
+        - prompt: |
+            What does this print?
+
+            ```python
+            class Log:
+                def __init__(self):
+                    self.items = []
+
+                def add(self, x):
+                    self.items.append(x)
+
+            a = Log()
+            b = Log()
+            a.add(1)
+            b.add(2)
+            print(a.items)
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: shared, label: '`[1, 2]`' }
+              - { id: right, label: '`[1]`' }
+              - { id: empty, label: '`[]`' }
+            correct: [right]
+          explanation: '`__init__` runs for each new log and gives it a list of its own, so `a.add(1)` and `b.add(2)` append to two different lists.'
+        - prompt: |
+            What does this print?
+
+            ```python
+            class Run:
+                count = 0
+
+                def start(self):
+                    self.count = self.count + 1
+
+            a = Run()
+            b = Run()
+            a.start()
+            a.start()
+            b.start()
+            print(a.count, b.count, Run.count)
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: shared, label: '`3 3 3`' }
+              - { id: class-too, label: '`2 1 3`' }
+              - { id: error, label: 'Nothing: Python stops with an error, since a run has no `count` of its own' }
+              - { id: right, label: '`2 1 0`' }
+            correct: [right]
+          explanation: >-
+            The first `self.count` that each run reads is the class's 0, and the assignment then
+            gives that run a `count` of its own. After that, each run reads its own. Nothing assigns
+            the class's `count`, so it stays 0.
+
+  - id: explore-layers
+    phase: explore
+    kind: predict
+    concept: E1.7/attribute-lookup
+    title: Layers that share a call
+    prompt: What does the program print?
+    answer:
+      type: choice
+      options:
+        - { id: outer-first, label: '`calling add one`, then `calling double`, then `12`' }
+        - { id: right, label: '`calling double`, then `calling add one`, then `11`' }
+        - { id: lines-wrong, label: '`calling add one`, then `calling double`, then `11`' }
+        - { id: error, label: 'Nothing: Python stops with an error, since `Layer` has no `name` and no `forward`' }
+      correct: [right]
+    explanation: >-
+      `g(f(5))` works out its argument first, so `f(5)` runs first. `Double` has no `__call__` of
+      its own, so `Layer`'s is found, and in it `self` is the `Double`, whose `name` is `"double"`
+      and whose `forward` gives 10. Then `g(10)` prints `calling add one` and gives 11.
+    review:
+      variants:
+        - prompt: |
+            What does this print?
+
+            ```python
+            class Schedule:
+                base = 0.1
+
+                def lr(self, step):
+                    return self.base * self.factor(step)
+
+                def factor(self, step):
+                    return 1
+
+            class Halving(Schedule):
+                def factor(self, step):
+                    return 0.5 ** step
+
+            print(Schedule().lr(3), Halving().lr(3))
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: right, label: '`0.1 0.0125`' }
+              - { id: base, label: '`0.1 0.1`' }
+              - { id: error, label: 'Nothing: Python stops with an error, since `Halving` has no `lr` and no `base`' }
+            correct: [right]
+          explanation: >-
+            A `Halving` finds `lr` and `base` in its base class, but `self.factor(step)` is looked up
+            from the object's own class, so it gives $0.5^3 = 0.125$, and $0.1 \times 0.125 = 0.0125$.
+        - prompt: |
+            What does this print?
+
+            ```python
+            class Scale:
+                def __init__(self, k):
+                    self.k = k
+
+                def __call__(self, x):
+                    return self.k * x
+
+            half = Scale(0.5)
+            triple = Scale(3)
+            print(triple(half(8)))
+            ```
+          answer: { type: number, value: 12, tolerance: { abs: 0 } }
+          explanation: '`half(8)` calls `half.__call__(8)`, which gives 4.0, and then `triple(4.0)` gives 12.0.'
+
+  # Derive ---------------------------------------------------------------------
+  - id: derive-lookup-proof
+    phase: derive
+    kind: proof
+    concept: E1.7/attribute-lookup
+    title: Why the count and the list differ
+    prompt: >-
+      Here is why the program prints `2 0 [0.9, 0.7]`. Each line follows from the program and the
+      lines above it. Choose the rule that justifies each line. A rule may be used more than once or
+      not at all.
+    answer:
+      type: steps
+      rules:
+        - { id: in-place, name: Changed in place, label: 'A list changed in place shows the change through every name and attribute that refers to it.' }
+        - { id: own, name: Own first, label: 'Reading `obj.name` takes the object''s own attribute, when it has one.' }
+        - { id: base, name: The base, label: 'When neither an object nor its class has an attribute, reading it looks in the base of the class.' }
+        - { id: assign, name: Assigning, label: 'Assigning `obj.name = v` gives the object an attribute of its own, or changes the one it has, and changes nothing else.' }
+        - { id: class, name: Then the class, label: 'When an object has no attribute of that name, reading `obj.name` takes its class''s.' }
+      start: '\texttt{a} \text{ and } \texttt{b} \text{ refer to two new runs, with no attributes of their own.}'
+      lines:
+        - math: '\text{In the first call, } \texttt{self.count} \text{ on the right of line 6 is the class''s } \texttt{count}\text{, 0}'
+          rule: class
+        - math: '\text{Line 6 gives the run that } \texttt{a} \text{ refers to a } \texttt{count} \text{ of its own, 1, and the class''s } \texttt{count} \text{ stays 0}'
+          rule: assign
+        - math: '\text{In the second call, } \texttt{self.count} \text{ is that run''s own } \texttt{count}\text{, 1}'
+          rule: own
+        - math: '\text{So line 6 makes the run''s own } \texttt{count} \text{ 2, and } \texttt{Run.count} \text{ is still 0}'
+          rule: assign
+        - math: '\text{In both calls, } \texttt{self.losses} \text{ is the class''s list, since the run has no } \texttt{losses} \text{ of its own}'
+          rule: class
+        - math: '\text{Both appends change that one list, so } \texttt{b.losses}\text{, which is the class''s list too, is } \texttt{[0.9, 0.7]}'
+          rule: in-place
+    explanation: >-
+      The first read of `self.count` finds nothing on the run and falls back to the class's 0. The
+      assignment on line 6 then gives the run a `count` of its own, which every later read finds
+      first, while the class's `count` is never assigned. `self.losses` is never assigned at all, so
+      every read finds the class's one list, and both appends change it. No class here is built on
+      another, so the rule about a base is not needed.
+
+  - id: derive-tolerance
+    phase: derive
+    kind: step
+    concept: E1.7/special-methods
+    title: How far equal can stretch
+    prompt: >-
+      With `a == b` and `b == c` both `True`, how far apart can the learning rates $x$ and $z$ be?
+      Write the largest that $\lvert x - z \rvert$ can be, as an expression in $t$.
+    answer:
+      type: expression
+      symbols:
+        - { name: t, positive: true }
+      lhs: '\lvert x - z \rvert \le'
+      reference: 2*t
+      accept: ['2t', 't + t', 't*2']
+      reject: ['t', '0', 't^2', '3*t', 't/2', '4*t', '2']
+    explanation: >-
+      `a == b` says that $\lvert x - y \rvert \le t$, and `b == c` that $\lvert y - z \rvert \le t$.
+      Going from $x$ to $z$ by way of $y$ covers at most $t + t$, so $\lvert x - z \rvert \le 2t$,
+      and $x = y - t$ with $z = y + t$ reaches it.
+
+  - id: derive-new-objects
+    phase: derive
+    kind: step
+    concept: E1.7/special-methods
+    title: Objects made by a weighted sum
+    prompt: How many new `Value` objects does the loop make, for $n$ weights? Write it as an expression in $n$.
+    answer:
+      type: expression
+      symbols:
+        - { name: n, integer: true, positive: true }
+      lhs: 'N(n) ='
+      reference: 2*n
+      accept: ['2n', 'n + n', 'n*2']
+      reject: ['n', '2*n - 1', '2*n + 1', 'n^2', '3*n', 'n + 1', '4*n']
+    explanation: >-
+      Each pass works out `w[i] * x[i]`, one new value, and then adds it to `total`, another, so each
+      of the $n$ passes makes 2, and the loop makes $2n$. The starting `Value(0)` was made before the
+      loop.
+
+  - id: derive-memory
+    phase: derive
+    kind: estimate
+    concept: E1.7/classes-and-instances
+    title: A graph for one token
+    prompt: >-
+      About how many gigabytes would the new values made for one token take, at about 200 bytes
+      each? 1 GB is $10^9$ bytes. An answer within a factor of 1.5 counts.
+    answer: { type: number, value: 2800, tolerance: { factor: 1.5 }, unit: GB }
+    explanation: >-
+      One multiplication and one addition for each weight make $2 \times 7 \times 10^9 = 1.4 \times
+      10^{10}$ new values, the $2n$ of the count above, and at 200 bytes each that is
+      $2.8 \times 10^{12}$ bytes, or 2,800 GB.
+
+  # Build ----------------------------------------------------------------------
+  - id: build-early-stop
+    phase: build
+    kind: build
+    concept: E1.7/methods-and-self
+    covers: [E1.7/classes-and-instances]
+    title: Knowing when to stop
+    prompt: >-
+      A training run is often stopped early, once its loss on held-out data has stopped improving.
+      Write the bodies of the two methods of `EarlyStop`, whose objects watch a run's losses, given
+      one at a time. The tests give many runs of losses to new objects, and use two objects at once.
+    answer:
+      type: code
+      starter: |
+        class EarlyStop:
+            """Watches a run's losses, given one at a time, and says when to stop. A loss is a
+            new best when it is lower than every loss before it, and the first loss always is."""
+
+            def __init__(self, patience):
+                """A new watcher, which has seen no losses yet."""
+
+
+            def step(self, loss):
+                """Takes the next loss. Returns True when the losses since the last new best, not
+                counting the best itself, number patience or more, and False otherwise."""
+
+
+        stopper = EarlyStop(2)
+        for loss in [1.0, 0.8, 0.9, 0.85, 0.7]:
+            print(loss, stopper.step(loss))
+      tests: |
+        def answers(patience, losses):
+            """What step returns for each of the losses in turn, given to a new EarlyStop."""
+            stopper = EarlyStop(patience)
+            got = []
+            for loss in losses:
+                got.append(stopper.step(loss))
+            return got
+
+        def test_script():
+            """The script's run: patience 2, and the losses 1.0, 0.8, 0.9, 0.85, 0.7."""
+            got = answers(2, [1.0, 0.8, 0.9, 0.85, 0.7])
+            assert got == [False, False, False, True, False], f"With patience 2 and the losses [1.0, 0.8, 0.9, 0.85, 0.7], step gave {got}, not [False, False, False, True, False]. 0.9 and 0.85 are two losses in a row after the best, 0.8, and 0.7 is a new best."
+
+        def test_patience_one():
+            """With patience 1, the first loss after a new best that is no new best stops the run."""
+            got = answers(1, [3.0, 2.0, 2.5])
+            assert got == [False, False, True], f"With patience 1 and the losses [3.0, 2.0, 2.5], step gave {got}, not [False, False, True]."
+
+        def test_improving():
+            """A run whose loss falls every time never stops."""
+            got = answers(1, [5.0, 4.0, 3.0, 2.0, 1.0])
+            assert got == [False, False, False, False, False], f"With patience 1 and the losses [5.0, 4.0, 3.0, 2.0, 1.0], each one a new best, step gave {got}, not False every time."
+
+        def test_against_the_best():
+            """A loss is compared with the best so far, not with the loss just before it."""
+            got = answers(2, [1.0, 3.0, 2.0])
+            assert got == [False, False, True], f"With patience 2 and the losses [1.0, 3.0, 2.0], step gave {got}, not [False, False, True]: 2.0 is lower than 3.0, but not lower than the best, 1.0."
+
+        def test_equal_is_no_best():
+            """A loss equal to the best so far is not a new best."""
+            got = answers(1, [1.0, 1.0])
+            assert got == [False, True], f"With patience 1 and the losses [1.0, 1.0], step gave {got}, not [False, True]: the second 1.0 is not lower than the best, so it is no new best."
+
+        def test_count_starts_again():
+            """A new best starts the count again."""
+            got = answers(3, [5.0, 6.0, 7.0, 4.0, 5.0, 6.0, 7.0])
+            assert got == [False, False, False, False, False, False, True], f"With patience 3 and the losses [5.0, 6.0, 7.0, 4.0, 5.0, 6.0, 7.0], step gave {got}, not False six times and then True. 4.0 is a new best, so the count starts again after it, and only the third loss after it reaches 3."
+
+        def test_after_stop():
+            """After saying True, a watcher goes on counting, and a new best still starts the count again."""
+            got = answers(1, [1.0, 2.0, 3.0, 0.5])
+            assert got == [False, True, True, False], f"With patience 1 and the losses [1.0, 2.0, 3.0, 0.5], step gave {got}, not [False, True, True, False]."
+
+        def test_large_first():
+            """The first loss is a new best, however large it is."""
+            got = answers(1, [5000000.0, 6000000.0])
+            assert got == [False, True], f"With patience 1 and the losses [5000000.0, 6000000.0], step gave {got}, not [False, True]: the first loss is always a new best."
+
+        def test_two_watchers():
+            """Two watchers keep their own best losses and their own counts."""
+            a = EarlyStop(1)
+            b = EarlyStop(1)
+            got = [a.step(1.0), b.step(5.0), a.step(2.0), b.step(4.0)]
+            assert got == [False, False, True, False], f"With two watchers of patience 1, a given 1.0 and then 2.0, and b given 5.0 and then 4.0 in between, the four calls gave {got}, not [False, False, True, False]. Each watcher should keep its own best and its own count."
+
+        def test_true_or_false():
+            """step returns True or False."""
+            got = EarlyStop(1).step(1.0)
+            assert got is False, f"step gave {got!r} for a first loss, not False: it should return True or False."
+      reference: |
+        class EarlyStop:
+            """Watches a run's losses, given one at a time, and says when to stop. A loss is a
+            new best when it is lower than every loss before it, and the first loss always is."""
+
+            def __init__(self, patience):
+                """A new watcher, which has seen no losses yet."""
+                self.patience = patience
+                self.best = None
+                self.since_best = 0
+
+            def step(self, loss):
+                """Takes the next loss. Returns True when the losses since the last new best, not
+                counting the best itself, number patience or more, and False otherwise."""
+                if self.best is None or loss < self.best:
+                    self.best = loss
+                    self.since_best = 0
+                else:
+                    self.since_best = self.since_best + 1
+                return self.since_best >= self.patience
+
+
+        stopper = EarlyStop(2)
+        for loss in [1.0, 0.8, 0.9, 0.85, 0.7]:
+            print(loss, stopper.step(loss))
+      wrong:
+        - code: |
+            class EarlyStop:
+                def __init__(self, patience):
+                    self.patience = patience
+                    self.best = None
+                    self.since_best = 0
+
+                def step(self, loss):
+                    if self.best is None or loss < self.best:
+                        self.best = loss
+                        since_best = 0
+                    else:
+                        since_best = self.since_best + 1
+                    return since_best >= self.patience
+          why: Counts in a local name, so the count is gone after each call and never grows past 1.
+        - code: |
+            class EarlyStop:
+                def __init__(self, patience):
+                    self.patience = patience
+                    self.best = None
+                    self.since_best = 0
+
+                def step(self, loss):
+                    if self.best is None or loss <= self.best:
+                        self.best = loss
+                        self.since_best = 0
+                    else:
+                        self.since_best = self.since_best + 1
+                    return self.since_best >= self.patience
+          why: Uses `<=`, so a loss equal to the best counts as a new best.
+        - code: |
+            class EarlyStop:
+                def __init__(self, patience):
+                    self.patience = patience
+                    self.best = None
+                    self.since_best = 0
+
+                def step(self, loss):
+                    if self.best is None or loss < self.best:
+                        self.best = loss
+                    else:
+                        self.since_best = self.since_best + 1
+                    return self.since_best >= self.patience
+          why: Never starts the count again after a new best, so it counts every loss that was no new best.
+        - code: |
+            class EarlyStop:
+                def __init__(self, patience):
+                    self.patience = patience
+                    self.last = None
+                    self.since_best = 0
+
+                def step(self, loss):
+                    if self.last is None or loss < self.last:
+                        self.since_best = 0
+                    else:
+                        self.since_best = self.since_best + 1
+                    self.last = loss
+                    return self.since_best >= self.patience
+          why: Compares each loss with the one just before it, not with the best so far.
+        - code: |
+            class EarlyStop:
+                def __init__(self, patience):
+                    self.patience = patience
+                    self.best = None
+                    self.since_best = 0
+
+                def step(self, loss):
+                    if self.best is None or loss < self.best:
+                        self.best = loss
+                        self.since_best = 0
+                    else:
+                        self.since_best = self.since_best + 1
+                    return self.since_best > self.patience
+          why: Uses `>`, so it stops one loss too late.
+        - code: |
+            class EarlyStop:
+                def __init__(self, patience):
+                    self.patience = patience
+                    self.best = 0
+                    self.since_best = 0
+
+                def step(self, loss):
+                    if loss < self.best:
+                        self.best = loss
+                        self.since_best = 0
+                    else:
+                        self.since_best = self.since_best + 1
+                    return self.since_best >= self.patience
+          why: Starts the best at 0, which no positive loss beats, so no loss is ever a new best.
+    explanation: >-
+      The watcher keeps three attributes: the patience, the best loss so far, `None` before the
+      first, and the count of losses since that best. `step` either records a new best and starts
+      the count again, or adds one to the count, and the answer is a comparison of the count with
+      the patience. Each lives on `self`, so it survives from one call to the next, and each watcher
+      has its own.
+
+  - id: build-sequential
+    phase: build
+    kind: build
+    concept: E1.7/classes-and-instances
+    covers: [E1.7/special-methods]
+    title: Layers in a row
+    prompt: >-
+      Write `Sequential`, a layer made of other layers, which it applies in turn, as PyTorch's
+      `nn.Sequential` does. A layer here is anything that can be called with one argument: an
+      object with a `__call__`, such as `Double`, or a plain function, such as `abs`. The tests
+      build models from many kinds of layer, one inside another too.
+    answer:
+      type: code
+      starter: |
+        class Double:
+            def __call__(self, x):
+                return 2 * x
+
+
+        class AddOne:
+            def __call__(self, x):
+                return x + 1
+
+
+        class Sequential:
+            """A layer made of the layers in a list, which it applies in turn: the first to the
+            input, the next to what the first gives, and so on. With no layers, it gives back its
+            input as it was."""
+
+            def __init__(self, layers):
+                """Keeps a copy of the list layers as self.layers, so that a later change to the
+                caller's list does not change the model."""
+
+
+            def __call__(self, x):
+                """What the last layer gives, once each layer has been applied in turn to x."""
+
+
+        model = Sequential([Double(), AddOne()])
+        print(model(5))   # AddOne()(Double()(5)), which is 11
+      tests: |
+        class Count:
+            """A layer that adds 1, and counts how many times it has been called."""
+
+            def __init__(self):
+                self.calls = 0
+
+            def __call__(self, x):
+                self.calls = self.calls + 1
+                return x + 1
+
+        def test_order():
+            """The first layer in the list is applied first."""
+            got = Sequential([Double(), AddOne()])(5)
+            assert got == 11, f"Sequential([Double(), AddOne()])(5) is {got!r}, not 11: Double should give 10, and AddOne then 11."
+            got = Sequential([AddOne(), Double()])(5)
+            assert got == 12, f"Sequential([AddOne(), Double()])(5) is {got!r}, not 12: AddOne should give 6, and Double then 12."
+
+        def test_three():
+            """Each layer is applied to what the layer before it gave."""
+            got = Sequential([AddOne(), Double(), AddOne()])(1)
+            assert got == 5, f"Sequential([AddOne(), Double(), AddOne()])(1) is {got!r}, not 5: 1 becomes 2, then 4, then 5."
+
+        def test_empty():
+            """With no layers, the input comes back as it was."""
+            got = Sequential([])(7)
+            assert got == 7, f"Sequential([])(7) is {got!r}, not 7."
+
+        def test_functions():
+            """A plain function is a layer too."""
+            got = Sequential([abs, AddOne()])(-3)
+            assert got == 4, f"Sequential([abs, AddOne()])(-3) is {got!r}, not 4: abs(-3) is 3, and AddOne gives 4."
+
+        def test_nested():
+            """A Sequential can be called with one argument, so it can be a layer of another."""
+            inner = Sequential([Double(), Double()])
+            got = Sequential([inner, AddOne()])(1)
+            assert got == 5, f"With inner = Sequential([Double(), Double()]), Sequential([inner, AddOne()])(1) is {got!r}, not 5."
+
+        def test_each_once():
+            """Each call of the model calls each of its layers once."""
+            c = Count()
+            model = Sequential([c, Double()])
+            model(1)
+            model(1)
+            assert c.calls == 2, f"After two calls of the model, its first layer had been called {c.calls} times, not 2."
+
+        def test_own_copy():
+            """A later change to the caller's list leaves the model as it was."""
+            layers = [Double()]
+            model = Sequential(layers)
+            layers.append(AddOne())
+            got = model(5)
+            assert got == 10, f"After model = Sequential(layers) and then layers.append(AddOne()), model(5) is {got!r}, not 10: the model should keep a copy of the list, which the caller's change does not reach."
+            assert len(model.layers) == 1, f"model.layers holds {len(model.layers)} layers, not 1."
+
+        def test_separate():
+            """Two models keep their own layers."""
+            first = Sequential([Double()])
+            second = Sequential([AddOne()])
+            a = first(5)
+            b = second(5)
+            assert a == 10 and b == 6, f"Sequential([Double()])(5) is {a!r} and Sequential([AddOne()])(5) is {b!r}, not 10 and 6: each model should keep its own list of layers."
+      reference: |
+        class Double:
+            def __call__(self, x):
+                return 2 * x
+
+
+        class AddOne:
+            def __call__(self, x):
+                return x + 1
+
+
+        class Sequential:
+            """A layer made of the layers in a list, which it applies in turn: the first to the
+            input, the next to what the first gives, and so on. With no layers, it gives back its
+            input as it was."""
+
+            def __init__(self, layers):
+                """Keeps a copy of the list layers as self.layers, so that a later change to the
+                caller's list does not change the model."""
+                self.layers = list(layers)
+
+            def __call__(self, x):
+                """What the last layer gives, once each layer has been applied in turn to x."""
+                for layer in self.layers:
+                    x = layer(x)
+                return x
+
+
+        model = Sequential([Double(), AddOne()])
+        print(model(5))   # AddOne()(Double()(5)), which is 11
+      wrong:
+        - code: |
+            class Double:
+                def __call__(self, x):
+                    return 2 * x
+
+
+            class AddOne:
+                def __call__(self, x):
+                    return x + 1
+
+
+            class Sequential:
+                def __init__(self, layers):
+                    self.layers = layers
+
+                def __call__(self, x):
+                    for layer in self.layers:
+                        x = layer(x)
+                    return x
+          why: Keeps the caller's list itself, not a copy, so a later change to that list changes the model.
+        - code: |
+            class Double:
+                def __call__(self, x):
+                    return 2 * x
+
+
+            class AddOne:
+                def __call__(self, x):
+                    return x + 1
+
+
+            class Sequential:
+                layers = []
+
+                def __init__(self, layers):
+                    for layer in layers:
+                        self.layers.append(layer)
+
+                def __call__(self, x):
+                    for layer in self.layers:
+                        x = layer(x)
+                    return x
+          why: Appends to a list kept in the class, so every model shares one list of layers.
+        - code: |
+            class Double:
+                def __call__(self, x):
+                    return 2 * x
+
+
+            class AddOne:
+                def __call__(self, x):
+                    return x + 1
+
+
+            class Sequential:
+                def __init__(self, layers):
+                    self.layers = list(layers)
+
+                def __call__(self, x):
+                    for i in range(len(self.layers) - 1, -1, -1):
+                        x = self.layers[i](x)
+                    return x
+          why: Applies the layers from the last to the first.
+        - code: |
+            class Double:
+                def __call__(self, x):
+                    return 2 * x
+
+
+            class AddOne:
+                def __call__(self, x):
+                    return x + 1
+
+
+            class Sequential:
+                def __init__(self, layers):
+                    self.layers = list(layers)
+
+                def __call__(self, x):
+                    for layer in self.layers:
+                        return layer(x)
+                    return x
+          why: Returns from inside the loop, so only the first layer is ever applied.
+        - code: |
+            class Double:
+                def __call__(self, x):
+                    return 2 * x
+
+
+            class AddOne:
+                def __call__(self, x):
+                    return x + 1
+
+
+            class Sequential:
+                def __init__(self, layers):
+                    self.layers = list(layers)
+
+                def __call__(self, x):
+                    y = x
+                    for layer in self.layers:
+                        y = layer(x)
+                    return y
+          why: Applies every layer to the input itself, so only the last layer's result is kept.
+        - code: |
+            class Double:
+                def __call__(self, x):
+                    return 2 * x
+
+
+            class AddOne:
+                def __call__(self, x):
+                    return x + 1
+
+
+            class Sequential:
+                def __init__(self, layers):
+                    self.layers = list(layers)
+
+                def __call__(self, x):
+                    out = None
+                    for layer in self.layers:
+                        x = layer(x)
+                        out = x
+                    return out
+          why: Gives `None` when there are no layers, instead of the input.
+    explanation: >-
+      `__init__` keeps a copy, `list(layers)`, as an attribute of the object, so each model has its
+      own layers, which the caller's list cannot reach. `__call__` then makes `x` refer to each
+      layer's result in turn, as M1.3's composition applies the inner function first, and returns
+      the last; with no layers the loop never runs and `x` comes back as it was.
+
+  - id: build-break-hash
+    phase: build
+    kind: breakit
+    concept: E1.7/special-methods
+    title: A set of configs
+    prompt: >-
+      E1.4 found that a set answers `in` far faster than a list, by working out from the value
+      itself where to look, so two equal values must always lead to the same place. Predict what
+      happens after the change, then run both versions to see.
+    answer:
+      type: breakit
+      code: |
+        class Config:
+            def __init__(self, lr, batch):
+                self.lr = lr
+                self.batch = batch
+
+            def __eq__(self, other):
+                return self.lr == other.lr and self.batch == other.batch
+
+        configs = [Config(0.01, 32), Config(0.1, 32), Config(0.01, 32), Config(0.1, 64), Config(0.1, 32)]
+        tried = []
+        for c in configs:
+            if c not in tried:
+                tried.append(c)
+        print(len(tried), "configs trained")
+      broken: |
+        class Config:
+            def __init__(self, lr, batch):
+                self.lr = lr
+                self.batch = batch
+
+            def __eq__(self, other):
+                return self.lr == other.lr and self.batch == other.batch
+
+        configs = [Config(0.01, 32), Config(0.1, 32), Config(0.01, 32), Config(0.1, 64), Config(0.1, 32)]
+        tried = set()
+        for c in configs:
+            if c not in tried:
+                tried.add(c)
+        print(len(tried), "configs trained")
+      change: '`tried` becomes a set, `tried = set()`, and `tried.append(c)` becomes `tried.add(c)`.'
+      options:
+        - { id: same, label: 'It prints `3 configs trained`, as before', when: "error is None and len(tried) == 3" }
+        - { id: all, label: 'It prints `5 configs trained`, since a set does not use `__eq__`', when: "error is None and len(tried) == 5" }
+        - { id: first, label: 'Python stops with an error at the first config, before any is trained', when: "error is not None and len(tried) == 0" }
+        - { id: other, label: 'Something else happens', when: "(error is None and len(tried) not in (3, 5)) or (error is not None and len(tried) != 0)" }
+    explanation: >-
+      `c not in tried` on a set needs a number worked out from `c`, from a method named
+      `__hash__`, so as to know where to look. Python gives a class without `__eq__` such a method,
+      worked out from the object itself, but once a class defines `__eq__` it takes that method
+      away, since two equal configs would give different numbers and the set would miss one. So
+      the first `in` stops Python with `TypeError: cannot use 'Config' as a set element (unhashable
+      type: 'Config')`, before any config is trained.
+
+  - id: build-value
+    phase: build
+    kind: build
+    concept: E1.7/special-methods
+    covers: [E1.7/classes-and-instances]
+    title: A value that remembers
+    prompt: >-
+      Write `Value`, whose objects hold a number and remember the values they were made from, as in
+      Derive. The tests make values, add and multiply them, and look at what each result keeps and
+      what each input is left as.
+    answer:
+      type: code
+      starter: |
+        class Value:
+            """A number, data, with the list parents of the values it was made from."""
+
+            def __init__(self, data, parents=None):
+                """A new value holding data. Called without parents, it has none: a new, empty
+                list of its own."""
+
+
+            def __add__(self, other):
+                """A new value holding self's data plus other's, with the parents [self, other].
+                self and other are left as they were."""
+
+
+            def __mul__(self, other):
+                """A new value holding self's data times other's, with the parents [self, other].
+                self and other are left as they were."""
+
+
+            def __repr__(self):
+                """Value(data), such as Value(6)."""
+
+
+        a = Value(2)
+        b = Value(3)
+        c = a * b + a
+        print(c, c.parents)   # Value(8) [Value(6), Value(2)]
+      tests: |
+        def test_add():
+            """+ makes a value holding the sum."""
+            c = Value(2) + Value(3)
+            assert c.data == 5, f"(Value(2) + Value(3)).data is {c.data!r}, not 5."
+
+        def test_mul():
+            """* makes a value holding the product."""
+            c = Value(2) * Value(3)
+            assert c.data == 6, f"(Value(2) * Value(3)).data is {c.data!r}, not 6."
+
+        def test_parents():
+            """A result's parents are the two values it was made from themselves, left one first."""
+            a = Value(2)
+            b = Value(3)
+            for c in [a + b, a * b]:
+                assert len(c.parents) == 2, f"A result of a + b or a * b has {len(c.parents)} parents, not 2."
+                assert c.parents[0] is a and c.parents[1] is b, "The parents of a + b and of a * b should be a list of a and then b themselves, not copies of them."
+
+        def test_new_object():
+            """+ and * make a new value."""
+            a = Value(2)
+            b = Value(3)
+            for c in [a + b, a * b]:
+                assert c is not a and c is not b, "a + b and a * b should each be a new value, not a or b itself."
+
+        def test_inputs_unchanged():
+            """+ and * leave the values they combine as they were."""
+            a = Value(2)
+            b = Value(3)
+            a + b
+            a * b
+            assert a.data == 2 and b.data == 3, f"After a + b and a * b with a = Value(2) and b = Value(3), a.data is {a.data!r} and b.data is {b.data!r}, not 2 and 3."
+            assert a.parents == [] and b.parents == [], f"After a + b and a * b, a.parents is {a.parents!r} and b.parents is {b.parents!r}, not [] and []."
+
+        def test_no_parents():
+            """A value made without parents has an empty list of its own."""
+            x = Value(1)
+            y = Value(2)
+            assert x.parents == [], f"Value(1).parents is {x.parents!r}, not []."
+            assert x.parents is not y.parents, "Value(1).parents and Value(2).parents are one and the same list. A default value is made once, when the def line runs, and shared by every call, as E1.4 found."
+
+        def test_given_parents():
+            """parents passed in are kept as they are."""
+            p = [Value(1)]
+            v = Value(5, p)
+            assert v.data == 5 and v.parents is p, "Value(5, p) should hold 5 and keep the list p itself as its parents."
+
+        def test_chain():
+            """a * b + a, worked out in the order of its tree."""
+            a = Value(2)
+            b = Value(3)
+            c = a * b + a
+            assert c.data == 8, f"(a * b + a).data is {c.data!r}, not 8."
+            product = c.parents[0]
+            assert product.data == 6 and c.parents[1] is a, "a * b + a should have the parents a * b, holding 6, and then a itself."
+            assert product.parents[0] is a and product.parents[1] is b, "The parents of a * b, inside a * b + a, should be a and b themselves."
+
+        def test_repr():
+            """print shows a value as Value(data)."""
+            got = str(Value(6))
+            assert got == "Value(6)", f"str(Value(6)) is {got!r}, not 'Value(6)'."
+            got = str([Value(1), Value(2.5)])
+            assert got == "[Value(1), Value(2.5)]", f"str([Value(1), Value(2.5)]) is {got!r}, not '[Value(1), Value(2.5)]'."
+      reference: |
+        class Value:
+            """A number, data, with the list parents of the values it was made from."""
+
+            def __init__(self, data, parents=None):
+                """A new value holding data. Called without parents, it has none: a new, empty
+                list of its own."""
+                if parents is None:
+                    parents = []
+                self.data = data
+                self.parents = parents
+
+            def __add__(self, other):
+                """A new value holding self's data plus other's, with the parents [self, other].
+                self and other are left as they were."""
+                return Value(self.data + other.data, [self, other])
+
+            def __mul__(self, other):
+                """A new value holding self's data times other's, with the parents [self, other].
+                self and other are left as they were."""
+                return Value(self.data * other.data, [self, other])
+
+            def __repr__(self):
+                """Value(data), such as Value(6)."""
+                return "Value(" + str(self.data) + ")"
+
+
+        a = Value(2)
+        b = Value(3)
+        c = a * b + a
+        print(c, c.parents)   # Value(8) [Value(6), Value(2)]
+      wrong:
+        - code: |
+            class Value:
+                def __init__(self, data, parents=[]):
+                    self.data = data
+                    self.parents = parents
+
+                def __add__(self, other):
+                    return Value(self.data + other.data, [self, other])
+
+                def __mul__(self, other):
+                    return Value(self.data * other.data, [self, other])
+
+                def __repr__(self):
+                    return "Value(" + str(self.data) + ")"
+          why: Makes the default list once, when the `def` line runs, so every value made without parents shares it.
+        - code: |
+            class Value:
+                def __init__(self, data, parents=None):
+                    if parents is None:
+                        parents = []
+                    self.data = data
+                    self.parents = parents
+
+                def __add__(self, other):
+                    self.data = self.data + other.data
+                    self.parents = [self, other]
+                    return self
+
+                def __mul__(self, other):
+                    return Value(self.data * other.data, [self, other])
+
+                def __repr__(self):
+                    return "Value(" + str(self.data) + ")"
+          why: Changes the left value and returns it, instead of making a new one.
+        - code: |
+            class Value:
+                def __init__(self, data, parents=None):
+                    if parents is None:
+                        parents = []
+                    self.data = data
+                    self.parents = parents
+
+                def __add__(self, other):
+                    return Value(self.data + other.data, [Value(self.data), Value(other.data)])
+
+                def __mul__(self, other):
+                    return Value(self.data * other.data, [Value(self.data), Value(other.data)])
+
+                def __repr__(self):
+                    return "Value(" + str(self.data) + ")"
+          why: Keeps new values with the same numbers as parents, not the values themselves.
+        - code: |
+            class Value:
+                def __init__(self, data, parents=None):
+                    if parents is None:
+                        parents = []
+                    self.data = data
+                    self.parents = parents
+
+                def __add__(self, other):
+                    return Value(self.data + other.data, [other, self])
+
+                def __mul__(self, other):
+                    return Value(self.data * other.data, [other, self])
+
+                def __repr__(self):
+                    return "Value(" + str(self.data) + ")"
+          why: Lists the parents the wrong way round, right side first.
+        - code: |
+            class Value:
+                def __init__(self, data, parents=None):
+                    if parents is None:
+                        parents = []
+                    self.data = data
+                    self.parents = parents
+
+                def __add__(self, other):
+                    return Value(self.data + other.data, [self, other])
+
+                def __mul__(self, other):
+                    return Value(self.data * other.data, [self, other])
+
+                def __repr__(self):
+                    print("Value(" + str(self.data) + ")")
+          why: Prints the text in `__repr__` instead of returning it, so `print` gets `None` and stops with an error.
+        - code: |
+            class Value:
+                def __init__(self, data, parents=None):
+                    if parents is None:
+                        parents = []
+                    self.data = data
+                    self.parents = parents
+
+                def __add__(self, other):
+                    return Value(self.data + other.data, [self, other])
+
+                def __mul__(self, other):
+                    return Value(self.data + other.data, [self, other])
+
+                def __repr__(self):
+                    return "Value(" + str(self.data) + ")"
+          why: Adds in `__mul__`.
+    explanation: >-
+      `parents=None` with `if parents is None: parents = []` in the body gives each value made
+      without parents a new list, as E1.4's `log` did. `__add__` and `__mul__` each return a new
+      `Value`, whose parents are the list `[self, other]` of the two objects themselves, and change
+      neither. `__repr__` returns a str, which `print` shows, for a value alone or inside a list.
+
+  - id: debug-vec-add
+    phase: build
+    kind: debug
+    concept: E1.7/special-methods
+    title: A sum that changes its inputs
+    prompt: >-
+      Run the script: it prints `Vec(4, 6) Vec(3, 4) Vec(4, 6)`, though `u` should still be
+      `Vec(1, 2)`. Fix `__add__` so that it keeps its contract. The tests add many vectors, and
+      check that the vectors added are left as they were.
+    answer:
+      type: code
+      starter: |
+        class Vec:
+            """A vector in the plane, with coordinates x and y."""
+
+            def __init__(self, x, y):
+                self.x = x
+                self.y = y
+
+            def __add__(self, other):
+                """A new vector, the sum of self and other. Both are left as they were."""
+                self.x = self.x + other.x
+                self.y = self.y + other.y
+                return self
+
+            def __repr__(self):
+                return "Vec(" + str(self.x) + ", " + str(self.y) + ")"
+
+
+        u = Vec(1, 2)
+        v = Vec(3, 4)
+        w = u + v
+        print(u, v, w)
+      tests: |
+        def test_sum():
+            """The sum has the sums of the coordinates."""
+            w = Vec(1, 2) + Vec(3, 4)
+            assert w.x == 4 and w.y == 6, f"Vec(1, 2) + Vec(3, 4) is {w!r}, not Vec(4, 6)."
+
+        def test_unchanged():
+            """Both vectors added are left as they were."""
+            u = Vec(1, 2)
+            v = Vec(3, 4)
+            u + v
+            assert u.x == 1 and u.y == 2, f"After u + v, u is {u!r}, not Vec(1, 2)."
+            assert v.x == 3 and v.y == 4, f"After u + v, v is {v!r}, not Vec(3, 4)."
+
+        def test_new_object():
+            """The sum is a new vector."""
+            u = Vec(1, 2)
+            v = Vec(3, 4)
+            w = u + v
+            assert w is not u and w is not v, "u + v should be a new vector, not u or v itself."
+
+        def test_chain():
+            """Three vectors added in a row."""
+            a = Vec(1, 1)
+            got = a + Vec(2, 2) + Vec(3, 3)
+            assert got.x == 6 and got.y == 6, f"Vec(1, 1) + Vec(2, 2) + Vec(3, 3) is {got!r}, not Vec(6, 6)."
+            assert a.x == 1 and a.y == 1, f"After a + Vec(2, 2) + Vec(3, 3), a is {a!r}, not Vec(1, 1)."
+
+        def test_twice():
+            """A vector added to itself."""
+            u = Vec(1, 2)
+            got = u + u
+            assert got.x == 2 and got.y == 4, f"u + u with u = Vec(1, 2) is {got!r}, not Vec(2, 4)."
+            assert u.x == 1 and u.y == 2, f"After u + u, u is {u!r}, not Vec(1, 2)."
+
+        # output is everything your program printed.
+        def test_script():
+            """The script prints Vec(1, 2) Vec(3, 4) Vec(4, 6)."""
+            assert "Vec(1, 2) Vec(3, 4) Vec(4, 6)" in output, f"The script printed {output!r}, not Vec(1, 2) Vec(3, 4) Vec(4, 6)."
+      reference: |
+        class Vec:
+            """A vector in the plane, with coordinates x and y."""
+
+            def __init__(self, x, y):
+                self.x = x
+                self.y = y
+
+            def __add__(self, other):
+                """A new vector, the sum of self and other. Both are left as they were."""
+                return Vec(self.x + other.x, self.y + other.y)
+
+            def __repr__(self):
+                return "Vec(" + str(self.x) + ", " + str(self.y) + ")"
+
+
+        u = Vec(1, 2)
+        v = Vec(3, 4)
+        w = u + v
+        print(u, v, w)
+      wrong:
+        - code: |
+            class Vec:
+                def __init__(self, x, y):
+                    self.x = x
+                    self.y = y
+
+                def __add__(self, other):
+                    w = self
+                    w.x = self.x + other.x
+                    w.y = self.y + other.y
+                    return w
+
+                def __repr__(self):
+                    return "Vec(" + str(self.x) + ", " + str(self.y) + ")"
+
+
+            u = Vec(1, 2)
+            v = Vec(3, 4)
+            w = u + v
+            print(u, v, w)
+          why: '`w = self` makes a second name for the same vector, not a copy, so `u` still changes.'
+        - code: |
+            class Vec:
+                def __init__(self, x, y):
+                    self.x = x
+                    self.y = y
+
+                def __add__(self, other):
+                    other.x = self.x + other.x
+                    other.y = self.y + other.y
+                    return other
+
+                def __repr__(self):
+                    return "Vec(" + str(self.x) + ", " + str(self.y) + ")"
+
+
+            u = Vec(1, 2)
+            v = Vec(3, 4)
+            w = u + v
+            print(u, v, w)
+          why: Changes the right vector instead of the left one, and still returns an input.
+        - code: |
+            class Vec:
+                def __init__(self, x, y):
+                    self.x = x
+                    self.y = y
+
+                def __add__(self, other):
+                    return Vec(self.x + other.x, self.y + other.x)
+
+                def __repr__(self):
+                    return "Vec(" + str(self.x) + ", " + str(self.y) + ")"
+
+
+            u = Vec(1, 2)
+            v = Vec(3, 4)
+            w = u + v
+            print(u, v, w)
+          why: Adds `other.x` to the y coordinate.
+        - code: |
+            class Vec:
+                def __init__(self, x, y):
+                    self.x = x
+                    self.y = y
+
+                def __add__(self, other):
+                    x = self.x + other.x
+                    y = self.y + other.y
+                    return self
+
+                def __repr__(self):
+                    return "Vec(" + str(self.x) + ", " + str(self.y) + ")"
+
+
+            u = Vec(1, 2)
+            v = Vec(3, 4)
+            w = u + v
+            print(u, v, w)
+          why: Works out the sums in local names and then returns the left vector unchanged.
+    explanation: >-
+      `__add__` assigned `self.x` and `self.y`, changing the left vector, and returned it, so `u` and
+      `w` were two names for one changed object. Making a new `Vec` from the sums of the coordinates
+      leaves both vectors alone, and `w` refers to the new one.
+
+  # Explain --------------------------------------------------------------------
+  - id: explain-search
+    phase: explain
+    kind: explain
+    concept: E1.7/special-methods
+    covers: [E1.7/classes-and-instances, E1.7/methods-and-self, E1.7/attribute-lookup]
+    title: Classes, and the search that trained twice
+    prompt: >-
+      Explain to your friend what a class is and what calling one does, what `self` is in a method
+      and why `m.add(3)` can change `m`, why the puzzle's search trained every config twice and how
+      `__eq__` mends it, how Python turns operators such as `+` into method calls, and in what
+      order, and where Python looks when it reads an attribute.
+    answer:
+      type: text
+      rubric:
+        - { id: class, criterion: 'Says that a class is a new type of value, and that calling it makes a new object, an instance, runs `__init__` with `self` referring to it, so that lines such as `self.lr = lr` give it attributes, and gives back the object.' }
+        - { id: self, criterion: 'Explains that a method is a function written in the class, that `m.add(3)` is the call `Meter.add(m, 3)` with `self` referring to the object `m` refers to, and that a method changes its object only through `self`, since a name it assigns without `self.` is local to the call.' }
+        - { id: puzzle, criterion: 'Explains the puzzle: without `__eq__`, `==` asks whether two names refer to one object, as `is` does, so two configs made separately are never equal and `in tried` never finds one; an `__eq__` that compares the settings mends it.' }
+        - { id: operators, criterion: 'Says that Python turns operators into method calls, `a + b` into `a.__add__(b)` and `a * b` into `a.__mul__(b)`, made in the order of the expression''s tree, and that such a method should return a new object and leave its inputs alone.' }
+        - { id: lookup, criterion: 'Describes how an attribute is read: the object''s own attributes first, then its class, then the class it is built on, while assigning always gives the object an attribute of its own; so a list kept in the class is shared by every instance, and a lookup through `self` starts from the object''s own class.' }
+      reference: >-
+        A class is a new type of value, written in the program. Calling it, as in Config(0.01, 32),
+        makes a new, empty object of that type, an instance, then runs the class's __init__ with
+        self referring to the new object, and gives the object back. Lines such as self.lr = lr in
+        __init__ give the object its attributes, names kept inside it, which a.lr reads later.
+        A method is a function written in the class. m.add(3) finds add in m's class and calls it
+        as Meter.add(m, 3), so self is a second name for m's object, and self.total = ... changes
+        that object, which keeps its attributes from one call to the next. A name assigned without
+        self. is only a local name of the call and is gone when it returns. The puzzle's search
+        kept a list of the configs it had tried and skipped any config already in it. But in
+        compares with ==, and a class that does not say what == means gets the test that is
+        asks, whether two names refer to the same object. Every config was made by its own call,
+        so none was ever equal to one already tried, and each was trained again. A method
+        __eq__ that compares the learning rates and the batch sizes mends it, since a == b is
+        worked out as a.__eq__(b). Operators work the same way: a + b calls a.__add__(b) and a * b
+        calls a.__mul__(b), with the object on the left as self. In a + b * c the calls follow
+        the expression's tree, so __mul__ runs first and its result is the other value of
+        __add__, and each should return a new object rather than change its inputs. Reading an
+        attribute looks in the object's own attributes first, then in its class, then in the
+        class that class is built on. Assigning always gives the object an attribute of its own.
+        So a list kept in the class is shared by every instance that appends to it, and inside a
+        method that a subclass inherits, self.forward finds the subclass's own forward.
+      minWords: 100
+      maxWords: 400

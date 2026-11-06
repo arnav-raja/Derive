@@ -1,0 +1,61 @@
+This lesson builds on E1.4's lists and the names that share them, on E1.3's functions and their local names, and on E1.1's order of working out an expression. Five quick questions check that they are ready. Answer from memory, without running anything. A miss opens a short re-teach straight away.
+
+<Exercise id="recall-alias" />
+
+<Reteach for="recall-alias">
+
+<Callback lesson="E1.4">
+
+Assignment makes a name refer to a value and never copies it. After `b = a`, both names refer to one list, so `b.append(3)` changes the list that `a` refers to as well, and `a` has three slots. A copy is made with `list(a)`, and `a = a + [3]` would make a new list and leave the other name's list alone.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-is-equal" />
+
+<Reteach for="recall-is-equal">
+
+<Callback lesson="E1.4">
+
+`x == y` asks whether two values are equal, and `x is y` whether two names refer to one and the same object. Two lists made separately, as two `[1, 2]` written out are, hold equal values but are two objects, so `==` gives `True` and `is` gives `False`. After `b = a`, both give `True`.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-none" />
+
+<Reteach for="recall-none">
+
+<Callback lesson="E1.3">
+
+A call ends at the first `return` it reaches, and the value after it is the value of the call. A function that ends without reaching a `return` gives `None`. `setup` works out `y` and keeps it in a local name, which is gone when the call ends, so the call's value is `None`, and `print` shows `None`.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-local" />
+
+<Reteach for="recall-local">
+
+<Callback lesson="E1.3">
+
+A name that a function assigns is local to each call, unless the function has a `global` line for it. `total = x` inside `add` makes a new name `total` of the call's own, which never touches the main program's `total`, and is gone when the call returns. So the main program's `total` is still 0.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-tree" />
+
+<Reteach for="recall-tree">
+
+<Callback lesson="E1.1">
+
+Python reads an expression as a tree fixed by its rules of precedence, and works it out from the leaves. `*` comes before `-`, so `x - y * z` is $x - (y \times z)$: the product `y * z` is worked out first, and then taken from `x`. Brackets, as in `(x - y) * z`, change the tree.
+
+</Callback>
+
+</Reteach>

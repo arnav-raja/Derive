@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { TraceStep } from "@/lib/python/client";
 
-import { changesBetween, finishedStep, frameHeading, frameMarks, frameStatus, returnText, runningIn, sameCall } from "./trace-frames";
+import { changesBetween, finishedStep, frameHeading, frameMarks, frameStatus, lookupName, returnText, runningIn, sameCall } from "./trace-frames";
 
 const main = (variables: Record<string, string>, line = 1, refs?: Record<string, string>, digests?: Record<string, number>) => ({
   function: "(main program)",
@@ -231,5 +231,47 @@ describe("frame status", () => {
     expect(frameStatus(stopped[0])).toBe("running");
     expect(frameStatus(halveRun[5])).toBe("returning `0.05`");
     expect(frameStatus(stopped[1])).toBe("stopping with `UnboundLocalError`");
+  });
+});
+
+// The trace the harness gives for a method call, m.add(3), on an object of the program's own
+// class: self and m refer to one object, Meter 1, whose attributes are kept one by one.
+const meter = (total: string, count: string) => ({ total, count });
+const inMethod: TraceStep = at(
+  8,
+  [
+    { ...main({ Meter: "methods: __init__, add", m: "total=0, count=0" }, 12, { Meter: "class Meter", m: "Meter 1" }), attrs: { m: meter("0", "0") } },
+    { ...call("Meter.add", { self: "total=3, count=0", x: "3" }, 8, { self: "Meter 1" }), call: "Meter.add(Meter 1, 3)", attrs: { self: meter("3", "0") } },
+  ],
+);
+
+describe("looking a name up", () => {
+  it("finds the running call's own name before the main program's", () => {
+    expect(lookupName(halveRun[4], "lr")).toEqual({ value: "0.05", owner: "halve" });
+    expect(lookupName(halveRun[6], "lr")).toEqual({ value: "0.1", owner: "(main program)" });
+  });
+
+  it("finds an object's attribute by the name of the object", () => {
+    expect(lookupName(inMethod, "self.total")).toEqual({ value: "3", owner: "Meter.add(Meter 1, 3)" });
+    expect(lookupName(inMethod, "m.count")).toEqual({ value: "0", owner: "(main program)" });
+  });
+
+  it("finds nothing for a name not yet made, or an attribute the object does not have", () => {
+    expect(lookupName(halveRun[0], "lr")).toBeUndefined();
+    expect(lookupName(inMethod, "self.mean")).toBeUndefined();
+    expect(lookupName(inMethod, "x.real")).toBeUndefined();
+  });
+});
+
+describe("objects of the program's own classes", () => {
+  it("are said to be referred to by their tag, with their attributes", () => {
+    const before = at(11, [main({ Meter: "methods: __init__, add" }, 11, { Meter: "class Meter" })]);
+    const after = at(12, [main({ Meter: "methods: __init__, add", m: "total=0, count=0" }, 12, { Meter: "class Meter", m: "Meter 1" })]);
+    expect(changesBetween(before, after)).toBe("`m` refers to Meter 1 (`total=0, count=0`)");
+  });
+
+  it("are said to change in place, with every name that refers to them", () => {
+    const step = (total: string) => at(12, [main({ m: `total=${total}`, n: `total=${total}` }, 12, { m: "Meter 1", n: "Meter 1" })]);
+    expect(changesBetween(step("0"), step("3"))).toBe("Meter 1, which `m` and `n` refer to, is now `total=3`");
   });
 });

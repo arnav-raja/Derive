@@ -1,0 +1,262 @@
+misconceptions:
+  - id: eq-compares-attributes
+    belief: '`==` on two objects compares their attributes, even when the class has no `__eq__`.'
+    why: >-
+      Without `__eq__`, Python has no way to know which attributes matter, so `==` asks only
+      whether the two names refer to one object, as `is` does. Two objects made by two calls are
+      never equal, however alike their attributes.
+    cue: The learner chooses `all-true` in the puzzle, or `both-true` in the first review of explore-eq.
+  - id: class-fixes-attributes
+    belief: A class fixes which attributes its objects can have, so an attribute that `__init__` did not set cannot be added later.
+    why: >-
+      An object's attributes are names kept in it, and assigning `obj.name = v` from anywhere gives
+      the object that attribute, whether `__init__` set it or not.
+    cue: The learner chooses `error-set` in explore-own-attributes.
+  - id: missing-attribute-none
+    belief: Reading an attribute that an object does not have gives `None`.
+    why: >-
+      A missing attribute stops Python with `AttributeError`, as a missing key stops a dict lookup
+      with `KeyError`. `None` comes from a function that ends without `return`, not from a missing
+      name.
+    cue: The learner chooses `none` in explore-own-attributes.
+  - id: attribute-for-every-instance
+    belief: Setting an attribute through one instance sets it for every instance of the class.
+    why: >-
+      Assigning through a name for an object gives that object alone an attribute. Each instance
+      keeps attributes of its own.
+    cue: The learner chooses `shared` in explore-own-attributes.
+  - id: init-gives-the-call
+    belief: Calling a class gives whatever `__init__` returns.
+    why: >-
+      Python makes the new object before `__init__` runs, and the call gives back that object.
+      `__init__` only gives it its attributes, and returns `None`.
+    cue: The learner chooses `none` in the second review of explore-own-attributes.
+  - id: assignment-copies-object
+    belief: '`b = a` makes `b` a copy of the object that `a` refers to.'
+    why: >-
+      Assignment never copies. After `b = a`, both names refer to one object, so a change made
+      through either shows through both.
+    cue: The learner chooses `copy` in explore-alias-object.
+  - id: local-is-attribute
+    belief: A name assigned in a method, such as `total = ...`, sets the object's attribute of the same name.
+    why: >-
+      A name assigned without `self.` is local to the call, as in E1.3, and is gone when the call
+      returns. Only assigning through `self` changes the object.
+    cue: The learner chooses `works` or `last` in explore-forgot-self, or counts in a local name in build-early-stop.
+  - id: self-not-needed
+    belief: A method needs no parameter for its object, since Python knows which object it was called through.
+    why: >-
+      `m.add(3)` is the call `Meter.add(m, 3)`: the object is passed as the first argument, so the
+      method must have a first parameter to receive it, called `self` by custom.
+    cue: The learner chooses `three` or `zero` in the second review of explore-forgot-self.
+  - id: eq-changes-is
+    belief: Once a class has `__eq__`, `is` also says `True` for two equal objects.
+    why: >-
+      `is` always asks whether two names refer to one and the same object, and no method changes
+      that. `__eq__` changes only what `==` and `in` say.
+    cue: The learner chooses `is` in explore-eq.
+  - id: operators-in-written-order
+    belief: Python calls the methods for the operators in the order in which the operators are written.
+    why: >-
+      Python works out an expression as E1.1's tree, from the leaves, so `b * c` in `a + b * c` is
+      called first, and its result becomes `other` in the call of `__add__`.
+    cue: The learner chooses `written` in explore-call-order.
+  - id: operator-changes-input
+    belief: A class's `__add__` changes the object on the left, as `append` changes a list.
+    why: >-
+      An operator method returns a value, and one written like `+` on numbers makes a new object
+      and leaves both inputs alone. A method that assigns through `self` and returns `self` breaks
+      that.
+    cue: The learner chooses `changed` in the second review of explore-call-order, or leaves `return self` in debug-vec-add.
+  - id: class-list-copied
+    belief: Each instance gets its own copy of a list written in the class's body.
+    why: >-
+      A name in the class's body is an attribute of the class itself. Reading `self.losses` finds
+      the class's one list when the object has none of its own, and `append` changes that list.
+    cue: The learner chooses `own` in explore-class-list.
+  - id: instance-cannot-see-class
+    belief: An object cannot read an attribute kept in its class, only those that `__init__` gave it.
+    why: >-
+      Reading `obj.name` looks among the object's own attributes and then in its class, so a
+      class's attributes and methods are found through every instance.
+    cue: The learner chooses `error` in explore-class-list or in its second review.
+  - id: self-looks-in-base
+    belief: Inside a method written in a base class, `self.name` looks only in that base class.
+    why: >-
+      `self` refers to the object the method was called through, so a lookup through it starts from
+      the object's own class, which may be a subclass with its own `forward` or `name`.
+    cue: The learner chooses `error` in explore-layers, or `base` in its first review.
+  - id: outer-call-first
+    belief: In `g(f(5))`, `g` runs first.
+    why: >-
+      A call works out its arguments before it runs, so `f(5)` is worked out first and `g` is
+      called with its result, as in M1.3's composition.
+    cue: The learner chooses `outer-first` or `lines-wrong` in explore-layers.
+  - id: set-like-list
+    belief: A set of objects uses `__eq__` just as a list does, so swapping a list for a set changes only the speed.
+    why: >-
+      A set needs a number worked out from each value, from `__hash__`, to know where to look, and
+      a class that defines `__eq__` alone has none, so its objects cannot go in a set at all.
+    cue: The learner chooses `same` or `all` in build-break-hash.
+
+exercises:
+  derive-lookup-proof:
+    rungs:
+      - For each line, what does it read or assign, and on which object or class?
+      - "Explore: reading an attribute looks among the object's own attributes, then in its class, while assigning `obj.name = v` always gives the object an attribute of its own."
+      - Take only the first call of `log`. Which attributes does `a`'s run have of its own before line 6 runs, and which after?
+      - >-
+        If the lines about `self.count` cite a rule about reading, check which side of line 6 each
+        line is about: its right side reads, and its left side assigns. If a line about
+        `self.losses` cites assigning, look at whether `self.losses` is ever on the left of `=`. If
+        the last line cites a rule about reading, ask what changed the list, and through which
+        names the change is seen.
+      - >-
+        Suppose a class has `size = 1` in its body, and a method runs `self.size = self.size * 2`
+        twice on one object. The first read finds the class's 1, since the object has no `size` of
+        its own; the assignment gives the object a `size` of its own, 2; the second read finds that
+        own 2 first; and the class's `size` is still 1, since assigning through the object changes
+        nothing else.
+    notes: >-
+      The rule about a base is the decoy: no class here is built on another. Citing "Own first" for
+      the first line means the learner thinks the run already has a count. Citing "Assigning" for
+      the last line misses that `append` changes the list in place, which no assignment does.
+  derive-tolerance:
+    rungs:
+      - What does `a == b` say about $x$ and $y$, written as a distance?
+      - "E1.1: `abs(a - b)` is the distance between `a` and `b`. This `__eq__` calls two configs equal when their learning rates are at most $t$ apart."
+      - Take $t = 1$ and $y = 0$. Which values may $x$ take, and which may $z$? How far apart can such an $x$ and such a $z$ be?
+      - >-
+        If your answer is $t$, look for an $x$ and a $z$, each within $t$ of $y$, that are more than
+        $t$ apart. If your answer is larger than $2t$, try to place $x$ and $z$ that far apart while
+        each stays within $t$ of $y$. If it has $t$ squared in it, check whether any step multiplies
+        two distances.
+      - >-
+        Three runs' losses $p$, $q$ and $r$, where $p$ is within 0.5 of $q$ and $q$ is within 0.3 of
+        $r$: going from $p$ to $r$ by way of $q$ covers at most $0.5 + 0.3 = 0.8$, and $p = q + 0.5$
+        with $r = q - 0.3$ reaches it.
+    notes: >-
+      $t$ assumes the chain keeps equality, which is what the question tests. $0$ confuses the
+      learning rates with the configs being one object. $t^2$ or $3t$ come from a guess, not from
+      the two distances.
+  derive-new-objects:
+    rungs:
+      - In one pass of the loop, which operations make a new `Value`?
+      - "Explore: each call of `Num`'s `__add__` or `__mul__` made one new `Num`, and the calls followed the expression's tree."
+      - Take $n = 1$, so the loop makes one pass, `total = total + w[0] * x[0]`. How many new values does it make? Then try $n = 2$.
+      - >-
+        If your expression gives 2 for $n = 1$, check it at $n = 3$ by counting too. If it gives 1
+        for $n = 1$, look at whether the product and the sum each make a value. If it gives 3 for
+        $n = 1$, look at whether the starting `Value(0)` is made inside the loop or before it.
+      - >-
+        A loop `for i in range(n): total = total + w[i] * x[i] * x[i]` makes three new values on each
+        pass, two products and a sum, so $3n$ in all.
+    notes: >-
+      $n$ counts only the sums or only the products. $2n + 1$ counts the starting zero, which the
+      loop does not make. $2n - 1$ is the count for a sum written out without a starting zero, not
+      for this loop. $n^2$ is a guess from E1.4's comparisons.
+  derive-memory:
+    rungs:
+      - How many new values does one token make, for $7 \times 10^9$ weights?
+      - "Earlier in this phase: the loop made $2n$ new values for $n$ weights. M1.1 turned a count of parameters into bytes by multiplying by the bytes for each one."
+      - Try a model with $10^9$ weights first. How many new values is that, how many bytes, and how many GB?
+      - >-
+        If your count of values came from $2 \times 7 \times 10^9$, the method is right: check the
+        multiplication by 200 and the division by $10^9$. If you multiplied the weights by 200
+        without the 2, look again at how many values one weight's multiplication and addition make.
+        If your answer is in bytes, turn it into GB.
+      - >-
+        A model with $3 \times 10^9$ weights, each kept as an object of about 200 bytes, needs
+        $3 \times 10^9 \times 200 = 6 \times 10^{11}$ bytes for its weights alone, which is 600 GB.
+    notes: >-
+      1,400 forgets the 2, counting one value for each weight. 14 is the weights as 2-byte numbers,
+      from M1.1, not the graph. An answer near $2.8 \times 10^{12}$ is in bytes.
+  build-early-stop:
+    rungs:
+      - What must a watcher remember from one call of `step` to the next, and where can it keep it?
+      - "Explore: a method changes its object only through `self`, and an object keeps its attributes from one call to the next. E1.4's `log` used `None` to stand for a value not given yet."
+      - Work through the losses `[1.0, 3.0, 2.0]` with patience 2 by hand, writing down the best loss and the count after each one.
+      - >-
+        If test_script fails but test_patience_one passes, look at whether the count is kept on
+        `self`, so that it lasts from one call to the next. If test_against_the_best fails, look at
+        what each loss is compared with. If test_equal_is_no_best fails, look at the comparison that
+        decides a new best. If test_count_starts_again fails, look at what happens to the count at a
+        new best. If test_two_watchers fails, look for anything kept in the class rather than on
+        each object. If Python says that a name is not defined in `step`, look at which of
+        `__init__`'s names were kept on `self`.
+      - >-
+        A class `Peak` whose method `see(x)` says whether `x` is the largest so far: `__init__` sets
+        `self.top = None`, and `see` does `if self.top is None or x > self.top:` with
+        `self.top = x` and `return True` in its block, and `return False` after it. Then `see(3)`,
+        `see(1)` and `see(5)` give `True`, `False` and `True`.
+    notes: >-
+      A count that never passes 1 means it is kept in a local name. Stopping at an equal loss too
+      late means `<=` for a new best. A count that never starts again means nothing resets it at a
+      new best. Agreement on rising runs but not on [1.0, 3.0, 2.0] means each loss is compared with
+      the one before it. Stopping one loss late means `>`. A `NameError` for `patience` means it was
+      never kept on `self`. Never seeing a new best means the best started at 0.
+  build-sequential:
+    rungs:
+      - What does a model have to keep, and what does a call of it do with each layer in turn?
+      - "Explore: `g(f(5))` runs `f` first, and an object with `__call__` can be called like a function. E1.4: assignment never copies, and `list(a)` makes a copy."
+      - Work through `Sequential([AddOne(), Double(), AddOne()])(1)` by hand. What should the value be after each layer?
+      - >-
+        If test_order passes but test_three fails, check that each layer is given what the layer
+        before it gave. If test_order gets 12 and 11 the wrong way round, look at the order in which
+        the loop takes the layers. If test_empty fails, follow `Sequential([])(7)` through your
+        `__call__`. If test_own_copy fails, look at whether `self.layers` is the caller's list or a
+        copy of it. If test_separate fails, look for a list kept in the class's body.
+      - >-
+        A class `Pipeline` that applies functions in turn and keeps each result: `__init__` keeps
+        `self.steps = list(steps)`, and `run(self, s)` sets `seen = []`, then for each step does
+        `s = step(s)` and `seen.append(s)`, and returns `seen`. With the steps `[abs, str]`,
+        `run(-3)` gives `[3, '3']`.
+    notes: >-
+      11 from both orders in test_order, or 7 where 5 is expected, means each layer is applied to
+      the input itself. 12 and 11 swapped means the layers are applied from the last. 10 from
+      test_own_copy's second half means the caller's list was kept. 11 and 11 in test_separate means
+      a list in the class's body. `None` from an empty model means the result starts as `None`.
+  build-value:
+    rungs:
+      - What does each method have to make, and what must it leave alone?
+      - "Explore: `Num`'s `__add__` returned a new `Num`, and `__repr__` returns a str. E1.4: a default value is made once, so `log` made its new list in the body."
+      - Work through `c = a * b + a`, with `a = Value(2)` and `b = Value(3)`, by hand. Which values are made, and what are the parents of each?
+      - >-
+        If test_no_parents fails with "one and the same list", look at where the empty list is
+        made. If test_parents fails, check that the list holds `self` and `other` themselves, left
+        one first. If test_inputs_unchanged or test_new_object fails, look for anything assigned
+        through `self` in `__add__` or `__mul__`. If test_repr fails, or `print` stops with an error,
+        look at what `__repr__` returns.
+      - >-
+        A class `Pair` holding `left` and `right`, whose `__repr__` returns
+        `"Pair(" + str(self.left) + ", " + str(self.right) + ")"`, and whose method `swapped(self)`
+        returns `Pair(self.right, self.left)`: a new pair, which leaves the old one as it was.
+    notes: >-
+      A shared parents list means `parents=[]`. Parents that are equal but not the same objects
+      mean copies were made. `a` changed after `a + b` means `__add__` assigns through `self`.
+      `TypeError: __repr__ returned non-string` means `__repr__` prints instead of returning.
+      Parents in the wrong order mean `[other, self]`.
+  debug-vec-add:
+    rungs:
+      - Which lines of `__add__` change `u`, and which object does it return?
+      - "Explore: each call of `Num`'s `+` made a new `Num` and left its inputs as they were."
+      - Run `u + v` by hand with the starter. What are `u.x` and `u.y` after each line of `__add__`, and which object comes back?
+      - >-
+        If test_sum passes but test_unchanged fails, `__add__` still assigns through `self` or
+        `other`, perhaps under another name. If test_new_object fails, look at what `__add__`
+        returns. If test_sum fails, check each coordinate's sum.
+      - >-
+        A `Money` class with an `amount`, whose `__mul__(self, k)` should give a new sum of money:
+        `return Money(self.amount * k)` leaves `self` alone, while `self.amount = self.amount * k`
+        followed by `return self` changes the money it was called on.
+    notes: >-
+      `u` still changed after the fix means `w = self` or another second name for an input. `v`
+      changed means the sums were assigned through `other`. A wrong y means `other.x` in the y sum.
+      An unchanged but wrong sum means the sums went into local names and `self` was returned.
+
+novice:
+  - Why does `__init__` have two underscores on each side of its name?
+  - Why do I write `self` in every method, but leave it out when I call the method?
+  - When should I write a class instead of a few functions and a dict?
+  - What is the difference between `__repr__` and `__str__`?
+  - Can a class be built on more than one class?

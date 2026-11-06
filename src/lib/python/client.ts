@@ -36,8 +36,11 @@ export type TraceFrame = {
   call?: string;
   line: number;
   variables: Record<string, string>;
+  /** The tag of each name that refers to a list, dict or set, or to an object of the program's own classes, such as `Config 1`. */
   refs?: Record<string, string>;
   digests?: Record<string, number>;
+  /** Each attribute, one by one, of an object that a name refers to, so that a question can ask for `self.count`. */
+  attrs?: Record<string, Record<string, string>>;
 };
 export type TraceStep = {
   event: "line" | "return";

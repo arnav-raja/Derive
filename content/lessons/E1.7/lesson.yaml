@@ -1,0 +1,120 @@
+code: E1.7
+title: Classes and objects
+course: E1
+status: draft
+summary: >-
+  A search over training settings skips every setting it has already tried, yet it trains each one
+  twice. Classes, which make new kinds of value: objects and their attributes, the methods that
+  work on them, the special methods behind `==`, `print`, `+` and `*`, and the order in which
+  Python looks an attribute up.
+sittings: 2
+minutes:
+  puzzle: 10
+  recall: 10
+  explore: 55
+  derive: 35
+  build: 60
+  explain: 25
+concepts:
+  taught:
+    - id: E1.7/classes-and-instances
+      name: Classes and instances
+      summary: >-
+        A class is a new type of value. Calling it, as in `Config(0.01, 32)`, makes a new object of
+        that type, an instance, and runs the class's `__init__` with `self` referring to the new
+        object, so that lines such as `self.lr = lr` give the object its attributes. The call gives
+        back the object, whatever `__init__` returns. `a.lr` reads an attribute and `a.lr = 0.1`
+        sets one, and each instance keeps attributes of its own. Names refer to objects as they
+        refer to lists, so after `b = a` a change made through `b` shows through `a`.
+      usedBy: [L3.4, E5.4]
+    - id: E1.7/methods-and-self
+      name: Methods and self
+      summary: >-
+        A method is a function written inside a class. `m.add(3)` calls the class's `add` with
+        `self` referring to the object that `m` refers to, the same call as `Meter.add(m, 3)`. A
+        method changes its object only through `self`: `self.total = ...` sets an attribute, while a
+        name assigned without `self.` is local to the call and is gone when it returns. An object
+        keeps its attributes from one call to the next, which is how a meter, a model or an
+        optimiser carries its state.
+      usedBy: [L3.4, L3.9, E5.4]
+    - id: E1.7/special-methods
+      name: Special methods
+      summary: >-
+        Python calls methods whose names have two underscores on each side when it meets its own
+        syntax: `a == b` calls `a.__eq__(b)`, `print(a)` shows what `__repr__` returns, `a + b` calls
+        `a.__add__(b)`, `a * b` calls `a.__mul__(b)`, and `f(x)` on an object calls `f.__call__(x)`.
+        A class without `__eq__` makes `==` ask whether two names refer to the same object, as `is`
+        does, and a class that defines `__eq__` alone loses the `__hash__` that sets and dict keys
+        need. Operators keep Python's order of working out an expression, so the expression's tree
+        decides the order of the calls, and operators that make new objects leave their inputs as
+        they were.
+      usedBy: [M6.5, L3.4, E5.1]
+    - id: E1.7/attribute-lookup
+      name: Looking up an attribute
+      summary: >-
+        Reading `obj.name` looks first among the object's own attributes, then in its class, then in
+        the class that class is built on, and takes the first it finds. Assigning `obj.name = v`
+        always gives the object an attribute of its own. So a list kept on a class is shared by
+        every instance that appends to it, a subclass can replace a method of the class it is built
+        on, and a method found through `self` starts from the object's own class.
+      usedBy: [E5.4, L9.7]
+  used:
+    - E1.1/values-and-types
+    - E1.1/variables-as-names
+    - E1.1/evaluation-order
+    - E1.1/floats-are-approximate
+    - E1.2/conditions
+    - E1.2/loops
+    - E1.2/accumulator-pattern
+    - E1.3/defining-functions
+    - E1.3/scope
+    - E1.3/abstraction
+    - E1.4/lists
+    - E1.4/dicts-and-sets
+    - E1.4/aliasing-and-mutation
+    - M1.1/powers-of-ten
+    - M1.1/fermi-estimation
+    - M1.3/composition
+links:
+  requires:
+    - lesson: E1.3
+      bridge: >-
+        A method is one of E1.3's functions, written inside a class: its parameters are new names,
+        its own names are local to each call, and it ends at its `return`. What is new is `self`,
+        the object the method was called on, through which the method reads and changes that
+        object.
+    - lesson: E1.4
+      bridge: >-
+        E1.4 found that Python keeps every value as an object, that names refer to objects, and that
+        `is` asks whether two names refer to the same one. A class makes objects of a new kind,
+        whose attributes change in place as a list's slots do, and two names for one object see the
+        same changes.
+  applies:
+    - lesson: M1.1
+      bridge: >-
+        M1.1 estimated a quantity from rough factors, judged by the factor it might be off by. The
+        Derive phase estimates the memory that a graph of Python objects would need for a network's
+        numbers, and finds the factor by which keeping numbers in arrays saves it.
+    - lesson: M1.3
+      bridge: >-
+        M1.3 composed functions, applying the inner one first. Layers that are called like functions
+        compose the same way: `g(f(x))` runs `f` first, and a list of layers applied in turn is a
+        composition of them.
+  foreshadows:
+    - lesson: M6.5
+      bridge: >-
+        An expression worked out with objects whose `+` and `*` remember their inputs leaves behind
+        its whole tree. M6.5 calls that tree a computational graph, and finds every derivative of
+        the result by walking it backwards.
+    - lesson: L3.4
+      bridge: >-
+        This lesson's `Value` keeps a number and the values it was made from. L3.4 gives it a
+        gradient and a backward step, and builds from it an autograd engine that trains a small
+        network.
+    - lesson: E5.4
+      bridge: >-
+        Every layer of a PyTorch model is a subclass of `Module`, whose `__call__` does some
+        bookkeeping and then runs the layer's own `forward`, as this lesson's `Layer` did. E5.4 looks
+        at modules, the parameters they own, the state they keep, and the hooks that run around
+        `forward`.
+skills: [1, 2]
