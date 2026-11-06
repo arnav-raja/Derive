@@ -1,0 +1,418 @@
+misconceptions:
+  - id: try-stops-runner
+    belief: A test that fails inside `try` still stops the runner, or ends its loop.
+    why: >-
+      When a line inside `try` stops with `AssertionError`, the rest of that block is skipped, the
+      block under `except AssertionError` runs, and the program carries on after them, so a loop
+      around the `try` goes on to its next pass.
+    cue: >-
+      The learner chooses `stops` or `error` in explore-runner, or `assertion` in its first review.
+  - id: except-catches-all
+    belief: "`except AssertionError` catches an error of any type."
+    why: >-
+      An `except` names the type it catches. A `TypeError` is not an `AssertionError`, so it is not
+      caught, and it stops the program as it would without the `try`.
+    cue: The learner chooses `fail` or `pass` in the first review of explore-runner.
+  - id: best-starts-zero
+    belief: Starting a running largest at 0 works for any list.
+    why: >-
+      A running largest starts at a value that every number is compared with. When every number is
+      below 0, none is above the 0 it started at, so 0 is given, though it is not in the list.
+      Starting from the first number works for every list that has one.
+    cue: The learner chooses `all-pass` in explore-runner.
+  - id: lookup-calls
+    belief: Looking a function up in a dictionary runs it, or a string can be called to run the function of that name.
+    why: >-
+      A function is a value: `tests["even"]` gives the function, as `tests["even"]` would give a
+      number kept there, and only the brackets after it, `tests["even"]()`, call it.
+    cue: The learner chooses `lookup`, `call-dict` or `call-name` in the third review of explore-runner.
+  - id: regression-name
+    belief: A change that breaks tests which used to pass is called a mutant, a property or an oracle.
+    why: >-
+      A change that breaks something that used to work is a regression, and a suite runs after
+      every change to catch one while the change is fresh. A mutant is a small bug put in on
+      purpose to judge a suite, a property is a statement that should hold for every input, and an
+      oracle is where a test's expected values come from.
+    cue: The learner chooses `mutant`, `property` or `oracle` in the second review of explore-runner.
+  - id: more-of-the-same
+    belief: Any test of a function can show its bugs, so more tests, of whatever kind or place, make a suite stronger.
+    why: >-
+      A bug shows only on inputs that reach it, and bugs gather at edges. Ten tests of odd lengths
+      never reach a slip that only even lengths show, while one test on each side of each boundary
+      does.
+    cue: >-
+      The learner chooses `one`, `odd` or `repeat` in explore-median-cases, `middle`, `far` or
+      `ends` in its first review, `distinct`, `longer` or `unsorted` in its second, or `two`,
+      `even` or `odd` in its third.
+  - id: running-is-testing
+    belief: A test passes when the code runs without an error, whatever value it gives.
+    why: >-
+      A test checks a value: its assert compares what the code gives with what it should give.
+      Code that runs without an error can still give a wrong answer, so a test that would accept
+      any value checks nothing.
+    cue: The learner chooses `any` in the first review of explore-copied-expected.
+  - id: copied-oracle
+    belief: Running the code is a fine way to find a test's expected value.
+    why: >-
+      A value copied from the code's own output agrees with the code whether it is right or not,
+      so the test checks only that the code still does what it did, bug and all, and fails once the
+      bug is mended. The expected value must come from somewhere else: worked out by hand, or from
+      a slower, simpler version that is easy to trust.
+    cue: >-
+      The learner chooses `catches`, `backwards` or `always` in explore-copied-expected, `copied`
+      or `twice` in its first review, or `same` in its second.
+  - id: oracle-trust
+    belief: A slow version is a good source of expected values because it is slower, or newer, than the fast one.
+    why: >-
+      Speed and age say nothing about whether code is right. A slow, plain version is worth
+      trusting because it is simple enough to check by reading, and because it shares no code with
+      the fast one, so a slip in one is unlikely to be made the same way in the other.
+    cue: The learner chooses `slower` or `later` in the second review of explore-copied-expected.
+  - id: passing-proves
+    belief: Tests that pass prove that the code is right.
+    why: >-
+      A passing test shows only that the code worked on the inputs it tried. A bug on any other
+      input goes unseen, so testing shows the presence of bugs, never their absence; a proof is
+      what covers every input.
+    cue: The learner claims in the explain-back that passing tests prove a function right.
+  - id: mutant-away-from-boundary
+    belief: A test anywhere in a function's range can kill a mutant that changes one of its comparisons.
+    why: >-
+      `x <= limit` differs from `x < limit` only when `x` equals `limit`, so only a test with a
+      value exactly at the boundary kills it. Values below it, above it or far from it give the
+      same answer from both. A mutant that turns a comparison round, or moves its limit a long way,
+      differs on most values, so almost any test kills it.
+    cue: >-
+      The learner chooses `below`, `above` or `all` in explore-mutant, or `below`, `digits` or
+      `at-most` in its first review.
+  - id: survivor-means-bug
+    belief: A mutant that survives shows that the function is wrong, that a test's expected value is wrong, or that the suite is as strong as it can be.
+    why: >-
+      A mutant survives when no test tries an input on which it differs from the code. A survivor
+      in a line that runs only for an empty list says that no test tries an empty list: the
+      function may well be right there, and the tests that exist may be right too, but nobody has
+      looked.
+    cue: The learner chooses `wrong`, `perfect` or `expected` in the second review of explore-mutant.
+  - id: every-mutant-is-a-bug
+    belief: Every mutant is a bug that a good suite must kill.
+    why: >-
+      A mutant that gives the same result as the code on every input, such as `x >= best` for
+      `x > best` in a running largest of whole numbers, is not a bug at all, and no test can kill
+      it. Showing that a mutant is equivalent takes an argument about every input.
+    cue: The learner chooses `zero`, `smallest` or `last` in derive-equivalent.
+  - id: one-property-enough
+    belief: One property, such as being in order, is enough to check a sort, or an empty list is not in order.
+    why: >-
+      Each property alone lets wrong sorts through: `[]` is always in order, and the list itself
+      always has the same items. Only the two together pin a sort down.
+    cue: >-
+      The learner chooses `order-distinct` or `order-repeat` in explore-sort-property, or
+      `neither`, `order` or `both` in its second review.
+  - id: dict-order
+    belief: Two dictionaries with the same keys and values are unequal when their keys were added in a different order.
+    why: >-
+      `==` on two dictionaries compares their keys and the value of each, whatever order the keys
+      were added in. So `counts([3, 1, 2])` equals `counts([1, 2, 3])`, and `same_items` gives
+      `True` for a list and any reordering of it, as it should for a sort's result.
+    cue: The learner chooses `same-distinct` in explore-sort-property.
+  - id: example-is-property
+    belief: A property can be one worked example, or a statement that holds for most inputs but not all.
+    why: >-
+      A property must hold for every input. A check of one input with its answer worked out is an
+      example, a unit test. A statement that most inputs keep can still break at an edge, such as
+      `len(xs) > 0` for `[]`. Before calling a statement a property, look for an input that breaks
+      it: an empty list, one item, repeats, numbers below 0.
+    cue: >-
+      The learner chooses `example`, `differs` or `nonempty` in the first review of
+      explore-sort-property, or `last`, `positive` or `example` in its third.
+  - id: wide-range-better
+    belief: A wider range of random numbers tests more, so it finds more bugs.
+    why: >-
+      A wide range tries many different values, but two numbers from it are almost never equal, so
+      cases such as ties, which many bugs need, almost never turn up. Ten numbers from 1 to a
+      million hold a repeat about 45 times in a million.
+    cue: >-
+      The learner chooses `half`, `tenth` or `one` in puzzle-ties, `five` or `thirty` in
+      explore-small-range, or anything but `right` in its third review.
+  - id: pair-chance
+    belief: Two numbers drawn at random from 1 to $N$ are equal about once in $N^2$, or far more often than once in $N$.
+    why: >-
+      Whatever the first number is, the second matches it once in $N$, so a pair is equal about
+      once in $N$; once in $N^2$ is the chance that both are one value chosen beforehand. While a
+      list's pairs are few beside $N$, it has a repeat about as often as its number of pairs times
+      once in $N$.
+    cue: The learner chooses `tenths` or `million` in the first review of explore-small-range.
+  - id: pairs-is-chance
+    belief: The average number of equal pairs a list holds is its chance of having a repeat, however large it is.
+    why: >-
+      The two agree only while the average is far below 1, since a list then almost never holds two
+      equal pairs. For 5 numbers from 1 to 10 the average is 1 equal pair a list, but only about 70
+      lists in 100 have a repeat, since some hold two or more equal pairs at once.
+    cue: The learner chooses `all` in explore-small-range.
+  - id: items-not-pairs
+    belief: The chance of a repeat grows with the number of items, not with the number of pairs.
+    why: >-
+      A repeat needs two items, so what counts is the number of pairs, $\frac{n(n - 1)}{2}$, which
+      grows with the square of the length. 10 numbers make 45 pairs, not 10.
+    cue: >-
+      The learner chooses `one` in the first review of explore-small-range, or gives an answer near
+      100 in derive-range.
+  - id: seed-less-random
+    belief: A fixed seed makes the numbers less random, or makes a test try every input.
+    why: >-
+      A seed starts the same fixed rule at the same place, so the program makes the same numbers
+      each time it runs. They look just as random, and there are no more of them; the point is that
+      a failure can be run again.
+    cue: The learner chooses `more-random`, `every` or `never` in the second review of explore-small-range.
+  - id: shrink-shortest
+    belief: Shrinking always finds the shortest input that fails.
+    why: >-
+      The shrinker keeps the first removal that still fails and moves on, so it can end with a
+      longer failing list than another order of removals would reach. What it guarantees is that
+      its result still fails.
+    cue: >-
+      The learner chooses `shorter` in the first review of explore-shrink-result, or `shortest` in
+      its second review.
+  - id: shrink-stops-early
+    belief: The shrinker stops early, at the first item it cannot take out, or before it has tried every item.
+    why: >-
+      The loop tries every slot in turn. A removal that would make the property hold is skipped,
+      `i` moves on, and the next item is tried, so the loop ends only when `i` reaches the end of
+      the list. Every item is tried, and each one that the failure does not need when it is tried
+      goes.
+    cue: >-
+      The learner chooses `middle` or `tail` in explore-shrink-result, or `same` in its first
+      review.
+  - id: shrink-ignores-fails
+    belief: Shrinking takes out whatever it can, whether or not the smaller input still fails.
+    why: >-
+      A step is kept only when the smaller input still fails, so that the result still shows the
+      bug. `[3]` has no repeat, so it does not fail, and the shrinker never keeps it.
+    cue: >-
+      The learner chooses `single` in explore-shrink-result, `ten` in its first review, or `sooner`
+      or `twice` in its second.
+  - id: floats-equal
+    belief: "`==` is the right way to compare floats in a test."
+    why: >-
+      Floats are rounded, as E1.1 found, so a right answer can differ from the expected value in its
+      last digits: `(0.1 + 0.2) / 2` is `0.15000000000000002`. A test of floats compares with a
+      tolerance, as `math.isclose` does.
+    cue: The learner chooses `same` in breakit-isclose.
+
+exercises:
+  derive-pairs:
+    rungs:
+      - If each pair is equal about once in $N$, how many equal pairs do $\frac{n^2}{2}$ pairs hold on average? What should that number be?
+      - "Puzzle: each of the 45 pairs in a list of losses was equal about once in a million, so the list held a repeat about 45 times in a million. M1.1: a square root undoes a square, $\\sqrt{9} = 3$ because $3^2 = 9$. M1.2: an equation stays true when both sides are multiplied by the same number."
+      - Take $N = 50$. How many pairs must a list hold for one equal pair on average, and about how many numbers make that many pairs? Your expression should give that number at $N = 50$.
+      - >-
+        If your expression has a square root of $N$ in it, its shape is right: a list needs far
+        fewer numbers than its range holds. Check it at $N = 50$ against rung 3's count. If it
+        gives about 7.1, it takes $n$ numbers as making $n^2$ pairs: count the pairs again. If it
+        gives 5 or about 14.1, follow the 2 through each step of the solving. If it gives 25, 100
+        or 1,250, it grows at least as fast as the range: ask what your expression does with the
+        square of $n$. If it gives about 10.5, it solves with the exact count, and the question
+        asks you to take the pairs as $\frac{n^2}{2}$.
+      - >-
+        In a league where every team plays every other once, about how many teams make 200
+        matches? Each match is a pair of teams, and $t$ teams make about $\frac{t^2}{2}$ pairs, so
+        $\frac{t^2}{2} = 200$, $t^2 = 400$ and $t = \sqrt{400} = 20$. Check: 20 teams make
+        $\frac{20 \times 19}{2} = 190$ matches, close to 200.
+    notes: >-
+      $\sqrt{N}$ takes $n$ numbers as making $n^2$ pairs, counting each pair twice. $\sqrt{N/2}$
+      and $2\sqrt{N}$ lose the 2 while solving. $2N$, $\frac{N}{2}$ and $\frac{N^2}{2}$ grow at
+      least as fast as the range: they leave the square of $n$ undone, or square again.
+      $\frac{1 + \sqrt{1 + 8N}}{2}$ solves the exact count, which is right but not what the prompt
+      asks, and is within 0.6 of $\sqrt{2N}$.
+  derive-range:
+    rungs:
+      - How many pairs do 10 numbers make, and about how often is one pair equal when each number runs from 1 to $N$?
+      - "Derive: a list of $n$ numbers holds $\\frac{n(n - 1)}{2}$ pairs, and while it is small, the number of pairs times the chance that one pair is equal is close to the chance of a repeat. Puzzle: 10 numbers from 1 to 1,000,000 hold a repeat about 45 times in a million."
+      - Try $N = 4{,}500$. About how often does a list of 10 numbers have a repeat? Is that more or less often than 1 list in 10, and should $N$ be larger or smaller?
+      - >-
+        If you multiplied the number of pairs by the chance that one pair is equal, and set that to
+        1 in 10, the method is right, and only a count can be off. If your answer is about 900, you
+        have counted 90 pairs: a pair is two positions in either order, so first-and-second and
+        second-and-first are one pair. If it is about 100, you have counted 10 pairs, one for each
+        number. If it is about 45, you have set the chance of a repeat to 1 rather than 1 in 10. If
+        it is in the thousands, the range is too wide: a wider range makes repeats rarer.
+      - >-
+        A team gives each of 20 training runs a random seed, a whole number from 1 to $N$, and
+        wants two runs to share a seed only about 1 time in 100. 20 runs make
+        $\frac{20 \times 19}{2} = 190$ pairs, each sharing a seed about once in $N$, so the runs
+        hold about $\frac{190}{N}$ shared seeds on average, and $\frac{190}{N} = \frac{1}{100}$
+        gives $N = 19{,}000$. Worked out exactly, 19,000 gives a shared seed about 10 times in
+        1,000.
+    notes: >-
+      About 900 means 90 pairs, ordered pairs counted twice. About 100 means 10 pairs, one a
+      number. About 45 sets the average to 1, and an answer of 4,500 or more makes repeats rarer
+      than 1 in 100. Answers from about 350 to 580 are within the factor of 1.3; the exact $N$ for
+      a chance of 1 in 10 is about 430.
+  derive-shrink-proof:
+    rungs:
+      - For each line, what does it rest on? What a slice gives, which branch ran, what every pass keeps, a count that falls, what is true once the loop's test is `False`, or a value that each pass updates?
+      - "E1.2: a statement that holds before the first pass, and that each pass keeps true, holds after every pass; a name updated by each pass holds, after the loop, the result over all the passes; and a `while` loop ends at the first check where its test is `False`. E1.8: a whole number that every pass makes smaller, and that stays above 0, cannot fall for ever."
+      - Run `shrink` by hand on `[1, 4, 4]`, with `fails` true when a list has a repeat, writing down `i`, `xs` and `len(xs) - i` before each pass. Which lines of the proof can you check on each pass, and which only once the loop has ended?
+      - >-
+        If the two lines about one pass's cases cite The branch taken, those two are right. If the
+        first line's rule does not say what a slice gives, ask what `xs[:i] + xs[i + 1:]` is, and
+        which rule says so. If a line about one of the two cases cites the invariant rule, ask
+        whether that line is about one pass or about every pass. If the line about every pass
+        cites The branch taken, ask which rule turns what one pass keeps into what is true after
+        all of them. If the line that says the loop ends cites The loop stops, ask whether that
+        rule shows that the test ever becomes `False`, or only what follows once it has. If the
+        line about what is true when the loop ends cites A falling whole number, ask whether that
+        rule is about whether the loop ends, or about what is true when it does. If the last line
+        cites The loop stops, ask whether that rule counts anything. If it cites the invariant
+        rule, ask whether the line states something that every pass keeps true, or adds up what
+        every pass did. If any line cites Midway, ask whether the shrinker checks a value midway
+        between two others.
+      - >-
+        E1.2's halving loop keeps `lr` times 2 to the power `halvings` equal to 1. That holds before
+        the first pass, and each pass keeps it, so it holds after every pass. That the loop ends
+        takes a second argument, that `lr` halves on every pass, so the test `lr > 0.001` must fail
+        at last. What is true at the end comes from the invariant together with the test being
+        `False`. And `halvings`, which starts at 0 and gains exactly 1 a pass, holds the number of
+        passes when the loop ends, as an accumulator does.
+    notes: >-
+      Citing the invariant rule for one of the two cases means the learner has not told apart what
+      one pass does and what every pass keeps, and The branch taken for the fourth line is the same
+      confusion the other way round. Citing The loop stops for the line that says the loop ends
+      confuses what is true when it ends with whether it ends, which only A falling whole number
+      shows, and citing that rule for the sixth line is the reverse. The seventh line counts the
+      passes from a value that loses exactly 1 a pass, which is the accumulator rule; an invariant
+      that adds the passes so far to `len(xs) - i` could be made to work, but the line does not
+      state one. Midway is a decoy.
+  build-runner:
+    rungs:
+      - What should happen to the runner when one test's assert fails, and where must the `try` be for that to happen?
+      - "Explore: `try` runs a block, and if a line in it stops with `AssertionError`, the block under `except AssertionError` runs instead, and the program carries on after them. `tests[name]()` looks up a test by its name and calls it. E1.4: `xs.append(v)` adds a slot at the end of a list."
+      - Work through `run_tests` by hand on a suite of two tests, of which the first fails and the second passes. Which lines run, in order, and what should the list of failed names hold at the end?
+      - >-
+        If your program stops with test_negative's message, your runner does reach the tests, and
+        the first failure escapes from it: ask what in your runner is there to catch a test's
+        AssertionError, and where. If test_all_pass and test_no_tests pass, your runner already
+        gives a list, empty when nothing fails. Then, if test_goes_on says that no test was called,
+        look at whether the loop calls each test it looks up. If it says that only a was called, a
+        failure ends the function or the loop: look at what runs after the `except` line, and at
+        what the `try` is around. If test_reports_the_failure says that run_tests stopped with a
+        failing test's AssertionError, ask what in your runner is there to catch it, and where. If
+        it gives the names of tests that pass, such as `['a', 'c']` when only b fails, or a name
+        twice, look at which block each append is in. If test_each_once says a test was called
+        twice, count the calls of each test in one pass.
+      - >-
+        A loop can keep the strings of a list that `int` cannot read. `int("x")` stops with
+        `ValueError`, so a loop over `["3", "x", "7"]` that calls `int(s)` inside `try`, and
+        appends `s` to a list in the block under `except ValueError`, ends with `["x"]`: the error
+        for `"x"` is caught, its string recorded, and the loop goes on to `"7"`.
+    notes: >-
+      The program stopping with test_negative's message means no `try` around the call of each
+      test: the starter's own suite fails, and since the program itself stops, no test of the
+      runner runs. A test's AssertionError escaping in test_reports_the_failure means the same.
+      `['a', 'c']` with only b failing means the append runs after a passing call, in the `try`
+      block. Only a called, when a fails, means the `try` is around the whole loop, or a `return`
+      sits inside the loop or in the `except` block. No test called means the loop looks the tests
+      up without `()`. A test called twice fails test_each_once.
+  build-test-median:
+    rungs:
+      - Where are a median's edges, the inputs on which a slip in its code would show? Think of lengths, of order, of repeats, and of the list it is given.
+      - "Explore: bugs gather at edges, such as an even length beside an odd one, items out of order and repeated items, and a test's expected value must be worked out by hand. E1.4: a function given a list can change the caller's list, and `==` compares two lists' values."
+      - Take wrong median A, which gives the upper of the two middle values when there is an even number of them. By hand, what do it and a right median give for `[1, 2, 3, 4]`? Which assert would tell them apart?
+      - >-
+        If your test passes the right median, every expected value you wrote is right, and what is
+        left is the choice of cases; if it fails it, work each expected value out by hand from the
+        definition. If the tests say that test_median never called the median it was given, or used
+        the one at the top of the script, look at which median each assert calls, in test_median
+        and in any function of yours that it calls. If it fails wrong median A but passes C, your
+        even case is the right kind: look at the mean of its two middle values. If it passes B, ask
+        whether any of your lists has its median somewhere other than its middle slot: a list in
+        order, or in reverse order, keeps it there. If it passes D, ask whether taking the repeats
+        out of any of your lists would change its median. If it passes E, look at whether the list
+        your test checks after the call is the very list the median was given, and whether it
+        started out of order.
+      - >-
+        A test of `largest(xs)` that must catch a version which starts from `best = 0` needs a list
+        whose numbers are all below 0, such as `[-5, -2]`, with -2 worked out by hand. One that must
+        catch a version which empties the caller's list keeps the list in a name, calls `largest`
+        on it, and then asserts that the list still has its numbers.
+    notes: >-
+      Wrong medians A to E are, in order: the upper of the two middle values (test_upper_middle),
+      no sorting (test_unsorted), the mean of the two middle values rounded down with `//`
+      (test_whole_mean), repeats taken out first (test_no_repeats), and the caller's list put in
+      order (test_in_place). A failing test_passes_right means an expected value is wrong, often
+      copied from a wrong median, such as 3 for `[4, 1, 3, 2]`, or a float compared with `==` whose
+      last digits rounding has changed. A failing test_uses_its_argument means the test calls the
+      global `median`, usually because its parameter has another name; "used the median at the top
+      of the script" means a helper that calls `median` by its global name. C failing while A
+      passes means an even case such as `[1, 3]`, whose mean is whole. B failing means every list
+      keeps its median in its middle slot, as a list in order or in reverse order does. D failing
+      means no repeat, or one that does not change the median, such as `[5, 5]`. E failing alone
+      means the caller's list is never checked after the call, a copy is checked, or the list was
+      in order already.
+  build-check:
+    rungs:
+      - How many inputs should `check` make at most, and when should it stop early?
+      - "Explore: a property-based test makes an input, checks the property on it, and stops at the first input that breaks the property. E1.3: a call ends at the first `return` it reaches, and a function that ends without reaching one gives `None`. E1.2: `for t in range(n):` runs $n$ passes."
+      - Work through `check` by hand with 3 trials, a `make` that gives 1, then 2, then 3, and a property that is `False` only for 2. How many times should `make` and the property be called, and what should `check` give?
+      - >-
+        If test_zero_trials and test_trials_limit pass, your loop never makes more than `trials`
+        inputs. Then, if test_uses_its_arguments fails, look at which functions `check` calls: the
+        two it is given, or two of the script's own. If test_finds_failure gives 1, ask for which
+        inputs your `check` returns one: those where `prop` is `True`, or those where it is
+        `False`. If it gives `True` or `False`, look at what your `return` gives back: the input,
+        or what `prop` said about it. If it gives 4 after making `[1, 2, 3, 4]`, or
+        test_gives_the_input gives `[3]`, count how many times `make` is called for one input. If
+        it made more inputs than `[1, 2, 3]` and gives anything else, look at when each input is
+        made, and at whether anything stops the loop once one fails. If test_none_when_all_pass
+        counts 6 inputs, count the passes of the loop. If `check` gives `None` after a single
+        input, look for a `return` that runs when an input passes. If only test_prop_once fails,
+        count how many times `prop` is called for one input.
+      - >-
+        A function that gives the first word longer than 5 letters in a list of words, or `None`,
+        loops over the words and returns a word from inside the loop as soon as it is long enough.
+        Only after the loop, when no word was long enough, does it reach `return None`.
+    notes: >-
+      A result of 1 in test_finds_failure means `if prop(x)`, the test turned round. 5 with
+      failures at 3 and 5 means the last failure is kept. More inputs than `[1, 2, 3]` means the
+      loop goes on after a failure, or makes all its inputs first. 4, or `[3]` in
+      test_gives_the_input, means `make` called twice for one input. `True` or `False` as the
+      result means the verdict is returned in place of the input. A failing
+      test_uses_its_arguments means the script's own `random_list` or `sorts_right` is called in
+      place of `make` or `prop`. 6 inputs for 7 trials means `range(trials - 1)`. `None` after one
+      input means a `return None` in an `else` inside the loop.
+  debug-shrink:
+    rungs:
+      - After a removal, which item is in slot `i`, and has the shrinker tried taking it out yet?
+      - "Explore: `xs[:i] + xs[i + 1:]` is `xs` without slot `i`, and the shrinker keeps a removal only if the smaller list still fails. E1.8: a hypothesis says what the program will do, and printing a name inside a loop is an observation that can test it."
+      - With `fails` true when a list holds a number above 5, work out by hand what this `shrink` gives for `[1, 2, 9]`, pass by pass, writing down `i` and `xs` each time. Which item is never tried?
+      - >-
+        If test_still_fails and test_leaves_the_list pass, every list your shrinker keeps still
+        fails, and the caller's list is left alone. Then, if test_example still gives `[2, 1, 1]`,
+        look at what happens to `i` on a pass that takes an item out. If test_other_property gives
+        `[9, 3]`, ask whether the last slot is ever tried: look at the loop's test. If only
+        test_other_property fails, and it gives back the list it was given, look at which `fails`
+        each part of your code calls: the one `shrink` is given, or the one at the top of the
+        script. If test_still_fails says that a result no longer fails, ask which removals your
+        `if` keeps. If the script is stopped for running too long, check that every pass either
+        takes an item out or moves `i` on. If only test_leaves_the_list fails, look at which lines
+        change a list in place, and which make a new one.
+      - >-
+        A loop that should take every 0 out of `[0, 0, 7]` checks slot `i`, takes the item out with
+        slices if it is 0, and adds 1 to `i` on every pass. It leaves `[0, 7]`: once the first 0 is
+        out, the second 0 has moved into slot 0, but `i` has already moved on to 1. Moving `i` on
+        only when nothing is taken out tries slot 0 again, takes out the second 0, and leaves
+        `[7]`.
+    notes: >-
+      `[2, 1, 1]` for `[1, 2, 1, 1]` means `i` still moves on after a removal. A result with no
+      repeat means `if not fails(smaller)`. `[9, 3]` in test_other_property means the loop stops
+      at `len(xs) - 1`. test_other_property failing alone, with the list given back unchanged,
+      means a helper that calls the script's own `fails`. A script stopped for running too long
+      means a pass that neither removes an item nor moves `i`, such as a slice that takes nothing
+      out. test_leaves_the_list failing alone means `pop` or `del` on the caller's list.
+
+novice:
+  - How many tests should a function have?
+  - Should the tests be written before the code, or after it?
+  - What is the difference between a unit test and a property-based test?
+  - If a random test fails once and then passes when it is run again, is that worth worrying about?
+  - Do tests slow a project down?

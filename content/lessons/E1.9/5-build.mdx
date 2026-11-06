@@ -1,0 +1,53 @@
+The Derive phase reasoned about tests without running any. Now build the tools of testing: a runner for a suite, a test that tells a right median from wrong ones, a property-based test, and a shrinker with a bug of its own. On the way, predict what one change does to a test of floats.
+
+Each exercise in this phase has tests of its own, in the tab `tests.py`, and they are run as this lesson's runner runs a suite: each is a function whose name begins with `test_`, called inside a `try`, and one whose assert fails shows you the assert's message. You need not read their code, which uses some Python that this lesson does not teach.
+
+## A runner
+
+<Exercise id="build-runner" />
+
+<Reveal for="build-runner">
+
+A runner like this is the heart of every test tool. pytest, which E3.4 uses, looks in the files whose names begin with `test_` or end with `_test`, calls every function in them whose name begins with `test`, catches each failure as your `try` does, and reports it with the values in the assert that failed. This phase's tests are run the same way, by a runner of Derive's own.
+
+## A test that catches mutants
+
+<Exercise id="build-test-median" />
+
+</Reveal>
+
+<Reveal for="build-test-median">
+
+A mutation testing tool reports on a real suite in the same way: each mutant that survives is named, and points at a case that nobody tried. Choosing cases from the edges before any tool names a survivor, rather than from the bugs you can imagine, is what lets a suite catch bugs that nobody imagined.
+
+## A test of floats
+
+<Exercise id="breakit-isclose" />
+
+</Reveal>
+
+<Reveal for="breakit-isclose">
+
+A test of floats must allow for rounding, or it fails on code that is right, and a test that fails for no reason soon stops being believed, so its real failures are missed too. `math.isclose`, which E1.1 used, allows a difference of about a billionth of the larger value, so near 0 it needs a tolerance of its own: `math.isclose(0.1 + 0.2 - 0.3, 0)` is `False`, while `math.isclose(0.1 + 0.2 - 0.3, 0, abs_tol=1e-9)` allows a difference of a billionth and is `True`. Whole numbers and strings have no rounding, so their tests can use `==`.
+
+## A property-based test
+
+<Exercise id="build-check" />
+
+</Reveal>
+
+<Reveal for="build-check">
+
+With the seed 1, the very first list breaks the property: `check` gives `[3, 10, 2, 5, 2]`, and the Explore phase's shrinker takes it down to `[2, 2]`. Make the lists 10 numbers from 1 to 1,000,000 instead, and the same check gives `None` with each of the seeds 1 to 5: the puzzle's result, five times over. Hypothesis does the same work with far more care: it shrinks every failing input it finds, and it saves each one, so that the next run tries it first.
+
+## A shrinker that keeps too much
+
+<Exercise id="debug-shrink" />
+
+</Reveal>
+
+<Reveal for="debug-shrink">
+
+With the bug, the loop still ends and its result still fails, since every pass still makes `len(xs) - i` smaller and keeps only lists that fail: those parts of the Derive phase's proof still hold. What the bug breaks is the count. A removal makes `len(xs) - i` fall by 2, not 1, so the passes no longer try every item in turn, and the result can keep an item that one more try would have taken out.
+
+</Reveal>

@@ -403,9 +403,16 @@ def _readable_attrs(value):
     return found
 
 
+def _is_function(value):
+    """A function or method, which repr would show with its memory address."""
+    return callable(value) and hasattr(value, "__name__") and not isinstance(value, type)
+
+
 def _holds_object(value, depth=0, seen=None):
-    """Whether a list, tuple, dict or set holds such an object anywhere inside it."""
-    if _is_object(value):
+    """Whether a value is, or a list, tuple, dict or set holds anywhere inside it, an object of a
+    learner's class or a function, so that the trace shows each part on its own, and a function
+    by its name rather than by repr, which gives its memory address."""
+    if _is_object(value) or _is_function(value):
         return True
     if depth > 6 or not isinstance(value, (list, tuple, dict, set, frozenset)):
         return False

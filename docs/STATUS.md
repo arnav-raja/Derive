@@ -1,6 +1,6 @@
 # Status
 
-Updated 6 November 2026 at about 20:55 UTC, when M1.9 went live. On "Pause" or "Resume",
+Updated 6 November 2026 at about 23:10 UTC, when E1.9 went live. On "Pause" or "Resume",
 follow CLAUDE.md and carry on from "Resume here" (phase 1) and "Phase 2: resume here" (phase 2).
 
 ## Where things stand
@@ -25,8 +25,9 @@ its own thread. M1.7 Logic, sets and quantifiers is live (`ready`): written, rev
 reviewers, every finding applied, walked again and tested end to end, with two new figure
 components, the set diagram and the quantifier grid. E1.7 Classes and objects is live too,
 reviewed by both, every finding applied, walked and tested end to end. M1.8 Proof I is live
-too, on the same terms, and so are E1.8 Debugging as an experiment and M1.9 Proof II:
-induction and recursion. E1.9 Testing and property-based testing is next.
+too, on the same terms, and so are E1.8 Debugging as an experiment, M1.9 Proof II:
+induction and recursion, and E1.9 Testing and property-based testing. M1.10 Counting:
+permutations, combinations and the binomial theorem is next.
 
 ### Done
 
@@ -475,11 +476,54 @@ Done so far:
   φ and ω) when the item's symbols use its name. curriculum.json also syncs E1.8's `leadsTo`
   with its foreshadows of E1.9 and E3.2.
 
+- E1.9 Testing and property-based testing, live (`ready`) since 6 November: all six phases and
+  23 exercises (a puzzle on how many of 100 random lists of 10 losses from 1 to 1,000,000 show
+  a sort that drops ties, 5 recall, 7 explore predictions, a derivation step, an estimate, a
+  prediction and a proof of rules, 3 builds, a debug and a break-it, and the explain-back), two
+  step-through figures and a new figure of random lists, tutor notes with 25 misconceptions, and
+  checks.json (42 items). It requires E1.8 and E1.4, contrasts with M1.9, applies M1.2, M1.3 and
+  M1.1, and foreshadows E1.12, E3.4 and E6.8; its properties are now used by E1.10 too, which
+  builds on E1.9 and must list `E1.9/properties` in `used` (a sort checked against its two
+  properties, in order and the same items). Reviewed by both (the simulated learner, 23 of 23
+  right with 18 findings; the independent reviewer, 1 blocker, 10 should-fix findings and 11 nits;
+  in `derive-resume/review/E1.9-*.md`, with the decisions in `E1.9-fix-plan.md`), and every
+  finding applied: the card above the shrinking figure no longer answers its stop; derive-pairs
+  now asks how long a list must be for one equal pair on average ($\sqrt{2N}$), not the count of
+  pairs that E1.3 and E1.4 derived; the puzzle's Reveal shows the one-at-a-time product that the
+  small-range item needs, and the birthdays say why 0.7 shared birthdays on average is not the
+  chance; the shrinking proof's last line is split in two, the end (The loop stops) and the count
+  of passes (Accumulator), and "pass" now means one pass of the loop everywhere, a "call" of the
+  shrinker the whole sweep; the claims about real shrinkers are right (Hypothesis lowers equal
+  numbers together, so `[3, 3]` from 1 to 10 ends as `[1, 1]`; repeated calls reach a result
+  that no single removal can shrink); pytest is described as it is (files `test_*.py` or
+  `*_test.py`, functions beginning `test`, run when started); the median test names the five
+  wrong medians A to E, so the cases are chosen before any is named, and its tests catch a
+  helper that calls the script's own `median`; the property check's tests catch a `check` that
+  calls the script's own functions; the runner's starter says what stopped the program when a
+  failing test escapes; derive-equivalent is about lists of whole numbers; and rewritten reveals,
+  rungs, notes and nine new misconceptions. The reviewers' and the learner's 50 programs were run
+  against the final tests (`derive-resume/e19walk/programs/` with `builds.mts`, log
+  `builds-after-fixes.log`): every right one passes and every slip fails with a message that
+  names its cause. `check:exercises` passes all its 42 items, the lesson was walked in all six
+  phases with the mixed check and no page errors other than the grader's 503 in local mode
+  (store `derive-resume/e19walk/store-before-E1.9-walk.json`, from `store-after-M1.9-walk.json`
+  with M1.8, E1.8 and M1.9 moved to the week before by `prep-store.py` and E1.8 and M1.9 made
+  provisional by `provisional.py`; the store after it is `store-after-E1.9-walk.json`), and its
+  end-to-end tests pass at all three widths.
+- Engine changes with E1.9: a new figure component, `TieLists` (100 random lists drawn from a
+  seed, one square for each, filled and marked "=" when the list holds two equal numbers; the
+  learner sets the length, from 2 to 20, and the largest number, 10 to 1,000,000, picks a list
+  to read out, and draws new lists; its words come from `tieWords` and `listWords` in `ties.ts`,
+  with unit tests). The step-through figure now shows a function inside a list, tuple, dict or
+  set by its name, as `<function test_one>`, instead of `repr` with its memory address
+  (`_is_function` in the harness); every other lesson's traces are unchanged (checked by tracing
+  all 18 figures with the old and new harness).
+
 Next, in order:
 
-1. E1.9 Testing and property-based testing (first design notes in `derive-resume/e19plan.md`;
-   add E1.4 to its requirements, since its tests work on lists), then M1.10, E1.10, M1.11, E1.11,
-   M1.12 and E1.12, then the start of stage 2, each written, checked, reviewed by both and walked
+1. M1.10 Counting: permutations, combinations and the binomial theorem (first design notes in
+   `derive-resume/m110plan.md`), then E1.10, M1.11, E1.11, M1.12 and E1.12, then the start of
+   stage 2, each written, checked, reviewed by both and walked
    before it goes live, adding the remaining figure components as the lessons need them. The phase 2 features (item 3) come first once the
    hosting pull request has landed. E1.9 picks up E1.8's preview: tests that run on every change,
    and property-based tests. E1.10 must show how to give a class a `__hash__` that agrees with

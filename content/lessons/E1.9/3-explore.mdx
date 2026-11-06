@@ -1,0 +1,300 @@
+## A test, and a suite
+
+E1.8's asserts check a program's assumptions while it runs. A *test* uses the same line from outside the code: it calls a function with an input chosen beforehand and asserts what the result should be. Here is a function that should give the largest number in a list, and a test of it:
+
+```python
+def largest(xs):
+    best = 0
+    for x in xs:
+        if x > best:
+            best = x
+    return best
+
+def test_positive():
+    assert largest([3, 9, 4]) == 9
+```
+
+Calling `test_positive()` does nothing when `largest` gives 9, and stops with `AssertionError` when it does not. A project keeps many tests, a *suite*, and runs them all after every change, so that a change which breaks something that used to work, a *regression*, is caught the moment it is made, while the change is still fresh in mind.
+
+To run a suite, a program has to hold the tests and call each one. E1.3's `def` makes a name refer to a function, and a function is a value, as a number or a list is: `test_positive` is the function, and `test_positive()` calls it. So functions can be kept in a list or a dictionary, passed to another function as arguments, and called from there:
+
+```python
+tests = {"positive": test_positive}
+tests["positive"]()
+```
+
+The second line looks up the function kept under the key `"positive"`, and the brackets after it call that function, which runs the test.
+
+A runner should go on after a test fails, so that one failure does not hide the others. `try` and `except` let a program carry on after an error:
+
+```python
+try:
+    test_positive()
+    print("pass")
+except AssertionError:
+    print("FAIL")
+print("next")
+```
+
+Python runs the block under `try`. If a line in it stops with `AssertionError`, the rest of that block is skipped and the block under `except AssertionError` runs instead, and either way the program carries on after them: this prints `pass` or `FAIL`, and then `next`. An error of another type, such as a `TypeError`, is not caught by `except AssertionError`, and still stops the program. Here is a runner for three tests of `largest`:
+
+```python
+def largest(xs):
+    best = 0
+    for x in xs:
+        if x > best:
+            best = x
+    return best
+
+def test_positive():
+    assert largest([3, 9, 4]) == 9
+
+def test_negative():
+    assert largest([-5, -2, -8]) == -2
+
+def test_one():
+    assert largest([7]) == 7
+
+tests = {"positive": test_positive, "negative": test_negative, "one": test_one}
+for name in tests:
+    try:
+        tests[name]()
+        print(name, "pass")
+    except AssertionError:
+        print(name, "FAIL")
+```
+
+<Exercise id="explore-runner" />
+
+<Reveal for="explore-runner">
+
+Starting `best` from the first number instead of 0, with `best = xs[0]`, mends `largest` for every list that has a first number. Step through the runner to see `try` and `except` at work. When the assert in `test_negative` fails, the next line to run is the `except` line of the main program, and the loop then goes on to the next test:
+
+<ProgramTrace
+  title="Running a suite"
+  description="The program makes the function `largest` and three tests of it, keeps the tests in a dictionary, and calls each one inside `try`, printing its name with pass, or with FAIL when its assert fails. Each step of the figure shows the line about to run, the names as they stand, with each call's names listed apart from the main program's and a function shown by its name, as `<function test_one>`, and what has been printed so far."
+  code={"def largest(xs):\n    best = 0\n    for x in xs:\n        if x > best:\n            best = x\n    return best\n\ndef test_positive():\n    assert largest([3, 9, 4]) == 9\n\ndef test_negative():\n    assert largest([-5, -2, -8]) == -2\n\ndef test_one():\n    assert largest([7]) == 7\n\ntests = {\"positive\": test_positive, \"negative\": test_negative, \"one\": test_one}\nfor name in tests:\n    try:\n        tests[name]()\n        print(name, \"pass\")\n    except AssertionError:\n        print(name, \"FAIL\")"}
+/>
+
+## Choosing the cases
+
+A test can find a bug only on an input it tries, so the inputs are worth choosing with care. Python's `sorted(xs)` gives a new list of the same items in order, from the smallest up, and leaves `xs` as it was. The *median* of a list of numbers is the middle one once they are in order, or, when there is an even number of them, the mean of the two in the middle. Here is a first attempt, and four tests of it:
+
+```python
+def median(xs):
+    s = sorted(xs)
+    return s[len(s) // 2]
+
+def test_one():
+    assert median([5]) == 5
+
+def test_odd():
+    assert median([3, 1, 2]) == 2
+
+def test_even():
+    assert median([4, 1, 3, 2]) == 2.5
+
+def test_repeat():
+    assert median([2, 9, 2]) == 2
+```
+
+<Exercise id="explore-median-cases" />
+
+</Reveal>
+
+<Reveal for="explore-median-cases">
+
+Bugs gather at edges, where code has to do something different: an empty list, one item, two items, items that repeat, and the values on each side of every boundary that the code tests, such as an odd length beside an even one, or a number just below a limit, at it and just above it. A suite that tried only odd lengths, however many, would never have seen this bug. The first of these needs care: `median([])` stops with `IndexError`, since an empty list has no slot 0. A median of no numbers means nothing, so the function's contract can rule the empty list out, as E1.3's contracts did, and an assert can make a call that breaks the contract stop at once, as E1.8's did.
+
+## Where the expected value comes from
+
+To mend the median, a colleague first adds a test for an even length. Unsure what the median of `[4, 1, 3, 2]` should be, they run the function, see that it gives 3, and write the test with that value:
+
+```python
+def test_even():
+    assert median([4, 1, 3, 2]) == 3
+```
+
+<Exercise id="explore-copied-expected" />
+
+</Reveal>
+
+<Reveal for="explore-copied-expected">
+
+A test's expected value must come from somewhere other than the code it tests: worked out by hand from the definition, or given by a slower, simpler version that is easy to trust. A source of right answers like that is called an *oracle*. A value copied from the code's own output checks only that the code still does what it did, bug and all.
+
+Even with good cases and good expected values, a test that passes shows only that the code worked on the inputs it tried. E1.8 ended with Edsger Dijkstra's warning, which he also put, at a conference in Rome in 1969, as "Testing shows the presence, not the absence of bugs".
+
+## Testing the tests
+
+How good is a suite? One way to judge it is to put small bugs into the code on purpose, and see whether the tests notice. This function counts the numbers in a list that are below a limit, and has three tests:
+
+```python
+def count_below(xs, limit):
+    count = 0
+    for x in xs:
+        if x < limit:
+            count = count + 1
+    return count
+
+def test_some():
+    assert count_below([1, 7, 3, 9], 5) == 2
+
+def test_none():
+    assert count_below([6, 8], 5) == 0
+
+def test_empty():
+    assert count_below([], 5) == 0
+```
+
+Change `x < limit` to `x <= limit`. All three tests still pass.
+
+<Exercise id="explore-mutant" />
+
+</Reveal>
+
+<Reveal for="explore-mutant">
+
+A bug put in on purpose to judge a suite is a *mutant*, and a test that fails on it *kills* it. *Mutation testing* makes many mutants, by changing `<` to `<=`, `+` to `-`, a 0 to a 1 and the like, and counts how many of them the suite kills. Each survivor points at a case that nobody tried, here the boundary itself. Richard Lipton proposed the idea as a student in 1971, and Richard DeMillo, Lipton and Frederick Sayward published it in 1978.
+
+## Properties
+
+A test checks one input against one expected value, and someone has to work out each value. A *property* is a statement that should hold for every input, so it can be checked on any input at all, without working out an answer first. A sort has two: its result is in order, and it has the same items as the list it was given, each as many times. Here are both as functions that give `True` or `False`, with the puzzle's `sort_losses`, whose code you can now see:
+
+```python
+def sort_losses(xs):
+    return sorted(set(xs))
+
+def in_order(ys):
+    for i in range(len(ys) - 1):
+        if ys[i] > ys[i + 1]:
+            return False
+    return True
+
+def counts(xs):
+    c = {}
+    for x in xs:
+        c[x] = c.get(x, 0) + 1
+    return c
+
+def same_items(xs, ys):
+    return counts(xs) == counts(ys)
+```
+
+`counts` gives how many times each value appears, as E1.4's word counts did, and two dictionaries are equal when they have the same keys, each with the same value, whatever order the keys were added in.
+
+<Exercise id="explore-sort-property" />
+
+</Reveal>
+
+<Reveal for="explore-sort-property">
+
+Each property alone lets wrong sorts through: giving back `[]` is always in order, and giving back `xs` itself always has the same items. Together they pin a sort down exactly, since there is only one way to put a list's items in order. Other properties are just as useful. Decoding undoes encoding, so `decode(encode(x)) == x` for every `x`. A fast function agrees with a slow, simple one that is easy to trust, on every input. A property says nothing about one particular answer, which is why it can be checked on inputs that nobody has looked at.
+
+## Random inputs
+
+A property can be checked on inputs that a program makes for itself. Python's `random` module makes numbers that look random. After `import random` at the top of a program, `random.randint(a, b)` gives a whole number from `a` to `b`, both ends included, each as likely as the others. The numbers come from a fixed rule, started from a number called the *seed*: `random.seed(1)` starts it from 1, so the program makes the same numbers every time it runs, and a failure that it finds can be run again and studied.
+
+```python
+import random
+
+random.seed(1)
+
+def random_list(length, top):
+    xs = []
+    for k in range(length):
+        xs.append(random.randint(1, top))
+    return xs
+
+def has_repeat(xs):
+    return len(set(xs)) < len(xs)
+```
+
+The puzzle's test made its lists as `random_list(10, 1000000)` does, and they almost never had a repeat. A test can narrow the range, and shorten the lists too, as `random_list(5, 10)` does: 5 numbers, each from 1 to 10.
+
+<Exercise id="explore-small-range" />
+
+</Reveal>
+
+<Reveal for="explore-small-range">
+
+Try the ranges in the figure. Each square is one list, filled and marked with an equals sign when two of its numbers are equal. It starts with 100 lists of 5 numbers from 1 to 10; set it to 10 numbers from 1 to 1,000,000 to see the puzzle's test, and draw new lists a few times.
+
+<TieLists
+  title="Ties in random lists"
+  description="One hundred lists of random whole numbers, one square for each list, filled and marked with an equals sign when two of its numbers are equal. Controls set how many numbers each list has and the largest number allowed, choose one list to read out, and draw new lists."
+  length={5}
+  top={10}
+  seed={9}
+/>
+
+A narrow range is how a random test reaches ties, which the puzzle's test almost never did, so choosing the range is part of writing the test: wide enough to try many different values, and narrow enough that awkward cases, such as two equal numbers, turn up often. A *property-based test* puts the pieces together. It makes an input, checks the property on it, and goes on to the next, a hundred times or a thousand, until an input breaks the property, and then it reports that input. The Build phase writes one.
+
+## Shrinking
+
+A random input that breaks a property is often long, and full of numbers that have nothing to do with the bug, such as `[7, 3, 9, 3, 5]`. *Shrinking* makes it smaller, one step at a time, and keeps a step only if the smaller input still breaks the property. This shrinker tries taking out each item in turn:
+
+```python
+def shrink(fails, xs):
+    i = 0
+    while i < len(xs):
+        smaller = xs[:i] + xs[i + 1:]
+        if fails(smaller):
+            xs = smaller
+        else:
+            i = i + 1
+    return xs
+```
+
+A slice may leave out an end: `xs[:i]` runs from slot 0 up to slot `i`, not including it, and `xs[i + 1:]` from slot `i + 1` to the last slot, and `+` joins the two into a new list, as in E1.4, so `smaller` is `xs` without slot `i`. `shrink` is given a function as its first argument, as the runner's dictionary held functions: inside `shrink`, `fails` is whichever function it was given, and `fails(smaller)` calls that function. It is the property turned round, `True` when an input breaks it, so the same `shrink` works for any property. For the sort, it could be:
+
+```python
+def fails(xs):
+    ys = sort_losses(xs)
+    return not (in_order(ys) and same_items(xs, ys))
+```
+
+<Exercise id="explore-shrink-result" />
+
+</Reveal>
+
+<Reveal for="explore-shrink-result">
+
+`sort_losses` breaks its property exactly when the list has a repeat, so the figure steps through the shrinker with `has_repeat` as `fails`, which gives the same answers in fewer steps:
+
+<ProgramTrace
+  title="Shrinking a failing list"
+  description="The program makes the functions `has_repeat` and `shrink`, and prints what `shrink` gives for the list 7, 3, 9, 3, 5. Each step of the figure shows the line about to run, the names as they stand, with each call's names listed apart from the main program's and a function shown by its name, as `<function has_repeat>`, and what has been printed so far."
+  code={"def has_repeat(xs):\n    return len(set(xs)) < len(xs)\n\ndef shrink(fails, xs):\n    i = 0\n    while i < len(xs):\n        smaller = xs[:i] + xs[i + 1:]\n        if fails(smaller):\n            xs = smaller\n        else:\n            i = i + 1\n    return xs\n\nprint(shrink(has_repeat, [7, 3, 9, 3, 5]))"}
+  predict={[{ line: 7, variable: "smaller", pass: 3, prompt: "Line 7 is about to run for the third time. Once it has run, what will `smaller` be?" }]}
+/>
+
+`[3, 3]` shows the bug at a glance: two equal losses. Shrinkers in real tools also try making numbers smaller, and keep a change only while the input still fails. Making one 3 smaller on its own would end the tie, so Hypothesis also makes equal numbers smaller together, and for lists drawn from 1 to 10, `[3, 3]` would end as `[1, 1]`, the smallest numbers the test could make. Real tools also call the shrinker again on its own result, until a call takes nothing out, since for some properties, taking out one item lets another go that could not go before.
+
+## The names
+
+<Definition term="Unit test">
+
+A *unit test* calls a function with an input chosen beforehand and asserts what it should give. A *suite* of tests runs after every change, so that a *regression*, a change that breaks what used to work, is caught at once. A function is a value, so a dictionary can hold the tests by name, and a runner calls each one inside `try`, with `except AssertionError`, so that a failure is reported and the tests after it still run.
+
+</Definition>
+
+<Definition term="Choosing test cases">
+
+Bugs gather at edges: an empty input, one item, two, repeated items, and the values on each side of every boundary in the code. A test's expected value must come from an *oracle*, a source other than the code it tests: worked out by hand, or given by a slower, simpler version. A passing test shows only that the code worked on that input, and a suite is judged by the *mutants*, small bugs put in on purpose, that its tests kill.
+
+</Definition>
+
+<Definition term="Property">
+
+A *property* is a statement that should hold for every input, such as that a sort's result is in order and has the same items as its input. A *property-based test* checks one on many inputs that a program makes for itself, with random numbers started from a fixed *seed*, so that a failure can be run again, and from ranges narrow enough that awkward cases, such as two equal numbers, turn up often.
+
+</Definition>
+
+<Definition term="Shrinking">
+
+*Shrinking* makes a failing input smaller a step at a time, by taking out an item or making a number smaller, and keeps a step only if the property still fails. It ends with a small failing input, such as `[3, 3]`, which shows the bug far more plainly than the input it started from.
+
+</Definition>
+
+</Reveal>

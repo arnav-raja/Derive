@@ -3733,11 +3733,14 @@
       "title": "Testing and property-based testing",
       "course": "E1",
       "requires": [
-        "E1.8"
+        "E1.8",
+        "E1.4"
       ],
       "buildsOn": [],
       "leadsTo": [
-        "E3.4"
+        "E3.4",
+        "E1.12",
+        "E6.8"
       ]
     },
     "E1.10": {
@@ -3749,7 +3752,8 @@
         "E1.7"
       ],
       "buildsOn": [
-        "M1.9"
+        "M1.9",
+        "E1.9"
       ],
       "leadsTo": [
         "M11.3",

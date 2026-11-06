@@ -1,0 +1,1967 @@
+exercises:
+  # Puzzle ---------------------------------------------------------------------
+  - id: puzzle-ties
+    phase: puzzle
+    kind: predict
+    concept: E1.9/properties
+    title: A hundred random lists
+    prompt: How many of the 100 lists will show the bug?
+    answer:
+      type: choice
+      options:
+        - { id: half, label: 'About half of them, some 50 lists' }
+        - { id: tenth, label: 'About one in ten, some 10 lists' }
+        - { id: one, label: 'About one of them, a single list' }
+        - { id: none, label: 'Most likely none of them at all' }
+      correct: [none]
+    explanation: >-
+      A list shows the bug only when two of its losses are equal. Its 10 losses make 45 pairs, each
+      equal about once in a million, so a list holds a repeat about 45 times in a million, and the
+      100 lists together about 4,500 times in a million, about once in 220 runs of the test. Most
+      likely no list shows the bug, and the test passes.
+
+  # Recall ---------------------------------------------------------------------
+  - id: recall-assert
+    phase: recall
+    kind: recall
+    concept: E1.8/assertion
+    prompt: |
+      What happens when this program runs?
+
+      ```python
+      loss = -0.5
+      assert loss >= 0, "loss must not be negative"
+      print("done")
+      ```
+    answer:
+      type: choice
+      options:
+        - { id: warns, label: 'It prints the message, then `done`, and carries on' }
+        - { id: right, label: 'It stops with `AssertionError` and the message' }
+        - { id: done, label: 'It prints `done`, since the assert only warns' }
+        - { id: skipped, label: 'It prints `done`, since asserts are skipped' }
+      correct: [right]
+    explanation: >-
+      `-0.5 >= 0` is `False`, so the assert stops the program with `AssertionError` and its
+      message, and `print("done")` never runs. Python skips asserts only when it is run with the
+      option `-O`.
+
+  - id: recall-print-return
+    phase: recall
+    kind: recall
+    concept: E1.3/defining-functions
+    prompt: |
+      What happens when this program runs?
+
+      ```python
+      def double(x):
+          print(x * 2)
+
+      assert double(3) == 6, "double(3) should be 6"
+      print("checked")
+      ```
+    answer:
+      type: choice
+      options:
+        - { id: passes, label: 'It prints `6`, and then `checked`' }
+        - { id: before, label: 'It stops with `AssertionError` before printing anything' }
+        - { id: right, label: 'It prints `6`, then stops with `AssertionError`' }
+        - { id: prints-true, label: 'It prints `6`, then `True`, then `checked`' }
+      correct: [right]
+    explanation: >-
+      The call `double(3)` runs first and prints 6, but it reaches no `return`, so its value is
+      `None`. `None == 6` is `False`, so the assert stops the program before `checked` is printed.
+
+  - id: recall-set
+    phase: recall
+    kind: recall
+    concept: E1.4/dicts-and-sets
+    prompt: What does `len(set([4, 2, 4, 4, 1]))` give?
+    answer: { type: number, value: 3, tolerance: { abs: 0 } }
+    explanation: >-
+      A set holds each value once, so the set holds 4, 2 and 1, and its `len` is 3.
+
+  - id: recall-alias
+    phase: recall
+    kind: recall
+    concept: E1.4/aliasing-and-mutation
+    prompt: |
+      What number does this program print?
+
+      ```python
+      a = [3, 1, 2]
+      b = a
+      b.append(0)
+      print(len(a))
+      ```
+    answer: { type: number, value: 4, tolerance: { abs: 0 } }
+    explanation: >-
+      `b = a` makes `b` a second name for the same list, so appending through `b` changes the list
+      that `a` refers to, which then has 4 slots.
+
+  - id: recall-count
+    phase: recall
+    kind: recall
+    concept: E1.2/accumulator-pattern
+    prompt: |
+      What number does this program print?
+
+      ```python
+      results = {"empty": "pass", "one": "FAIL", "two": "pass", "repeat": "FAIL"}
+      failed = 0
+      for name in results:
+          if results[name] == "FAIL":
+              failed = failed + 1
+      print(failed)
+      ```
+    answer: { type: number, value: 2, tolerance: { abs: 0 } }
+    explanation: >-
+      The loop visits the four keys, and adds 1 to `failed` for each of the two whose value is
+      `"FAIL"`.
+
+  # Explore --------------------------------------------------------------------
+  - id: explore-runner
+    phase: explore
+    kind: predict
+    concept: E1.9/unit-tests
+    title: Three tests, one runner
+    prompt: What does the runner print?
+    placement: true
+    answer:
+      type: choice
+      options:
+        - { id: all-pass, label: '`positive pass`, `negative pass` and `one pass`' }
+        - { id: stops, label: '`positive pass` and `negative FAIL`, and no more' }
+        - { id: error, label: '`positive pass`, then it stops with `AssertionError`' }
+        - { id: right, label: '`positive pass`, `negative FAIL` and `one pass`' }
+      correct: [right]
+    explanation: >-
+      `largest` starts `best` at 0, and no number in `[-5, -2, -8]` is above 0, so it gives 0 and
+      the assert in `test_negative` fails. The `except` block prints `negative FAIL`, and the loop
+      goes on to `test_one`, which passes, since 7 is above 0.
+    review:
+      variants:
+        - prompt: >-
+            A runner calls three tests in turn, each inside `try` with `except AssertionError`, and
+            prints each name with pass or FAIL. The first test passes, the second fails its assert,
+            and the third stops with `TypeError`. What does the runner print?
+          answer:
+            type: choice
+            options:
+              - { id: fail, label: 'All three lines, the last of them `third FAIL`' }
+              - { id: right, label: '`first pass`, `second FAIL`, then `TypeError` stops it' }
+              - { id: assertion, label: '`first pass`, and then `AssertionError` stops it' }
+              - { id: pass, label: '`first pass`, `second FAIL` and then `third pass`' }
+            correct: [right]
+          explanation: >-
+            `except AssertionError` catches only an `AssertionError`, so the second test's failure
+            is reported and the loop goes on, but the third test's `TypeError` is not caught and
+            stops the runner.
+        - prompt: >-
+            A suite passed yesterday. Today, after one change to a helper function, two tests of
+            other functions, which use the helper, fail. What is this called?
+          answer:
+            type: choice
+            options:
+              - { id: mutant, label: 'A mutant, a bug that was put in on purpose' }
+              - { id: property, label: 'A property, a rule that fails for every input' }
+              - { id: right, label: 'A regression, a change that broke what worked' }
+              - { id: oracle, label: 'An oracle, a source of the expected values' }
+            correct: [right]
+          explanation: >-
+            A change that breaks something that used to work is a regression, and catching it at
+            once, while the change is fresh, is why a suite runs after every change.
+        - prompt: >-
+            `tests` is a dictionary that maps each test's name to the test, a function that takes
+            no arguments. Which line runs the test named `"even"`?
+          answer:
+            type: choice
+            options:
+              - { id: lookup, label: '`tests["even"]`' }
+              - { id: right, label: '`tests["even"]()`' }
+              - { id: call-dict, label: '`tests("even")`' }
+              - { id: call-name, label: '`"even"()`' }
+            correct: [right]
+          explanation: >-
+            `tests["even"]` looks up the function, a value like any other, without calling it, and
+            the brackets after it call the function, which runs the test. A dictionary and a string
+            cannot be called.
+
+  - id: explore-median-cases
+    phase: explore
+    kind: predict
+    concept: E1.9/test-cases
+    title: Four tests of a median
+    prompt: Which of the four tests fails?
+    placement: true
+    answer:
+      type: choice
+      options:
+        - { id: one, label: '`test_one`' }
+        - { id: odd, label: '`test_odd`' }
+        - { id: even, label: '`test_even`' }
+        - { id: repeat, label: '`test_repeat`' }
+      correct: [even]
+    explanation: >-
+      For `[4, 1, 3, 2]`, `s` is `[1, 2, 3, 4]` and `len(s) // 2` is 2, so the function gives
+      `s[2]`, which is 3, where the median is the mean of 2 and 3, which is 2.5. For an odd number
+      of items, `len(s) // 2` is the middle slot, slot 0 of 1 and slot 1 of 3, and the middle of
+      `[2, 2, 9]` is 2.
+    review:
+      variants:
+        - prompt: >-
+            `clip(x)` should give 0 for `x` below 0, `x` itself from 0 to 100, and 100 for `x` above
+            100. Which inputs test its boundaries best?
+          answer:
+            type: choice
+            options:
+              - { id: middle, label: '5, 50 and 95, all well inside' }
+              - { id: right, label: '-1, 0, 100 and 101, each side of each end' }
+              - { id: far, label: '-1,000 and 1,000, far outside both ends' }
+              - { id: ends, label: '0 and 100, the two ends themselves' }
+            correct: [right]
+          explanation: >-
+            Bugs gather where the code changes what it does, so a test should try the values on
+            each side of every boundary: -1 and 0 at the bottom, 100 and 101 at the top. Inputs well
+            inside or far outside never reach a slip such as `<` written for `<=`.
+        - prompt: >-
+            `dedupe(xs)` should give the items of a list with repeats taken out, keeping the first
+            of each. Which input does a test of it most need?
+          answer:
+            type: choice
+            options:
+              - { id: distinct, label: '`[1, 2, 3]`, whose items all differ' }
+              - { id: longer, label: '`[5, 6, 7, 8, 9]`, a longer list' }
+              - { id: unsorted, label: '`[3, 1, 2]`, which is out of order' }
+              - { id: right, label: '`[2, 1, 2, 2]`, with an item repeated' }
+            correct: [right]
+          explanation: >-
+            Repeats are what the function exists to handle, and the other three lists have none, so
+            a `dedupe` that did nothing at all would pass all of them.
+        - prompt: >-
+            A suite for `average(xs)` tries `[2, 4]`, `[1, 2, 3]` and `[10, 20, 30, 40]`. Which of
+            these edges has it left untried?
+          answer:
+            type: choice
+            options:
+              - { id: two, label: 'A list of two numbers' }
+              - { id: right, label: 'A list of one number' }
+              - { id: even, label: 'A list of even length' }
+              - { id: odd, label: 'A list of odd length' }
+            correct: [right]
+          explanation: >-
+            `[2, 4]` has two numbers and an even length, and `[1, 2, 3]` an odd length, but no list
+            has just one number, where a loop runs once and many slips show.
+
+  - id: explore-copied-expected
+    phase: explore
+    kind: predict
+    concept: E1.9/test-cases
+    title: An expected value from the code
+    prompt: What does this test do, now and once the median is mended?
+    answer:
+      type: choice
+      options:
+        - { id: catches, label: 'It catches the bug now, since it tries an even length' }
+        - { id: backwards, label: 'It fails now, and passes once the median is mended' }
+        - { id: right, label: 'It passes now, and fails once the median is mended' }
+        - { id: always, label: 'It passes now and later, whatever the median does' }
+      correct: [right]
+    explanation: >-
+      The function gives 3, so the test passes now. Mended, it gives 2.5, and the test fails: it
+      protects the bug instead of the fix.
+    review:
+      variants:
+        - prompt: >-
+            A test of `celsius(f)`, which turns degrees Fahrenheit into degrees Celsius, tries
+            `celsius(212)`. Which expected value can it trust most?
+          answer:
+            type: choice
+            options:
+              - { id: copied, label: 'The value that `celsius(212)` printed when last run' }
+              - { id: twice, label: 'The value that a second call of `celsius(212)` gives' }
+              - { id: any, label: 'Any value, since a test needs only to run without error' }
+              - { id: right, label: '100, since water boils at 212 °F, which is 100 °C' }
+            correct: [right]
+          explanation: >-
+            A known fact, worked out without the code, can catch a bug in it. A value from the
+            code itself, run once or twice, agrees with the code whether it is right or not.
+        - prompt: >-
+            A fast `fast_sum(xs)` is checked against `slow_sum(xs)`, a plain loop that adds the
+            items one by one, on many lists. Why is the slow version a good source of expected
+            values?
+          answer:
+            type: choice
+            options:
+              - { id: right, label: 'It is simple enough to trust, and shares no code with the fast one' }
+              - { id: slower, label: 'It is slower, and a slower function is always the more accurate' }
+              - { id: same, label: 'It gives what the fast one gives, so the test will always pass' }
+              - { id: later, label: 'It was written later, so it has been changed fewer times' }
+            correct: [right]
+          explanation: >-
+            An oracle must be easy to trust and independent of the code it checks. A plain loop is
+            easy to read and get right, and shares none of the fast version's tricks, so a
+            disagreement points at the fast one.
+
+  - id: explore-mutant
+    phase: explore
+    kind: predict
+    concept: E1.9/test-cases
+    title: A mutant that survives
+    prompt: Which one new test would catch the changed function?
+    answer:
+      type: choice
+      options:
+        - { id: below, label: '`assert count_below([2, 4], 5) == 2`' }
+        - { id: right, label: '`assert count_below([5], 5) == 0`' }
+        - { id: above, label: '`assert count_below([5, 6, 7], 1) == 0`' }
+        - { id: all, label: '`assert count_below([1, 2, 3], 10) == 3`' }
+      correct: [right]
+    explanation: >-
+      The two functions differ only on a number equal to the limit, so only a test with such a
+      number can tell them apart: for `[5]` with the limit 5, `x < limit` counts nothing, and
+      `x <= limit` counts the 5. Every number in the other tests is clearly above or below its
+      limit.
+    review:
+      variants:
+        - prompt: >-
+            `is_adult(age)` gives `age >= 18`, and its tests try the ages 30 and 5. Which mutant do
+            the tests fail to kill?
+          answer:
+            type: choice
+            options:
+              - { id: right, label: '`age > 18`' }
+              - { id: below, label: '`age < 18`' }
+              - { id: digits, label: '`age >= 81`' }
+              - { id: at-most, label: '`age <= 18`' }
+            correct: [right]
+          explanation: >-
+            `age > 18` differs from `age >= 18` only at 18, which neither test tries. The others
+            give the wrong answer for 30, and `age < 18` and `age <= 18` for 5 as well.
+        - prompt: >-
+            A suite kills 9 of 10 mutants of a function. The survivor changed a line that runs only
+            when the list it is given is empty. What does the survivor suggest?
+          answer:
+            type: choice
+            options:
+              - { id: wrong, label: 'That the function is wrong for an empty list' }
+              - { id: perfect, label: 'That the suite is as strong as it can be' }
+              - { id: expected, label: 'That one test has a wrong expected value' }
+              - { id: right, label: 'That no test tries an empty list at all' }
+            correct: [right]
+          explanation: >-
+            A mutant survives when no test reaches the line it changed with an input that shows the
+            change, so the likely gap is a missing case: the empty list.
+
+  - id: explore-sort-property
+    phase: explore
+    kind: predict
+    concept: E1.9/properties
+    title: Which property breaks
+    prompt: Which of these checks gives `False`?
+    placement: true
+    answer:
+      type: choice
+      options:
+        - { id: order-distinct, label: '`in_order(sort_losses([3, 1, 2]))`' }
+        - { id: same-distinct, label: '`same_items([3, 1, 2], sort_losses([3, 1, 2]))`' }
+        - { id: order-repeat, label: '`in_order(sort_losses([2, 1, 2]))`' }
+        - { id: right, label: '`same_items([2, 1, 2], sort_losses([2, 1, 2]))`' }
+      correct: [right]
+    explanation: >-
+      `sort_losses([2, 1, 2])` makes the set of 1 and 2 and sorts it into `[1, 2]`, which is in
+      order. But 2 appears twice in `[2, 1, 2]` and once in `[1, 2]`, so the counts differ and
+      `same_items` gives `False`. With no repeats, as in `[3, 1, 2]`, both properties hold.
+    review:
+      variants:
+        - prompt: >-
+            `reverse(xs)` should give the items of `xs` in the opposite order. Which is a property,
+            true for every list `xs`?
+          answer:
+            type: choice
+            options:
+              - { id: example, label: '`reverse([1, 2, 3]) == [3, 2, 1]`' }
+              - { id: right, label: '`reverse(reverse(xs)) == xs`' }
+              - { id: differs, label: '`reverse(xs) != xs`' }
+              - { id: nonempty, label: '`len(reverse(xs)) > 0`' }
+            correct: [right]
+          explanation: >-
+            Reversing twice gives back the list, whatever it is. The first is one example, not a
+            rule for every list; `reverse(xs) != xs` fails for `[7]`, and `len(reverse(xs)) > 0`
+            fails for `[]`.
+        - prompt: >-
+            A broken sort gives `[]` for every list. Which of the two properties of a sort, in
+            order and same items, does it break?
+          answer:
+            type: choice
+            options:
+              - { id: neither, label: 'Neither of them, for any list at all' }
+              - { id: order, label: 'Only in order, for every list it is given' }
+              - { id: both, label: 'Both of them, for every list it is given' }
+              - { id: right, label: 'Only same items, for each list but `[]`' }
+            correct: [right]
+          explanation: >-
+            `[]` is always in order, so only same items can catch this sort, and it does for every
+            list with an item in it. That is why a sort needs both properties.
+        - prompt: >-
+            Which of these is a property of `largest(xs)`, true for every list `xs` with at least
+            one number?
+          answer:
+            type: choice
+            options:
+              - { id: last, label: '`largest(xs) == xs[-1]`, the last item of the list' }
+              - { id: positive, label: '`largest(xs) > 0`, since the largest is above 0' }
+              - { id: right, label: '`largest(xs)` is in `xs`, and no item is above it' }
+              - { id: example, label: '`largest([3, 9, 4]) == 9`, for this one list' }
+            correct: [right]
+          explanation: >-
+            The largest number is one of the list's numbers, with none above it, whatever the list.
+            The last number need not be the largest, the largest need not be above 0, and one
+            example is not a rule for every list.
+
+  - id: explore-small-range
+    phase: explore
+    kind: predict
+    concept: E1.9/properties
+    title: A narrow range
+    prompt: Of 100 lists made by `random_list(5, 10)`, about how many have a repeat?
+    placement: true
+    answer:
+      type: choice
+      options:
+        - { id: five, label: 'About 5 of them' }
+        - { id: thirty, label: 'About 30 of them' }
+        - { id: right, label: 'About 70 of them' }
+        - { id: all, label: 'All 100 of them' }
+      correct: [right]
+    explanation: >-
+      The second number misses the first 9 times in 10, the third misses both of those 8 times in
+      10, the fourth 7 in 10 and the fifth 6 in 10, so all five differ only about
+      $0.9 \times 0.8 \times 0.7 \times 0.6 \approx 0.3$ of the time. About 70 lists in 100 have a
+      repeat.
+    review:
+      variants:
+        - prompt: >-
+            A random test makes lists of 3 numbers, each from 1 to 1,000. About how often does a
+            list have two equal numbers?
+          answer:
+            type: choice
+            options:
+              - { id: one, label: 'About 1 time in 1,000' }
+              - { id: right, label: 'About 3 times in 1,000' }
+              - { id: tenths, label: 'About 3 times in 10' }
+              - { id: million, label: 'About 1 time in a million' }
+            correct: [right]
+          explanation: >-
+            3 numbers make 3 pairs, and each pair is equal about once in 1,000, so a list has a
+            repeat about 3 times in 1,000.
+        - prompt: Why does a property-based test start its random numbers from a fixed seed?
+          answer:
+            type: choice
+            options:
+              - { id: more-random, label: 'So that its numbers are more random than without one' }
+              - { id: every, label: 'So that it tries every possible input exactly once' }
+              - { id: right, label: 'So that a failure it finds can be run again, as it was' }
+              - { id: never, label: 'So that it never fails twice on the same input' }
+            correct: [right]
+          explanation: >-
+            The same seed makes the same numbers, so a failing run can be repeated, studied and
+            checked again once the bug is mended.
+        - prompt: >-
+            A test of a function that merges two lists of numbers makes each list from random
+            numbers between 1 and 1,000,000,000. Which case will it almost never try?
+          answer:
+            type: choice
+            options:
+              - { id: lengths, label: 'Two lists of different lengths' }
+              - { id: large, label: 'A number above a thousand' }
+              - { id: several, label: 'A list of more than one number' }
+              - { id: right, label: 'Two lists that share a value' }
+            correct: [right]
+          explanation: >-
+            With a billion values to choose from, two numbers are equal only about once in a
+            billion pairs, so a shared value, where a merge must decide which to put first, almost
+            never turns up. A narrower range would reach it often.
+
+  - id: explore-shrink-result
+    phase: explore
+    kind: predict
+    concept: E1.9/shrinking
+    title: Shrinking a failing list
+    prompt: What does `shrink(fails, [7, 3, 9, 3, 5])` give?
+    placement: true
+    answer:
+      type: choice
+      options:
+        - { id: middle, label: '`[3, 9, 3]`' }
+        - { id: right, label: '`[3, 3]`' }
+        - { id: tail, label: '`[3, 3, 5]`' }
+        - { id: single, label: '`[3]`' }
+      correct: [right]
+    explanation: >-
+      Every list the shrinker keeps still has a repeat, and it takes out, one at a time, each item
+      that the repeat does not need: the 7, the 9 and the 5. Taking out either 3 would leave no
+      repeat, so neither 3 ever goes, and the shrinker never reaches `[3]`, which has no repeat.
+    review:
+      variants:
+        - prompt: >-
+            A property fails for every list whose sum is above 10. What does the Explore phase's
+            `shrink` give for `[4, 1, 5, 2, 3]`?
+          answer:
+            type: choice
+            options:
+              - { id: shorter, label: '`[4, 5, 2]`' }
+              - { id: ten, label: '`[5, 2, 3]`' }
+              - { id: right, label: '`[1, 5, 2, 3]`' }
+              - { id: same, label: '`[4, 1, 5, 2, 3]`' }
+            correct: [right]
+          explanation: >-
+            Taking out the 4 leaves a sum of 11, which still fails. After that, taking out any one
+            of 1, 5, 2 or 3 leaves a sum of 10 or less, so the shrinker keeps each of them and ends
+            with `[1, 5, 2, 3]`. `[4, 5, 2]` is a shorter failing list, which this shrinker never
+            reaches, since it took the 4 out first.
+        - prompt: Why does `shrink` keep a step only when the smaller input still fails?
+          answer:
+            type: choice
+            options:
+              - { id: sooner, label: 'So that it ends sooner, after fewer calls' }
+              - { id: right, label: 'So that its result still shows the bug' }
+              - { id: shortest, label: 'So that its result is the shortest there is' }
+              - { id: twice, label: 'So that it never tries one list twice' }
+            correct: [right]
+          explanation: >-
+            A step that made the property pass would throw the bug away. Keeping only failing
+            inputs means that whatever the shrinker ends with still breaks the property, though it
+            need not be the shortest input that does.
+        - prompt: >-
+            The Explore phase's `shrink` is given a failing list of 8 numbers. How many times does
+            it call `fails`?
+          answer: { type: number, value: 8, tolerance: { abs: 0 } }
+          explanation: >-
+            Every pass calls `fails` once and either takes an item out or moves `i` on, so
+            `len(xs) - i` falls by 1 a pass, from 8 to 0: exactly 8 passes, and 8 calls.
+
+  # Derive ---------------------------------------------------------------------
+  - id: derive-pairs
+    phase: derive
+    kind: step
+    concept: E1.9/properties
+    title: How long a list must be
+    prompt: >-
+      A list holds $n$ numbers, each a whole number from 1 to $N$ picked at random. As E1.3 and
+      E1.4 counted, it holds $\frac{n(n - 1)}{2}$ pairs, about $\frac{n^2}{2}$ for a long list.
+      Taking the pairs as $\frac{n^2}{2}$, about how many numbers must the list hold for it to hold
+      one equal pair on average?
+    answer:
+      type: expression
+      symbols:
+        - name: N
+          positive: true
+          integer: true
+      lhs: n \approx
+      reference: sqrt(2*N)
+      accept:
+        - (2*N)**0.5
+        - sqrt(2)*sqrt(N)
+        - (2*N)^(1/2)
+        - 2**0.5*N**0.5
+      reject:
+        - sqrt(N)
+        - 2*N
+        - sqrt(N/2)
+        - N/2
+        - 2*sqrt(N)
+        - N**2/2
+        - (1 + sqrt(1 + 8*N))/2
+    explanation: >-
+      Each pair is equal about once in $N$, as each pair of the puzzle's losses was equal about once
+      in a million, so $\frac{n^2}{2}$ pairs hold about $\frac{n^2}{2N}$ equal pairs on average.
+      That is 1 when $n^2 = 2N$, at $n = \sqrt{2N}$: about 1,414 numbers for a range up to
+      1,000,000, and about 27 people for birthdays.
+
+  - id: derive-range
+    phase: derive
+    kind: estimate
+    concept: E1.9/properties
+    title: A range for ties
+    prompt: >-
+      The lists have 10 numbers each, and each number is a whole number from 1 to $N$, picked at
+      random. About what $N$ makes about 1 list in 10 have two equal numbers? An answer within a
+      factor of 1.3 counts.
+    answer: { type: number, value: 450, tolerance: { factor: 1.3 } }
+    explanation: >-
+      10 numbers make 45 pairs, and each pair is equal about once in $N$, so a list holds
+      $\frac{45}{N}$ equal pairs on average, which is close to the chance of a repeat while it is
+      small. $\frac{45}{N} = \frac{1}{10}$ gives $N = 450$.
+
+  - id: derive-equivalent
+    phase: derive
+    kind: predict
+    concept: E1.9/test-cases
+    title: A mutant that no test can kill
+    prompt: >-
+      Each of these mutants of `largest` changes one line. Which of them can no test kill, whatever
+      list of whole numbers, with at least one number, it tries?
+    answer:
+      type: choice
+      options:
+        - { id: right, label: '`if x >= best:` in place of `if x > best:`' }
+        - { id: zero, label: '`best = 0` in place of `best = xs[0]`' }
+        - { id: smallest, label: '`if x < best:` in place of `if x > best:`' }
+        - { id: last, label: '`return x` in place of `return best`' }
+      correct: [right]
+    explanation: >-
+      `x >= best` and `x > best` differ only when `x` equals `best`, and then, for whole numbers,
+      `best = x` gives `best` the value it already had, so the two functions give the same result
+      for every list of whole numbers.
+      `best = 0` gives 0 for `[-5, -2]`, `x < best` gives the smallest number, such as 1 for
+      `[1, 2]`, and `return x` gives the last number, such as 1 for `[2, 1]`.
+
+  - id: derive-shrink-proof
+    phase: derive
+    kind: proof
+    concept: E1.9/shrinking
+    title: Why the shrinker ends with a failing input
+    prompt: >-
+      `shrink(fails, xs)` is called with a list `xs` of $n$ items for which `fails(xs)` is `True`.
+      Here is a proof that it makes exactly $n$ passes, and gives a list for which `fails` is still
+      `True`. Each line follows from the lines above it. Choose the rule that justifies each line.
+      A rule may be used more than once or not at all.
+    answer:
+      type: steps
+      rules:
+        - { id: stop, name: The loop stops, label: 'A `while` loop ends at the first check where its test is `False`, as in E1.2.' }
+        - { id: accumulator, name: Accumulator, label: 'A name set before a loop and updated by each pass holds, after the loop, the result over all the passes, as in E1.2.' }
+        - { id: invariant, name: Invariant, label: 'A statement that is true before the first pass of a loop, and that each pass keeps true, is true after every pass, as in E1.2.' }
+        - { id: slice, name: Taking out one slot, label: 'When `i` is a slot of `xs`, `xs[:i] + xs[i + 1:]` is `xs` without slot `i`, so it has one item fewer.' }
+        - { id: middle, name: Midway, label: 'When two whole numbers are more than 1 apart, the whole number midway between them, rounded down, is strictly between them.' }
+        - { id: branch, name: The branch taken, label: 'An `if` runs its block only when its test is `True`, and its `else` block only when the test is `False`.' }
+        - { id: falling, name: A falling whole number, label: 'A whole number that every pass of a loop makes smaller, and that is above 0 whenever a pass begins, cannot fall for ever, so the loop ends, as in E1.8.' }
+      start: '\text{Before the first pass, } \texttt{fails(xs)} \text{ is True, } i = 0 \text{, and } \texttt{xs} \text{ has } n \text{ items.}'
+      lines:
+        - math: '\text{In a pass, } i < \texttt{len(xs)} \text{, so } \texttt{smaller} \text{ is } \texttt{xs} \text{ without slot } i \text{, one item shorter.}'
+          rule: slice
+        - math: '\text{If } \texttt{fails(smaller)} \text{ is True, } \texttt{xs} \text{ becomes } \texttt{smaller} \text{, which fails, and } i \text{ stays as it was.}'
+          rule: branch
+        - math: '\text{If not, } i \text{ rises by 1, and } \texttt{xs} \text{, which fails, is kept.}'
+          rule: branch
+        - math: '\text{So after every pass, and so when the loop ends, } \texttt{fails(xs)} \text{ is True.}'
+          rule: invariant
+        - math: '\text{Either way, } \texttt{len(xs)} - i \text{ falls by exactly 1, and it is at least 1 when a pass begins, so the loop ends.}'
+          rule: falling
+        - math: '\text{When it ends, } i < \texttt{len(xs)} \text{ is false, so } \texttt{len(xs)} - i \text{, which no pass takes below 0, is 0.}'
+          rule: stop
+        - math: '\text{It began at } n \text{ and every pass took exactly 1 from it, so after the loop it is } n \text{ minus the number of passes. That is 0, so there were exactly } n \text{ passes.}'
+          rule: accumulator
+    explanation: >-
+      Taking out one slot makes `smaller` one item shorter. By The branch taken, a pass either
+      keeps `smaller`, which fails, or keeps `xs`, which fails, so by the invariant rule
+      `fails(xs)` is `True` after every pass, and so when the loop ends. Either way
+      `len(xs) - i` falls by exactly 1, since the list loses an item while `i` stays, or `i` rises
+      while the list stays, and A falling whole number shows that the loop ends. The loop stops
+      says what is true then: the test is `False`, so `len(xs) - i` is 0. It began at $n$ and every
+      pass took exactly 1 from it, so, as with an accumulator, after the loop it is $n$ minus the
+      number of passes. That is 0, so there were exactly $n$ passes. Midway is never needed.
+
+  # Build ----------------------------------------------------------------------
+  - id: build-runner
+    phase: build
+    kind: build
+    concept: E1.9/unit-tests
+    title: A runner for a suite
+    prompt: >-
+      Write `run_tests(tests)`. It is given a dictionary that maps each test's name to the test, a
+      function that takes no arguments. It calls every test once, in the order of the dictionary,
+      and gives the list of the names of the tests that failed with `AssertionError`, in the same
+      order. A test that fails must not stop the tests after it from running.
+    answer:
+      type: code
+      starter: |
+        def largest(xs):
+            best = 0
+            for x in xs:
+                if x > best:
+                    best = x
+            return best
+
+
+        def test_positive():
+            assert largest([3, 9, 4]) == 9
+
+
+        def test_negative():
+            assert largest([-5, -2, -8]) == -2, "test_negative fails here, and its AssertionError has stopped the whole program"
+
+
+        def test_one():
+            assert largest([7]) == 7
+
+
+        def run_tests(tests):
+            """The names of the tests that fail with AssertionError, in order. tests
+            maps each name to a test, a function that takes no arguments."""
+            return []
+
+
+        tests = {"positive": test_positive, "negative": test_negative, "one": test_one}
+        print(run_tests(tests))
+      tests: |
+        def suite(results):
+            """A suite of tests named a, b, c and so on, in order: the test for True passes, and the test for False fails with AssertionError. Gives the suite, and the list of the names of the tests in the order they are called."""
+            called = []
+            tests = {}
+            for k in range(len(results)):
+                name = "abcdefgh"[k]
+                def test(name=name, ok=results[k]):
+                    called.append(name)
+                    assert ok, "test " + name + " fails"
+                tests[name] = test
+            return tests, called
+
+        def run(tests):
+            """run_tests(tests), with a message that says what went wrong if a test's AssertionError escapes from it."""
+            try:
+                return run_tests(tests)
+            except AssertionError:
+                raise AssertionError("run_tests stopped with the AssertionError of a failing test, so the tests after it never ran.") from None
+
+        def test_reports_the_failure():
+            """Given the tests a, b and c, of which only b fails, it gives ["b"]."""
+            tests, called = suite([True, False, True])
+            got = run(tests)
+            assert got == ["b"], f"With only b failing, run_tests gives {got!r}, not ['b']."
+
+        def test_goes_on():
+            """After a test fails, the tests after it still run: when a fails, b and c are called too."""
+            tests, called = suite([False, True, True])
+            got = run(tests)
+            assert called == ["a", "b", "c"], f"The tests called were {called!r}, not ['a', 'b', 'c']."
+            assert got == ["a"], f"With only a failing, run_tests gives {got!r}, not ['a']."
+
+        def test_all_fail():
+            """When every test fails, it gives every name, in order."""
+            tests, called = suite([False, False, False, False])
+            got = run(tests)
+            assert got == ["a", "b", "c", "d"], f"With all four tests failing, run_tests gives {got!r}, not ['a', 'b', 'c', 'd']."
+
+        def test_all_pass():
+            """When every test passes, it gives an empty list."""
+            tests, called = suite([True, True, True])
+            got = run(tests)
+            assert got == [], f"With every test passing, run_tests gives {got!r}, not []."
+
+        def test_each_once():
+            """It calls every test exactly once, in the order of the dictionary."""
+            tests, called = suite([True, False, True, False, True])
+            run(tests)
+            assert called == ["a", "b", "c", "d", "e"], f"The tests called, in order, were {called!r}, not each of ['a', 'b', 'c', 'd', 'e'] once, in that order."
+
+        def test_no_tests():
+            """An empty suite gives an empty list."""
+            got = run({})
+            assert got == [], f"run_tests of an empty dictionary gives {got!r}, not []."
+      reference: |
+        def largest(xs):
+            best = 0
+            for x in xs:
+                if x > best:
+                    best = x
+            return best
+
+
+        def test_positive():
+            assert largest([3, 9, 4]) == 9
+
+
+        def test_negative():
+            assert largest([-5, -2, -8]) == -2, "test_negative fails here, and its AssertionError has stopped the whole program"
+
+
+        def test_one():
+            assert largest([7]) == 7
+
+
+        def run_tests(tests):
+            """The names of the tests that fail with AssertionError, in order. tests
+            maps each name to a test, a function that takes no arguments."""
+            failed = []
+            for name in tests:
+                try:
+                    tests[name]()
+                except AssertionError:
+                    failed.append(name)
+            return failed
+
+
+        tests = {"positive": test_positive, "negative": test_negative, "one": test_one}
+        print(run_tests(tests))
+      wrong:
+        - code: |
+            def largest(xs):
+                best = 0
+                for x in xs:
+                    if x > best:
+                        best = x
+                return best
+
+
+            def test_positive():
+                assert largest([3, 9, 4]) == 9
+
+
+            def test_negative():
+                assert largest([-5, -2, -8]) == -2, "test_negative fails here, and its AssertionError has stopped the whole program"
+
+
+            def test_one():
+                assert largest([7]) == 7
+
+
+            def run_tests(tests):
+                """The names of the tests that fail with AssertionError, in order. tests
+                maps each name to a test, a function that takes no arguments."""
+                failed = []
+                for name in tests:
+                    tests[name]()
+                return failed
+
+
+            print(run_tests({"positive": test_positive, "one": test_one}))
+          why: Calls each test without `try`, so the first failure stops the whole runner.
+        - code: |
+            def largest(xs):
+                best = 0
+                for x in xs:
+                    if x > best:
+                        best = x
+                return best
+
+
+            def test_positive():
+                assert largest([3, 9, 4]) == 9
+
+
+            def test_negative():
+                assert largest([-5, -2, -8]) == -2, "test_negative fails here, and its AssertionError has stopped the whole program"
+
+
+            def test_one():
+                assert largest([7]) == 7
+
+
+            def run_tests(tests):
+                """The names of the tests that fail with AssertionError, in order. tests
+                maps each name to a test, a function that takes no arguments."""
+                failed = []
+                for name in tests:
+                    try:
+                        tests[name]()
+                        failed.append(name)
+                    except AssertionError:
+                        pass
+                return failed
+
+
+            tests = {"positive": test_positive, "negative": test_negative, "one": test_one}
+            print(run_tests(tests))
+          why: Records the names of the tests that pass, not of those that fail.
+        - code: |
+            def largest(xs):
+                best = 0
+                for x in xs:
+                    if x > best:
+                        best = x
+                return best
+
+
+            def test_positive():
+                assert largest([3, 9, 4]) == 9
+
+
+            def test_negative():
+                assert largest([-5, -2, -8]) == -2, "test_negative fails here, and its AssertionError has stopped the whole program"
+
+
+            def test_one():
+                assert largest([7]) == 7
+
+
+            def run_tests(tests):
+                """The names of the tests that fail with AssertionError, in order. tests
+                maps each name to a test, a function that takes no arguments."""
+                failed = []
+                for name in tests:
+                    try:
+                        tests[name]()
+                    except AssertionError:
+                        failed.append(name)
+                    return failed
+
+
+            tests = {"positive": test_positive, "negative": test_negative, "one": test_one}
+            print(run_tests(tests))
+          why: Returns inside the loop, after the first test.
+        - code: |
+            def largest(xs):
+                best = 0
+                for x in xs:
+                    if x > best:
+                        best = x
+                return best
+
+
+            def test_positive():
+                assert largest([3, 9, 4]) == 9
+
+
+            def test_negative():
+                assert largest([-5, -2, -8]) == -2, "test_negative fails here, and its AssertionError has stopped the whole program"
+
+
+            def test_one():
+                assert largest([7]) == 7
+
+
+            def run_tests(tests):
+                """The names of the tests that fail with AssertionError, in order. tests
+                maps each name to a test, a function that takes no arguments."""
+                failed = []
+                try:
+                    for name in tests:
+                        tests[name]()
+                except AssertionError:
+                    failed.append(name)
+                return failed
+
+
+            tests = {"positive": test_positive, "negative": test_negative, "one": test_one}
+            print(run_tests(tests))
+          why: Puts the `try` around the whole loop, so the first failure ends the loop and the tests after it never run.
+    explanation: >-
+      `try` goes inside the loop, around the call of one test, so that `except AssertionError`
+      records that test's name and the loop goes on to the next. Outside the loop, the first
+      failure would end the loop; with no `try` at all, it would stop the runner.
+
+  - id: build-test-median
+    phase: build
+    kind: build
+    concept: E1.9/test-cases
+    covers: [E1.9/unit-tests]
+    title: A test that tells medians apart
+    prompt: >-
+      Write `test_median(median)`, a test that is given a median function as its argument, and
+      asserts what it should give on cases that you choose, so that it fails with `AssertionError`
+      when the function is wrong. Inside `test_median`, the name `median` is whichever function it
+      was given. A median must also leave the list it is given as it was. The tests try your test
+      on a right median, which it must pass, and on five wrong ones, A to E, each of which it must
+      fail. Choose your cases from a median's edges before you run them: each wrong median that
+      your cases let through is then named, as a mutation testing tool names the mutants that
+      survive.
+    answer:
+      type: code
+      starter: |
+        def median(xs):
+            """The middle value of xs once in order, or the mean of the two middle
+            values when xs has an even number of them. xs must not be empty, and is
+            left as it was."""
+            s = sorted(xs)
+            k = len(s) // 2
+            if len(s) % 2 == 1:
+                return s[k]
+            return (s[k - 1] + s[k]) / 2
+
+
+        def test_median(median):
+            """Fails with AssertionError if median is wrong on any case it tries."""
+            assert median([5]) == 5
+
+
+        test_median(median)
+        print("test_median passes this median")
+      tests: |
+        def right(xs):
+            s = sorted(xs)
+            k = len(s) // 2
+            if len(s) % 2 == 1:
+                return s[k]
+            return (s[k - 1] + s[k]) / 2
+
+        def upper_middle(xs):
+            s = sorted(xs)
+            return s[len(s) // 2]
+
+        def unsorted(xs):
+            k = len(xs) // 2
+            if len(xs) % 2 == 1:
+                return xs[k]
+            return (xs[k - 1] + xs[k]) / 2
+
+        def whole_mean(xs):
+            s = sorted(xs)
+            k = len(s) // 2
+            if len(s) % 2 == 1:
+                return s[k]
+            return (s[k - 1] + s[k]) // 2
+
+        def no_repeats(xs):
+            s = sorted(set(xs))
+            k = len(s) // 2
+            if len(s) % 2 == 1:
+                return s[k]
+            return (s[k - 1] + s[k]) / 2
+
+        def in_place(xs):
+            s = sorted(xs)
+            for i in range(len(xs)):
+                xs[i] = s[i]
+            return right(xs)
+
+        def verdict(candidate):
+            """Runs test_median on candidate, and gives "passes" or "fails"."""
+            try:
+                test_median(candidate)
+            except AssertionError:
+                return "fails"
+            return "passes"
+
+        def test_passes_right():
+            """Your test passes a right median."""
+            assert verdict(right) == "passes", "Your test_median fails a right median. Call test_median(median) to see which assert stops it, then work that case's expected value out by hand, from the definition; if it is a float, recall how E1.1 compared floats."
+
+        def test_uses_its_argument():
+            """Your test calls the median it is given, and no other."""
+            calls = []
+            def spy(xs):
+                calls.append(list(xs))
+                return right(xs)
+            stray = []
+            def other(xs):
+                stray.append(list(xs))
+                return right(xs)
+            names = test_median.__globals__
+            had = "median" in names
+            top = names.get("median")
+            names["median"] = other
+            try:
+                verdict(spy)
+            finally:
+                if had:
+                    names["median"] = top
+                else:
+                    del names["median"]
+            assert calls, "test_median never called the median it was given, the function that its parameter names."
+            assert not stray, "For " + str(stray[0]) + ", test_median, or a function it calls, used the median at the top of the script instead of the one it was given, so that case tests the same median whatever it is given."
+
+        def test_upper_middle():
+            """It fails wrong median A."""
+            assert verdict(upper_middle) == "fails", "Your test_median passes wrong median A, which gives the upper of the two middle values for an even number of values. Which list would tell it from a right median?"
+
+        def test_unsorted():
+            """It fails wrong median B."""
+            assert verdict(unsorted) == "fails", "Your test_median passes wrong median B, which takes the middle of the list as it is, without sorting it. Which list would tell it from a right median?"
+
+        def test_whole_mean():
+            """It fails wrong median C."""
+            assert verdict(whole_mean) == "fails", "Your test_median passes wrong median C, which rounds the mean of the two middle values down to a whole number. Which list would tell it from a right median?"
+
+        def test_no_repeats():
+            """It fails wrong median D."""
+            assert verdict(no_repeats) == "fails", "Your test_median passes wrong median D, which keeps only one of each repeated value. Which list would tell it from a right median?"
+
+        def test_in_place():
+            """It fails wrong median E."""
+            assert verdict(in_place) == "fails", "Your test_median passes wrong median E, which puts the list it is given in order, changing the caller's list. How could a test see that?"
+      reference: |
+        def median(xs):
+            """The middle value of xs once in order, or the mean of the two middle
+            values when xs has an even number of them. xs must not be empty, and is
+            left as it was."""
+            s = sorted(xs)
+            k = len(s) // 2
+            if len(s) % 2 == 1:
+                return s[k]
+            return (s[k - 1] + s[k]) / 2
+
+
+        def test_median(median):
+            """Fails with AssertionError if median is wrong on any case it tries."""
+            assert median([5]) == 5
+            assert median([3, 1, 2]) == 2
+            assert median([4, 1, 3, 2]) == 2.5
+            assert median([1, 2, 1]) == 1
+            xs = [3, 1, 2]
+            median(xs)
+            assert xs == [3, 1, 2]
+
+
+        test_median(median)
+        print("test_median passes this median")
+      wrong:
+        - code: |
+            def median(xs):
+                """The middle value of xs once in order, or the mean of the two middle
+                values when xs has an even number of them. xs must not be empty, and is
+                left as it was."""
+                s = sorted(xs)
+                k = len(s) // 2
+                if len(s) % 2 == 1:
+                    return s[k]
+                return (s[k - 1] + s[k]) / 2
+
+
+            def test_median(median):
+                """Fails with AssertionError if median is wrong on any case it tries."""
+                assert median([5]) == 5
+
+
+            test_median(median)
+            print("test_median passes this median")
+          why: The starter's single case, one value, which every one of the wrong medians gets right.
+        - code: |
+            def median(xs):
+                """The middle value of xs once in order, or the mean of the two middle
+                values when xs has an even number of them. xs must not be empty, and is
+                left as it was."""
+                s = sorted(xs)
+                k = len(s) // 2
+                if len(s) % 2 == 1:
+                    return s[k]
+                return (s[k - 1] + s[k]) / 2
+
+
+            def test_median(median):
+                """Fails with AssertionError if median is wrong on any case it tries."""
+                assert median([5]) == 5
+                assert median([3, 1, 2]) == 2
+                assert median([1, 3]) == 2
+                assert median([1, 2, 1]) == 1
+                xs = [3, 1, 2]
+                median(xs)
+                assert xs == [3, 1, 2]
+
+
+            test_median(median)
+            print("test_median passes this median")
+          why: Its even case has two middle values whose mean is a whole number, so rounding down changes nothing.
+        - code: |
+            def median(xs):
+                """The middle value of xs once in order, or the mean of the two middle
+                values when xs has an even number of them. xs must not be empty, and is
+                left as it was."""
+                s = sorted(xs)
+                k = len(s) // 2
+                if len(s) % 2 == 1:
+                    return s[k]
+                return (s[k - 1] + s[k]) / 2
+
+
+            def test_median(median):
+                """Fails with AssertionError if median is wrong on any case it tries."""
+                assert median([5]) == 5
+                assert median([1, 2, 3]) == 2
+                assert median([1, 2, 3, 4]) == 2.5
+                assert median([1, 1, 2]) == 1
+                xs = [1, 2, 3]
+                median(xs)
+                assert xs == [1, 2, 3]
+
+
+            test_median(median)
+            print("test_median passes this median")
+          why: Every list is already in order, so a median that never sorts passes, and so does one that sorts the caller's list.
+        - code: |
+            def median(xs):
+                """The middle value of xs once in order, or the mean of the two middle
+                values when xs has an even number of them. xs must not be empty, and is
+                left as it was."""
+                s = sorted(xs)
+                k = len(s) // 2
+                if len(s) % 2 == 1:
+                    return s[k]
+                return (s[k - 1] + s[k]) / 2
+
+
+            def test_median(median):
+                """Fails with AssertionError if median is wrong on any case it tries."""
+                assert median([5]) == 5
+                assert median([3, 1, 2]) == 2
+                assert median([4, 1, 3, 2]) == 2.5
+                xs = [3, 1, 2]
+                median(xs)
+                assert xs == [3, 1, 2]
+
+
+            test_median(median)
+            print("test_median passes this median")
+          why: Has no repeated value, so a median that takes repeats out passes.
+        - code: |
+            def median(xs):
+                """The middle value of xs once in order, or the mean of the two middle
+                values when xs has an even number of them. xs must not be empty, and is
+                left as it was."""
+                s = sorted(xs)
+                k = len(s) // 2
+                if len(s) % 2 == 1:
+                    return s[k]
+                return (s[k - 1] + s[k]) / 2
+
+
+            def test_median(median):
+                """Fails with AssertionError if median is wrong on any case it tries."""
+                assert median([5]) == 5
+                assert median([3, 1, 2]) == 2
+                assert median([4, 1, 3, 2]) == 2.5
+                assert median([1, 2, 1]) == 1
+
+
+            test_median(median)
+            print("test_median passes this median")
+          why: Never checks the caller's list after the call, so a median that sorts it in place passes.
+        - code: |
+            def median(xs):
+                """The middle value of xs once in order, or the mean of the two middle
+                values when xs has an even number of them. xs must not be empty, and is
+                left as it was."""
+                s = sorted(xs)
+                k = len(s) // 2
+                if len(s) % 2 == 1:
+                    return s[k]
+                return (s[k - 1] + s[k]) / 2
+
+
+            def test_median(m):
+                """Fails with AssertionError if median is wrong on any case it tries."""
+                assert median([5]) == 5
+                assert median([3, 1, 2]) == 2
+                assert median([4, 1, 3, 2]) == 2.5
+                assert median([1, 2, 1]) == 1
+                xs = [3, 1, 2]
+                median(xs)
+                assert xs == [3, 1, 2]
+
+
+            test_median(median)
+            print("test_median passes this median")
+          why: Names its parameter `m` but calls `median`, the right one at the top of the script, so it tests that one whatever it is given.
+        - code: |
+            def median(xs):
+                """The middle value of xs once in order, or the mean of the two middle
+                values when xs has an even number of them. xs must not be empty, and is
+                left as it was."""
+                s = sorted(xs)
+                k = len(s) // 2
+                if len(s) % 2 == 1:
+                    return s[k]
+                return (s[k - 1] + s[k]) / 2
+
+
+            def test_median(median):
+                """Fails with AssertionError if median is wrong on any case it tries."""
+                assert median([5]) == 5
+                assert median([3, 1, 2]) == 2
+                assert median([4, 1, 3, 2]) == 3
+                assert median([1, 2, 1]) == 1
+
+
+            print("test_median written")
+          why: Expects 3 for `[4, 1, 3, 2]`, a value copied from a wrong median, so it fails the right one.
+    explanation: >-
+      Each case stands for an edge, and each kills a mutant: a list out of order, `[3, 1, 2]`, for
+      B, the median that never sorts; an even length whose two middle values have a mean that is
+      not whole, `[4, 1, 3, 2]`, for A, the upper middle value, and C, which rounds down; a repeated
+      value, `[1, 2, 1]`, for D, which takes repeats out; and a list checked after the call for E,
+      which sorts the caller's list.
+
+  - id: breakit-isclose
+    phase: build
+    kind: breakit
+    concept: E1.9/test-cases
+    title: A test of floats
+    prompt: Predict what happens after the change, then run both versions to see.
+    answer:
+      type: breakit
+      code: |
+        import math
+
+
+        def mean(xs):
+            total = 0
+            for x in xs:
+                total = total + x
+            return total / len(xs)
+
+
+        def test_mean():
+            assert math.isclose(mean([0.1, 0.2]), 0.15)
+
+
+        try:
+            test_mean()
+            print("pass")
+        except AssertionError:
+            print("FAIL")
+      broken: |
+        import math
+
+
+        def mean(xs):
+            total = 0
+            for x in xs:
+                total = total + x
+            return total / len(xs)
+
+
+        def test_mean():
+            assert mean([0.1, 0.2]) == 0.15
+
+
+        try:
+            test_mean()
+            print("pass")
+        except AssertionError:
+            print("FAIL")
+      change: The test compares the mean with `==` in place of `math.isclose`.
+      options:
+        - { id: same, label: 'It still prints `pass`', when: "error is None and output.strip() == 'pass'" }
+        - { id: fail, label: 'It prints `FAIL`', when: "error is None and output.strip() == 'FAIL'" }
+        - { id: error, label: 'Python stops with `AssertionError`', when: "error is not None" }
+    explanation: >-
+      0.1 and 0.2 are kept as the nearest floats, as E1.1 found, so their sum is
+      `0.30000000000000004` and the mean `0.15000000000000002`, which is not exactly 0.15. `==`
+      asks for every digit to agree, so the assert fails, and the `except` block prints `FAIL`,
+      though `mean` is right.
+
+  - id: build-check
+    phase: build
+    kind: build
+    concept: E1.9/properties
+    title: A property-based test
+    prompt: >-
+      Write `check(prop, make, trials)`, the heart of a property-based test. It calls `make()` to
+      get an input, up to `trials` times, and gives the first input for which `prop` gives `False`,
+      at once, without making any more inputs. If `prop` holds for every input it made, it gives
+      `None`. The tests try it with stand-ins for `make` and `prop` that count how often they are
+      called.
+    answer:
+      type: code
+      starter: |
+        import random
+
+
+        def random_list():
+            """A list of 5 whole numbers, each from 1 to 10."""
+            xs = []
+            for k in range(5):
+                xs.append(random.randint(1, 10))
+            return xs
+
+
+        def sort_losses(xs):
+            return sorted(set(xs))
+
+
+        def counts(xs):
+            c = {}
+            for x in xs:
+                c[x] = c.get(x, 0) + 1
+            return c
+
+
+        def sorts_right(xs):
+            """True when sort_losses gives xs in order, with the same items."""
+            ys = sort_losses(xs)
+            return ys == sorted(ys) and counts(ys) == counts(xs)
+
+
+        def check(prop, make, trials):
+            """The first of up to trials inputs from make() for which prop is False,
+            or None if prop holds for every one of them."""
+            return None
+
+
+        random.seed(1)
+        print(check(sorts_right, random_list, 100))
+      tests: |
+        def counter():
+            """A stand-in for make that gives 1, then 2, then 3 and so on, and the list of the inputs it has given."""
+            given = []
+            def make():
+                given.append(len(given) + 1)
+                return given[-1]
+            return make, given
+
+        def test_uses_its_arguments():
+            """It gets every input from make and asks prop about it, the two functions it is given, not functions of the script."""
+            lists = []
+            def make():
+                lists.append([len(lists) + 1])
+                return lists[-1]
+            asked = []
+            def prop(xs):
+                asked.append(xs)
+                return True
+            check(prop, make, 3)
+            assert lists, "check never called make, the function it is given for making inputs: every input should be what make() gives."
+            assert asked, "check never called prop, the property it is given: whether an input breaks the property should be what prop says about it."
+
+        def test_finds_failure():
+            """With the inputs 1, 2, 3 and so on, and a property that fails only for 3, it gives 3, after making exactly 3 inputs."""
+            make, given = counter()
+            got = check(lambda x: x != 3, make, 10)
+            assert got == 3 and given == [1, 2, 3], f"check gives {got!r} after making the inputs {given}, where it should give 3, the first input for which the property is False, after making just [1, 2, 3]."
+
+        def test_first_failure():
+            """When the property fails for 3 and for 5, it gives 3, the first."""
+            make, given = counter()
+            got = check(lambda x: x != 3 and x != 5, make, 10)
+            assert got == 3, f"With the property failing for 3 and 5, check gives {got!r}, not 3."
+
+        def test_none_when_all_pass():
+            """When the property holds for every input, it gives None, after making exactly trials inputs."""
+            make, given = counter()
+            got = check(lambda x: True, make, 7)
+            assert got is None, f"check gives {got!r}, not None, though the property held for every input."
+            assert len(given) == 7, f"The number of inputs check made is {len(given)}, not 7, the number of trials."
+
+        def test_trials_limit():
+            """It makes no more than trials inputs: a failure at the 20th input is not reached in 10 trials."""
+            make, given = counter()
+            got = check(lambda x: x != 20, make, 10)
+            assert len(given) <= 10, f"check made {len(given)} inputs, more than the 10 trials it was given."
+            assert got is None, f"check gives {got!r}, not None, though the property held for all 10 inputs it should make."
+
+        def test_gives_the_input():
+            """It gives the input itself, the very list that make gave, not True or False."""
+            lists = []
+            def make():
+                lists.append([len(lists)])
+                return lists[-1]
+            got = check(lambda xs: xs[0] != 2, make, 10)
+            assert got == [2], f"check gives {got!r}, not [2], the input for which the property is False."
+            assert got is lists[2], "check gives a list equal to the failing input, but not the very list that make gave for it."
+
+        def test_prop_once():
+            """It asks the property about each input once, in order."""
+            asked = []
+            def prop(x):
+                asked.append(x)
+                return x != 4
+            make, given = counter()
+            check(prop, make, 10)
+            assert asked == [1, 2, 3, 4], f"The property was asked about {asked}, not [1, 2, 3, 4]."
+
+        def test_zero_trials():
+            """With 0 trials it makes no input, and gives None."""
+            make, given = counter()
+            got = check(lambda x: False, make, 0)
+            assert given == [] and got is None, f"With 0 trials, check should make no input and give None, but the number of inputs it made is {len(given)}, and it gave {got!r}."
+      reference: |
+        import random
+
+
+        def random_list():
+            """A list of 5 whole numbers, each from 1 to 10."""
+            xs = []
+            for k in range(5):
+                xs.append(random.randint(1, 10))
+            return xs
+
+
+        def sort_losses(xs):
+            return sorted(set(xs))
+
+
+        def counts(xs):
+            c = {}
+            for x in xs:
+                c[x] = c.get(x, 0) + 1
+            return c
+
+
+        def sorts_right(xs):
+            """True when sort_losses gives xs in order, with the same items."""
+            ys = sort_losses(xs)
+            return ys == sorted(ys) and counts(ys) == counts(xs)
+
+
+        def check(prop, make, trials):
+            """The first of up to trials inputs from make() for which prop is False,
+            or None if prop holds for every one of them."""
+            for t in range(trials):
+                x = make()
+                if not prop(x):
+                    return x
+            return None
+
+
+        random.seed(1)
+        print(check(sorts_right, random_list, 100))
+      wrong:
+        - code: |
+            import random
+
+
+            def random_list():
+                """A list of 5 whole numbers, each from 1 to 10."""
+                xs = []
+                for k in range(5):
+                    xs.append(random.randint(1, 10))
+                return xs
+
+
+            def sort_losses(xs):
+                return sorted(set(xs))
+
+
+            def counts(xs):
+                c = {}
+                for x in xs:
+                    c[x] = c.get(x, 0) + 1
+                return c
+
+
+            def sorts_right(xs):
+                """True when sort_losses gives xs in order, with the same items."""
+                ys = sort_losses(xs)
+                return ys == sorted(ys) and counts(ys) == counts(xs)
+
+
+            def check(prop, make, trials):
+                """The first of up to trials inputs from make() for which prop is False,
+                or None if prop holds for every one of them."""
+                for t in range(trials):
+                    x = make()
+                    if prop(x):
+                        return x
+                return None
+
+
+            random.seed(1)
+            print(check(sorts_right, random_list, 100))
+          why: Gives the first input for which the property holds, not the first for which it fails.
+        - code: |
+            import random
+
+
+            def random_list():
+                """A list of 5 whole numbers, each from 1 to 10."""
+                xs = []
+                for k in range(5):
+                    xs.append(random.randint(1, 10))
+                return xs
+
+
+            def sort_losses(xs):
+                return sorted(set(xs))
+
+
+            def counts(xs):
+                c = {}
+                for x in xs:
+                    c[x] = c.get(x, 0) + 1
+                return c
+
+
+            def sorts_right(xs):
+                """True when sort_losses gives xs in order, with the same items."""
+                ys = sort_losses(xs)
+                return ys == sorted(ys) and counts(ys) == counts(xs)
+
+
+            def check(prop, make, trials):
+                """The first of up to trials inputs from make() for which prop is False,
+                or None if prop holds for every one of them."""
+                found = None
+                for t in range(trials):
+                    x = make()
+                    if not prop(x):
+                        found = x
+                return found
+
+
+            random.seed(1)
+            print(check(sorts_right, random_list, 100))
+          why: Goes on after a failure and gives the last failing input, not the first.
+        - code: |
+            import random
+
+
+            def random_list():
+                """A list of 5 whole numbers, each from 1 to 10."""
+                xs = []
+                for k in range(5):
+                    xs.append(random.randint(1, 10))
+                return xs
+
+
+            def sort_losses(xs):
+                return sorted(set(xs))
+
+
+            def counts(xs):
+                c = {}
+                for x in xs:
+                    c[x] = c.get(x, 0) + 1
+                return c
+
+
+            def sorts_right(xs):
+                """True when sort_losses gives xs in order, with the same items."""
+                ys = sort_losses(xs)
+                return ys == sorted(ys) and counts(ys) == counts(xs)
+
+
+            def check(prop, make, trials):
+                """The first of up to trials inputs from make() for which prop is False,
+                or None if prop holds for every one of them."""
+                for t in range(trials):
+                    if not prop(make()):
+                        return make()
+                return None
+
+
+            random.seed(1)
+            print(check(sorts_right, random_list, 100))
+          why: Calls `make` a second time to give the failing input, which makes a new input instead.
+        - code: |
+            import random
+
+
+            def random_list():
+                """A list of 5 whole numbers, each from 1 to 10."""
+                xs = []
+                for k in range(5):
+                    xs.append(random.randint(1, 10))
+                return xs
+
+
+            def sort_losses(xs):
+                return sorted(set(xs))
+
+
+            def counts(xs):
+                c = {}
+                for x in xs:
+                    c[x] = c.get(x, 0) + 1
+                return c
+
+
+            def sorts_right(xs):
+                """True when sort_losses gives xs in order, with the same items."""
+                ys = sort_losses(xs)
+                return ys == sorted(ys) and counts(ys) == counts(xs)
+
+
+            def check(prop, make, trials):
+                """The first of up to trials inputs from make() for which prop is False,
+                or None if prop holds for every one of them."""
+                for t in range(trials):
+                    x = make()
+                    if not prop(x):
+                        return x
+                    else:
+                        return None
+
+
+            random.seed(1)
+            print(check(sorts_right, random_list, 100))
+          why: Gives `None` as soon as one input passes, so it never looks past the first.
+        - code: |
+            import random
+
+
+            def random_list():
+                """A list of 5 whole numbers, each from 1 to 10."""
+                xs = []
+                for k in range(5):
+                    xs.append(random.randint(1, 10))
+                return xs
+
+
+            def sort_losses(xs):
+                return sorted(set(xs))
+
+
+            def counts(xs):
+                c = {}
+                for x in xs:
+                    c[x] = c.get(x, 0) + 1
+                return c
+
+
+            def sorts_right(xs):
+                """True when sort_losses gives xs in order, with the same items."""
+                ys = sort_losses(xs)
+                return ys == sorted(ys) and counts(ys) == counts(xs)
+
+
+            def check(prop, make, trials):
+                """The first of up to trials inputs from make() for which prop is False,
+                or None if prop holds for every one of them."""
+                for t in range(trials - 1):
+                    x = make()
+                    if not prop(x):
+                        return x
+                return None
+
+
+            random.seed(1)
+            print(check(sorts_right, random_list, 100))
+          why: Makes one input fewer than `trials`.
+    explanation: >-
+      A `for` loop over `range(trials)` makes one input a pass, keeps it in a name, and returns it
+      at once if the property is `False` for it. Only after the loop, when every input has passed,
+      does the function give `None`.
+
+  - id: debug-shrink
+    phase: build
+    kind: debug
+    concept: E1.9/shrinking
+    title: A shrinker that keeps too much
+    prompt: >-
+      This `shrink` should take out the items of a failing list one at a time, keeping each removal
+      whose list still fails, as the Explore phase's did. But for `[1, 2, 1, 1]`, with `fails` true
+      when a list has a repeat, it gives `[2, 1, 1]`, though `[1, 1]` still fails. Debug it as an
+      experiment, as in E1.8: write a hypothesis and its prediction in the two comments at the top,
+      make the observation that tests it, and then mend the function. The tests try other lists and
+      properties too.
+    answer:
+      type: code
+      starter: |
+        # Hypothesis:
+        # If it is right, printing i and xs on every pass of shrink(fails, [1, 2, 1, 1]) will show:
+
+        def fails(xs):
+            """True when xs has a repeat, which is when sort_losses gets it wrong."""
+            return len(set(xs)) < len(xs)
+
+
+        def shrink(fails, xs):
+            """Takes the items of xs out one at a time, keeping each removal whose
+            list still fails. fails(xs) must be True to begin with."""
+            i = 0
+            while i < len(xs):
+                smaller = xs[:i] + xs[i + 1:]
+                if fails(smaller):
+                    xs = smaller
+                i = i + 1
+            return xs
+
+
+        print(shrink(fails, [1, 2, 1, 1]))
+      tests: |
+        def has_repeat(xs):
+            return len(set(xs)) < len(xs)
+
+        def has_big(xs):
+            for x in xs:
+                if x > 5:
+                    return True
+            return False
+
+        def test_example():
+            """For [1, 2, 1, 1], with fails true when a list has a repeat, it gives [1, 1]."""
+            got = shrink(has_repeat, [1, 2, 1, 1])
+            assert got == [1, 1], f"shrink(fails, [1, 2, 1, 1]) gives {got!r}, not [1, 1]."
+
+        def test_explore():
+            """For the Explore phase's [7, 3, 9, 3, 5], it gives [3, 3]."""
+            got = shrink(has_repeat, [7, 3, 9, 3, 5])
+            assert got == [3, 3], f"shrink(fails, [7, 3, 9, 3, 5]) gives {got!r}, not [3, 3]."
+
+        def test_still_fails():
+            """What it gives still fails, for several lists with a repeat."""
+            for xs in ([5, 5], [2, 7, 2], [9, 1, 4, 1, 4], [6, 6, 6, 6]):
+                got = shrink(has_repeat, list(xs))
+                assert isinstance(got, list) and has_repeat(got), f"shrink(fails, {xs}) gives {got!r}, which has no repeat, so it no longer fails."
+
+        def test_pair():
+            """For a list with a repeat, it ends with just two equal numbers, since every other item can be taken out."""
+            for xs in ([3, 4, 3, 3, 4], [8, 3, 5, 3], [2, 2, 2, 5, 2]):
+                got = shrink(has_repeat, list(xs))
+                assert isinstance(got, list) and len(got) == 2 and got[0] == got[1], f"shrink(fails, {xs}) gives {got!r}, but every item except two equal numbers can be taken out, and the list still fails."
+
+        def test_other_property():
+            """With fails true when a list holds a number above 5, [1, 2, 9, 3] shrinks to [9]."""
+            got = shrink(has_big, [1, 2, 9, 3])
+            assert got == [9], f"With fails true when a list holds a number above 5, shrink(fails, [1, 2, 9, 3]) gives {got!r}, not [9]."
+
+        def test_leaves_the_list():
+            """It leaves the caller's list as it was."""
+            xs = [1, 2, 1, 1]
+            shrink(has_repeat, xs)
+            assert xs == [1, 2, 1, 1], f"After shrink(fails, xs), the caller's xs is {xs!r}, not [1, 2, 1, 1], so shrink changed the very list it was given."
+      reference: |
+        # Hypothesis:
+        # If it is right, printing i and xs on every pass of shrink(fails, [1, 2, 1, 1]) will show:
+
+        def fails(xs):
+            """True when xs has a repeat, which is when sort_losses gets it wrong."""
+            return len(set(xs)) < len(xs)
+
+
+        def shrink(fails, xs):
+            """Takes the items of xs out one at a time, keeping each removal whose
+            list still fails. fails(xs) must be True to begin with."""
+            i = 0
+            while i < len(xs):
+                smaller = xs[:i] + xs[i + 1:]
+                if fails(smaller):
+                    xs = smaller
+                else:
+                    i = i + 1
+            return xs
+
+
+        print(shrink(fails, [1, 2, 1, 1]))
+      wrong:
+        - code: |
+            # Hypothesis:
+            # If it is right, printing i and xs on every pass of shrink(fails, [1, 2, 1, 1]) will show:
+
+            def fails(xs):
+                """True when xs has a repeat, which is when sort_losses gets it wrong."""
+                return len(set(xs)) < len(xs)
+
+
+            def shrink(fails, xs):
+                """Takes the items of xs out one at a time, keeping each removal whose
+                list still fails. fails(xs) must be True to begin with."""
+                i = 0
+                while i < len(xs):
+                    smaller = xs[:i] + xs[i + 1:]
+                    if fails(smaller):
+                        xs = smaller
+                    i = i + 1
+                return xs
+
+
+            print(shrink(fails, [1, 2, 1, 1]))
+          why: The original, which moves `i` on after a removal too, so it skips the item that moved into slot `i`.
+        - code: |
+            # Hypothesis:
+            # If it is right, printing i and xs on every pass of shrink(fails, [1, 2, 1, 1]) will show:
+
+            def fails(xs):
+                """True when xs has a repeat, which is when sort_losses gets it wrong."""
+                return len(set(xs)) < len(xs)
+
+
+            def shrink(fails, xs):
+                """Takes the items of xs out one at a time, keeping each removal whose
+                list still fails. fails(xs) must be True to begin with."""
+                i = 0
+                while i < len(xs):
+                    smaller = xs[:i] + xs[i + 1:]
+                    if not fails(smaller):
+                        xs = smaller
+                    else:
+                        i = i + 1
+                return xs
+
+
+            print(shrink(fails, [1, 2, 1, 1]))
+          why: Keeps the removals whose list passes, so the result no longer shows the bug.
+        - code: |
+            # Hypothesis:
+            # If it is right, printing i and xs on every pass of shrink(fails, [1, 2, 1, 1]) will show:
+
+            def fails(xs):
+                """True when xs has a repeat, which is when sort_losses gets it wrong."""
+                return len(set(xs)) < len(xs)
+
+
+            def shrink(fails, xs):
+                """Takes the items of xs out one at a time, keeping each removal whose
+                list still fails. fails(xs) must be True to begin with."""
+                i = 0
+                while i < len(xs) - 1:
+                    smaller = xs[:i] + xs[i + 1:]
+                    if fails(smaller):
+                        xs = smaller
+                    else:
+                        i = i + 1
+                return xs
+
+
+            print(shrink(fails, [1, 2, 1, 1]))
+          why: Stops one slot early, so it never tries taking out the last item.
+        - code: |
+            # Hypothesis:
+            # If it is right, printing i and xs on every pass of shrink(fails, [1, 2, 1, 1]) will show:
+
+            def fails(xs):
+                """True when xs has a repeat, which is when sort_losses gets it wrong."""
+                return len(set(xs)) < len(xs)
+
+
+            def shrink(fails, xs):
+                """Takes the items of xs out one at a time, keeping each removal whose
+                list still fails. fails(xs) must be True to begin with."""
+                i = 0
+                while i < len(xs):
+                    item = xs.pop(i)
+                    if not fails(xs):
+                        xs.insert(i, item)
+                        i = i + 1
+                return xs
+
+
+            print(shrink(fails, [1, 2, 1, 1]))
+          why: Takes items out of the caller's own list with `pop`, so the list it was given is changed.
+    explanation: >-
+      After a removal, the item that was in slot `i + 1` moves into slot `i`, so `i` must stay
+      where it is, to try that item next. Putting `i = i + 1` under an `else` moves `i` on only when
+      the item in slot `i` was needed. Printing `i` and `xs` on each pass for `[1, 2, 1, 1]` shows
+      `i` at 1 just after `xs` became `[2, 1, 1]`, so the 2 in slot 0 is never tried.
+
+  # Explain --------------------------------------------------------------------
+  - id: explain-testing
+    phase: explain
+    kind: explain
+    concept: E1.9/properties
+    covers: [E1.9/unit-tests, E1.9/test-cases, E1.9/shrinking]
+    title: What a thousand passing tests show
+    prompt: >-
+      Explain to your friend what their 1,000 passing random tests do and do not show. Cover what a
+      unit test is, and why a suite is run after every change; how to choose the cases a test
+      tries, and where its expected value must come from; what passing tests prove, and how
+      mutants judge a suite; what a property is, with an example; why random numbers from a wide
+      range can miss a case such as two equal numbers, with the count of pairs that explains it,
+      and how the range and the seed should be chosen; and what shrinking does with an input that
+      fails.
+    answer:
+      type: text
+      rubric:
+        - { id: unit-test, criterion: 'Says that a unit test calls a function with an input chosen beforehand and asserts what it should give, and that a suite is run after every change, so that a regression, a change that breaks what used to work, is caught at once.' }
+        - { id: cases, criterion: 'Says that the cases should include edges, such as an empty input, one item, repeated items and both sides of a boundary, and that the expected value must come from somewhere other than the code, such as working it out by hand or a slower, simpler version.' }
+        - { id: limits, criterion: 'Says that passing tests show only that the code worked on the inputs tried, never that it has no bugs, and that a suite can be judged by whether its tests catch mutants, small bugs put in on purpose.' }
+        - { id: property, criterion: 'Explains a property as a statement that should hold for every input, with an example, such as that a sort''s result is in order and has the same items as its input.' }
+        - { id: random, criterion: 'Explains that 10 numbers make 45 pairs, so random numbers from a wide range, such as 1 to a million, almost never repeat, that a narrower range makes repeats common, and that a fixed seed lets a failure be run again.' }
+        - { id: shrinking, criterion: 'Says that shrinking takes items out of a failing input, or makes its numbers smaller, keeping each change only if the input still fails, to leave a small input, such as two equal numbers, that shows the bug plainly.' }
+      reference: >-
+        Your 1,000 passing tests show that the function worked on those 1,000 inputs, and nothing
+        more. A unit test calls a function with an input chosen beforehand and asserts what it
+        should give, and a suite of them is run after every change, so that a regression, a change
+        that breaks something that used to work, is caught while the change is fresh. The cases are
+        worth choosing with care, because bugs gather at edges: an empty list, one item, two items,
+        repeated items, and the values on each side of every boundary, such as an odd length and an
+        even one for a median. The expected value must come from somewhere other than the code, by
+        working it out by hand or from a slower, simpler version that is easy to trust, because a
+        value copied from the code's own output only checks that the code still does what it did,
+        bug and all. Even then, as Dijkstra said, testing shows the presence of bugs, not their
+        absence. A good way to judge a suite is to put small bugs in on purpose, mutants, such as
+        changing a less-than into a less-than-or-equal, and see whether the tests catch them: a
+        mutant that survives points at a case nobody tried. Random tests check a property, a
+        statement that should hold for every input. For a sort, the result is in order and has the
+        same items as the input, each as many times. But random numbers can miss the case that
+        matters. A list of 10 numbers has 45 pairs, and if each number is from 1 to a million, each
+        pair is equal about once in a million, so a list has a repeat about 45 times in a million.
+        A sort that drops one of two equal numbers passes 1,000 such tests almost every time. With
+        numbers from 1 to 10 instead, most lists have a repeat, so choose a range narrow enough to
+        reach such cases, and fix the seed, so that a failure can be run again exactly. When a test
+        fails on a long input, shrink it: take items out one at a time, or make numbers smaller,
+        and keep each change only if the input still fails. A list like 7, 3, 9, 3, 5 shrinks to
+        3, 3, which shows the bug at a glance: two equal numbers.
+      minWords: 120
+      maxWords: 500

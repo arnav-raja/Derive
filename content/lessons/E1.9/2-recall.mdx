@@ -1,0 +1,61 @@
+This lesson builds on E1.8's assertions, on E1.3's functions, on E1.4's lists, sets and aliasing, and on E1.2's loops. Five quick questions check that they are ready. Answer from memory, without running anything. A miss opens a short re-teach straight away.
+
+<Exercise id="recall-assert" />
+
+<Reteach for="recall-assert">
+
+<Callback lesson="E1.8">
+
+`assert condition, message` does nothing when the condition is `True`, and stops the program with `AssertionError` and the message when it is `False`. `-0.5 >= 0` is `False`, so the program stops on line 2 with `AssertionError on line 2: loss must not be negative`, and the last line never runs. An assert never just prints a warning and carries on.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-print-return" />
+
+<Reteach for="recall-print-return">
+
+<Callback lesson="E1.3">
+
+A function that ends without reaching a `return` gives `None`. The call `double(3)` prints 6, and its value is `None`, so the assert works out `None == 6`, which is `False`, and stops the program before `checked` is printed. A function that a test checks has to return its result: printing it shows it to a person, but gives the test nothing to compare.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-set" />
+
+<Reteach for="recall-set">
+
+<Callback lesson="E1.4">
+
+A set holds each value at most once, so `set([4, 2, 4, 4, 1])` holds 4, 2 and 1, and `len` of it is 3. Comparing `len(set(xs))` with `len(xs)` is a quick way to ask whether a list has a repeat: the set is smaller exactly when some value appears more than once.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-alias" />
+
+<Reteach for="recall-alias">
+
+<Callback lesson="E1.4">
+
+`b = a` makes `b` a second name for the same list, an alias, so `b.append(0)` changes the one list that both names refer to, and `a` now has 4 slots. `b = list(a)` would have made a copy, and left `a` with its 3. A function given a list gets the caller's list in the same way, so a function that changes the list it is given changes the caller's.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-count" />
+
+<Reteach for="recall-count">
+
+<Callback lesson="E1.2">
+
+An accumulator starts before the loop and is updated on each pass. `for name in results` visits the dictionary's keys, as E1.4 showed, and the `if` adds 1 to `failed` only for a key whose value is `"FAIL"`. Two of the four values are `"FAIL"`, so the program prints 2.
+
+</Callback>
+
+</Reteach>
