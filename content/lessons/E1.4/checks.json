@@ -1,0 +1,207 @@
+{
+  "version": 1,
+  "expressions": {
+    "derive-comparisons": {
+      "source": "b49d2ba67aea0cbe",
+      "points": [
+        {
+          "n": "3"
+        },
+        {
+          "n": "5"
+        },
+        {
+          "n": "8"
+        },
+        {
+          "n": "7"
+        },
+        {
+          "n": "1"
+        },
+        {
+          "n": "9"
+        }
+      ],
+      "values": [
+        "3.0000000000000000000",
+        "10.000000000000000000",
+        "28.000000000000000000",
+        "21.000000000000000000",
+        "0",
+        "36.000000000000000000"
+      ]
+    },
+    "derive-ratio": {
+      "source": "bc1c1d4c385d9586",
+      "points": [
+        {
+          "n": "8"
+        },
+        {
+          "n": "4"
+        },
+        {
+          "n": "7"
+        },
+        {
+          "n": "2"
+        },
+        {
+          "n": "5"
+        },
+        {
+          "n": "6"
+        }
+      ],
+      "values": [
+        "4.2857142857142857143",
+        "4.6666666666666666667",
+        "4.3333333333333333333",
+        "6.0000000000000000000",
+        "4.5000000000000000000",
+        "4.4000000000000000000"
+      ]
+    }
+  },
+  "runs": {
+    "build-best-step": {
+      "tests": [
+        {
+          "name": "test_examples",
+          "description": "The index of the smallest loss, for a few lists.",
+          "passed": false,
+          "message": "best_step([2.0, 1.5, 1.7]) is 1.5, but the smallest loss, 1.5, is at index 1."
+        },
+        {
+          "name": "test_first_slot",
+          "description": "The smallest loss can be in the first slot, and a list can hold a single loss.",
+          "passed": false,
+          "message": "best_step([0.5, 0.9, 0.7]) is 0.5, but the smallest loss is in the first slot, index 0."
+        },
+        {
+          "name": "test_ties",
+          "description": "When the smallest loss appears twice, the first of its indexes.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_unchanged",
+          "description": "best_step leaves the list it is given as it was.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": ""
+    },
+    "build-default-history": {
+      "tests": [
+        {
+          "name": "test_fresh",
+          "description": "Each call without a history starts a new list of its own.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_given",
+          "description": "A history passed in is the list that grows, and the one returned.",
+          "passed": false,
+          "message": "After log(1.5, h) with h = [2.0], h is [2.0], not [2.0, 1.5]: log should append to the list it is given."
+        },
+        {
+          "name": "test_given_empty",
+          "description": "An empty list passed in is still the caller's list, and it grows too.",
+          "passed": false,
+          "message": "After log(1.0, h) with h = [], h is [], not [1.0]: an empty list passed in is still the caller's list, and log should append to it."
+        },
+        {
+          "name": "test_script",
+          "description": "The script prints [2.0] [1.5].",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": "[2.0] [1.5]\n"
+    },
+    "build-unique-fast": {
+      "tests": [
+        {
+          "name": "test_examples",
+          "description": "Repeats are removed, and first appearances keep their order.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_order",
+          "description": "The order is that of first appearance, not sorted and not a set's order.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_list",
+          "description": "unique returns a list.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_fast",
+          "description": "On 300 documents, 100 of them different, fewer than 3,000 steps of work.",
+          "passed": false,
+          "message": "unique did 15,150 steps of work on 300 documents, 100 of them different, counting each comparison and each time a set or dict worked out where a document goes. The puzzle's version makes 15,050 comparisons, and a version that looks each document up once does about 600 steps."
+        },
+        {
+          "name": "test_unchanged",
+          "description": "unique leaves the list it is given as it was, and returns a new list.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": ""
+    },
+    "build-vocabulary": {
+      "tests": [
+        {
+          "name": "test_ids",
+          "description": "Each new token gets the next id, from 0.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_repeats",
+          "description": "A repeated token keeps the id it got when it first appeared.",
+          "passed": false,
+          "message": "vocabulary(['b', 'a', 'b', 'b', 'c', 'a']) is {'b': 3, 'a': 5, 'c': 4}, not {'b': 0, 'a': 1, 'c': 2}."
+        },
+        {
+          "name": "test_many",
+          "description": "Ten different tokens, in no particular order, numbered in the order they first appear.",
+          "passed": false,
+          "message": "vocabulary(['t5', 't3', 't9', 't3', 't1', 't7', 't0', 't8', 't5', 't2', 't6', 't4']) is {'t5': 8, 't3': 3, 't9': 2, 't1': 4, 't7': 5, 't0': 6, 't8': 7, 't2': 9, 't6': 10, 't4': 11}, not {'t5': 0, 't3': 1, 't9': 2, 't1': 3, 't7': 4, 't0': 5, 't8': 6, 't2': 7, 't6': 8, 't4': 9}."
+        },
+        {
+          "name": "test_empty",
+          "description": "No tokens give an empty dict.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_fresh",
+          "description": "Each call numbers only its own tokens, in a new dict.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_unchanged",
+          "description": "vocabulary leaves the list of tokens as it was.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": ""
+    }
+  }
+}

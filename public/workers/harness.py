@@ -17,6 +17,7 @@ import math
 import os
 import sys
 import traceback
+import zlib
 
 LEARNER_FILE = "<your code>"
 TESTS_FILE = "<tests>"
@@ -52,11 +53,17 @@ def _counting_tracer(limit):
 
 
 def _learner_line(exc):
-    """The line in the learner's code where an exception was raised, if any."""
-    line = None
-    for frame, lineno in traceback.walk_tb(exc.__traceback__):
-        if frame.f_code.co_filename == LEARNER_FILE:
-            line = lineno
+    """The line in the learner's code where an exception was raised, if any.
+
+    Python raises RecursionError as a new call starts, while its frame still stands at the `def`
+    line, so for that error the line of the call that went one too deep is given instead."""
+    entries = [(frame, lineno) for frame, lineno in traceback.walk_tb(exc.__traceback__)
+               if frame.f_code.co_filename == LEARNER_FILE]
+    if not entries:
+        return None
+    frame, line = entries[-1]
+    if isinstance(exc, RecursionError) and len(entries) > 1 and line == frame.f_code.co_firstlineno:
+        return entries[-2][1]
     return line
 
 
@@ -64,7 +71,7 @@ def _describe(exc):
     if isinstance(exc, StepLimit):
         return {
             "type": "StepLimit",
-            "message": "The code ran for too long and was stopped. Is there a loop that never ends, or one that runs a very large number of times?",
+            "message": "The code ran for too long and was stopped. Is there a loop that never ends, or code that runs a very large number of times?",
             "line": _learner_line(exc),
         }
     if isinstance(exc, SyntaxError):
@@ -272,10 +279,23 @@ def _safe_repr(value, limit=80):
     return text if len(text) <= limit else text[: limit - 1] + "…"
 
 
+def _digest(value):
+    """A fingerprint of a value's whole text, so that a change past the cut still shows."""
+    try:
+        return zlib.crc32(repr(value).encode())
+    except Exception:  # noqa: BLE001
+        return 0
+
+
 def _visible(name, value):
     if name.startswith("__") or name == "input":
         return False
     return type(value).__name__ != "module"
+
+
+# The collections whose identity a trace shows, so that two names for one list can be told from
+# two lists that hold equal values.
+_TAGGED = (("list", list), ("dict", dict), ("set", set))
 
 
 def trace(payload):
@@ -285,32 +305,70 @@ def trace(payload):
     out = io.StringIO()
     ns = {"__name__": "__main__", "input": _fake_input(payload.get("stdin"))}
     error = None
+    # Each list, dict or set gets a tag the first time a name refers to it, such as "list 1", kept
+    # for the whole trace. The objects are kept alive here, so that no later object reuses an id.
+    tags = {}
+    kept = []
+    counts = {}
+
+    def tag(value):
+        for kind, cls in _TAGGED:
+            if isinstance(value, cls):
+                key = id(value)
+                if key not in tags:
+                    counts[kind] = counts.get(kind, 0) + 1
+                    tags[key] = f"{kind} {counts[kind]}"
+                    kept.append(value)
+                return tags[key]
+        return None
 
     def snapshot(frame):
-        stack = []
+        frames = []
         f = frame
         while f is not None:
             if f.f_code.co_filename == LEARNER_FILE:
-                scope = f.f_globals if f.f_code.co_name == "<module>" else f.f_locals
-                stack.append({
-                    "function": "(main program)" if f.f_code.co_name == "<module>" else f.f_code.co_name,
-                    "line": f.f_lineno,
-                    "variables": {k: _safe_repr(v) for k, v in scope.items() if _visible(k, v)},
-                })
+                frames.append(f)
             f = f.f_back
-        stack.reverse()
+        # From the main program inwards, so that tags are given in the order the stack is read.
+        stack = []
+        for f in reversed(frames):
+            scope = f.f_globals if f.f_code.co_name == "<module>" else f.f_locals
+            names = [(k, v) for k, v in scope.items() if _visible(k, v)]
+            entry = {
+                "function": "(main program)" if f.f_code.co_name == "<module>" else f.f_code.co_name,
+                "line": f.f_lineno,
+                "variables": {k: _safe_repr(v) for k, v in names},
+            }
+            refs = {k: t for k, t in ((k, tag(v)) for k, v in names) if t}
+            if refs:
+                entry["refs"] = refs
+                # The shown value is cut at 80 characters, so a change further along is found
+                # by comparing fingerprints of the whole value.
+                entry["digests"] = {k: _digest(v) for k, v in names if k in refs}
+            stack.append(entry)
         return stack
+
+    # An error seen in a frame, kept until that frame runs another line. A return straight after
+    # it means that the error stopped the frame, which then gave back no value.
+    raising = {}
 
     def tracer(frame, event, arg):
         if frame.f_code.co_filename != LEARNER_FILE:
             return None
+        if event == "exception":
+            raising[id(frame)] = arg[0].__name__
+            return tracer
         if event in ("line", "return"):
+            raised = raising.pop(id(frame), None)
             if len(steps) >= max_events:
                 raise StepLimit()
             step = {"event": event, "line": frame.f_lineno, "stack": snapshot(frame),
                     "output": out.getvalue()[-4000:]}
             if event == "return":
-                step["returned"] = _safe_repr(arg)
+                if raised:
+                    step["raised"] = raised
+                else:
+                    step["returned"] = _safe_repr(arg)
             steps.append(step)
         return tracer
 
@@ -509,7 +567,8 @@ def _multiplies_a_sum(raw):
 
     SymPy multiplies a number into a sum as it reads it, so 3*(2*x + 1) arrives as 6*x + 3 and
     looks expanded. The answer as typed, read without evaluating, still shows the bracket. A
-    minus sign in front of a bracket, as in -(x + 1), is multiplied in even then, so it passes."""
+    minus sign in front of the whole answer, as in -(x + 1), is multiplied in even then, so it
+    passes; a bracket that is taken away, as in 5 - (x + 1), reads as -1 times a sum and does not."""
     import sympy
 
     if raw is None:
@@ -546,8 +605,10 @@ def check_form(expr, form, names, raw=None):
     for text in form.get("require") or []:
         if not _contains(expr, _parse(text, names)):
             return message or "That is equal, but it is not yet in the form this step asks for."
+    # Counted on the answer as typed where it parses, since SymPy's own tidying would cancel a
+    # factor that the learner never cancelled.
     max_ops = form.get("maxOps")
-    if max_ops is not None and sympy.count_ops(expr) > max_ops:
+    if max_ops is not None and sympy.count_ops(raw if raw is not None else expr) > max_ops:
         return message or "That is equal, but it can be written more simply."
     return None
 

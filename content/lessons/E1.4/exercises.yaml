@@ -1,0 +1,1385 @@
+exercises:
+  # Puzzle ---------------------------------------------------------------------
+  - id: puzzle-dedup
+    phase: puzzle
+    kind: predict
+    concept: E1.4/cost-of-operations
+    title: A million documents
+    prompt: About how long does `unique` take on a million different documents?
+    answer:
+      type: choice
+      options:
+        - { id: hundred-seconds, label: About 100 seconds }
+        - { id: three-hours, label: About 3 hours }
+        - { id: twelve-days, label: About 12 days }
+        - { id: one-second, label: About a second }
+      correct: [three-hours]
+    explanation: >-
+      `doc not in kept` compares `doc` with the kept documents one at a time, and with every
+      document different it never finds a match, so it compares `doc` with all of them, while `kept`
+      grows by one document each time. A hundred times as many documents means a hundred times as
+      many documents to check, each compared with up to a hundred times as many kept ones: about
+      10,000 times the work, and 10,000 seconds is close to 3 hours.
+
+  # Recall ---------------------------------------------------------------------
+  - id: recall-call-rebind
+    phase: recall
+    kind: recall
+    concept: E1.3/scope
+    prompt: |
+      What does this program print?
+
+      ```python
+      def bump(n):
+          n = n + 1
+          return n
+
+      k = 1
+      bump(k)
+      print(k)
+      ```
+    answer: { type: number, value: 1, tolerance: { abs: 0 } }
+    explanation: >-
+      The call's `n` is a new name for 1, and `n = n + 1` changes only that name. The main
+      program's `k` is never assigned again, so it still refers to 1.
+
+  - id: recall-square-total
+    phase: recall
+    kind: recall
+    concept: E1.2/accumulator-pattern
+    prompt: |
+      What does this program print?
+
+      ```python
+      total = 0
+      for x in range(1, 5):
+          total = total + x * x
+      print(total)
+      ```
+    answer: { type: number, value: 30, tolerance: { abs: 0 } }
+    explanation: '`x` takes the values 1, 2, 3 and 4, so the total is $1 + 4 + 9 + 16 = 30$.'
+
+  - id: recall-triangle
+    phase: recall
+    kind: recall
+    concept: E1.2/loop-invariants
+    prompt: E1.2 proved that $1 + 2 + \dots + n = \frac{n(n+1)}{2}$ for every whole number $n$. What is $1 + 2 + \dots + 99$?
+    answer: { type: number, value: 4950, tolerance: { abs: 0 } }
+    explanation: 'With $n = 99$, the formula gives $\frac{99 \times 100}{2} = 4{,}950$.'
+
+  - id: recall-fermi
+    phase: recall
+    kind: recall
+    concept: M1.1/fermi-estimation
+    prompt: >-
+      A job takes $6 \times 10^{11}$ steps, and a machine does about $2 \times 10^{8}$ steps a
+      second. About how many seconds does the job take?
+    answer: { type: number, value: 3000, tolerance: { rel: 0.01 } }
+    explanation: 'Divide the steps by the rate: $\frac{6 \times 10^{11}}{2 \times 10^{8}} = 3 \times 10^{3}$ seconds.'
+
+  - id: recall-shared-output
+    phase: recall
+    kind: recall
+    concept: M1.3/function-as-mapping
+    prompt: 'A table gives each student''s mark: Asha 7, Ben 9, Chitra 7. Does it describe a function from students to marks?'
+    answer:
+      type: choice
+      options:
+        - { id: no-shared, label: 'No, since Asha and Chitra have the same mark' }
+        - { id: yes-one-each, label: 'Yes, since each student has exactly one mark' }
+        - { id: no-not-all, label: 'No, since not every mark from 0 to 10 is given to someone' }
+      correct: [yes-one-each]
+    explanation: >-
+      Each student, each input, has exactly one mark, so the table is a function. Two inputs may
+      share an output; what a function may not do is give one input two outputs.
+  # Explore --------------------------------------------------------------------
+  - id: explore-index
+    phase: explore
+    kind: predict
+    concept: E1.4/lists
+    title: Indexes and a slice
+    placement: true
+    prompt: |
+      What does this print?
+
+      ```python
+      losses = [2.31, 1.87, 1.52, 1.45]
+      print(losses[1], losses[-1], losses[1:3])
+      ```
+    answer:
+      type: choice
+      options:
+        - { id: one-based, label: '`2.31 1.45 [2.31, 1.87, 1.52]`' }
+        - { id: right, label: '`1.87 1.45 [1.87, 1.52]`' }
+        - { id: wrong-end, label: '`1.87 1.52 [1.87, 1.52, 1.45]`' }
+        - { id: inclusive, label: '`1.87 1.45 [1.87, 1.52, 1.45]`' }
+      correct: [right]
+    explanation: >-
+      Index 1 is the second slot, since indexes start at 0, and index $-1$ is the last. The slice
+      `losses[1:3]` takes the slots at indexes 1 and 2 and stops before index 3.
+    review:
+      variants:
+        - prompt: |
+            What does this print?
+
+            ```python
+            xs = [10, 20, 30, 40, 50]
+            print(xs[2] + xs[-2])
+            ```
+          answer: { type: number, value: 70, tolerance: { abs: 0 } }
+          explanation: '`xs[2]` is the third slot, 30, and `xs[-2]` is the second from the end, 40.'
+        - prompt: |
+            What does this print?
+
+            ```python
+            xs = [10, 20, 30, 40, 50]
+            print(len(xs[1:4]))
+            ```
+          answer: { type: number, value: 3, tolerance: { abs: 0 } }
+          explanation: 'The slice takes the slots at indexes 1, 2 and 3, and stops before 4, so it has 3 slots.'
+        - prompt: |
+            What does this print?
+
+            ```python
+            tokens = ["a", "b", "c"]
+            tokens[0] = "z"
+            print(tokens)
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: second, label: "`['a', 'z', 'c']`" }
+              - { id: first, label: "`['z', 'b', 'c']`" }
+              - { id: error, label: 'Nothing: Python stops with an error, since a slot cannot be changed' }
+            correct: [first]
+          explanation: 'Assigning to `tokens[0]` gives the first slot a new value, and the list is changed in place.'
+
+  - id: explore-append
+    phase: explore
+    kind: predict
+    concept: E1.4/lists
+    title: A list built by a loop
+    prompt: What does the program print?
+    answer: { type: number, value: 14, tolerance: { abs: 0 } }
+    explanation: >-
+      The loop appends $0, 1, 4, 9, 16$, so `squares[3]` is 9, the fourth value, and `len(squares)`
+      is 5.
+    review:
+      variants:
+        - prompt: |
+            What does this print?
+
+            ```python
+            evens = []
+            for k in range(1, 7):
+                if k % 2 == 0:
+                    evens.append(k)
+            print(evens[-1] * len(evens))
+            ```
+          answer: { type: number, value: 18, tolerance: { abs: 0 } }
+          explanation: '`evens` ends as `[2, 4, 6]`, so the last value is 6 and there are 3 of them.'
+        - prompt: |
+            What does this print?
+
+            ```python
+            xs = [3, 1, 2]
+            xs.append(xs[0] + xs[1])
+            print(xs)
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: front, label: '`[4, 3, 1, 2]`' }
+              - { id: both, label: '`[3, 1, 2, 3, 1]`' }
+              - { id: right, label: '`[3, 1, 2, 4]`' }
+            correct: [right]
+          explanation: '`xs[0] + xs[1]` is 4, and `append` puts it in a new slot at the end.'
+
+  - id: explore-alias
+    phase: explore
+    kind: predict
+    concept: E1.4/aliasing-and-mutation
+    title: Appending after b = a
+    prompt: What does the program print?
+    answer:
+      type: choice
+      options:
+        - { id: copy, label: '`[1, 2, 3] [1, 2]`' }
+        - { id: swapped, label: '`[1, 2] [1, 2, 3]`' }
+        - { id: right, label: '`[1, 2, 3] [1, 2, 3]`' }
+      correct: [right]
+    explanation: >-
+      `b = a` makes `b` a second name for the list that `a` refers to, not a copy of it. So
+      `a.append(3)` changes the one list both names refer to, and both show `[1, 2, 3]`.
+    review:
+      variants:
+        - prompt: |
+            What does this print?
+
+            ```python
+            scores = [0.5, 0.7]
+            best = scores
+            scores[0] = 0.9
+            print(best[0])
+            ```
+          answer: { type: number, value: 0.9, tolerance: { abs: 0 } }
+          explanation: '`best` and `scores` are two names for one list, so giving its first slot 0.9 through `scores` changes what `best[0]` gives.'
+        - prompt: |
+            What does this print?
+
+            ```python
+            a = [1]
+            b = a
+            c = [1]
+            a.append(2)
+            print(len(b), len(c))
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: same, label: '`1 1`' }
+              - { id: right, label: '`2 1`' }
+              - { id: all, label: '`2 2`' }
+            correct: [right]
+          explanation: >-
+            `b` is another name for `a`'s list, which now has two slots. `c` is a list of its own that
+            happens to hold an equal value, so appending to `a`'s list leaves it with one slot.
+
+  - id: explore-rebind-new
+    phase: explore
+    kind: predict
+    concept: E1.4/aliasing-and-mutation
+    title: A new list or the same list
+    prompt: What does the program print?
+    answer:
+      type: choice
+      options:
+        - { id: swapped, label: '`[1, 2] [1, 2, 3]`' }
+        - { id: both, label: '`[1, 2, 3] [1, 2, 3]`' }
+        - { id: right, label: '`[1, 2, 3] [1, 2]`' }
+        - { id: error, label: 'Nothing: Python stops with an error, since lists cannot be added' }
+      correct: [right]
+    explanation: >-
+      `a + [3]` makes a new list, `[1, 2, 3]`, and the assignment makes `a` refer to it. `b` still
+      refers to the first list, which nothing changed.
+    review:
+      variants:
+        - prompt: |
+            What does this print?
+
+            ```python
+            a = [1, 2]
+            b = a
+            b.append(9)
+            print(a)
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: right, label: '`[1, 2, 9]`' }
+              - { id: unchanged, label: '`[1, 2]`' }
+              - { id: front, label: '`[9, 1, 2]`' }
+            correct: [right]
+          explanation: '`b` is another name for `a`''s list, so appending through `b` changes the list that `a` refers to.'
+        - prompt: |
+            What does this print?
+
+            ```python
+            x = 5
+            y = x
+            x = x + 1
+            a = [5]
+            b = a
+            a[0] = a[0] + 1
+            print(y, b[0])
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: both-six, label: '`6 6`' }
+              - { id: right, label: '`5 6`' }
+              - { id: both-five, label: '`5 5`' }
+              - { id: reversed, label: '`6 5`' }
+            correct: [right]
+          explanation: >-
+            `x = x + 1` makes `x` refer to a new number and leaves `y` at 5. `a[0] = a[0] + 1` changes
+            a slot of the one list that `a` and `b` share, so `b[0]` is 6.
+
+  - id: explore-is-equal
+    phase: explore
+    kind: predict
+    concept: E1.4/aliasing-and-mutation
+    title: Equal or the same
+    prompt: What does the program print?
+    answer:
+      type: choice
+      options:
+        - { id: all-true, label: '`True True True`' }
+        - { id: not-equal, label: '`False False True`' }
+        - { id: c-new, label: '`True False False`' }
+        - { id: right, label: '`True False True`' }
+      correct: [right]
+    explanation: >-
+      `a` and `b` refer to two lists that hold equal values, so `a == b` is `True` and `a is b` is
+      `False`. `c = a` makes `c` another name for `a`'s list, so `a is c` is `True`.
+    review:
+      variants:
+        - prompt: |
+            What does this print?
+
+            ```python
+            a = [1, 2]
+            b = list(a)
+            b.append(3)
+            print(a, a == b)
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: shared, label: '`[1, 2, 3] True`' }
+              - { id: half, label: '`[1, 2, 3] False`' }
+              - { id: right, label: '`[1, 2] False`' }
+            correct: [right]
+          explanation: '`list(a)` makes a copy, so appending to `b` leaves `a` as `[1, 2]`, and the two lists are no longer equal.'
+        - prompt: |
+            What does this print?
+
+            ```python
+            a = [0, 0]
+            b = a[:]
+            c = a
+            a[0] = 7
+            print(b[0], c[0])
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: both, label: '`7 7`' }
+              - { id: neither, label: '`0 0`' }
+              - { id: reversed, label: '`7 0`' }
+              - { id: right, label: '`0 7`' }
+            correct: [right]
+          explanation: '`a[:]` is a copy, so `b` keeps 0, while `c` is another name for `a`''s list and shows the 7.'
+  - id: explore-snapshots
+    phase: explore
+    kind: predict
+    concept: E1.4/aliasing-and-mutation
+    title: Saving the weights
+    placement: true
+    prompt: What does the program print?
+    answer:
+      type: choice
+      options:
+        - { id: each-step, label: '`[[1.0, 0.0], [2.0, 0.0], [3.0, 0.0]]`' }
+        - { id: right, label: '`[[3.0, 0.0], [3.0, 0.0], [3.0, 0.0]]`' }
+        - { id: first, label: '`[[1.0, 0.0], [1.0, 0.0], [1.0, 0.0]]`' }
+        - { id: flat, label: '`[3.0, 0.0, 3.0, 0.0, 3.0, 0.0]`' }
+      correct: [right]
+    explanation: >-
+      `snapshots.append(weights)` stores the list itself, not a copy of its values at that step. All
+      three slots of `snapshots` refer to the one list `weights`, which ends as `[3.0, 0.0]`.
+    review:
+      variants:
+        - prompt: |
+            What does this print?
+
+            ```python
+            row = [0, 0]
+            grid = []
+            for i in range(2):
+                grid.append(row)
+            grid[0][1] = 5
+            print(grid)
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: right, label: '`[[0, 5], [0, 5]]`' }
+              - { id: one-row, label: '`[[0, 5], [0, 0]]`' }
+              - { id: wrong-slot, label: '`[[5, 0], [0, 0]]`' }
+            correct: [right]
+          explanation: >-
+            Both slots of `grid` refer to the one list `row`, so changing slot 1 of `grid[0]` changes
+            what `grid[1]` shows too.
+        - prompt: |
+            What does this print?
+
+            ```python
+            batch = [1, 2]
+            history = []
+            history.append(list(batch))
+            batch.append(3)
+            history.append(list(batch))
+            print(history)
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: shared, label: '`[[1, 2, 3], [1, 2, 3]]`' }
+              - { id: first, label: '`[[1, 2], [1, 2]]`' }
+              - { id: right, label: '`[[1, 2], [1, 2, 3]]`' }
+            correct: [right]
+          explanation: '`list(batch)` stores a copy each time, so the first copy keeps `[1, 2]` after `batch` changes.'
+        - prompt: |
+            What does this print?
+
+            ```python
+            state = [1]
+            saved = [state, state]
+            state.append(2)
+            print(len(saved[0]) + len(saved[1]))
+            ```
+          answer: { type: number, value: 4, tolerance: { abs: 0 } }
+          explanation: 'Both slots of `saved` refer to `state`, which has 2 values after the append, so the sum is 4.'
+
+  - id: explore-mutating-call
+    phase: explore
+    kind: predict
+    concept: E1.4/aliasing-and-mutation
+    title: Two calls that are given a list
+    prompt: What does the program print?
+    answer:
+      type: choice
+      options:
+        - { id: cleared, label: '`[]`' }
+        - { id: untouched, label: '`[2.0]`' }
+        - { id: error, label: 'Nothing: Python stops with an error, since `add_loss` returns nothing' }
+        - { id: right, label: '`[2.0, 1.5]`' }
+      correct: [right]
+    explanation: >-
+      `add_loss` changes the list it was given, which is `h`'s list, so `h` shows 1.5. `clear` only
+      makes its own name `history` refer to a new empty list, and leaves `h`'s list as it was.
+    review:
+      variants:
+        - prompt: |
+            What does this print?
+
+            ```python
+            def double_all(xs):
+                for i in range(len(xs)):
+                    xs[i] = 2 * xs[i]
+
+            v = [1, 2, 3]
+            double_all(v)
+            print(v)
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: unchanged, label: '`[1, 2, 3]`' }
+              - { id: right, label: '`[2, 4, 6]`' }
+              - { id: none, label: '`None`' }
+            correct: [right]
+          explanation: '`xs` and `v` are two names for one list, and the call changes its slots in place.'
+        - prompt: |
+            What does this print?
+
+            ```python
+            def extend(xs):
+                xs = xs + [0]
+                return xs
+
+            v = [1]
+            w = extend(v)
+            print(len(v), len(w))
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: right, label: '`1 2`' }
+              - { id: both, label: '`2 2`' }
+              - { id: neither, label: '`1 1`' }
+            correct: [right]
+          explanation: >-
+            `xs + [0]` makes a new list, and the call's `xs` is made to refer to it, so `v`'s list
+            keeps one value. The call returns the new list, which has two.
+
+  - id: explore-default-shared
+    phase: explore
+    kind: predict
+    concept: E1.4/aliasing-and-mutation
+    title: A default list
+    prompt: What does the program print, on its two lines?
+    answer:
+      type: choice
+      options:
+        - { id: right, label: '`[2.0]`, then `[2.0, 1.5]`' }
+        - { id: fresh, label: '`[2.0]`, then `[1.5]`' }
+        - { id: both-full, label: '`[2.0, 1.5]`, twice' }
+        - { id: error, label: 'Nothing: Python stops with an error, since `history` is not given' }
+      correct: [right]
+    explanation: >-
+      The default list is made once, when the `def` line runs. The first call appends 2.0 to it and
+      prints it, and the second call appends 1.5 to the same list, which now holds both.
+    review:
+      variants:
+        - prompt: |
+            What does this print?
+
+            ```python
+            def add(x, seen=[]):
+                seen.append(x)
+                return len(seen)
+
+            print(add("a") + add("b") + add("c"))
+            ```
+          answer: { type: number, value: 6, tolerance: { abs: 0 } }
+          explanation: 'All three calls append to the one default list, so they return 1, 2 and 3.'
+        - prompt: |
+            What does this print?
+
+            ```python
+            def add(x, seen=[]):
+                seen.append(x)
+                return len(seen)
+
+            mine = []
+            print(add("a", mine), add("b", mine), add("c"))
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: one-list, label: '`1 2 3`' }
+              - { id: all-one, label: '`1 1 1`' }
+              - { id: right, label: '`1 2 1`' }
+            correct: [right]
+          explanation: >-
+            The first two calls append to `mine`, which ends with two values. The third leaves out
+            `seen`, so it appends to the default list, which was still empty.
+  - id: explore-dict-replace
+    phase: explore
+    kind: predict
+    concept: E1.4/dicts-and-sets
+    title: A key assigned twice
+    prompt: What does the program print?
+    answer:
+      type: choice
+      options:
+        - { id: kept-first, label: '`3 1`' }
+        - { id: two-cats, label: '`4 5`' }
+        - { id: error, label: 'Nothing: Python stops with an error, since the value 5 is already used' }
+        - { id: right, label: '`3 5`' }
+      correct: [right]
+    explanation: >-
+      Assigning `"cat"` again replaces its value, so `"cat"` maps to 5. `"mat"` is a new key, and it
+      may share the value 5, so the dict has three keys.
+    review:
+      variants:
+        - prompt: |
+            What does this print?
+
+            ```python
+            ids = {"a": 1}
+            ids["b"] = 1
+            ids["a"] = 2
+            print(ids["a"] + ids["b"], len(ids))
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: first-a, label: '`2 2`' }
+              - { id: right, label: '`3 2`' }
+              - { id: three-keys, label: '`3 3`' }
+            correct: [right]
+          explanation: '`"a"` now maps to 2 and `"b"` to 1, and there are two keys.'
+        - prompt: |
+            What does this print?
+
+            ```python
+            d = {"x": 1, "y": 2}
+            print("x" in d, 2 in d, d.get("z", 0))
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: values-too, label: '`True True 0`' }
+              - { id: right, label: '`True False 0`' }
+              - { id: none, label: '`True False None`' }
+            correct: [right]
+          explanation: '`in` asks about keys, and 2 is a value, not a key. `d.get("z", 0)` gives the default, 0, for a missing key.'
+
+  - id: explore-dict-count
+    phase: explore
+    kind: predict
+    concept: E1.4/dicts-and-sets
+    title: Counting tokens
+    placement: true
+    prompt: What does the program print?
+    answer:
+      type: choice
+      options:
+        - { id: tokens, label: '`2 6`' }
+        - { id: once, label: '`1 5`' }
+        - { id: right, label: '`2 5`' }
+        - { id: key-error, label: 'Nothing: Python stops with `KeyError` at the first token' }
+      correct: [right]
+    explanation: >-
+      `counts.get(t, 0)` gives 0 for a token not yet counted, so no `KeyError` arises. `"the"`
+      appears twice, so its count is 2, and the dict has a key for each of the five different
+      tokens.
+    review:
+      variants:
+        - prompt: |
+            What does this print?
+
+            ```python
+            words = ["to", "be", "or", "not", "to", "be"]
+            print(len(words), len(set(words)))
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: right, label: '`6 4`' }
+              - { id: same, label: '`6 6`' }
+              - { id: both-four, label: '`4 4`' }
+            correct: [right]
+          explanation: 'The list has 6 slots, and the set keeps each of the 4 different words once.'
+        - prompt: |
+            What does this print?
+
+            ```python
+            words = ["a", "b", "a", "c", "a"]
+            counts = {}
+            for w in words:
+                counts[w] = counts.get(w, 0) + 1
+            print(counts["a"] * len(counts))
+            ```
+          answer: { type: number, value: 9, tolerance: { abs: 0 } }
+          explanation: '`"a"` appears 3 times, and there are 3 different words.'
+
+  - id: explore-cost-which
+    phase: explore
+    kind: predict
+    concept: E1.4/cost-of-operations
+    title: Which operations slow down
+    placement: true
+    prompt: >-
+      `xs.pop()` removes the last slot of the list `xs` and gives its value, and `xs.pop(0)` removes
+      the first slot. `max(xs)` gives the largest value. Which of these take longer the more values
+      `xs` holds? Choose every one.
+    answer:
+      type: choice
+      multiple: true
+      options:
+        - { id: last, label: '`xs[-1]`' }
+        - { id: pop-end, label: '`xs.pop()`' }
+        - { id: pop-front, label: '`xs.pop(0)`' }
+        - { id: max, label: '`max(xs)`' }
+        - { id: slice-ten, label: '`xs[:10]`' }
+      correct: [pop-front, max]
+    explanation: >-
+      `xs[-1]` and `xs.pop()` work on the last slot, which is found by arithmetic. `xs.pop(0)` has
+      to move every remaining value along by one slot, and `max(xs)` has to look at every value,
+      since any of them could be the largest. `xs[:10]` copies ten slots, however long `xs` is.
+    review:
+      variants:
+        - prompt: 'Which of these take longer the more keys the dict `d` holds? Choose every one.'
+          answer:
+            type: choice
+            multiple: true
+            options:
+              - { id: lookup, label: '`d["k"]`' }
+              - { id: in, label: '`"k" in d`' }
+              - { id: assign, label: '`d["k"] = 1`' }
+              - { id: loop, label: 'A `for` loop that adds up the value of every key' }
+            correct: [loop]
+          explanation: 'Looking up, testing and assigning one key each look in about one place. A loop over every key does work for each of them.'
+        - prompt: 'For a list `xs` of a million numbers, which is quicker?'
+          answer:
+            type: choice
+            options:
+              - { id: same, label: 'Both take about the same time' }
+              - { id: insert, label: '`xs.insert(0, 7)`' }
+              - { id: append, label: '`xs.append(7)`' }
+            correct: [append]
+          explanation: '`append` adds one slot at the end, while `insert(0, 7)` has to move all million values along by one.'
+
+  - id: explore-comparisons
+    phase: explore
+    kind: predict
+    concept: E1.4/cost-of-operations
+    title: Comparisons for five documents
+    prompt: >-
+      In the puzzle's `unique`, with every document different, the first document is compared with
+      no kept documents, the second with one, and so on. With 5 different documents, how many
+      comparisons does `doc not in kept` make in all?
+    answer: { type: number, value: 10, tolerance: { abs: 0 } }
+    explanation: 'The five documents are compared with 0, 1, 2, 3 and 4 kept documents, and $0 + 1 + 2 + 3 + 4 = 10$.'
+    review:
+      variants:
+        - prompt: With 8 different documents, how many comparisons does the puzzle's `unique` make?
+          answer: { type: number, value: 28, tolerance: { abs: 0 } }
+          explanation: '$0 + 1 + \dots + 7 = 28$.'
+        - prompt: >-
+            Suppose instead that all 5 documents are copies of the first. How many comparisons does
+            the puzzle's `unique` make?
+          answer: { type: number, value: 4, tolerance: { abs: 0 } }
+          explanation: >-
+            The first document is compared with nothing and kept. Each of the other four is compared
+            with the one kept document, matches it, and the search stops there.
+  # Derive ---------------------------------------------------------------------
+  - id: derive-comparisons
+    phase: derive
+    kind: step
+    concept: E1.4/cost-of-operations
+    title: Comparisons for n documents
+    prompt: >-
+      Write the total number of comparisons that `unique` makes on $n$ different documents, as an
+      expression in $n$.
+    answer:
+      type: expression
+      symbols:
+        - { name: n, integer: true, positive: true }
+      lhs: 'C(n) ='
+      reference: n*(n - 1)/2
+      accept: ['n(n-1)/2', '(n^2 - n)/2', 'n^2/2 - n/2', '(n - 1)*n/2']
+      reject: ['n*(n + 1)/2', 'n^2', 'n^2/2', 'n*(n - 1)', 'n - 1', '(n - 1)^2/2']
+    explanation: >-
+      The $k$-th document is compared with $k - 1$ kept ones, so the total is
+      $0 + 1 + \dots + (n - 1)$. E1.2's formula with $n - 1$ in place of $n$ gives
+      $\frac{(n - 1)n}{2}$.
+
+  - id: derive-ratio
+    phase: derive
+    kind: step
+    concept: E1.4/cost-of-operations
+    title: Twice the documents
+    prompt: >-
+      With $C(n) = \frac{n(n - 1)}{2}$, write $\frac{C(2n)}{C(n)}$ as an expression in $n$, as
+      simple as you can make it.
+    answer:
+      type: expression
+      symbols:
+        - { name: n, integer: true, positive: true }
+      lhs: '\frac{C(2n)}{C(n)} ='
+      reference: 2*(2*n - 1)/(n - 1)
+      accept: ['(4n - 2)/(n - 1)', '(4*n-2)/(n-1)', '2(2n-1)/(n-1)', '4 + 2/(n - 1)']
+      reject: ['4', '2', '(2*n - 1)/(n - 1)', '4*(2*n - 1)/(n - 1)', '(2*n + 1)/(n + 1)', '2*(2*n + 1)/(n + 1)', '(2n(2n - 1)/2)/(n(n - 1)/2)', '(4n^2 - 2n)/(n^2 - n)']
+      form:
+        maxOps: 4
+        message: That is equal, but it can be simpler. Cancel the factor that the top and the bottom share.
+    explanation: >-
+      $C(2n) = \frac{2n(2n - 1)}{2} = n(2n - 1)$, so the ratio is
+      $\frac{n(2n - 1)}{n(n - 1)/2} = \frac{2(2n - 1)}{n - 1}$.
+
+  - id: derive-estimate
+    phase: derive
+    kind: estimate
+    concept: E1.4/cost-of-operations
+    title: Three hundred thousand documents
+    prompt: >-
+      At about $5 \times 10^{7}$ comparisons a second, about how many minutes does the list version
+      of `unique` take on $3 \times 10^{5}$ different documents? An answer within a factor of 1.5
+      counts.
+    answer: { type: number, value: 15, tolerance: { factor: 1.5 } }
+    explanation: >-
+      $C(n)$ is close to $\frac{n^2}{2} = \frac{9 \times 10^{10}}{2} = 4.5 \times 10^{10}$
+      comparisons. Divided by $5 \times 10^{7}$ a second, that is 900 seconds, or 15 minutes.
+
+  - id: derive-append-proof
+    phase: derive
+    kind: proof
+    concept: E1.4/cost-of-operations
+    title: Why doubling keeps appends cheap
+    prompt: >-
+      Here is why appending $n = 2^k$ values to a list whose row doubles copies fewer than $n$
+      values in all, however large $n$ is. Each line follows from the lines above it. Choose the
+      rule that justifies each line. A rule may be used more than once or not at all.
+    answer:
+      type: steps
+      rules:
+        - { id: triangle, name: Sum of 1 to m, label: '$1 + 2 + \dots + m = \frac{m(m+1)}{2}$, as E1.2 proved.' }
+        - { id: substitute, name: Substitute, label: 'Replace a letter by what it stands for.' }
+        - { id: distribute, name: Distribute, label: 'Multiplying a sum multiplies each of its terms, and $2 \times 2^j = 2^{j+1}$.' }
+        - { id: divide, name: Divide, label: 'Dividing both sides of an inequality by a positive number keeps it true.' }
+        - { id: cancel, name: Cancel, label: 'In a difference of two sums, a term that appears in both cancels.' }
+        - { id: collect, name: Collect, label: 'For any number $S$, $2S - S = S$.' }
+        - { id: less, name: Less by one, label: 'Taking 1 away leaves a smaller number: $m - 1 < m$.' }
+      start: 'S = 1 + 2 + 4 + \dots + 2^{k-1}'
+      lines:
+        - math: '2S = 2 + 4 + 8 + \dots + 2^{k}'
+          rule: distribute
+        - math: '2S - S = 2^{k} - 1'
+          rule: cancel
+        - math: 'S = 2^{k} - 1'
+          rule: collect
+        - math: 'S = n - 1'
+          rule: substitute
+        - math: 'S < n'
+          rule: less
+        - math: '\frac{S}{n} < 1'
+          rule: divide
+    explanation: >-
+      Doubling $S$ shifts every term up one place. Subtracting $S$ cancels every term the two sums
+      share, leaving the top term of $2S$ and the bottom term of $S$. So $S = 2^k - 1 = n - 1$, which
+      is less than $n$, and dividing by $n$ shows fewer than one copy per append. E1.2's sum of 1 to
+      $m$ is not needed.
+  # Build ----------------------------------------------------------------------
+  - id: build-best-step
+    phase: build
+    kind: build
+    concept: E1.4/lists
+    title: The best step
+    prompt: >-
+      Write the body of `best_step(losses)`, which gives the index of the smallest loss in a list of
+      losses, the step whose weights a training script would keep. The tests call it with many
+      different lists, and check that it leaves the list as it was.
+    answer:
+      type: code
+      starter: |
+        def best_step(losses):
+            """The index of the smallest loss in the list losses, which holds at least one loss.
+            If the smallest loss appears more than once, the first of its indexes."""
+
+
+        print(best_step([2.0, 1.5, 1.7]))   # the smallest loss, 1.5, is at index 1
+      tests: |
+        def test_examples():
+            """The index of the smallest loss, for a few lists."""
+            for losses, expected in [([2.0, 1.5, 1.7], 1), ([0.9, 0.4, 0.6, 0.2], 3), ([3.1, 2.2], 1)]:
+                got = best_step(list(losses))
+                assert got == expected, f"best_step({losses}) is {got!r}, but the smallest loss, {min(losses)}, is at index {expected}."
+
+        def test_first_slot():
+            """The smallest loss can be in the first slot, and a list can hold a single loss."""
+            got = best_step([0.5, 0.9, 0.7])
+            assert got == 0, f"best_step([0.5, 0.9, 0.7]) is {got!r}, but the smallest loss is in the first slot, index 0."
+            got = best_step([1.25])
+            assert got == 0, f"best_step([1.25]) is {got!r}, but a list of one loss has it at index 0."
+
+        def test_ties():
+            """When the smallest loss appears twice, the first of its indexes."""
+            got = best_step([3.0, 1.0, 2.0, 1.0])
+            assert got == 1, f"best_step([3.0, 1.0, 2.0, 1.0]) is {got!r}. The smallest loss, 1.0, is at indexes 1 and 3, and the first of them is 1."
+
+        def test_unchanged():
+            """best_step leaves the list it is given as it was."""
+            losses = [2.0, 0.5, 1.0]
+            best_step(losses)
+            assert losses == [2.0, 0.5, 1.0], f"After best_step(losses), losses is {losses!r}, not [2.0, 0.5, 1.0]: the function changed its caller's list."
+      reference: |
+        def best_step(losses):
+            """The index of the smallest loss in the list losses, which holds at least one loss.
+            If the smallest loss appears more than once, the first of its indexes."""
+            best = 0
+            for i in range(len(losses)):
+                if losses[i] < losses[best]:
+                    best = i
+            return best
+
+
+        print(best_step([2.0, 1.5, 1.7]))   # the smallest loss, 1.5, is at index 1
+      wrong:
+        - code: |
+            def best_step(losses):
+                smallest = losses[0]
+                for loss in losses:
+                    if loss < smallest:
+                        smallest = loss
+                return smallest
+          why: Returns the smallest loss itself, not its index.
+        - code: |
+            def best_step(losses):
+                best = 0
+                for i in range(len(losses)):
+                    if losses[i] <= losses[best]:
+                        best = i
+                return best
+          why: Uses `<=`, so a later loss equal to the smallest takes its place.
+        - code: |
+            def best_step(losses):
+                best = 0
+                best_loss = 0
+                for i in range(len(losses)):
+                    if losses[i] < best_loss:
+                        best = i
+                        best_loss = losses[i]
+                return best
+          why: Starts the best loss at 0, which no positive loss beats, so it always gives 0.
+        - code: |
+            def best_step(losses):
+                best = 0
+                for i in range(len(losses) - 1):
+                    if losses[i] < losses[best]:
+                        best = i
+                return best
+          why: Stops one slot early, so it never looks at the last loss.
+        - code: |
+            def best_step(losses):
+                original = list(losses)
+                losses.sort()
+                return original.index(losses[0])
+          why: Sorts the caller's list in place to find the smallest loss, which changes the list it was given.
+    explanation: >-
+      `best` holds the index of the smallest loss so far, starting at the first slot. The loop
+      visits every index, and `<` moves `best` only for a loss strictly smaller, so a tie keeps the
+      first index. Nothing assigns to a slot of `losses`, so the caller's list is left alone.
+
+  - id: build-vocabulary
+    phase: build
+    kind: build
+    concept: E1.4/dicts-and-sets
+    title: A tokeniser's vocabulary
+    prompt: >-
+      A tokeniser gives each different token a number, its id. Write the body of
+      `vocabulary(tokens)`, which numbers the tokens in the order they first appear. The tests call it
+      with other lists of tokens too.
+    answer:
+      type: code
+      starter: |
+        def vocabulary(tokens):
+            """A new dict that gives each different token in the list tokens an id: 0 for the first
+            token to appear, 1 for the next new token, and so on. A repeated token keeps its id."""
+
+
+        print(vocabulary(["the", "cat", "sat", "on", "the", "mat"]))
+      tests: |
+        def test_ids():
+            """Each new token gets the next id, from 0."""
+            got = vocabulary(["the", "cat", "sat"])
+            assert got == {"the": 0, "cat": 1, "sat": 2}, f"vocabulary(['the', 'cat', 'sat']) is {got!r}, not {{'the': 0, 'cat': 1, 'sat': 2}}."
+
+        def test_repeats():
+            """A repeated token keeps the id it got when it first appeared."""
+            got = vocabulary(["b", "a", "b", "b", "c", "a"])
+            assert got == {"b": 0, "a": 1, "c": 2}, f"vocabulary(['b', 'a', 'b', 'b', 'c', 'a']) is {got!r}, not {{'b': 0, 'a': 1, 'c': 2}}."
+
+        def test_many():
+            """Ten different tokens, in no particular order, numbered in the order they first appear."""
+            tokens = ["t5", "t3", "t9", "t3", "t1", "t7", "t0", "t8", "t5", "t2", "t6", "t4"]
+            got = vocabulary(tokens)
+            expected = {"t5": 0, "t3": 1, "t9": 2, "t1": 3, "t7": 4, "t0": 5, "t8": 6, "t2": 7, "t6": 8, "t4": 9}
+            assert got == expected, f"vocabulary({tokens}) is {got!r}, not {expected!r}."
+
+        def test_empty():
+            """No tokens give an empty dict."""
+            got = vocabulary([])
+            assert got == {}, f"vocabulary([]) is {got!r}, not {{}}."
+
+        def test_fresh():
+            """Each call numbers only its own tokens, in a new dict."""
+            first = vocabulary(["x", "y"])
+            second = vocabulary(["y"])
+            assert second == {"y": 0}, f"vocabulary(['y']) after vocabulary(['x', 'y']) is {second!r}, not {{'y': 0}}: the first call's tokens carried over to the second."
+            assert first is not second, "Two calls of vocabulary returned the same dict. Each call should make a new one."
+
+        def test_unchanged():
+            """vocabulary leaves the list of tokens as it was."""
+            tokens = ["b", "a", "b"]
+            vocabulary(tokens)
+            assert tokens == ["b", "a", "b"], f"After vocabulary(tokens), tokens is {tokens!r}, not ['b', 'a', 'b']."
+      reference: |
+        def vocabulary(tokens):
+            """A new dict that gives each different token in the list tokens an id: 0 for the first
+            token to appear, 1 for the next new token, and so on. A repeated token keeps its id."""
+            ids = {}
+            for t in tokens:
+                if t not in ids:
+                    ids[t] = len(ids)
+            return ids
+
+
+        print(vocabulary(["the", "cat", "sat", "on", "the", "mat"]))
+      wrong:
+        - code: |
+            def vocabulary(tokens):
+                ids = {}
+                for i in range(len(tokens)):
+                    ids[tokens[i]] = i
+                return ids
+          why: Numbers each token by its position, so a repeated token is given the position of its last copy.
+        - code: |
+            def vocabulary(tokens):
+                ids = {}
+                for t in tokens:
+                    ids[t] = len(ids)
+                return ids
+          why: Gives a repeated token a new id each time it appears.
+        - code: |
+            ids = {}
+
+            def vocabulary(tokens):
+                for t in tokens:
+                    if t not in ids:
+                        ids[t] = len(ids)
+                return ids
+          why: Keeps the dict outside the function, so the tokens of one call carry over to the next.
+        - code: |
+            def vocabulary(tokens):
+                ids = {}
+                for t in tokens:
+                    if t not in ids:
+                        ids[t] = len(ids) + 1
+                return ids
+          why: Numbers the tokens from 1 instead of 0.
+        - code: |
+            def vocabulary(tokens):
+                ids = {}
+                for t in set(tokens):
+                    ids[t] = len(ids)
+                return ids
+          why: Numbers the tokens in a set's order, which is not the order they first appear.
+        - code: |
+            def vocabulary(tokens):
+                ids = {}
+                for i in range(len(tokens)):
+                    if tokens[i] not in ids:
+                        ids[tokens[i]] = i
+                return ids
+          why: Gives each new token the position where it first appears, so the ids skip a number after each repeat.
+    explanation: >-
+      `len(ids)` is the number of tokens numbered so far, which is exactly the id the next new token
+      should get. `t not in ids` skips a token that already has an id, so it keeps its first one.
+      The dict is made inside the function, so every call starts afresh.
+
+  - id: build-break-missing-key
+    phase: build
+    kind: breakit
+    concept: E1.4/dicts-and-sets
+    title: A plain lookup
+    prompt: Predict what happens after the change, then run both versions to see.
+    answer:
+      type: breakit
+      code: |
+        tokens = ["the", "cat", "sat", "on", "the", "mat"]
+        counts = {}
+        for t in tokens:
+            counts[t] = counts.get(t, 0) + 1
+        print(counts)
+      broken: |
+        tokens = ["the", "cat", "sat", "on", "the", "mat"]
+        counts = {}
+        for t in tokens:
+            counts[t] = counts[t] + 1
+        print(counts)
+      change: '`counts.get(t, 0)` becomes `counts[t]`, the plain lookup.'
+      options:
+        - { id: same, label: 'It prints the same counts', when: "error is None and counts == base['counts']" }
+        - { id: ones, label: 'It prints every token with a count of 1', when: "error is None and counts != base['counts'] and all(v == 1 for v in counts.values())" }
+        - { id: first, label: 'Python stops with `KeyError` at the first token', when: "error == 'KeyError' and counts == {}" }
+        - { id: second-the, label: 'Python stops with `KeyError` when it reaches the second `"the"`', when: "error == 'KeyError' and counts != {}" }
+        - { id: other, label: 'Something else happens', when: "(error is None and counts != base['counts'] and not all(v == 1 for v in counts.values())) or (error is not None and error != 'KeyError')" }
+    explanation: >-
+      The right side, `counts[t] + 1`, is worked out before the assignment, and for the first token
+      `"the"` is not yet a key, so the lookup stops Python with `KeyError` before anything is
+      counted. Assigning `counts[t]` would add the key, but the program never gets that far.
+
+  - id: build-unique-fast
+    phase: build
+    kind: build
+    concept: E1.4/cost-of-operations
+    title: Removing repeats fast
+    prompt: >-
+      Here is the puzzle's `unique`. Make it fast without changing what it returns: a new list of
+      the documents, each once, in the order in which they first appear. The tests count the work
+      your function does on 300 documents, each comparison and each time a set works out where a
+      document goes, and call it with other lists too.
+    answer:
+      type: code
+      maxSteps: 10000000
+      starter: |
+        def unique(docs):
+            """A new list of the documents in the list docs, each once, in the order in which they
+            first appear. It takes time in proportion to the number of documents."""
+            kept = []
+            for doc in docs:
+                if doc not in kept:
+                    kept.append(doc)
+            return kept
+
+
+        print(unique(["a cat", "a dog", "a cat", "a bird", "a dog"]))
+      tests: |
+        # Doc is a string that adds 1 to Doc.work each time it is compared with another document,
+        # and each time a set or dict works out where to keep it, so that test_fast can count the
+        # work your unique does. A later lesson shows how a class like this is written.
+        class Doc(str):
+            """A document that counts the work done on it: each time it is compared with another
+            document, and each time a set or dict works out from it where to keep it."""
+            work = 0
+
+            def __eq__(self, other):
+                Doc.work = Doc.work + 1
+                return str.__eq__(self, other)
+
+            def __hash__(self):
+                Doc.work = Doc.work + 1
+                return str.__hash__(self)
+
+        def test_examples():
+            """Repeats are removed, and first appearances keep their order."""
+            for docs, expected in [
+                (["a cat", "a dog", "a cat"], ["a cat", "a dog"]),
+                (["x", "x", "x"], ["x"]),
+                (["b", "a", "c", "a", "b"], ["b", "a", "c"]),
+                ([], []),
+            ]:
+                got = unique(list(docs))
+                assert got == expected, f"unique({docs}) is {got!r}, not {expected}."
+
+        def test_order():
+            """The order is that of first appearance, not sorted and not a set's order."""
+            got = unique([30, 10, 30, 20, 10])
+            assert got == [30, 10, 20], f"unique([30, 10, 30, 20, 10]) is {got!r}, not [30, 10, 20]: the values should stay in the order in which they first appear."
+
+        # isinstance(got, list) is True when got is a list.
+        def test_list():
+            """unique returns a list."""
+            got = unique(["a", "b", "a"])
+            assert isinstance(got, list), f"unique(['a', 'b', 'a']) gave {got!r}, which is not a list."
+
+        # [Doc("doc " + str(i % 100)) for i in range(300)] is a list built by a loop, as append builds
+        # one: Doc("doc 0") to Doc("doc 99"), three times over. [str(d) for d in got] turns each
+        # document of the result back into a plain string.
+        def test_fast():
+            """On 300 documents, 100 of them different, fewer than 3,000 steps of work."""
+            docs = [Doc("doc " + str(i % 100)) for i in range(300)]
+            Doc.work = 0
+            got = unique(docs)
+            count = Doc.work
+            assert count < 3000, f"unique did {count:,} steps of work on 300 documents, 100 of them different, counting each comparison and each time a set or dict worked out where a document goes. The puzzle's version makes 15,050 comparisons, and a version that looks each document up once does about 600 steps."
+            assert [str(d) for d in got] == ["doc " + str(k) for k in range(100)], "On 300 documents, 100 of them different, unique did not give each of the 100 once, in order."
+
+        def test_unchanged():
+            """unique leaves the list it is given as it was, and returns a new list."""
+            docs = ["b", "a", "b"]
+            unique(docs)
+            assert docs == ["b", "a", "b"], f"After unique(docs), docs is {docs!r}, not ['b', 'a', 'b']."
+            docs = ["x", "y"]
+            assert unique(docs) is not docs, "unique(docs) returned the very list it was given. It should return a new list, as its docstring says."
+      reference: |
+        def unique(docs):
+            """A new list of the documents in the list docs, each once, in the order in which they
+            first appear. It takes time in proportion to the number of documents."""
+            seen = set()
+            kept = []
+            for doc in docs:
+                if doc not in seen:
+                    seen.add(doc)
+                    kept.append(doc)
+            return kept
+
+
+        print(unique(["a cat", "a dog", "a cat", "a bird", "a dog"]))
+      # The first wrong program's run is kept as the tutor's picture of being stuck, so it must print
+      # the same in every run: a set of strings, whose order changes from run to run, comes later.
+      wrong:
+        - code: |
+            def unique(docs):
+                seen = set()
+                kept = []
+                for doc in docs:
+                    if doc not in kept:
+                        seen.add(doc)
+                        kept.append(doc)
+                return kept
+          why: Keeps a set but still asks `doc not in kept`, so it compares each document with every kept one.
+        - code: |
+            def unique(docs):
+                return list(set(docs))
+          why: Turns the list into a set and back, which loses the order of first appearance.
+        - code: |
+            def unique(docs):
+                return sorted(set(docs))
+          why: Sorts the documents, which loses the order of first appearance.
+        - code: |
+            def unique(docs):
+                kept = []
+                for doc in docs:
+                    if doc not in set(kept):
+                        kept.append(doc)
+                return kept
+          why: Builds a new set from `kept` for every document, which looks at every kept document each time.
+        - code: |
+            def unique(docs):
+                seen = set()
+                kept = []
+                for doc in docs:
+                    if doc not in seen:
+                        kept.append(doc)
+                return kept
+          why: Never adds a document to the set, so nothing counts as seen and every repeat is kept.
+        - code: |
+            def unique(docs):
+                seen = set()
+                for doc in docs:
+                    if doc not in seen:
+                        seen.add(doc)
+                return seen
+          why: Returns the set, which is not a list and keeps no order.
+        - code: |
+            def unique(docs):
+                seen = set()
+                kept = []
+                for doc in docs:
+                    if doc not in seen:
+                        seen.add(doc)
+                    kept.append(doc)
+                return kept
+          why: Appends every document, repeat or not, since the append is outside the `if`.
+    explanation: >-
+      The set `seen` answers "seen before?" by looking in about one place, and the list `kept` keeps
+      the order, which a set does not. Each document is looked up once and added at most once, so
+      the work grows in proportion to the number of documents.
+
+  - id: build-default-history
+    phase: build
+    kind: debug
+    concept: E1.4/aliasing-and-mutation
+    title: A history that remembers too much
+    prompt: >-
+      Run the script: it prints `[2.0, 1.5] [2.0, 1.5]`, though each call made without a history
+      should start a list of its own. Fix `log` so that it keeps its contract. The `def` line runs
+      once and the body at every call, so a list for each call has to be made in the body, and the
+      default then has to be a value that is not a list but can stand for "no history given". The
+      tests call `log` with a history and without one.
+    answer:
+      type: code
+      starter: |
+        def log(loss, history=[]):
+            """Appends loss to the list history and returns that list. Called without a history, it
+            starts a new list of its own."""
+            history.append(loss)
+            return history
+
+
+        first = log(2.0)
+        second = log(1.5)
+        print(first, second)
+      tests: |
+        # isinstance(a, list) is True when a is a list, and list(a) is a copy of it, taken at once.
+        def test_fresh():
+            """Each call without a history starts a new list of its own."""
+            a = log(0.7)
+            assert isinstance(a, list), f"log(0.7), called without a history, gave {a!r}, not a list."
+            a_then = list(a)
+            b = log(0.6)
+            assert a_then == [0.7], f"log(0.7), called without a history, gave {a_then!r}, not [0.7]: the list it appended to already held values from earlier calls."
+            assert b == [0.6], f"log(0.6), called without a history after log(0.7), gave {b!r}, not [0.6]: the calls shared one list."
+            assert a is not b, "Two calls of log without a history returned the same list."
+
+        def test_given():
+            """A history passed in is the list that grows, and the one returned."""
+            h = [2.0]
+            got = log(1.5, h)
+            assert h == [2.0, 1.5], f"After log(1.5, h) with h = [2.0], h is {h!r}, not [2.0, 1.5]: log should append to the list it is given."
+            assert got is h, "log(1.5, h) returned a list other than h. It should return the list it appended to."
+
+        def test_given_empty():
+            """An empty list passed in is still the caller's list, and it grows too."""
+            h = []
+            got = log(1.0, h)
+            assert h == [1.0], f"After log(1.0, h) with h = [], h is {h!r}, not [1.0]: an empty list passed in is still the caller's list, and log should append to it."
+            assert got is h, "log(1.0, h) with h = [] returned a list other than h."
+
+        # output is everything your program printed.
+        def test_script():
+            """The script prints [2.0] [1.5]."""
+            assert "[2.0] [1.5]" in output, f"The script printed {output!r}, not [2.0] [1.5]."
+      reference: |
+        def log(loss, history=None):
+            """Appends loss to the list history and returns that list. Called without a history, it
+            starts a new list of its own."""
+            if history is None:
+                history = []
+            history.append(loss)
+            return history
+
+
+        first = log(2.0)
+        second = log(1.5)
+        print(first, second)
+      wrong:
+        - code: |
+            def log(loss, history=[]):
+                history = history + [loss]
+                return history
+
+
+            first = log(2.0)
+            second = log(1.5)
+            print(first, second)
+          why: Makes a new list at every call, so a list passed in never grows.
+        - code: |
+            def log(loss, history=None):
+                if not history:
+                    history = []
+                history.append(loss)
+                return history
+
+
+            first = log(2.0)
+            second = log(1.5)
+            print(first, second)
+          why: Treats an empty list passed in as missing, so the caller's empty list never grows.
+        - code: |
+            def log(loss, history=None):
+                if history is None:
+                    history = []
+                return history + [loss]
+
+
+            first = log(2.0)
+            second = log(1.5)
+            print(first, second)
+          why: Returns a new list instead of appending, so a list passed in never grows.
+        - code: |
+            def log(loss, history=[]):
+                history = list(history)
+                history.append(loss)
+                return history
+
+
+            first = log(2.0)
+            second = log(1.5)
+            print(first, second)
+          why: Copies the list it is given, so the caller's list never grows.
+    explanation: >-
+      `None` is not a list, so the shared default can no longer be changed. The body runs at every
+      call, so `history = []` inside it makes a new list for each call that leaves `history` out,
+      while a list passed in, empty or not, is the one that grows.
+
+  # Explain --------------------------------------------------------------------
+  - id: explain-structures
+    phase: explain
+    kind: explain
+    concept: E1.4/cost-of-operations
+    covers: [E1.4/lists, E1.4/dicts-and-sets, E1.4/aliasing-and-mutation]
+    title: Collections and what they cost
+    prompt: >-
+      Explain to your friend what a list is and how Python finds its slots, why `b = a` followed by
+      `a.append(3)` changes what `b` shows, what dictionaries and sets are for, why the puzzle's
+      `unique` takes hours on a million documents while a set takes about a second, and how to
+      estimate a program's running time before it runs.
+    answer:
+      type: text
+      rubric:
+        - { id: slots, criterion: 'Describes a list as a row of numbered slots, from index 0, so that reaching a slot by its index or appending takes about one step however long the list is, while `x in xs` compares `x` with the slots one at a time.' }
+        - { id: alias, criterion: 'Explains that assignment never copies: after `b = a` both names refer to one list, so a change made in place, such as `append`, shows through both, while `a = a + [x]` makes a new list; and that `list(a)` makes a copy.' }
+        - { id: dict-set, criterion: 'Says that a dictionary keeps one value under each key, like a function given by a table, and a set holds each value once, and that both find a key in about one step, by working out from the key where to look.' }
+        - { id: puzzle, criterion: 'Explains the puzzle: the k-th document is compared with the k - 1 kept before it, so n different documents make n(n - 1)/2 comparisons, about n²/2; a hundred times the documents is about ten thousand times the work, hours instead of a second, while a set looks each document up once.' }
+        - { id: estimate, criterion: 'Describes estimating a running time before the program runs: count the basic steps it takes, then divide by the steps a second the machine manages, as M1.1 did for a training run.' }
+      reference: >-
+        A list is a row of numbered slots, side by side in memory, each referring to a value, with
+        the first slot at index 0. Python finds slot i by arithmetic, the start of the row plus i
+        slots along, so xs[i] takes one step however long the list is, and append is cheap too,
+        since the list keeps spare slots at its end. But x in xs cannot know where x is, so it
+        compares x with the slots one at a time. Assignment never copies anything. After b = a, the
+        two names refer to one list, so a.append(3) changes that list and b shows the change too.
+        By contrast a = a + [3] makes a new list and moves only a, and list(a) makes a copy when
+        one is wanted. The same holds for a list passed to a function: the function can change the
+        caller's list. A dictionary keeps a value under each key, like a function given by a table,
+        and a set holds each value once. Both work out from the key itself where to look, so
+        finding a key takes about one step however many keys there are. The puzzle's unique checks
+        each document against the list of those kept so far. With every document different, the
+        k-th document is compared with the k - 1 kept before it, so n documents make
+        0 + 1 + ... + (n - 1) = n(n - 1)/2 comparisons, about n squared over 2. A hundred times the
+        documents is about ten thousand times the work, so the one second for 10,000 documents
+        becomes hours for a million. Keeping a set of the documents seen means each is looked up
+        once, so the work only grows in proportion to the number of documents, and a million take
+        about a second. To estimate a running time before a long job starts, count the steps it
+        takes, then divide by the steps a second the machine manages, as M1.1 did for a training
+        run: 5 times 10 to the 11 comparisons at 5 times 10 to the 7 a second is 10,000 seconds,
+        about three hours.
+      minWords: 100
+      maxWords: 400

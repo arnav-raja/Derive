@@ -5,11 +5,11 @@ import { useEffect, useId, useMemo, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { inputClasses } from "@/components/ui/field";
-import { python, type TraceResult, type TraceStep } from "@/lib/python/client";
+import { python, type TraceFrame, type TraceResult, type TraceStep } from "@/lib/python/client";
 
 import { CodeText, FigureFrame, PredictPanel, RangeControl, type PredictPhase } from "./shell";
 import { normalise, sameAnswer } from "./trace-answer";
-import { changesBetween, finishedStep, frameHeading, frameMarks, MAIN, returnText, runningIn } from "./trace-frames";
+import { changesBetween, finishedStep, frameHeading, frameMarks, frameStatus, MAIN, returnText, runningIn } from "./trace-frames";
 
 /*
  * A program run one line at a time by real Python in the browser. Each step
@@ -25,10 +25,15 @@ type Stop = { line: number; variable: string; prompt?: string; pass?: number };
 /** A value the program reads with input(), which the learner can change and run again. */
 type TraceInput = { label: string; value: string; presets?: string[] };
 
-/** A name's value as the running code sees it, and the function whose name it is. */
+/**
+ * A name's value as the running code sees it, and the function whose name it is: the running
+ * call's own names first, then the main program's, as Python looks a name up. A caller's names
+ * are not seen from inside a call it made.
+ */
 function lookup(step: TraceStep | undefined, name: string): { value: string; owner: string } | undefined {
   if (!step) return undefined;
-  for (let i = step.stack.length - 1; i >= 0; i--) {
+  const top = step.stack.length - 1;
+  for (const i of top > 0 ? [top, 0] : [0]) {
     const v = step.stack[i]!.variables[name];
     if (v !== undefined) return { value: v, owner: i === 0 ? MAIN : step.stack[i]!.function };
   }
@@ -149,17 +154,25 @@ export function ProgramTrace({
   const lastResult = results.at(-1);
   const blocked = Boolean(predictOutput) && outPhase === "asking";
 
-  const variablesTable = (variables: Record<string, string>, marks: Record<string, "new" | "changed">) =>
-    Object.keys(variables).length ? (
+  // A list, dict or set carries its tag, such as "list 1", so that two names for one list show
+  // the same tag, and a name moved to another list with an equal value shows a new one.
+  const variablesTable = (frame: TraceFrame | undefined, marks: Record<string, "new" | "changed">) =>
+    frame && Object.keys(frame.variables).length ? (
       <table className="w-full text-left text-sm">
         <tbody>
-          {Object.entries(variables).map(([k, v]) => (
+          {Object.entries(frame.variables).map(([k, v]) => (
             <tr key={k} className="border-t border-rule first:border-t-0" data-sym={syms[k]}>
               <th scope="row" className="py-1 pr-3 font-mono font-normal text-ink">
                 {k}
               </th>
               <td className={clsx("py-1 font-mono wrap-anywhere", marks[k] ? "font-semibold text-accent-strong" : "text-ink")}>
                 {v}
+                {frame.refs?.[k] ? (
+                  <span className="ml-2 inline-block rounded-xs border border-rule-strong px-1 font-sans text-xs font-normal whitespace-nowrap text-ink">
+                    <span className="sr-only">, which is </span>
+                    {frame.refs[k]}
+                  </span>
+                ) : null}
                 {marks[k] ? <span className="ml-2 font-sans text-xs font-normal text-ink-muted">{marks[k]}</span> : null}
               </td>
             </tr>
@@ -274,22 +287,15 @@ export function ProgramTrace({
                           className={clsx("rounded-md border px-3 py-2", top ? "border-accent/50 bg-accent-soft" : "border-rule bg-surface")}
                         >
                           <p className="mb-1 flex flex-wrap items-baseline gap-x-2 text-xs text-ink-muted">
-                            <span className="font-semibold tracking-wide uppercase">
+                            {/* Python names are case-sensitive, so code keeps its case under a capitalised heading. */}
+                            <span className="font-semibold tracking-wide uppercase [&_code]:tracking-normal [&_code]:normal-case">
                               <CodeText text={frameHeading(f, i)} />
                             </span>
                             <span>
-                              <CodeText
-                                text={
-                                  top
-                                    ? current?.event === "return"
-                                      ? `returning \`${current.returned ?? "None"}\``
-                                      : "running"
-                                    : `waiting for \`${frames[i + 1]!.function}\` to return`
-                                }
-                              />
+                              <CodeText text={top ? frameStatus(current) : `waiting for \`${frames[i + 1]!.function}\` to return`} />
                             </span>
                           </p>
-                          {variablesTable(f.variables, frameMarks(previous, current, i))}
+                          {variablesTable(f, frameMarks(previous, current, i))}
                         </li>
                       );
                     })}
@@ -297,7 +303,7 @@ export function ProgramTrace({
                 ) : (
                   <div>
                     <p className="mb-1 text-xs font-semibold tracking-wide text-ink-muted uppercase">Variables</p>
-                    {variablesTable(frames[0]?.variables ?? {}, frameMarks(previous, current, 0))}
+                    {variablesTable(frames[0], frameMarks(previous, current, 0))}
                   </div>
                 )}
                 <div>
@@ -422,14 +428,16 @@ export function ProgramTrace({
                 <p className="tabular text-sm text-ink-muted" aria-live="polite">
                   Step {step + 1} of {steps.length}
                   {current ? (
-                    current.event === "line" ? (
-                      `: about to run line ${current.line}${runningIn(current) === MAIN ? "" : ` in ${runningIn(current)}`}`
-                    ) : (
-                      <>
-                        {": "}
-                        <CodeText text={returnText(current)} />
-                      </>
-                    )
+                    <>
+                      {": "}
+                      <CodeText
+                        text={
+                          current.event === "line"
+                            ? `about to run line ${current.line}${runningIn(current) === MAIN ? "" : ` in \`${runningIn(current)}\``}`
+                            : returnText(current)
+                        }
+                      />
+                    </>
                   ) : (
                     ""
                   )}
@@ -466,7 +474,10 @@ export function ProgramTrace({
               rows: steps.slice(0, stopsLeft ? step : 200).map((s, i) => {
                 const code = s.event === "line" ? `\`${(lines[s.line - 1] ?? "").trim()}\`` : returnText(s);
                 const line = s.event === "line" ? s.line : runningIn(s) === MAIN ? "end" : s.line;
-                return [i + 1, line, code, changesBetween(s, steps[i + 1]) || "none"];
+                // After a return, what changes is the caller's, as the line that made the call finishes.
+                const changes = changesBetween(s, steps[i + 1]);
+                const caller = s.event === "return" ? s.stack.at(-2) : undefined;
+                return [i + 1, line, code, changes ? (caller ? `${changes}, as line ${caller.line} finishes` : changes) : "none"];
               }),
             }
           : undefined

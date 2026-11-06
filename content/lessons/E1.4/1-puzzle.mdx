@@ -1,0 +1,22 @@
+E1.3's functions took numbers and gave numbers back. Training data comes in collections: thousands of documents, a batch of examples, the losses of a whole run. Before training, a script removes repeated documents, so that the model does not learn the same text twice. Here is that job as a function:
+
+```python
+def unique(docs):
+    kept = []
+    for doc in docs:
+        if doc not in kept:
+            kept.append(doc)
+    return kept
+```
+
+`docs` is a *list*: values in order, written between square brackets, such as `["a cat", "a dog", "a cat"]`. `kept = []` starts an empty list. `for doc in docs:` makes `doc` refer to each document in turn, as `for` did with the values of a `range` in E1.2. `doc not in kept` is `True` when `doc` is not one of the documents in `kept` so far, and `kept.append(doc)` adds `doc` at the end of `kept`. So `unique(["a cat", "a dog", "a cat"])` gives `["a cat", "a dog"]`.
+
+Given 10,000 different documents, `unique` takes about a second in the Python that runs these lessons. Decide how long it takes on a million different documents before you read on.
+
+<Exercise id="puzzle-dedup" />
+
+<Reveal for="puzzle-dedup">
+
+Removing repeats is a real step in preparing the text a language model is trained on, and that text runs to billions of documents. This lesson looks at how Python keeps a collection of values, in a list, a dictionary or a set; at what happens when two names refer to one collection and it changes; and at what each operation costs, so that a program's running time can be estimated before it runs. With the right one of the three, the million documents take about a second.
+
+</Reveal>

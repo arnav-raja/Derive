@@ -1,0 +1,265 @@
+## A row of slots
+
+A list holds values in order:
+
+```python
+losses = [2.31, 1.87, 1.52, 1.45]
+```
+
+Python keeps a list as a row of numbered *slots*, side by side, each referring to one value. The numbers are the slots' *indexes*, and they start at 0, so `losses[0]` is 2.31 and `losses[3]` is 1.45. A negative index counts from the end: `losses[-1]` is the last value. `len(losses)` gives the number of slots, 4. A *slice*, `losses[a:b]`, is a new list of the slots from index `a` up to, but not including, index `b`, in the way that `range(a, b)` stops before `b`. Either end may be left out: `losses[:2]` starts at index 0, `losses[2:]` runs to the end, and `losses[:]` is every slot.
+
+<Exercise id="explore-index" />
+
+<Reveal for="explore-index">
+
+Starting at 0 makes the indexes of a list with $n$ slots exactly `range(n)`, so `for i in range(len(losses)):` visits every index once.
+
+As in the puzzle, a `for` loop can visit the values directly: `for loss in losses:` makes `loss` refer to each value in turn. A slot can be given a new value by assigning to it, as in `losses[0] = 2.0`, and `losses.append(1.38)` adds a new slot at the end, holding 1.38. `append` is a *method*: a function that belongs to a value and is called through it, after a dot. With `append`, E1.2's accumulator can build a list, starting empty and growing by one slot on each pass:
+
+```python
+squares = []
+for k in range(5):
+    squares.append(k * k)
+print(squares[3] + len(squares))
+```
+
+<Exercise id="explore-append" />
+
+</Reveal>
+
+<Reveal for="explore-append">
+
+One more operation on lists: `x in xs` is `True` when some slot of `xs` holds a value equal to `x`, as the puzzle's `doc not in kept` used it.
+
+## When a list changes
+
+E1.1 said that an assignment makes a name refer to a value. With numbers that was the whole story, since a number never changes: `a = a + 1` makes `a` refer to a different number. A list can change. `append` and assigning to a slot change the list itself, in place. Changing a value in place is called *mutation*, and a value that can be changed, like a list, is *mutable*; numbers, strings and bools are not. So with lists it matters which list a name refers to.
+
+```python
+a = [1, 2]
+b = a
+a.append(3)
+print(a, b)
+```
+
+<Exercise id="explore-alias" />
+
+</Reveal>
+
+<Reveal for="explore-alias">
+
+Step through the program in the figure. Beside each list it shows a label of its own, such as list 1, so that two names that refer to one list show the same label.
+
+<ProgramTrace
+  title="One list, two names"
+  description="The program makes `a` refer to a new list, makes `b` refer to what `a` refers to, appends 3 to the list through `a`, and prints both names. Beside each list the figure shows its own label, such as list 1, so names that refer to the same list show the same label, and when the list changes, both names show the change."
+  code={"a = [1, 2]\nb = a\na.append(3)\nprint(a, b)"}
+/>
+
+A second name for one list, as `b` is here, is called an *alias*. Here is a program that looks almost the same. In it, `+` between two lists gives a list holding the values of the first followed by those of the second.
+
+```python
+a = [1, 2]
+b = a
+a = a + [3]
+print(a, b)
+```
+
+<Exercise id="explore-rebind-new" />
+
+</Reveal>
+
+<Reveal for="explore-rebind-new">
+
+So `a = a + [3]` and `a.append(3)` both leave `a` as `[1, 2, 3]`, but only `append` changes the list that `b` shares. Two operators tell the cases apart: `x == y` asks whether two values are equal, and `x is y` asks whether two names refer to one and the same value, the same list rather than two equal ones. Python calls each value it keeps in memory an *object*, so `is` asks whether two names refer to the same object.
+
+```python
+a = [1, 2]
+b = [1, 2]
+c = a
+print(a == b, a is b, a is c)
+```
+
+<Exercise id="explore-is-equal" />
+
+</Reveal>
+
+<Reveal for="explore-is-equal">
+
+A list written out between square brackets, such as `[1, 2]`, makes a new list each time it is worked out, even when the values are equal. `list(a)` makes a new list with the same values, a *copy*, and so does the slice `a[:]`, of every slot. A copy is equal to the original but is not the same object, so changing one leaves the other alone.
+
+A slot can refer to any value, a list included: `[[1, 2], [3]]` is a list of two lists, and `xs[0][1]` is slot 1 of the list in slot 0. A training loop often saves its weights after each step, so that it can look back at them later. Here is one, with two weights:
+
+```python
+weights = [0.0, 0.0]
+snapshots = []
+for step in range(3):
+    weights[0] = weights[0] + 1
+    snapshots.append(weights)
+print(snapshots)
+```
+
+<Exercise id="explore-snapshots" />
+
+</Reveal>
+
+<Reveal for="explore-snapshots">
+
+Appending `list(weights)` instead stores a copy at each step, and the copies keep the values of their step. Saving a model's weights without copying them makes the same mistake: a log in which every saved state turns out to be the last one.
+
+## Lists given to a function
+
+E1.3's puzzle showed that a parameter is a new name, and that assigning it changes only the call's own name. Here the argument is a list:
+
+```python
+def add_loss(history, loss):
+    history.append(loss)
+
+def clear(history):
+    history = []
+
+h = [2.0]
+add_loss(h, 1.5)
+clear(h)
+print(h)
+```
+
+<Exercise id="explore-mutating-call" />
+
+</Reveal>
+
+<Reveal for="explore-mutating-call">
+
+A parameter and the caller's name are two names for one list, so a change made through the parameter reaches the caller's list, while assigning the parameter moves only the call's own name, as E1.3's `halve` did with its own `lr`. A function that changes a list it was given changes something outside itself, so it is not pure in E1.3's sense, and its docstring should say what it changes.
+
+A parameter's default can be a list:
+
+```python
+def log(loss, history=[]):
+    history.append(loss)
+    return history
+
+print(log(2.0))
+print(log(1.5))
+```
+
+<Exercise id="explore-default-shared" />
+
+</Reveal>
+
+<Reveal for="explore-default-shared">
+
+Every call that leaves out `history` gets that one list, so a log meant to start empty starts with the losses of every earlier call. Build mends this function.
+
+## Looking things up by key
+
+A list finds a value by its position. Often a program needs to find a value by a name instead: how many times a token appears, or which number a tokeniser gives a word. A *dictionary*, or *dict*, keeps values under *keys*:
+
+```python
+vocab = {"the": 0, "cat": 1}
+```
+
+It is written between braces, each key followed by a colon and its value. `vocab["cat"]` looks up the key `"cat"` and gives 1. `vocab["sat"] = 2` adds the key `"sat"`, with the value 2. `k in vocab` asks whether `k` is one of the keys, `len(vocab)` counts the keys, and `for k in vocab:` visits the keys in the order they were added. Looking up a key that is not there stops Python with `KeyError`, so `vocab.get(k, d)` gives the value for `k`, or `d` when `k` is not a key.
+
+```python
+vocab = {"the": 0, "cat": 1}
+vocab["cat"] = 5
+vocab["mat"] = 5
+print(len(vocab), vocab["cat"])
+```
+
+<Exercise id="explore-dict-replace" />
+
+</Reveal>
+
+<Reveal for="explore-dict-replace">
+
+A dict is a function given by a table, in M1.3's sense, with the keys as its inputs: two keys may share a value, but no key has two. Here is the commonest use of a dict in text processing, counting:
+
+```python
+tokens = ["the", "cat", "sat", "on", "the", "mat"]
+counts = {}
+for t in tokens:
+    counts[t] = counts.get(t, 0) + 1
+print(counts["the"], len(counts))
+```
+
+<Exercise id="explore-dict-count" />
+
+</Reveal>
+
+<Reveal for="explore-dict-count">
+
+When it matters only which tokens appear, not how often, a *set* is enough. A set is a collection with no repeats: `set(tokens)` holds each token once, so `len(set(tokens))` is 5. `s.add(x)` puts `x` in the set `s` if it is not there already, `x in s` asks whether it is, and `set()` makes an empty set, since `{}` is an empty dict. A set has no indexes, and a program should not rely on the order in which a set gives its values.
+
+## What each operation costs
+
+Why should the puzzle's list take hours where a set would take a second? Each operation does some number of basic steps, and for some operations that number grows with the size of the data.
+
+A list's slots sit side by side in the computer's memory, so slot $i$ is found by arithmetic, as the start of the row plus $i$ slots along: one step, however long the list. So `xs[i]` and `xs[i] = v` take the same time for a list of ten values as for a list of ten million, and so does `len(xs)`, since a list keeps a count of its slots. `xs.append(v)` takes one step too, since a list keeps some spare slots at its end; the Derive phase shows why it stays cheap when the spares run out. But `x in xs` cannot know where `x` might be. It compares `x` with the slots one at a time, from the start, until it finds it, and if `x` is not there, it compares it with every slot. And `xs.insert(0, v)`, which puts `v` in a new first slot, has to move every value along by one.
+
+A dict or a set works out which slot to look in from the key itself, by arithmetic on the key, so finding a key looks in about one place however many keys there are. E1.10 shows how.
+
+<Exercise id="explore-cost-which" />
+
+</Reveal>
+
+<Reveal for="explore-cost-which">
+
+Thinking about where the work goes predicts the cost of an operation never seen before: what has to move, and what has to be looked at. In the puzzle, `doc not in kept` looks at every kept document, since with every document different it never finds a match.
+
+<Exercise id="explore-comparisons" />
+
+</Reveal>
+
+<Reveal for="explore-comparisons">
+
+The comparisons pile up: each document is compared with more kept documents than the one before it. The Derive phase counts them for any number of documents. Here is what that does to the running time. In the Python that runs these lessons, `in` on a list makes about $5 \times 10^{7}$ comparisons a second, and a version of `unique` that keeps a set handles about a million documents a second. The figure puts the times those rates give on one line, where each tick mark is ten times the one before it, as in M1.1.
+
+<ScaleLine
+  title="Removing repeats, in seconds"
+  description="The time to remove repeats from 10,000, a million and a billion documents, with a list and with a set, at about 50 million comparisons a second for the list and a million documents a second for the set, placed beside an hour, a day and a year on a line where each tick mark is ten times the one before it."
+  unit="s"
+  max={13}
+  items={[
+    { label: "List, 10,000 documents", value: 1 },
+    { label: "Set, 10,000 documents", value: 0.01 },
+    { label: "Set, a million documents", value: 1 },
+    { label: "List, a million documents", value: 10000 },
+    { label: "Set, a billion documents", value: 1000 },
+    { label: "An hour", value: 3600 },
+    { label: "A day", value: 86400 },
+    { label: "A year", value: 31557600 }
+  ]}
+  predict={{ prompt: "Before it appears: where does the list version on a billion documents fall? Set your guess, lock it in, then reveal.", label: "List, a billion documents", value: 10000000000 }}
+/>
+
+Once you have revealed it, compare where the two versions land for a billion documents. The Derive phase works out why they grow so differently.
+
+## The names
+
+<Definition term="List">
+
+A *list* is a row of numbered slots, each referring to a value. Indexes start at 0, and a negative index counts from the end; a slice `xs[a:b]` is a new list of the slots from `a` up to, but not including, `b`; `len` gives the number of slots; `for` visits them in order; `xs[i] = v` gives a slot a new value, and `xs.append(v)` adds a slot at the end.
+
+</Definition>
+
+<Definition term="Dictionary and set">
+
+A *dictionary* maps keys to values, one value for each key, like a function given by a table: `d[k]` looks a key up, `d[k] = v` adds it or gives it a new value, and `d.get(k, default)` gives the default for a missing key. A *set* holds each value at most once. Both work out from the key itself where to look, so finding a key takes about the same time however many keys there are.
+
+</Definition>
+
+<Definition term="Aliasing and mutation">
+
+*Mutation* changes a value in place, as `append` changes a list. Assignment never copies: after `b = a`, `b` is an *alias*, a second name for the same list, so a mutation through either name shows through both, while `a = a + [x]` makes a new list. `is` asks whether two names refer to the same object, `==` whether their values are equal, and `list(a)` makes a copy. A function given a list can mutate its caller's list, and a default value is made once, when the `def` line runs.
+
+</Definition>
+
+<Definition term="The cost of operations">
+
+The *cost* of an operation is the number of basic steps it takes, and how that number grows with the size of the data. Reaching a slot by its index, appending, and finding a key in a dictionary or set cost about the same at any size; searching a list with `in`, inserting at its front or copying it cost steps in proportion to its length. Counting the steps and dividing by the steps a second the machine manages estimates a running time.
+
+</Definition>
+
+</Reveal>

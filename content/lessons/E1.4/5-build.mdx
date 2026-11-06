@@ -1,0 +1,51 @@
+The Derive phase counted what operations cost. Now write functions that use lists, dictionaries and sets, make the puzzle's `unique` fast, and mend a function that shares a list by accident. The tests call your functions with many different arguments, and some check that a function leaves the list it was given as it was.
+
+## The best step
+
+<Exercise id="build-best-step" />
+
+<Reveal for="build-best-step">
+
+Keeping the index of the best so far, rather than the loss itself, is what lets the function say where the best loss was. A training script uses the same loop to pick the step whose saved weights to keep.
+
+## A tokeniser's vocabulary
+
+<Exercise id="build-vocabulary" />
+
+</Reveal>
+
+<Reveal for="build-vocabulary">
+
+A real tokeniser's vocabulary is a dict like this one, from each token to its id. It is built once, over a large body of text, and then turns text into lists of ids by looking tokens up in it, each lookup taking about one step.
+
+## A plain lookup
+
+<Exercise id="build-break-missing-key" />
+
+</Reveal>
+
+<Reveal for="build-break-missing-key">
+
+`counts.get(t, 0)` is there because a count does not exist until its token is first seen.
+
+## Removing repeats fast
+
+<Exercise id="build-unique-fast" />
+
+</Reveal>
+
+<Reveal for="build-unique-fast">
+
+Each tool does the job it is cheap at. On a million documents this version takes about a second, where the puzzle's took hours. To see it, build a list of a million different documents in the editor above, with a loop that appends `"doc " + str(i)` for each `i` in `range(1000000)`, and run your `unique` on it.
+
+## A history that remembers too much
+
+<Exercise id="build-default-history" />
+
+</Reveal>
+
+<Reveal for="build-default-history">
+
+A caller who passes a list still gets it changed, which is what the docstring promises. Python programmers write `history=None`, and make the list in the body, wherever a default would otherwise be a list, a dict or a set.
+
+</Reveal>

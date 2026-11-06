@@ -1,0 +1,109 @@
+code: E1.4
+title: "Data structures and the cost of operations"
+course: E1
+status: review
+summary: >-
+  A script removes repeated documents by checking each one against a list of the documents it has
+  kept so far. On 10,000 documents it takes about a second. About how long does it take on a
+  million? Lists, dictionaries and sets, what happens when a list changes, and how the time an
+  operation takes grows with the size of the data.
+sittings: 2
+minutes:
+  puzzle: 10
+  recall: 10
+  explore: 50
+  derive: 35
+  build: 60
+  explain: 25
+concepts:
+  taught:
+    - id: E1.4/lists
+      name: Lists
+      summary: >-
+        A list is a row of numbered slots, each referring to a value. Indexes start at 0, and a
+        negative index counts from the end; a slice xs[a:b] is a new list of the slots from a up to,
+        but not including, b; len gives the number of slots; for visits them in order; xs[i] = v
+        gives a slot a new value, and xs.append(v) adds a slot at the end. A list can be changed in
+        place.
+      usedBy: [E1.6, E1.10, E2.1, E1.11]
+    - id: E1.4/dicts-and-sets
+      name: Dictionaries and sets
+      summary: >-
+        A dictionary maps keys to values, one value for each key, like a function given by a table:
+        d[k] looks a key up, d[k] = v adds the key or gives it a new value, and d.get(k, default)
+        gives the default for a missing key. A set holds each value at most once. Both work out from
+        the key itself where to look, so finding a key takes about the same time however many keys
+        there are.
+      usedBy: [E1.6, E1.10, E9.3, E8.4]
+    - id: E1.4/aliasing-and-mutation
+      name: Aliasing and mutation
+      summary: >-
+        Assignment makes a name refer to a value and never copies it. After b = a, both names refer
+        to one list, so a change made through either, such as a.append(x), is seen through both,
+        while a = a + [x] makes a new list and leaves b alone. is asks whether two names refer to the
+        same object, and == whether their values are equal. A function given a list can change its
+        caller's list, a default value is made once and shared by every call that uses it, and
+        list(a) makes a copy.
+      usedBy: [E2.3, E5.2]
+    - id: E1.4/cost-of-operations
+      name: The cost of operations
+      summary: >-
+        Reaching a slot by its index, appending, and finding a key in a dictionary or set take about
+        the same time however much data there is, while searching a list with in, inserting at its
+        front or copying it take time in proportion to its length. A loop that repeats such an
+        operation multiplies its cost: checking each of n documents against a list of those kept
+        makes n(n - 1)/2 comparisons, so doubling n nearly quadruples the time. Counting the steps
+        and dividing by the steps a second the machine manages estimates the running time before
+        the program runs.
+      usedBy: [E1.10, E2.7, E6.2]
+  used:
+    - E1.1/variables-as-names
+    - E1.2/loops
+    - E1.2/accumulator-pattern
+    - E1.2/loop-invariants
+    - E1.3/defining-functions
+    - E1.3/scope
+    - E1.3/pure-functions
+    - M1.1/fermi-estimation
+    - M1.2/exponent-rules
+    - M1.3/function-as-mapping
+links:
+  requires:
+    - lesson: E1.3
+      bridge: >-
+        E1.3's functions took numbers and gave numbers back. Real data comes in collections, such as
+        a batch of documents or the losses of a whole run, and a function given a list can change
+        the very list its caller holds, which no call could do to a number.
+  applies:
+    - lesson: M1.1
+      bridge: >-
+        M1.1 estimated a training run by multiplying a few rough numbers and judging the result by
+        the factor it is off by. The same habit estimates a program's running time: count the steps
+        it takes, then divide by the steps a second the machine manages.
+    - lesson: M1.2
+      bridge: >-
+        M1.2 showed why $2^a \times 2^b = 2^{a+b}$. The Derive phase leans on it to add up a row
+        that doubles: doubling $2^j$ gives $2^{j+1}$, so doubling a sum of powers of two moves every
+        term up one place.
+  anotherViewOf:
+    - lesson: M1.3
+      bridge: >-
+        A dictionary is a function given by a table, in M1.3's sense: each key has exactly one
+        value, two keys may share a value, and assigning a key again replaces its value rather than
+        adding a second one.
+  foreshadows:
+    - lesson: E1.10
+      bridge: >-
+        A set finds a key by working it out from the key itself, which this lesson takes on trust.
+        E1.10 opens it up, with hashing, and works out what sorting and searching cost.
+    - lesson: E2.3
+      bridge: >-
+        Two names for one list is the first case of a pattern that runs through numerical code.
+        E2.3's NumPy views are arrays that share their numbers with another array, so changing one
+        changes both.
+    - lesson: E9.3
+      bridge: >-
+        A set removes exact repeats from a million documents in about a second. E9.3 removes
+        repeats from the text a language model is trained on, billions of documents, including
+        documents that are nearly but not quite the same, with hashing and MinHash.
+skills: [2]

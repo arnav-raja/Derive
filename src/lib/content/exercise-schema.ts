@@ -94,6 +94,7 @@ export const expressionAnswer = z.object({
       forbid: z.array(z.string().min(1)).optional(),
       /** Subexpressions that must appear. */
       require: z.array(z.string().min(1)).optional(),
+      /** At most this many operations, counted on the answer as typed, so a fraction left uncancelled does not count. */
       maxOps: z.number().int().positive().optional(),
       /** Said when the shape is wrong but the value is right. */
       message: md.optional(),

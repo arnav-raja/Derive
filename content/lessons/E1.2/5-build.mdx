@@ -1,4 +1,4 @@
-Derive proved what two loops compute. Now write conditions and loops of your own, then break one on purpose and mend another.
+The Derive phase proved what two loops compute. Now write conditions and loops of your own, then break one on purpose and mend another.
 
 Each script here reads its input with `input()`, as E1.1's batch-size script did. The tests then run your script again, typing other values, so it must work for every value, not only the one shown.
 
@@ -14,7 +14,7 @@ The edges need no case of their own: at exactly 1 or $-1$, clipping and leaving 
 
 ## Steps to a target
 
-A model's loss falls quickly at first, then more and more slowly. A rough picture of that multiplies the loss by the same factor at every step, just as Derive's schedules did with the learning rate.
+A model's loss falls quickly at first, then more and more slowly. A rough picture of that multiplies the loss by the same factor at every step, just as the Derive phase's schedules did with the learning rate.
 
 <Exercise id="build-steps" />
 
@@ -22,7 +22,7 @@ A model's loss falls quickly at first, then more and more slowly. A rough pictur
 
 <Reveal for="build-steps">
 
-A target of 1.0 takes 14 steps: $4 \times 0.9^{13}$ is about 1.02, still above it, and $4 \times 0.9^{14}$ is about 0.92. That is Derive's invariant at work: at every check `loss` is $4 \times 0.9^{\texttt{steps}}$, up to rounding, since 0.9 is not held exactly and each multiplication rounds a little. The rounding is far too small to change the counts the tests ask for. It matters only at a target the loss could reach exactly. $4 \times 0.9^7$ is exactly 1.9131876, but after 7 steps `loss` is 1.9131876000000005, a little above the float for 1.9131876, so a target of 1.9131876 takes an eighth step.
+A target of 1.0 takes 14 steps: $4 \times 0.9^{13}$ is about 1.02, still above it, and $4 \times 0.9^{14}$ is about 0.92. That is the Derive phase's invariant at work: at every check `loss` is $4 \times 0.9^{\texttt{steps}}$, up to rounding, since 0.9 is not held exactly and each multiplication rounds a little. The rounding is far too small to change the counts the tests ask for. It matters only at a target the loss could reach exactly. $4 \times 0.9^7$ is exactly 1.9131876, but after 7 steps `loss` is 1.9131876000000005, a little above the float for 1.9131876, so a target of 1.9131876 takes an eighth step.
 
 ## The best loss so far
 
@@ -50,7 +50,7 @@ The halving goes on. A float's power of two cannot go below $2^{-1074}$, so afte
 
 ## A total one term short
 
-Derive proved that adding the whole numbers from 1 to $n$ gives $\frac{n(n+1)}{2}$, which is 5,050 for $n = 100$. The script in this exercise also prints Python's own `sum(range(1, n + 1))`, which adds up every number in the range, as a check on its loop.
+The Derive phase proved that adding the whole numbers from 1 to $n$ gives $\frac{n(n+1)}{2}$, which is 5,050 for $n = 100$. The script in this exercise also prints Python's own `sum(range(1, n + 1))`, which adds up every number in the range, as a check on its loop.
 
 <Exercise id="build-sum-fencepost" />
 

@@ -24,13 +24,28 @@ export type BreakitResult = {
   baseError: PyError | null;
 };
 
-export type TraceFrame = { function: string; line: number; variables: Record<string, string> };
+/**
+ * One frame of the stack. `refs` gives, for each name that refers to a list, dict or set, that
+ * object's tag for the whole trace, such as "list 1", so two names for one list share a tag.
+ * `digests` gives a fingerprint of each such value's whole text, since `variables` cuts a long
+ * value at 80 characters and a change further along would not show in it.
+ */
+export type TraceFrame = {
+  function: string;
+  line: number;
+  variables: Record<string, string>;
+  refs?: Record<string, string>;
+  digests?: Record<string, number>;
+};
 export type TraceStep = {
   event: "line" | "return";
   line: number;
   stack: TraceFrame[];
   output: string;
+  /** What the call gave back, at a return. */
   returned?: string;
+  /** The error that stopped the call, at a return that gave nothing back. */
+  raised?: string;
 };
 export type TraceResult = { steps: TraceStep[]; error: PyError | null; output: string };
 

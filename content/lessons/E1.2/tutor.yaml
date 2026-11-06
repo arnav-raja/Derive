@@ -132,7 +132,7 @@ exercises:
   derive-floor-estimate:
     rungs:
       - How many halvings did the puzzle's floor of 0.001, which is $10^{-3}$, take?
-      - Derive found that `lr` is $\frac{1}{2^h}$, so the loop stops at the first $h$ with $2^h \ge 10^9$.
+      - This phase found that `lr` is $\frac{1}{2^h}$, so the loop stops at the first $h$ with $2^h \ge 10^9$.
       - How many factors of $10^{-3}$ make $10^{-9}$?
       - >-
         If your answer is a multiple of 10, the method is right, and the trouble is in how many

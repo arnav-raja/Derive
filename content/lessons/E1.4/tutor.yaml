@@ -1,0 +1,275 @@
+misconceptions:
+  - id: one-based-index
+    belief: A list's first slot is at index 1.
+    why: >-
+      Indexes start at 0, so `xs[1]` is the second slot and the last slot of a list of $n$ values is
+      at index $n - 1$. That makes the indexes of a list exactly `range(len(xs))`.
+    cue: The learner chooses `one-based` in explore-index, or a test reports `IndexError` from `xs[len(xs)]`.
+  - id: negative-from-zero
+    belief: A negative index counts back from a last slot numbered 0, so `xs[-1]` is the slot before the last.
+    why: >-
+      `xs[-1]` is the last slot itself: a negative index $-k$ is the same slot as `len(xs) - k`, so
+      $-1$ is the last index, `len(xs) - 1`.
+    cue: The learner chooses `wrong-end` in explore-index, which also takes the slice to its end slot.
+  - id: slice-includes-end
+    belief: A slice `xs[a:b]` includes the slot at index `b`.
+    why: A slice stops before `b`, as `range(a, b)` does, so `xs[a:b]` has `b - a` slots when both are within the list.
+    cue: The learner chooses `inclusive` in explore-index.
+  - id: assignment-copies
+    belief: '`b = a` makes `b` a copy of the list `a`.'
+    why: >-
+      Assignment makes a name refer to a value and never copies it. After `b = a`, both names refer
+      to one list, so a change made through either shows through both. A copy is made with
+      `list(a)` or `a[:]`.
+    cue: The learner chooses `copy` in explore-alias, or `each-step` in explore-snapshots.
+  - id: plus-is-append
+    belief: '`a = a + [x]` and `a.append(x)` do the same thing.'
+    why: >-
+      `+` makes a new list, and the assignment moves only the name `a` to it, so an alias still
+      refers to the old list. `append` changes the list itself, which every name for it shows.
+    cue: The learner chooses `both` in explore-rebind-new.
+  - id: is-means-equal
+    belief: '`is` and `==` ask the same question.'
+    why: >-
+      `==` asks whether two values are equal. `is` asks whether two names refer to the same object.
+      Two lists made separately can hold equal values without being one list.
+    cue: The learner chooses `all-true` in explore-is-equal.
+  - id: append-stores-snapshot
+    belief: Appending a list to another list stores its values as they are at that moment.
+    why: >-
+      `append` stores the list itself, so every slot that holds it shows its latest values. Storing
+      the values of the moment needs a copy, `list(weights)`.
+    cue: The learner chooses `each-step` in explore-snapshots.
+  - id: call-cannot-change-list
+    belief: A function cannot change its caller's list, since its parameter is a local name.
+    why: >-
+      The parameter is a new name, but for the same list, so a change made through it, such as
+      `append`, changes the caller's list. Only assigning the parameter is local to the call.
+    cue: The learner chooses `untouched` in explore-mutating-call.
+  - id: rebinding-reaches-caller
+    belief: Assigning a new list to a parameter changes the caller's list.
+    why: >-
+      Assigning the parameter makes only the call's own name refer to the new list, as E1.3's
+      `halve` made only its own `lr` refer to 0.05. The caller's list is untouched.
+    cue: The learner chooses `cleared` in explore-mutating-call.
+  - id: default-made-each-call
+    belief: A parameter's default value is made afresh at each call.
+    why: >-
+      A default is made once, when the `def` line runs, and every call that leaves the argument out
+      gets that one value. A mutable default is therefore shared by all those calls.
+    cue: The learner chooses `fresh` in explore-default-shared, or keeps `history=[]` in build-default-history.
+  - id: key-holds-many
+    belief: Assigning a key that is already in a dictionary adds a second value for it, or is not allowed when the value is already used.
+    why: >-
+      A key has exactly one value, so assigning it again replaces the value. Two keys may share a
+      value, as two inputs of a function may share an output.
+    cue: The learner chooses `two-cats` or `error` in explore-dict-replace.
+  - id: in-asks-values
+    belief: '`x in d` asks whether `x` is a key or a value of the dict `d`.'
+    why: >-
+      `in` on a dict asks only about its keys, the inputs of the table. Whether a value appears
+      can only be found by looking at the value of every key in turn.
+    cue: The learner chooses `values-too` in a review of explore-dict-replace.
+  - id: missing-key-is-zero
+    belief: Looking up a key that is not in a dictionary gives 0 or `None`.
+    why: >-
+      `d[k]` for a missing key stops Python with `KeyError`. `d.get(k, default)` gives the default
+      instead, which is why counting uses `counts.get(t, 0)`.
+    cue: The learner chooses `same` in build-break-missing-key, or `other`, expecting the plain lookup to give `None`.
+  - id: set-keeps-order
+    belief: A set gives back its values in the order they were added.
+    why: >-
+      A set keeps each value where arithmetic on the value puts it, so a program should not rely on
+      its order. A list keeps order, so removing repeats in order needs a list beside the set.
+    cue: '`list(set(docs))` in build-unique-fast, with test_order failing.'
+  - id: every-operation-one-step
+    belief: Every operation on a list takes about the same time.
+    why: >-
+      Reaching a slot by its index and appending take about one step, but `in`, `insert(0, v)`,
+      `pop(0)`, `max` and copying look at or move every slot, so their cost grows with the length.
+    cue: The learner misses `pop-front` or `max` in explore-cost-which.
+  - id: every-operation-walks
+    belief: Any operation on a longer list takes longer, even one that reaches a single slot or copies a fixed few.
+    why: >-
+      A slot is found by arithmetic from its index, so reaching the last slot, or removing it, takes
+      one step at any length, and copying ten slots takes ten steps however long the list is. The
+      cost grows only when every slot has to be looked at or moved.
+    cue: The learner chooses `last`, `pop-end` or `slice-ten` in explore-cost-which.
+  - id: time-grows-with-n
+    belief: Twice the data always means about twice the time.
+    why: >-
+      A loop that repeats an operation whose own cost grows with the data multiplies the two: the
+      puzzle's $\frac{n(n - 1)}{2}$ comparisons grow like $n^2$, so twice the documents nearly
+      quadruple the time, and a hundred times the documents multiply it by about ten thousand.
+    cue: The learner chooses `hundred-seconds` in the puzzle, or answers 2 in derive-ratio.
+
+exercises:
+  derive-comparisons:
+    rungs:
+      - How many kept documents is the first document compared with? The second? The $k$-th?
+      - "E1.2 proved that $1 + 2 + \\dots + m = \\frac{m(m+1)}{2}$. Which number is the last term of this sum?"
+      - Does your expression give 10 for $n = 5$, the count from Explore? And 0 for a single document?
+      - >-
+        If your expression gives 0 for a single document and 10 for $n = 5$, it agrees with both
+        counts so far: check it at $n = 3$ too, where the documents are compared with 0, 1 and 2
+        kept ones. If it gives 15 or 25 for $n = 5$, look again at how many kept documents the first
+        and the $n$-th documents are compared with, and so at the first and last terms of the sum.
+        If it gives 20, check whether each pair of documents is counted once or twice. If it is not
+        a whole number for some $n$, it cannot be a count: check that it came from the sum itself,
+        not from an approximation.
+      - >-
+        A loop whose $k$-th pass, for $k$ from 1 to $n$, does $k + 1$ steps does
+        $2 + 3 + \dots + (n + 1)$ steps in all. That is E1.2's sum with $m = n + 1$, less its
+        missing first term: $\frac{(n + 1)(n + 2)}{2} - 1$.
+    notes: >-
+      $\frac{n(n+1)}{2}$ compares the $k$-th document with $k$ kept ones. $n^2$ compares each
+      document with all $n$. $n(n - 1)$ counts every pair twice. $\frac{n^2}{2}$ is the large-$n$
+      approximation, not the count. $\frac{(n-1)^2}{2}$ squares the last term instead of using the
+      formula.
+  derive-ratio:
+    rungs:
+      - What is $C(2n)$? Write $C(n)$ with $2n$ in place of every $n$.
+      - "M1.2: dividing by a fraction multiplies by its reciprocal, and a factor common to the top and the bottom cancels."
+      - Work out $C(4)$ and $C(2)$ from the formula, and divide one by the other. Does your expression give the same number at $n = 2$?
+      - >-
+        If your expression gives 6 at $n = 2$ and 5 at $n = 3$, its value is right, and only its
+        shape may need simplifying. If it gives 4 for every $n$, look again at the second factor of
+        $C(2n)$. If it is off by a factor of 2 or 4, look at what became of each $\frac{1}{2}$. If it
+        gives $\frac{10}{3}$ at $n = 2$, check which $C(n)$ you started from.
+      - >-
+        With $Q(n) = \frac{n(n + 3)}{2}$, $Q(2n) = \frac{2n(2n + 3)}{2} = n(2n + 3)$, so
+        $\frac{Q(2n)}{Q(n)} = \frac{n(2n + 3)}{n(n + 3)/2} = \frac{2n(2n + 3)}{n(n + 3)} = \frac{2(2n + 3)}{n + 3}$,
+        once the $n$ on the top and the bottom cancels. At $n = 1$ that is $\frac{10}{4} = 2.5$, and
+        indeed $Q(2) = 5$ and $Q(1) = 2$.
+    notes: >-
+      4 is the limit for large $n$, not the ratio. $\frac{2n - 1}{n - 1}$ drops the 2 from
+      $\frac{2n}{n}$. $\frac{4(2n - 1)}{n - 1}$ halves $C(n)$ but not $C(2n)$.
+      $\frac{2(2n + 1)}{n + 1}$ uses $n(n + 1)$ in place of $n(n - 1)$.
+  derive-estimate:
+    rungs:
+      - About how many comparisons does the list version make on $3 \times 10^{5}$ different documents?
+      - "Earlier in this phase: $C(n)$ is close to $\\frac{n^2}{2}$ for large $n$. M1.1 turned a count into a time by dividing by a rate."
+      - Try 10,000 documents first. About how many comparisons is that, and how many seconds at $5 \times 10^{7}$ a second? The puzzle says about one.
+      - >-
+        If your count of comparisons came from $\frac{n^2}{2}$ with $n = 3 \times 10^5$, the method
+        is right: check the powers of ten in the square, the division by the rate, and the change
+        from seconds to minutes. If it came from another count, look again at what this phase found
+        $C(n)$ to be close to for large $n$.
+      - >-
+        A job compares every pair of $4 \times 10^4$ images, at about $10^7$ comparisons a second.
+        There are about $\frac{(4 \times 10^4)^2}{2} = \frac{16 \times 10^8}{2} = 8 \times 10^8$
+        pairs, and $\frac{8 \times 10^8}{10^7} = 80$ seconds, a little over a minute.
+    notes: >-
+      900 is the time in seconds. 5 squares only the $10^5$, giving $3 \times 10^{10}$. 30, from
+      $n^2$ without halving, is twice the answer and is not accepted. A tiny answer, a fraction of a
+      second, never squares $n$.
+  derive-append-proof:
+    rungs:
+      - What does each line change in the line above it, in your own words?
+      - "Earlier in this phase: growing a doubling row copies 1, then 2, then 4 values, and $S$ adds up all the copies."
+      - Take $k = 3$, so $S = 1 + 2 + 4$ and $2S = 2 + 4 + 8$. Which terms appear in both? What is left when $S$ is taken from $2S$?
+      - >-
+        If the line $2S - S = 2^{k} - 1$ cites the rule about terms in both sums, that part is
+        right. For each other line, say in words what it does to the line above it, and find the
+        rule that allows exactly that.
+      - >-
+        For $T = 1 + 3 + 9 + \dots + 3^{k-1}$: multiplying every term by 3 gives
+        $3T = 3 + 9 + \dots + 3^{k}$, taking $T$ away cancels the shared terms to leave
+        $3T - T = 3^{k} - 1$, and since $3T - T = 2T$, $T = \frac{3^{k} - 1}{2}$.
+    notes: >-
+      Sum of 1 to $m$ is the decoy: these terms double, they do not go up by 1. Citing Collect for
+      the line $2S - S = 2^k - 1$ misses that the work there is the cancelling. Citing Divide for
+      $S = n - 1$ confuses replacing $2^k$ by $n$ with dividing. Citing Substitute for $S < n$ misses
+      that the line compares two numbers rather than replacing a letter.
+  build-best-step:
+    rungs:
+      - What should `best_step([2.0, 1.5, 1.7])` give, and how would you find it by hand, one slot at a time?
+      - "Explore: `for i in range(len(losses)):` visits every index once, and E1.2's accumulator kept a running answer as a loop went."
+      - Work through `[3.0, 1.0, 2.0, 1.0]` by hand, writing down the best index so far after each slot.
+      - >-
+        If test_examples passes, your loop finds the smallest loss in those lists, and what is left
+        is an edge: if test_ties fails, look at the comparison that decides when the best index
+        moves; if test_first_slot fails, follow `[0.5, 0.9, 0.7]` through your loop and see what
+        each loss is compared with. If test_examples fails with an index, check that the loop
+        reaches the last slot, and what the best loss so far is at the start and after each slot.
+        If a result is a loss rather than an index, look at what the function returns. If
+        test_unchanged fails, look for anything that changes the list.
+      - >-
+        To find the largest score itself: `biggest = scores[0]`, then `for s in scores:` with
+        `if s > biggest: biggest = s` in its block, and finally `return biggest`. For `[4, 9, 7]`,
+        `biggest` goes 4, then 9, and stays 9.
+    notes: >-
+      A float means the smallest loss is returned instead of its index. 3 for the ties test means
+      `<=`. 0 for every list means the best loss started at 0. A missed last slot means
+      `range(len(losses) - 1)`. A changed list means `sort` on the caller's list.
+  build-vocabulary:
+    rungs:
+      - What should `vocabulary(["b", "a", "b"])` give, and why does the second `"b"` not get an id of its own?
+      - "Explore: the counting program built a dict one token at a time, deciding for each token what to do with it."
+      - Work through `["b", "a", "b", "c"]` by hand, writing the dict you want after each token and then the dict your function makes. Where do they first differ?
+      - >-
+        If test_ids passes, ids for a list with no repeats are right. If test_repeats fails, compare
+        each id your function gives with the one it should: if a token keeps its first id but a
+        later new token's id is too large, look at what a new token's id is worked out from; if a
+        repeated token's id changed, look at what happens to a token that is already a key; if
+        tokens from another call are there, look at where the dict is made. If the ids start at 1,
+        look at the value given to a new key. If every id from 0 is there but given to the wrong
+        tokens, look at the order in which your loop meets the tokens.
+      - >-
+        To record the index at which each token first appears: `first = {}`, then
+        `for i in range(len(tokens)):` with `if tokens[i] not in first: first[tokens[i]] = i` in its
+        block, and finally `return first`. For `["x", "x", "y"]`, `first` grows to `{"x": 0}`,
+        skips the second `"x"`, and ends `{"x": 0, "y": 2}`.
+    notes: >-
+      Ids equal to the last position of a token mean positions are used with no `in` check. Ids
+      equal to each token's first position mean the position is used as the id, even with the `in`
+      check. Ids in a jumbled order mean a loop over `set(tokens)`. A new id for a repeat means no
+      check at all. Ids carried over between calls mean a dict made outside the function. Ids from
+      1 mean `len(ids) + 1`.
+  build-unique-fast:
+    rungs:
+      - Which line of the puzzle's `unique` makes it slow, and what question does that line ask?
+      - "Explore: `x in s` for a set looks in about one place, `s.add(x)` puts `x` in it, and a set keeps no order."
+      - Work through `["a", "b", "a"]` by hand with your version. For each document, what does your function look at to decide whether it is new, and how many documents is that?
+      - >-
+        If test_examples and test_order pass, your function returns the right list, and only
+        test_fast is left: for each document, look at the question the `if` asks, at which
+        collection it looks in, and at anything built afresh. If test_order fails but the repeats
+        are gone, look at where the order of the result comes from. If a repeat is still in the
+        result, follow one repeated document through your loop and see which lines run for it. If
+        test_list fails, look at what the function returns.
+      - >-
+        To count the different tokens in a list fast: `seen = set()`, then `seen.add(t)` for each
+        token, and finally `return len(seen)`. For `["a", "b", "a"]`, `seen` grows to `{"a"}`, then
+        `{"a", "b"}`, and stays there, so the count is 2.
+    notes: >-
+      Another order means `list(set(docs))` or `sorted`. About 15,000 steps of work means the `if`
+      still asks `doc not in kept`; about 5,500 means it asks both the set and `kept`; about 25,000
+      means a set built from `kept` for every document. Repeats kept means nothing is added to the
+      set, or the append is outside the `if`. A set returned means `return seen`.
+  build-default-history:
+    rungs:
+      - When is the list in `history=[]` made, and how many calls share it?
+      - "Explore: a default value is made once, when the `def` line runs, while the body runs at every call."
+      - Run `log(2.0)` and then `log(1.5)` by hand with the starter. Which list does each call append to, and what does each return?
+      - >-
+        If test_given passes, a list passed in grows as it should. Then, if test_fresh fails, look
+        at when the list that a call without a history appends to is made. If test_given_empty
+        fails, look at how the function decides whether a history was given, since an empty list
+        passed in was still given. If test_given fails, look at which list `log` appends to, and
+        which list it returns.
+      - >-
+        A function `def stamp(note, when=None):` that should use the time of the call when no time
+        is given cannot work the time out in the `def` line, which runs once. Its body starts
+        `if when is None:` and works out the time there, at every call.
+    notes: >-
+      `[2.0, 1.5]` from both calls means the default list is still shared. A caller's list that does
+      not grow means a copy, or `history + [loss]`. An empty list passed in that does not grow means
+      `if not history`.
+
+novice:
+  - Why do indexes start at 0 and not at 1?
+  - If `b = a` does not copy a list, how do I make a copy when I want one?
+  - When should I use a list, and when a dictionary or a set?
+  - Why does a set not keep the order I put things in?
+  - How can I tell how long a program will take before I run it?

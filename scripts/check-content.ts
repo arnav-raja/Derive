@@ -123,6 +123,27 @@ async function checkLesson(code: string, errors: string[], warnings: string[]) {
       if (!ex) errors.push(`${file} has a figure waiting for ${m[1]}, which does not exist.`);
       else if (ex.phase !== phase) errors.push(`${file} has a figure waiting for ${m[1]}, which is in another phase.`);
     }
+    // A scale line's axis runs over every value on it, the kept-back one included, so a kept-back
+    // value that is the largest or the smallest would sit at an end of the axis for all to see.
+    for (const m of source.matchAll(/<ScaleLine\b([\s\S]*?)\/>/g)) {
+      const body = m[1]!;
+      const predict = /predict=\{\{([\s\S]*?)\}\}/.exec(body);
+      const hidden = predict ? Number(/\bvalue:\s*([0-9.e+-]+)/.exec(predict[1]!)?.[1]) : NaN;
+      if (!predict || !(hidden > 0)) continue;
+      const shown = [...body.replace(predict[0], "").matchAll(/\bvalue:\s*([0-9.e+-]+)/g)].map((v) => Number(v[1]));
+      const end = (name: string) => {
+        const e = new RegExp(`\\b${name}=\\{(-?[0-9.]+)\\}`).exec(body);
+        return e ? Number(e[1]) : undefined;
+      };
+      const lo = end("min");
+      const hi = end("max");
+      if (hidden >= Math.max(...shown) && !(hi !== undefined && hi > Math.ceil(Math.log10(hidden)))) {
+        errors.push(`${file}: a scale line keeps back its largest value, so it must set max beyond it, or the end of the axis gives the value away.`);
+      }
+      if (hidden <= Math.min(...shown) && !(lo !== undefined && lo < Math.floor(Math.log10(hidden)))) {
+        errors.push(`${file}: a scale line keeps back its smallest value, so it must set min below it, or the end of the axis gives the value away.`);
+      }
+    }
     try {
       await compile(source, { remarkPlugins: [remarkGfm, remarkMath], outputFormat: "function-body" });
     } catch (error) {

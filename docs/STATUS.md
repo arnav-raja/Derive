@@ -6,7 +6,8 @@ CLAUDE.md and carry on from "Resume here".
 ## Where things stand
 
 Phase 0 (set-up) is done apart from the steps waiting on Arnav. Phase 1 (the first slice of 12
-lessons) is under way: eight lessons written (M1.1 to M1.6, E1.1 and E1.2), four to go.
+lessons) is under way: ten lessons written (M1.1 to M1.6 and E1.1 to E1.4), two to go. E1.5 is
+drafted and checked, and E1.6 comes after it.
 
 ### Done
 
@@ -146,6 +147,41 @@ lessons) is under way: eight lessons written (M1.1 to M1.6, E1.1 and E1.2), four
   imports and components, and requires the Connect phase to preview 1 to 3 later lessons; the
   SymPy answer checker treats S, N, O, Q and I as plain letters and reports an answer it cannot
   read instead of failing.
+- E1.3 Functions and abstraction: written on 6 November (commit 1a0bd84), walked end to end, and
+  reviewed by both (findings in `derive-resume/review/E1.3-*.md`). Every finding applied: the
+  text, the exercises, the tests and their messages, the rungs and the tutor notes, with errors
+  such as `NameError` explained where they first appear. All 52 items pass `check:exercises`.
+  Engine changes from its review: a call that an error stops now reads "`tick` stops with
+  `UnboundLocalError`" in the step-through figure (and "the program stops with ..."), not
+  "returns `None`"; frame headings keep code in its own case; the status line sets the running
+  function's name as code; a stop's value is looked up as Python does, in the running call and
+  then the main program; after a return, the table says the caller's change happens "as line 7
+  finishes"; and a script stopped by the step limit says so in the workbench.
+- E1.4 Data structures and the cost of operations: written on 6 November, walked end to end,
+  and reviewed by both (the simulated learner, 27 of 27 right with 15 findings; the independent
+  reviewer, 3 blockers, 12 should-fix findings and nits; in `derive-resume/review/E1.4-*.md`).
+  Every finding applied: the scale line no longer shows its kept-back value at the end of its
+  axis or on its ordinary scale, and the content check now refuses any scale line that would;
+  headings, titles and the summary no longer answer the alias, mutating-call and plain-lookup
+  questions; build-unique-fast counts hashing as work, so a version that builds a set for every
+  document fails, and its first wrong program no longer depends on Python's string hashing; a
+  vocabulary test that a set's order cannot pass by luck; maxOps 4 for the ratio; placement
+  asks about a dict; omitted slice ends, lists inside lists and "object" explained; reveals that
+  repeated their cards trimmed; list growth stated as CPython does it (about an eighth, and up
+  to about nine copies per append if every resize moved the list); the doubling proof's last
+  steps given a rule each; a bridge to `history=None`; rewritten rungs and four new
+  misconceptions; and M1.2's exponent rules linked. The million-document claim can be tried in
+  the editor (build-unique-fast's step budget is 10 million). All 54 items pass, and the changed
+  figures were screenshotted again in both themes at 1,100 and 390 px with nothing overflowing;
+  `store-after-E1.4-walk.json` is that walk. Engine: the step-through figure tags each list,
+  dict and set ("`b` refers to list 1 (`[1, 2]`)", "list 1, which `a` and `b` refer to, is now
+  `[1, 2, 3]`") and compares a fingerprint of each tagged value, so a change past the 80th
+  character still shows; the form check counts operations on the answer as typed; and a
+  RecursionError is reported at the call that went one too deep, not at the `def` line.
+- Curriculum changes from these reviews: E1.7 Classes and objects now requires E1.4 as well as
+  E1.3, since objects need aliasing; E1.4's concepts gained later uses in E1.11, E8.4 and E6.2;
+  and "the Derive phase" replaces a bare "Derive" in E1.1 to E1.4 wherever it could be read as
+  the school.
 
 ### Resume here
 
@@ -156,14 +192,20 @@ learner views come from `python3 -I scripts/learner-view.py . <code> <scratch di
 answer key in a separate folder). The briefs given to the reviewer and the simulated learner are
 in `derive-resume/review/prompts/`; change the lesson and the paths in them for another lesson.
 
-1. Write E1.3 to E1.6 from `docs/phase-1-lessons.md`, the same way, keeping the uses that M1.1,
-   E1.1 and E1.2 promise (listed there). Fix these descendant targets on the way: E1.5 not L3.4
-   or L7.3, E1.6 unicode-and-bytes not M11.7. Codes are the new ones from the course update.
-   Each lesson: write it, pass `check:content` and `check:exercises -- --write <code>`, walk it
-   end to end (copy `walk-e12.cjs` and `e12figs.cjs` as the pattern), screenshot its figures,
-   run the independent reviewer and the simulated learner, apply both, walk the changed parts,
-   and commit. E1.3's walk starts from `store-after-E1.2-walk.json`, with `prep-store.py` moving
-   E1.2's start to the day before (one new lesson a day, three a week from Monday).
+1. Finish E1.5 and write E1.6 from `docs/phase-1-lessons.md`, the same way, keeping the uses
+   that earlier lessons promise (listed there). Fix on the way: E1.6 unicode-and-bytes not
+   M11.7. Codes are the new ones from the course update. E1.5 Recursion is drafted in
+   `derive-resume/e15-draft/` (all six phases, 29 exercises, the rungs; its 42 items pass
+   `check:exercises` and `check:content` in a scratch copy, and its probes are in
+   `derive-resume/e15-probe/`). Copy it to `content/lessons/E1.5/`; in `curriculum.json`, make
+   E1.5 require E1.3 and E1.4 with no `buildsOn` (M1.9 comes after it and is foreshadowed), and
+   drop E1.5 from M1.9's `leadsTo`; then tell Arnav about that graph change. Each lesson: write
+   it, pass `check:content` and `check:exercises -- --write <code>`, walk it end to end (copy
+   `walk-e13.cjs` and `e14figs2.cjs` as the pattern), screenshot its figures, run the independent
+   reviewer and the simulated learner (briefs for E1.5 in `derive-resume/review/prompts/`),
+   apply both, walk the changed parts, and commit. E1.5's walk starts from
+   `store-after-E1.4-walk.json`, with `prep-store.py` moving E1.4's start to the day before (one
+   new lesson a day, three a week from Monday).
 2. Tests and CI: Playwright end-to-end tests (no config yet) with axe and screenshots in both
    themes; unit tests for the mixed check, placement and the review queue; add
    `check:exercises` to CI; update the commands table in CLAUDE.md.

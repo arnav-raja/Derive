@@ -66,7 +66,10 @@ export function ScaleLine({
   description: string;
   items: ScaleItem[];
   unit?: string;
-  /** The lowest and highest powers of ten shown; by default, from the items. */
+  /**
+   * The lowest and highest powers of ten shown; by default, from the items and the kept-back value.
+   * When that value is the smallest or the largest, set the end beyond it, or the end gives it away.
+   */
   min?: number;
   max?: number;
   /** A value kept back until the learner has placed a guess. */
@@ -86,11 +89,13 @@ export function ScaleLine({
   const [guess, setGuess] = useState(Math.round(((lo + hi) / 2) * 10) / 10);
 
   const inner = Math.max(120, width - 2 * MARGIN);
-  const maxValue = Math.max(...values);
+  const revealed = !predict || phase === "revealed";
+  // Until the prediction is revealed, the ordinary scale is set by the points shown, so its ticks
+  // cannot give the kept-back value away.
+  const maxValue = Math.max(...[...items.map((i) => i.value), ...(predict && revealed ? [predict.value] : [])].filter((v) => v > 0));
   const xOf = (v: number) =>
     linear ? MARGIN + (v / maxValue) * inner : MARGIN + ((Math.log10(v) - lo) / (hi - lo)) * inner;
 
-  const revealed = !predict || phase === "revealed";
   const all = useMemo(() => {
     const list: (ScaleItem & { x: number; hidden?: boolean; guess?: boolean })[] = items.map((i) => ({ ...i, x: 0 }));
     if (predict && revealed) list.push({ label: predict.label, value: predict.value, sym: predict.sym, x: 0 });

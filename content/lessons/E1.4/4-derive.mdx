@@ -1,0 +1,43 @@
+## Counting comparisons
+
+Explore counted the comparisons that the puzzle's `unique` makes on 5 different documents. With every document different, `kept` grows by one document each time, so the first document is compared with none, the second with one, and in general the $k$-th with the $k - 1$ kept before it. Now count them for any number of documents.
+
+<Exercise id="derive-comparisons" />
+
+<Reveal for="derive-comparisons">
+
+This is E1.3's `pairs(n)`, since every pair of documents is compared exactly once. Call it $C(n)$. What happens to it when the number of documents doubles?
+
+<Exercise id="derive-ratio" />
+
+</Reveal>
+
+<Reveal for="derive-ratio">
+
+The ratio can also be written $4 + \frac{2}{n - 1}$. For 1,000 documents it is about 4.002, and the larger $n$ is, the closer it comes to 4. So doubling the documents nearly quadruples the comparisons, and with them the time: the comparisons grow like $n^2$, since $C(n)$ is close to $\frac{n^2}{2}$ for large $n$. Ten times the documents means about a hundred times the work, and a hundred times the documents, as in the puzzle, about ten thousand times. A thousand times, from a million documents to a billion, means about a million times the work: Explore's $10^{10}$ seconds, some 300 years, where a set takes about 17 minutes. The choice of collection, not the speed of the machine, decides whether the job can be done at all. The version with a set looks each document up once, so doubling the documents doubles its time.
+
+A count like this turns into a running time with one measured rate, as M1.1 turned a training run's compute into days.
+
+<Exercise id="derive-estimate" />
+
+</Reveal>
+
+<Reveal for="derive-estimate">
+
+The estimate needed no timing of the program itself: a count of the steps, and the rate at which the machine does them. Done before a long job starts, an estimate like this says whether to wait for it or to change the program first.
+
+## Why appending stays cheap
+
+Explore said that `append` takes one step because a list keeps spare slots at its end. When the spares run out, the list may have to move its values to a bigger row of slots, copying every value across, and that copy takes as many steps as the list has values. So is `append` cheap after all?
+
+Take a list whose row doubles in size each time it fills up: room for 1 value, then 2, then 4, 8 and so on. Appending the second value copies 1 value into a row of 2, appending the third copies 2 into a row of 4, appending the fifth copies 4 into a row of 8, and so on. So appending $n = 2^k$ values, one after another, copies $S = 1 + 2 + 4 + \dots + 2^{k-1}$ values in all.
+
+<Exercise id="derive-append-proof" />
+
+</Reveal>
+
+<Reveal for="derive-append-proof">
+
+Between powers of two the average is less than two, since the copies so far are always fewer than twice the values held. Either way each append costs a fixed number of steps on average, however long the list grows, so appending $n$ values takes time in proportion to $n$. Python's own lists grow by about an eighth each time they fill rather than doubling, so they fill up more often. If every resize moved the list, the same kind of sum shows that the copying would average up to about nine values per append, still a fixed number however long the list grows, and in practice it can be fewer, since the computer can sometimes lengthen a row where it stands without moving it. Inserting at the front has no such escape: building a list of $n$ values with `insert(0, v)` moves $0 + 1 + \dots + (n - 1)$ values, the same $C(n)$ as the puzzle, so it grows like $n^2$.
+
+</Reveal>
