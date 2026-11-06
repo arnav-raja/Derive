@@ -435,7 +435,9 @@ export function ExerciseCard({ view }: { view: ExerciseView }) {
               ? null
               : a.type === "code"
                 ? run?.error && run.tests.length === 0
-                  ? `The script stopped with ${run.error.type}${run.error.line ? ` on line ${run.error.line}` : ""} before any test could run. Read the message in the Console, fix what it points to, and run the tests again.`
+                  ? run.error.type === "StepLimit"
+                    ? "The script ran for too long and was stopped before any test could run. The Console says where it was."
+                    : `The script stopped with ${run.error.type}${run.error.line ? ` on line ${run.error.line}` : ""} before any test could run. Read the message in the Console, work out why that line fails, and run the tests again.`
                   : "Read the message under the first failing test, change that line, and run the tests again."
                 : "Look again, or ask for a hint."}
       </Notice>

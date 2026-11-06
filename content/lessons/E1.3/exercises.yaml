@@ -121,7 +121,7 @@ exercises:
         - { id: printed-value, label: '`start`, `one`, `two` and `onetwo`, one per line' }
       correct: [in-order]
     explanation: >-
-      The `def` lines only make `shout` refer to the function, so `start` comes first. Each call
+      The `def` line only makes `shout` refer to the function, so `start` comes first. Each call
       then runs the whole body, printing its word, and gives back 2, so `a + b` is 4. The value of a
       call is what `return` gives, not what the call printed.
     review:
@@ -202,25 +202,6 @@ exercises:
             What does this program print?
 
             ```python
-            def double(x):
-                y = 2 * x
-
-            print(double(5))
-            ```
-          answer:
-            type: choice
-            options:
-              - { id: ten, label: '`10`' }
-              - { id: none, label: '`None`' }
-              - { id: name-error, label: 'Nothing: Python stops with `NameError`' }
-            correct: [none]
-          explanation: >-
-            The body makes `y` refer to 10 but never returns it, so the call gives `None`, and that
-            is what `print` shows.
-        - prompt: |
-            What does this program print?
-
-            ```python
             def half(x):
                 print(x / 2)
                 return x / 2
@@ -250,6 +231,25 @@ exercises:
           explanation: >-
             `print` shows its argument and returns `None`, the one value of type `NoneType`. Printing
             a value never hands it back.
+        - prompt: |
+            What does this program print?
+
+            ```python
+            def double(x):
+                y = 2 * x
+
+            print(double(5))
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: ten, label: '`10`' }
+              - { id: none, label: '`None`' }
+              - { id: name-error, label: 'Nothing: Python stops with `NameError`' }
+            correct: [none]
+          explanation: >-
+            The body makes `y` refer to 10 but never returns it, so the call gives `None`, and that
+            is what `print` shows.
 
   - id: explore-early-return
     phase: explore
@@ -257,10 +257,17 @@ exercises:
     concept: E1.3/defining-functions
     title: Where the call ends
     prompt: What does the program print?
-    answer: { type: number, value: 0, tolerance: { abs: 0 } }
+    answer:
+      type: choice
+      options:
+        - { id: last-runs, label: '`0 0 0`, since the last line of each call runs too' }
+        - { id: right, label: '`-1 0 1`' }
+        - { id: error, label: 'Nothing: Python stops with an error, since `sign` has three `return` lines' }
+      correct: [right]
     explanation: >-
       `sign(-4)` returns $-1$ at its second `return`, `sign(0)` reaches the last line and returns 0,
-      and `sign(9)` returns 1 at the first. So the sum is $-1 + 0 + 1 = 0$.
+      and `sign(9)` returns 1 at the first. Each call ends at the first `return` it reaches, so the
+      lines after it never run.
     review:
       variants:
         - prompt: |
@@ -319,9 +326,9 @@ exercises:
         - { id: none, label: 'It prints `None`' }
       correct: [name-error]
     explanation: >-
-      `fraction` is local to the call: it is made when the call runs its first line and is gone once
-      the call returns. The main program never had a name `fraction`, so Python stops with
-      `NameError`.
+      `fraction` is local to the call: it is given its value when the call runs its first line, and
+      it is gone once the call returns. The main program never had a name `fraction`, so Python stops
+      with `NameError`, its error for a name it cannot find.
     review:
       variants:
         - prompt: |
@@ -378,6 +385,27 @@ exercises:
           answer: { type: number, value: 6, tolerance: { abs: 0 } }
           explanation: >-
             Each call makes its own `total`, starting from 0, so each returns 3, and the sum is 6.
+        - prompt: |
+            What happens at the last line?
+
+            ```python
+            def make_total(n):
+                total = n * 2
+                return total
+
+            make_total(5)
+            print(total)
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: ten, label: 'It prints `10`' }
+              - { id: none, label: 'It prints `None`' }
+              - { id: name-error, label: 'Python stops with `NameError`' }
+            correct: [name-error]
+          explanation: >-
+            `total` is local to the call and is gone once it returns, and the call's value, 10, is not
+            kept. The main program has no name `total`, so Python stops with `NameError`.
 
   - id: explore-global-read
     phase: explore
@@ -574,9 +602,15 @@ exercises:
           explanation: >-
             `a` and `c` depend only on their arguments, and `c`'s `best` and `k` are local to each
             call. `b` reads a line of input, so two calls with the same `x` can differ.
-        - prompt: >-
-            Explore's `scaled` read `scale`, a name that the script changed between calls. Which
-            change makes it pure?
+        - prompt: |
+            The script changes `scale` between calls of `scaled`. Which change makes `scaled` pure?
+
+            ```python
+            scale = 2
+
+            def scaled(x):
+                return scale * x
+            ```
           answer:
             type: choice
             options:
@@ -667,7 +701,7 @@ exercises:
     phase: explore
     kind: predict
     concept: E1.3/abstraction
-    title: Clip, then scale
+    title: Clip and scale
     placement: true
     prompt: What does the program print?
     answer:
@@ -688,9 +722,20 @@ exercises:
             `times2(add3(4)) - add3(times2(4))`?
           answer: { type: number, value: 3, tolerance: { abs: 0 } }
           explanation: '`times2(add3(4))` is $2 \times 7 = 14$, and `add3(times2(4))` is $8 + 3 = 11$, so the difference is 3.'
-        - prompt: >-
-            With Explore's `clip` and `scale`, where `scale` returns `0.5 * g`, what does
-            `clip(scale(-5.0))` return?
+        - prompt: |
+            What does `clip(scale(-5.0))` return?
+
+            ```python
+            def clip(g):
+                if g > 1:
+                    return 1.0
+                if g < -1:
+                    return -1.0
+                return g
+
+            def scale(g):
+                return 0.5 * g
+            ```
           answer: { type: number, value: -1, tolerance: { abs: 0 } }
           explanation: '`scale(-5.0)` is $-2.5$, which is below $-1$, so `clip` gives $-1.0$.'
 
@@ -709,7 +754,7 @@ exercises:
         - { name: x }
       reference: 6*x - 1
       accept: ['6x - 1', '-1 + 6*x', '6*x-1', '6 x - 1']
-      reject: ['3*(2*x + 1) - 4', '2*x + 1', '6*x + 1', '6*x - 4', '3*x - 4', '5*x - 3', '6*x + 3']
+      reject: ['3*(2*x + 1) - 4', '2*x + 1', '6*x + 1', '6*x - 3', '6*x - 4', '3*x - 4', '5*x - 3', '6*x + 3']
       form:
         expanded: true
         message: >-
@@ -855,6 +900,7 @@ exercises:
             """Calling it twice with the same arguments gives the same count."""
             first = steps_to(0.001, 1.0, 0.5)
             second = steps_to(0.001, 1.0, 0.5)
+            assert first is not None, "steps_to(0.001, 1.0, 0.5) gave None. Does the function return its count?"
             assert first == second, f"steps_to(0.001, 1.0, 0.5) gave {first!r} and then {second!r}. Does each call start its count from 0?"
 
         def test_silent():
@@ -999,7 +1045,7 @@ exercises:
     phase: build
     kind: debug
     concept: E1.3/defining-functions
-    title: A mean that only prints
+    title: The distance from the centre
     prompt: >-
       Run the script: it prints the mean, then stops with a `TypeError`. Fix `mean` so that the
       script works, and so that `mean` can be used wherever a number is needed. The tests call
@@ -1028,7 +1074,7 @@ exercises:
         def test_returns():
             """mean(2.0, 6.0) returns 4.0."""
             got, shown = quietly(2.0, 6.0)
-            assert got is not None, "mean(2.0, 6.0) gave None: the function shows the mean but does not return it."
+            assert got is not None, "mean(2.0, 6.0) gave None, not a number."
             assert got == 4.0, f"mean(2.0, 6.0) is {got!r}, not 4.0."
 
         def test_other_numbers():
@@ -1044,6 +1090,7 @@ exercises:
 
         def test_script():
             """The script prints the distance from the centre."""
+            # output is everything your program printed.
             assert "distance from the centre: 2.0" in output, f"The script printed {output!r}, without the line 'distance from the centre: 2.0'."
       reference: |
         def mean(a, b):
@@ -1096,8 +1143,8 @@ exercises:
     prompt: >-
       Write the bodies of `lr_at` and `update`. `lr_at(step, peak=0.001, warmup=1000)` gives the
       learning rate at a step: rising evenly from 0 to `peak` over the first `warmup` steps, then
-      holding at `peak`. `update(step, g)` gives the size of the training step for a gradient `g`:
-      the learning rate at that step times the clipped gradient. Build `update` from calls of
+      holding at `peak`. `update(step, g)` gives the update for a gradient `g`: the
+      learning rate at that step times the clipped gradient. Build `update` from calls of
       `lr_at` and `clip`, not from copies of their bodies.
     answer:
       type: code
@@ -1118,13 +1165,17 @@ exercises:
 
 
         def update(step, g):
-            """The size of the training step at a step, for a gradient g: the learning
-            rate at that step times the clipped gradient."""
+            """The update for a gradient g at a step: the learning rate at that step
+            times the clipped gradient."""
             # Write the body, using lr_at and clip.
 
 
         print(lr_at(500), update(500, 3.0))
       tests: |
+        # close(a, b) is True when a and b agree to about nine significant figures, as math.isclose
+        # decides. update.__globals__ is the main program's names, so the last test can swap lr_at
+        # and clip for stand-ins.
+
         def test_warmup():
             """During warm-up the rate rises evenly from 0."""
             for step, expected in [(0, 0.0), (250, 0.00025), (500, 0.0005)]:
@@ -1191,8 +1242,8 @@ exercises:
 
 
         def update(step, g):
-            """The size of the training step at a step, for a gradient g: the learning
-            rate at that step times the clipped gradient."""
+            """The update for a gradient g at a step: the learning rate at that step
+            times the clipped gradient."""
             return lr_at(step) * clip(g)
 
 
@@ -1217,8 +1268,8 @@ exercises:
 
 
             def update(step, g):
-                """The size of the training step at a step, for a gradient g: the learning
-                rate at that step times the clipped gradient."""
+                """The update for a gradient g at a step: the learning rate at that step
+                times the clipped gradient."""
                 return lr_at(step) * clip(g)
 
 
@@ -1243,8 +1294,8 @@ exercises:
 
 
             def update(step, g):
-                """The size of the training step at a step, for a gradient g: the learning
-                rate at that step times the clipped gradient."""
+                """The update for a gradient g at a step: the learning rate at that step
+                times the clipped gradient."""
                 return lr_at(step) * g
 
 
@@ -1269,8 +1320,8 @@ exercises:
 
 
             def update(step, g):
-                """The size of the training step at a step, for a gradient g: the learning
-                rate at that step times the clipped gradient."""
+                """The update for a gradient g at a step: the learning rate at that step
+                times the clipped gradient."""
                 return clip(lr_at(step) * g)
 
 
@@ -1295,8 +1346,8 @@ exercises:
 
 
             def update(step, g):
-                """The size of the training step at a step, for a gradient g: the learning
-                rate at that step times the clipped gradient."""
+                """The update for a gradient g at a step: the learning rate at that step
+                times the clipped gradient."""
                 if g > 1:
                     g = 1.0
                 if g < -1:
@@ -1328,8 +1379,8 @@ exercises:
 
 
             def update(step, g):
-                """The size of the training step at a step, for a gradient g: the learning
-                rate at that step times the clipped gradient."""
+                """The update for a gradient g at a step: the learning rate at that step
+                times the clipped gradient."""
                 return lr_at(step) * clip(g)
 
 
@@ -1352,7 +1403,8 @@ exercises:
       each new loss moves the smoothed value a tenth of the way towards it. This script does it with
       `record`, which changes the main program's `smooth`. Replace `record` with a pure function,
       `smoothed(previous, loss)`, that returns the new smoothed value, and change the loop to use
-      it, so that the script still prints the same. The tests type other losses too.
+      it, keeping the name `smooth` for the smoothed value, so that the script still prints the
+      same. The tests type other losses too.
     answer:
       type: code
       stdin: ["3", "2.0", "1.0", "1.5"]
@@ -1372,6 +1424,9 @@ exercises:
         import contextlib
         import io
 
+        # close(a, b) is True when a and b agree to about nine significant figures, as math.isclose
+        # decides. smoothed.__globals__ is the main program's names.
+
         def test_defined():
             """There is a function called smoothed."""
             assert "smoothed" in globals(), "There is no function called smoothed yet. Define it with def, with the parameters previous and loss."
@@ -1385,10 +1440,23 @@ exercises:
         def test_pure():
             """smoothed leaves the main program's smooth alone, and uses only its arguments."""
             world = smoothed.__globals__
-            world["smooth"] = 123.0
-            got = smoothed(0.0, 1.0)
-            assert world["smooth"] == 123.0, "Calling smoothed changed the main program's smooth. Return the new value instead, and let the loop assign it."
-            assert got is not None and close(got, 0.1), f"With the main program's smooth set to 123.0, smoothed(0.0, 1.0) is {got!r}, not 0.1, so it reads smooth from outside instead of using previous."
+            kept = world.get("smooth")
+            try:
+                world["smooth"] = 123.0
+                first = smoothed(0.0, 1.0)
+                assert world["smooth"] == 123.0, "Calling smoothed changed the main program's smooth. Return the new value instead, and let the loop assign it."
+                world["smooth"] = -50.0
+                second = smoothed(0.0, 1.0)
+            finally:
+                world["smooth"] = kept
+            assert first == second, (
+                f"smoothed(0.0, 1.0) gave {first!r} with the main program's smooth at 123.0 and {second!r} with it at -50.0, "
+                "so it reads smooth from outside instead of using previous."
+            )
+
+        def test_record_replaced():
+            """record is gone: the loop calls smoothed and assigns smooth itself."""
+            assert "record" not in globals(), "record is still defined. Replace it with smoothed, and let the loop assign smooth itself."
 
         def test_silent():
             """smoothed prints nothing."""
@@ -1398,9 +1466,12 @@ exercises:
             assert sink.getvalue() == "", f"smoothed printed {sink.getvalue()!r}. Print in the main program instead."
 
         def test_script():
-            """The script still ends with the smoothed loss, for other losses too."""
+            """The script still ends with smooth holding the smoothed loss, for other losses too."""
+            # rerun("3", "2.0", "1.0", "1.5") runs your program again with those lines typed: names is
+            # its names at the end, and printed is what it printed.
             for typed, expected in [(("3", "2.0", "1.0", "1.5"), 0.402), (("2", "10.0", "0.0"), 0.9)]:
                 names, printed = rerun(*typed)
+                assert "smooth" in names, "The main program has no name smooth at the end. Keep smooth for the smoothed value, and assign it in the loop."
                 assert close(names["smooth"], expected), f"Typing {', '.join(typed)}, smooth ends as {names['smooth']!r}, but it should be {expected}."
       reference: |
         n = int(input())    # the person types 3, then the losses 2.0, 1.0 and 1.5, one per line
@@ -1477,6 +1548,22 @@ exercises:
             for step in range(n):
                 smooth = smoothed(smooth, float(input()))
           why: Prints from inside the function, which is a change outside it.
+        - code: |
+            n = int(input())    # the person types 3, then the losses 2.0, 1.0 and 1.5, one per line
+            smooth = 0.0
+
+            def smoothed(previous, loss):
+                return 0.9 * previous + 0.1 * loss
+
+            def record(loss):
+                global smooth
+                smooth = smoothed(smooth, loss)
+
+            for step in range(n):
+                record(float(input()))
+
+            print("smoothed loss:", smooth)
+          why: Keeps `record`, which still assigns the main program's `smooth` with `global`, so the loop never assigns it.
     explanation: >-
       `smoothed` takes the old value as `previous` and returns the new one, so it depends only on its
       arguments and changes nothing. The loop then does the assigning itself, in
@@ -1490,9 +1577,10 @@ exercises:
     covers: [E1.3/defining-functions, E1.3/scope, E1.3/pure-functions]
     title: Functions, calls and contracts
     prompt: >-
-      Explain to your friend what a function is and how a call runs, why the puzzle prints
-      `0.1 0.05`, what makes a function pure and why that matters, and why programs are built from
-      small functions with clear contracts.
+      Explain to your friend what a function is, how a call runs and what it gives back, why
+      printing a result is not the same as returning it, why the puzzle prints `0.1 0.05`, what
+      makes a function pure and why that matters, and why programs are built from small functions
+      with clear contracts.
     answer:
       type: text
       rubric:

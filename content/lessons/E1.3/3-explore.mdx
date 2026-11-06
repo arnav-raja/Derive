@@ -26,7 +26,7 @@ The body runs only when the function is *called*, as in `halvings(0.001)`. A cal
 
 That value takes the call's place in the line that made the call, so `print(halvings(0.001))` prints 10, and the next line prints 2, since two halvings take 1.0 to 0.25. A call is an expression, like `2 * x`, so its value can be printed, given a name, used in arithmetic or passed to another call.
 
-A function can have several parameters, separated by commas, and a call gives one argument for each, matched in order: with `def area(width, height):`, the call `area(2, 3)` makes `width` 2 and `height` 3. A function with no parameters has empty brackets, and so does every call of it, as with `input()`. Here is a function that prints as well as returning a value:
+A function can have several parameters, separated by commas, and a call gives one argument for each, matched in order: with `def area(width, height):`, the call `area(2, 3)` makes `width` 2 and `height` 3. A function with no parameters has empty brackets, and so does every call of it. Here is a function that prints as well as returning a value:
 
 ```python
 def shout(word):
@@ -43,9 +43,7 @@ print(a + b)
 
 <Reveal for="explore-def-runs">
 
-Each call runs the whole body again, so `one` and `two` are printed by the two calls, in the order the calls run. The value of a call is what its `return` gives, 2 each time, not what it printed, so `a + b` is 4.
-
-## Printing is not returning
+## Two areas added
 
 ```python
 def area(width, height):
@@ -61,9 +59,9 @@ print(total)
 
 <Reveal for="explore-print-not-return">
 
-A function that ends without reaching a `return` still gives back a value: `None`, the only value of its own type, `NoneType`, which stands for no value at all. So each call of `area` prints its area and gives back `None`, and `None + None` stops Python with a `TypeError`. `print` shows a value to the person running the program, while `return` hands it to the line that made the call. A function whose result the program needs must return it, and the caller can print it if a person needs to see it.
+Printing is not returning. A function that ends without reaching a `return` still gives back a value: `None`, the only value of its own type, `NoneType`, which stands for no value at all. Python works out the left side of `+` before the right side, which is why 6 appears before 20. `print` shows a value to the person running the program, while `return` hands it to the line that made the call. `print` itself gives back `None`: `x = print("hi")` prints `hi` and makes `x` refer to `None`. A function whose result the program needs must return it, and the caller can print it if a person needs to see it.
 
-`return` also ends the call at once, wherever it is. So a function can have several, and only the first one reached runs:
+A function can have several `return` lines:
 
 ```python
 def sign(x):
@@ -73,7 +71,7 @@ def sign(x):
         return -1
     return 0
 
-print(sign(-4) + sign(0) + sign(9))
+print(sign(-4), sign(0), sign(9))
 ```
 
 <Exercise id="explore-early-return" />
@@ -82,22 +80,22 @@ print(sign(-4) + sign(0) + sign(9))
 
 <Reveal for="explore-early-return">
 
-`sign(-4)` finds `-4 > 0` `False` and `-4 < 0` `True`, so it returns $-1$, and its last line never runs. `sign(0)` finds both tests `False` and reaches `return 0`. Returning from inside an `if` is a common way to write a chain of cases: once a case has returned, the rest of the function is skipped, so no `elif` is needed.
+`return` ends the call at once, wherever it is, even inside a loop, so a function can have several, and only the first one reached runs. Returning from inside an `if` is a common way to write a chain of cases: once a case has returned, the rest of the function is skipped, so no `elif` is needed.
 
 ## A call's own names
 
-Now the puzzle. Step through it in the figure. While `halve` runs, the figure shows two sets of names: the main program's, and the call's own. It stops once to ask you first.
+Now the puzzle, with a second call added. Step through it in the figure. While `halve` runs, the figure shows two sets of names: the main program's, and the call's own. It stops once to ask you first.
 
 <ProgramTrace
   title="The puzzle, one line at a time"
-  description="The program makes `lr` refer to 0.1, defines `halve` and calls it with `lr`. While the call runs, the figure lists the main program's names and the call's names separately, with the call that is running last. When the call returns, its names are gone, and the program prints `lr` and `smaller`."
-  code={"lr = 0.1\n\ndef halve(lr):\n    lr = lr / 2\n    return lr\n\nsmaller = halve(lr)\nprint(lr, smaller)"}
-  predict={[{ line: 4, variable: "lr", prompt: "Line 4 is about to run, inside the call. What will the call's `lr` refer to afterwards?" }]}
+  description="The program makes `lr` refer to 0.1, defines `halve` and calls it twice with `lr`, keeping the first result as `smaller` and the second as `again`. Once the `def` line has run, `halve` is listed among the main program's names. While a call runs, the figure lists the main program's names and the call's names separately, with the call that is running last. Then the program prints `lr`, `smaller` and `again`."
+  code={"lr = 0.1\n\ndef halve(lr):\n    lr = lr / 2\n    return lr\n\nsmaller = halve(lr)\nagain = halve(lr)\nprint(lr, smaller, again)"}
+  predict={[{ line: 8, variable: "again", prompt: "Line 8 calls `halve` again, with the main program's `lr`. Once the line has finished, what will `again` refer to?" }]}
 />
 
-When the call starts, its parameter `lr` is a new name, belonging to the call alone, for the argument's value, 0.1. `lr = lr / 2` makes that name refer to 0.05, as E1.1's assignments do: it changes the name on its left and no other. The main program's `lr` is a different name that happens to be spelled the same, and nothing assigns it again, so it still refers to 0.1. When the call returns, its names are gone. All that comes back is the value after `return`, 0.05, and the main program makes `smaller` refer to it.
+In the figure, the call's `lr` has a box of its own, apart from the main program's `lr`: two names that happen to be spelled the same.
 
-The names that belong to a call are *local* to it: its parameters, and every name that its body assigns. They are made afresh each time the function is called, and are gone when the call returns. The main program's names are *global*.
+Here is a function whose body assigns a name of its own:
 
 ```python
 def warmup_lr(step):
@@ -114,11 +112,11 @@ print(fraction)
 
 <Reveal for="explore-local-gone">
 
-`fraction` was local to the call: it was made when the call ran its first line, and it was gone once the call returned. The main program never had a name `fraction`, so Python stops at the last line with `NameError`. Only the value after `return` leaves a call.
+The names that belong to a call are *local* to it: its parameters, and every name that its body assigns. A call's local names are made afresh each time the function is called, and are gone once it returns: only the value after `return` leaves a call. The main program's names are *global*.
 
 ## Names from outside
 
-A function can also use a name that it never assigns. Python then looks the name up among the main program's names, and it looks when the call runs, not when the function is defined.
+A function can also use a name that it never assigns:
 
 ```python
 scale = 2
@@ -138,9 +136,9 @@ print(a, b)
 
 <Reveal for="explore-global-read">
 
-The first call finds `scale` referring to 2, and the second finds it referring to 3. So the same call, `scaled(10)`, gives 20 the first time and 30 the second. Keep that in mind: it comes back when we ask which Python functions behave like M1.3's.
+Python looks up a name that a function never assigns among the main program's names, and it looks when the call runs, not when the function is defined, so the same call can give different values. Keep that in mind: it comes back when we ask which Python functions behave like M1.3's.
 
-Reading a global name is allowed. Assigning one from inside a function is another matter:
+Here is a function that assigns a name the main program also has:
 
 ```python
 count = 0
@@ -158,13 +156,13 @@ tick()
 
 <Reveal for="explore-assign-makes-local">
 
-Python decides which names are local before a call runs: a name that a function assigns anywhere is local throughout it. So in `count = count + 1`, the right side asks for the call's own `count`, which has no value yet, and Python stops with `UnboundLocalError`, its error for a local name used before it has been given a value. The main program's `count` is never touched.
+Python decides which names are local before a call runs, from the whole body: a name that a function assigns anywhere is local throughout it, even above the line that assigns it. `UnboundLocalError` is Python's error for a local name used before it has been given a value. The main program's `count` is never touched.
 
-Python can be told otherwise. The line `global count` at the top of the body makes `count`, in that function, the main program's name. It works, but a function that changes the main program's names is much harder to reason about, as the next section shows. The usual cure is to pass the value in and return the new one: `def tick(count):`, with `return count + 1` as its body, called as `count = tick(count)`.
+Python can be told otherwise. The line `global count` at the top of the body makes `count`, in that function, the main program's name. It works, but a function that changes the main program's names is much harder to reason about, as Build will show. The usual cure is to pass the value in and return the new one: `def tick(count):`, with `return count + 1` as its body, called as `count = tick(count)`.
 
 ## Functions that behave like M1.3's
 
-M1.3 defined a function as a rule that gives each input exactly one output. `scaled` breaks that rule: `scaled(10)` gave 20 and then 30. A Python function behaves like M1.3's only when two things hold: its value depends on nothing but its arguments, and a call changes nothing outside the function. That means it reads no outside name whose value can change, assigns none, prints nothing and reads no input. A function like that is called *pure*.
+M1.3 defined a function as a rule that gives each input exactly one output. `scaled` breaks that rule: `scaled(10)` gave 20 and then 30. A Python function behaves like M1.3's only when two things hold: its value depends on nothing but its arguments, and a call changes nothing outside the function. That means it reads no outside name that the program changes, assigns no outside name, prints nothing and reads no input. Calling another pure function is fine: its name is assigned once, by its `def`, and never changed. A function like that is called *pure*.
 
 Pure functions are the easiest to trust. The same call always gives the same value, so a check that passes once passes every time. And once you know that `halvings(0.001)` is 10, every `halvings(0.001)` in a program can be read as 10, wherever and whenever it runs. Here are five functions:
 
@@ -197,11 +195,11 @@ def m(x):
 
 <Reveal for="explore-which-pure">
 
-`f` and `k` are pure. `k` assigns `total` and `i`, but they are its own local names, made afresh by every call, so they change nothing outside it, and its value depends only on `n`. `g` gives back its argument, but it also prints, which changes what the person running the program sees. `h` reads `offset`, which the script changes, so `h(1)` can differ from one call to the next, and `m` reads a new line of input at every call.
+A function can assign names, as `k` does, and still be pure: its local names are made afresh by every call and are gone when it returns. And printing, as in `g`, counts as a change outside the function, since it changes what the person running the program sees.
 
 ## Building from functions
 
-A function's caller needs to know what the function does, not how it does it: what it takes, what it gives back, and what must be true of its arguments. That is the function's *contract*. Python code states it in a *docstring*, a string written as the first line of the body, between three quote marks, `"""`, at each end when it runs over several lines. Here are the first lines of a function from a training script, with its body hidden:
+A function's caller needs to know what the function does, not how it does it: what it takes, what it gives back, and what must be true of its arguments. That is the function's *contract*. Python code states it in a *docstring*, a string written as the first line of the body, between three quote marks, `"""`, at each end, which also lets it run over several lines. Here are the first lines of a function from a training script, with its body hidden:
 
 ```python
 def warmup_lr(step, peak, warmup):
@@ -232,7 +230,7 @@ print(progress(500), progress(500, 250), progress(warmup=4000, step=1000))
 
 <Reveal for="explore-defaults">
 
-`progress(500)` leaves out `warmup`, so `warmup` is 1,000 and the value is 0.5, while `progress(500, 250)` gives `warmup` by position. The last call names both of its arguments, so their order does not matter: `step` is 1,000 and `warmup` is 4,000. Libraries for training models use defaults and keyword arguments everywhere: their functions take many settings, and most calls change only one or two of them, by name.
+Libraries for training models use defaults and keyword arguments everywhere: their functions take many settings, and most calls change only one or two of them, by name.
 
 Functions combine as in M1.3: the value of one call can be the argument of the next. Here are E1.2's gradient clip and a scaling, as functions:
 
@@ -256,7 +254,7 @@ print(scale(clip(3.0)), clip(scale(3.0)))
 
 <Reveal for="explore-compose">
 
-In `scale(clip(3.0))` the inner call runs first, as in M1.3's $g(f(x))$: `clip(3.0)` is 1.0, and `scale(1.0)` is 0.5. In `clip(scale(3.0))`, `scale(3.0)` is 1.5, and `clip(1.5)` is 1.0. So, as in M1.3, the order of composition matters. Each of these functions does one small job that can be checked on its own, and together they do a larger one. That is how large programs are built: from small functions, each trusted through its contract, combined into larger ones.
+As in M1.3's $g(f(x))$, the inner call runs first, and the order of composition matters. Each of these functions does one small job that can be checked on its own, and together they do a larger one. That is how large programs are built: from small functions, each trusted through its contract, combined into larger ones.
 
 ## The names
 
@@ -268,13 +266,13 @@ A *function* is a named block of lines, its *body*, that runs only when the func
 
 <Definition term="Local and global names">
 
-The names a call makes, its parameters and every name its body assigns, are *local* to that call: made when the call starts, gone when it returns, and separate from any name spelled the same outside. The main program's names are *global*. A name that a function uses but never assigns is looked up among the global names as they stand when the call runs. A name that a function assigns anywhere is local throughout it, so using it before it is assigned stops Python with `UnboundLocalError`.
+The names a call makes, its parameters and every name its body assigns that no `global` line names, are *local* to that call, and separate from any name spelled the same outside. Python settles which names are local before the call runs: a parameter gets its value when the call starts, any other local name gets one when a line assigns it, and all of them are gone when the call returns. The main program's names are *global*. A name that a function uses but never assigns is looked up among the global names as they stand when the call runs. A name that a function assigns anywhere, without a `global` line, is local throughout it, so using it before it is assigned stops Python with `UnboundLocalError`.
 
 </Definition>
 
 <Definition term="Pure function">
 
-A function is *pure* when its value depends on nothing but its arguments and a call changes nothing outside it: it reads no outside name whose value can change, assigns none, prints nothing and reads no input. A pure function gives the same value whenever it is given the same arguments, as a function in M1.3 does.
+A function is *pure* when its value depends on nothing but its arguments and a call changes nothing outside it: it reads no outside name that the program changes, assigns no outside name, prints nothing and reads no input. A pure function gives the same value whenever it is given the same arguments, as a function in M1.3 does.
 
 </Definition>
 

@@ -23,7 +23,7 @@ The two layers together act as a single layer, with weight 6 and bias $-1$. Is t
 
 <Reveal for="derive-stacked">
 
-So `layer(layer(x, w1, b1), w2, b2)` has the same value as `layer(x, w1 * w2, w2 * b1 + b2)`: two layers make one layer, with weight $w_1 w_2$ and bias $w_2 b_1 + b_2$. The same step turns three layers into two, and then into one, and so on for any number. However many such layers are stacked, the whole is still a single layer, and its output plotted against $x$ is still a straight line. That is why real networks put a function of another kind between their layers, such as `relu`, which returns `x` when `x` is positive and 0 otherwise. The ML course takes it from there.
+So `layer(layer(x, w1, b1), w2, b2)` has the same value as `layer(x, w1 * w2, w2 * b1 + b2)`: two layers make one layer. The same step turns three layers into two, and then into one, and so on for any number. However many such layers are stacked, the whole is still a single layer, and its output plotted against $x$ is still a straight line. That is why real networks put a function of another kind between their layers, such as `relu`, which returns `x` when `x` is positive and 0 otherwise. L3.2, on multilayer perceptrons, takes it from there.
 
 ## Two calls or one
 
@@ -35,7 +35,7 @@ Working on paper relied on something: that a call could be replaced by the value
 
 <Reveal for="derive-pure-twice">
 
-Every line of the proof leaned on purity. Without it, the two can differ:
+Purity did the work in two ways: the left call changed nothing, so the right call ran in the same world, and calls with equal arguments give equal values. Without purity, the two can differ:
 
 ```python
 def reading():
@@ -45,7 +45,7 @@ print(reading() + reading())
 print(2 * reading())
 ```
 
-Typed 1, 2 and 5, one per line, the first `print` shows 3.0 and the second shows 10.0. Each call reads the next line, so the two calls on the first line give different values, and the single call on the second line reads yet another. A program, or a compiler, may keep the value of a call and reuse it only when the function is pure. E1.5 does that on purpose, to make a slow function fast. JAX, a library for training models that E5.10 uses, compiles a function once and reuses the result, which gives the right answers only for pure functions.
+Typed 1, 2 and 5, one per line, the first `print` shows 3.0 and the second shows 10.0. Each call reads the next line, so the two calls on the first line give different values, and the single call on the second line reads yet another. A program, or a compiler, may keep the value of a call and reuse it only when the function is pure. E1.5 does that on purpose, to make a slow function fast. JAX, a library for training models that E5.10 uses, compiles a function the first time it is called and runs the compiled version at later calls with arguments of the same kind. A `print` inside it runs only while it is being compiled, and an outside name it reads keeps the value it had then, so JAX gives the right answers only for pure functions.
 
 ## A contract proved once
 

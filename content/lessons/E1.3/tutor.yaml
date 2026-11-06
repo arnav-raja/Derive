@@ -4,7 +4,7 @@ misconceptions:
     why: >-
       The `def` line only makes the function's name refer to the function. The body runs each time
       the function is called, and not at all if it is never called.
-    cue: The learner expects a function's prints to appear where it is defined, or before `start` in explore-def-runs.
+    cue: The learner answers 5 for the third variant of explore-def-runs, counting the `def` line as a run of the body, or expects a function's prints to appear where it is defined.
   - id: parameter-is-callers-name
     belief: A parameter is the caller's name, so assigning to it inside the function changes the caller's name.
     why: >-
@@ -32,7 +32,7 @@ misconceptions:
   - id: code-after-return
     belief: The lines after a `return` still run.
     why: '`return` ends the call at once, so the rest of the body is skipped, even inside a loop.'
-    cue: The learner adds up more than one return value for one call in explore-early-return, or expects a loop to finish after `return`.
+    cue: The learner chooses `0 0 0` in explore-early-return or `fail fail fail` for the `grade` variant, or expects a loop to finish after `return`.
   - id: global-read-at-def
     belief: A function keeps the values that outside names had when it was defined.
     why: >-
@@ -66,10 +66,21 @@ misconceptions:
     belief: Keyword arguments are matched by their position, like the others.
     why: An argument written as `name=value` goes to the parameter with that name, whatever its position in the call.
     cue: The learner chooses `0.5 2.0 4.0` in explore-defaults, or answers 9 for `power(exponent=3, base=2)`.
+  - id: default-always-used
+    belief: A parameter's default is used even when the call gives that argument.
+    why: A default is used only when a call leaves its argument out. An argument given by position or by name replaces it.
+    cue: The learner chooses `0.5 0.5 0.25` in explore-defaults, or answers 20 for `scaled(5) + scaled(5, 3)`.
+  - id: local-starts-from-global
+    belief: A name that a function assigns starts with the value of the main program's name spelled the same.
+    why: >-
+      Python settles before the call runs that the name is local, and a local name has no value
+      until a line of the function assigns it, so reading it first stops Python with
+      `UnboundLocalError`.
+    cue: The learner chooses "It returns 1, and the main program's `count` stays 0" in explore-assign-makes-local.
   - id: outer-call-first
     belief: In `f(g(x))`, `f` runs first.
     why: Python works out a call's arguments before the call, so the inner call runs first, as in M1.3's composition.
-    cue: The learner chooses `1.0 0.5` in explore-compose, or clips the product in build-lr-schedule.
+    cue: The learner chooses `1.0 0.5` in explore-compose, or answers $-0.5$ for `clip(scale(-5.0))`.
   - id: copy-instead-of-call
     belief: Copying a function's body into another function is as good as calling it.
     why: >-
@@ -81,28 +92,30 @@ exercises:
   derive-two-layers:
     rungs:
       - Which call runs first, and what expression in $x$ does it give?
-      - "Derive: a call can be worked out on paper by writing the expression after `return`, with each parameter replaced by its argument."
-      - What is `layer(5, 2, 1)`? And what is `layer(11, 3, -4)`?
+      - "Earlier in this phase: a call can be worked out on paper by writing the expression after `return`, with each parameter replaced by its argument."
+      - Work out `layer(layer(5, 2, 1), 3, -4)` by hand, inner call first. Which number takes the place of the outer call's `x`, and what does the outer call give?
       - >-
-        If your answer gives $-1$ when $x = 0$ and 5 when $x = 1$, its value is right and only its
-        shape is wrong: multiply out the brackets. If not, the trouble is in the inner call or in how
-        its value enters the outer one: check what takes the place of the outer call's `x`.
+        If the checker said your value is right, the working is done, and only the brackets are left
+        to multiply out. If not, put $x = 5$ into your expression. If it does not give the number you
+        worked out by hand in the last hint, follow that number through the two calls again, and find
+        the step that your expression does differently.
       - >-
         With `def shift(x, c): return x + c`, the call `shift(shift(x, 4), -1)` has the inner call
         $x + 4$, so the outer call gives $(x + 4) + (-1) = x + 3$.
     notes: >-
-      $6x + 3$ forgets the bias of the outer layer. $2x + 1$ stops after the inner call. $6x + 1$
-      multiplies only $x$ by 3, not the inner bias. $3(2x + 1) - 4$ is right in value but not
-      multiplied out, and the checker asks for the expanded shape.
+      $6x + 3$ forgets the bias of the outer layer. $2x + 1$ stops after the inner call. $6x - 3$
+      multiplies only $2x$ by 3, not the inner bias, and $6x + 1$ also forgets the outer bias.
+      $3(2x + 1) - 4$ is right in value but not multiplied out, and the checker asks for the
+      expanded shape.
   derive-stacked:
     rungs:
       - What does the inner call `layer(x, w1, b1)` give, and where does that expression go in the outer call?
       - "The previous step did the same with numbers: the inner call's value became the outer call's `x`."
-      - Take $w_1 = 2$, $b_1 = 1$, $w_2 = 3$ and $b_2 = -4$. Does your expression give $6x - 1$?
+      - Take $w_1 = 2$, $b_1 = 5$, $w_2 = 3$ and $b_2 = -4$, and work out `layer(layer(x, 2, 5), 3, -4)` as in the previous step. Does your expression give the same with those numbers?
       - >-
-        If your expression gives $6x - 1$ for those numbers, its value is right, and only the
-        brackets need multiplying out. If it does not, look at what the outer layer's weight
-        multiplies.
+        If the checker said your value is right, only the brackets are left to multiply out. If not,
+        and your expression disagrees with the numbers in the last hint, the trouble is in the outer
+        call: look at what the outer layer's weight multiplies.
       - >-
         With `def shift(x, c): return x + c`, the call `shift(shift(x, c1), c2)` is
         $(x + c_1) + c_2 = x + (c_1 + c_2)$: two shifts make one shift.
@@ -120,10 +133,14 @@ exercises:
       - >-
         If the line with $v + v$ cites the rule for algebra, that part is right, and the trouble is
         in the lines about the calls: for each of them, say in words what it adds to the lines above
-        it, and find the rule that allows exactly that.
+        it, and find the rule that allows exactly that. If it cites another rule, start with that
+        line: read the rule you chose, and ask whether it says anything about $v + v$.
       - >-
-        For a pure `g` and any `a`, `g(a) - g(a)` is 0: the left call runs first and gives some $u$,
-        it changes nothing, so the right call also gives $u$, and $u - u = 0$.
+        Here is a chain of the same kind, on why `b` is still 3 after `a = 3`, `b = a` and
+        `a = a + 1`. The first line makes `a` refer to 3. The second makes `b` refer to the value `a`
+        refers to at that moment, 3. The third assigns `a` alone, since an assignment changes only
+        the name on its left, so nothing has changed what `b` refers to, and it is still 3. Each step
+        rests on one fact about what a line does.
     notes: >-
       Citing Same arguments for line 2 misses that it is about effects: the right call can be given
       the same argument only because the left one changed nothing. Citing Left first anywhere but
@@ -132,12 +149,14 @@ exercises:
   derive-pairs:
     rungs:
       - What does the contract of `triangle` say `triangle(m)` returns, and what is `m` in `triangle(n - 1)`?
-      - "E1.2 proved that the loop's total is $\\frac{n(n+1)}{2}$, and Derive turned that into `triangle`'s contract."
-      - Count the pairs by hand for 3 examples. Does your expression give 3? And 6 for 4 examples?
+      - "E1.2 proved that the loop's total is $\\frac{n(n+1)}{2}$, and this phase turned that into `triangle`'s contract."
+      - Count the pairs by hand for a batch of 3 examples, and then for a batch of 4. Does your expression give the same counts?
       - >-
-        If your expression gives 3 for $n = 3$ and 6 for $n = 4$, it is right. If not, the trouble
-        is in which number the contract is applied to: look again at the argument that `pairs`
-        passes to `triangle`, and at every place it goes in the contract.
+        If your expression matches your hand counts but the checker refuses it, it agrees with
+        `pairs` at those two sizes only: try $n = 1$, where there are no pairs, and $n = 5$. If it
+        does not match them, the trouble is in which number the contract is applied to: look again
+        at the argument that `pairs` passes to `triangle`, and at every place that argument goes in
+        the contract.
       - >-
         With the contract that `square(m)` returns $m^2$, the function `def above(n): return
         square(n + 1)` returns $(n + 1)^2$, by putting $n + 1$ in place of $m$.
@@ -150,7 +169,10 @@ exercises:
       - E1.2's puzzle loop counted halvings from 1.0 while the rate was above a floor. Which parts of it should become parameters?
       - Work out `steps_to(0.3, 1.0, 0.5)` by hand. What are the value and the count after each step?
       - >-
-        If test_halving passes, your loop is right for E1.2's numbers. Then, if test_other_schedules
+        If test_halving passes, your loop is right for E1.2's numbers. If test_halving fails with a
+        number other than 10, follow `steps_to(0.3, 1.0, 0.5)` through your body by hand: if the call
+        gives back a float, look at the name after `return`; if it gives a count, compare it with the
+        count after each step in the last hint. Then, if test_other_schedules
         fails, look for 1.0 or 0.5 still written into the body. If test_already_there fails, look at
         how the `while` test treats a value equal to the target. If test_same_twice fails, look at
         where the count starts. If a call gives `None`, look at the last line of the body.
@@ -159,8 +181,8 @@ exercises:
         then `value = low` and `count = 0`, then `while value <= high:` with `value = value * 2` and
         `count = count + 1` in its block, and finally `return count`.
     notes: >-
-      `None` means the count is printed, not returned. 10 for every call means the start and factor
-      are still written in. A count that grows from call to call means a global count. 1 for a start
+      `None` means the count is printed, not returned. A count that ignores `start` and `factor`,
+      such as 0 for `steps_to(1.0, 4.0, 0.9)`, means E1.2's start and factor are still written in. A count that grows from call to call means a global count. 1 for a start
       equal to the target means `>=`. A float such as 0.0009765625 means the value is returned
       instead of the count.
   build-mean-return:
@@ -169,12 +191,17 @@ exercises:
       - "Explore: a function that ends without `return` gives `None`, and `print` hands nothing back."
       - Run the call by hand. What does the body print, and what is `centre` afterwards?
       - >-
-        If test_returns passes, `mean` hands back its value. Then, if test_other_numbers fails, look
-        at the brackets in the formula; if test_silent fails, look for a `print` still inside the
-        function.
+        If test_returns fails with `None`, the body works the mean out, which is right: look at what
+        it does with the mean once it has it. If test_returns fails with a number, the trouble is in
+        the formula: work it out by hand for 2.0 and 6.0, in the order Python uses. If test_returns
+        passes but test_other_numbers fails, look at which pairs it gets wrong, and at the kind of
+        division. If only test_silent fails, look for a line in the body that shows something on the
+        screen.
       - >-
-        To make `def total(a, b): print(a + b)` usable in arithmetic, its body becomes
-        `return a + b`, and a caller that wants to see the result writes `print(total(2, 3))`.
+        A function that builds a label, `def label(n): print("step " + str(n))`, cannot be used in
+        `label(3) + " done"`, since the call gives `None`. With `return "step " + str(n)` as its
+        body, the call gives the string itself, and `print(label(3) + " done")` prints
+        `step 3 done`.
     notes: >-
       `None` from `mean` means it still prints instead of returning. 5.0 for `mean(2.0, 6.0)` means
       `a + b / 2`, without brackets. A printed `4.0` with the right return value means a `print`
@@ -185,18 +212,21 @@ exercises:
       - "Explore's `warmup_lr` had this contract, and Explore's `sign` returned from inside an `if`."
       - Work out `lr_at(500)` and `lr_at(2000)` by hand with the defaults. Then work out `update(500, 3.0)`.
       - >-
-        If test_warmup and test_after_warmup pass, your `lr_at` is right for the defaults. Then, if
-        test_settings fails, look for 0.001 or 1000 written into its body instead of `peak` and
-        `warmup`. If only the tests of `update` fail, look at what is clipped, and whether `update`
-        calls `lr_at` and `clip` or repeats their work.
+        If test_warmup fails, follow `lr_at(250)` through your body by hand: which branch does it
+        take, and what does that branch give back? If test_warmup and test_after_warmup pass, your
+        `lr_at` is right for the defaults. Then, if test_settings fails, look for `0.001` or `1000`
+        written into its body instead of `peak` and `warmup`. If only the tests of `update` fail,
+        look at what is clipped, and at whether `update` calls `lr_at` and `clip` or repeats their
+        work.
       - >-
         A function for the area of a frame, `def frame(w, h, border=1):`, can be built from
         `def area(w, h): return w * h` as `return area(w, h) - area(w - 2 * border, h - 2 * border)`:
         it calls `area` twice and repeats none of its work.
     notes: >-
-      A wrong rate for other settings means the defaults are written into the body. `update` that
-      is too large for a large gradient leaves out `clip`. `update(500, 3.0)` of 0.0015 clips the
-      product instead of the gradient. A failure of test_update_uses_the_functions alone means
+      A wrong rate for other settings means the defaults are written into the body. 0.0015 for
+      `update(500, 3.0)` means that the gradient is not clipped before the multiplication.
+      test_update_uses_the_functions tells the two causes apart: 1.0 there means `clip` is left
+      out, and 3.0 means the product is clipped. A failure of test_update_uses_the_functions alone means
       `update` copies the bodies of the other two instead of calling them.
   build-smooth-pure:
     rungs:
@@ -204,17 +234,23 @@ exercises:
       - "Explore: the usual cure for a function that changes a global name is to pass the value in and return the new one."
       - Work out `smoothed(0.0, 2.0)` and then `smoothed(0.2, 1.0)` by hand. Which name should the loop assign?
       - >-
-        If test_values passes, the arithmetic is right. Then, if test_pure fails, look for `global`
-        or for `smooth` used inside `smoothed`; if test_script fails, look at whether the loop keeps
-        each value that `smoothed` returns.
+        If test_values passes, the arithmetic is right. Then, if test_pure fails, look at which names
+        the body uses or assigns that are not its own; if test_silent fails, look for a line that
+        shows something; and if test_script fails, look at whether the loop keeps each value that
+        `smoothed` returns. If test_values fails with `None`, look at the last line of `smoothed`. If
+        it fails with a number, compare it with your hand working from the last hint, and look at
+        which names the body uses and which weight goes with which. If test_record_replaced fails,
+        look at what is left of `record`.
       - >-
         A function that counts a step, `def tick(count): return count + 1`, is used as
         `count = tick(count)`: the old value goes in, the new value comes out, and the caller does the
         assigning.
     notes: >-
-      A changed `smooth` after a call means `global` is still used. A value near 110 in test_pure
-      means `smooth` is read instead of `previous`. A final `smooth` of 0.0 means the loop throws the
-      returned values away. 1.8 for `smoothed(0.0, 2.0)` means the weights are swapped.
+      A changed `smooth` after a call means `global` is still used. Two different values in
+      test_pure, such as 110.8 and $-44.9$, mean `smooth` is read instead of `previous`. A final
+      `smooth` of 0.0 means the loop throws the returned values away. 1.8 for `smoothed(0.0, 2.0)`
+      means the weights are swapped. A failing test_record_replaced means `record` is kept as a
+      wrapper that still assigns `smooth` with `global`.
 
 novice:
   - If the name inside the function and the name outside are spelled the same, how does Python know which one I mean?

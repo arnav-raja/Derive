@@ -8,13 +8,13 @@ From here on, every program is built from functions, and every function is judge
 
 <Foreshadow lesson="E1.4">
 
-Numbers, strings and bools cannot be changed in place, so a call could change its caller's values only by returning new ones. E1.4's lists can be changed in place, and a function given a list can change the very list its caller holds.
+Numbers, strings and bools cannot be changed in place. A call can give its caller a new one, by returning it or, with `global`, by assigning a main-program name, but it cannot alter the one the caller already holds. E1.4's lists can be changed in place, so a function given a list can change the very list its caller holds.
 
 </Foreshadow>
 
 <Foreshadow lesson="E1.5">
 
-Each call has names of its own, so a function can call itself, and every call in progress keeps its own values. E1.5 uses that to solve a problem by solving smaller copies of it.
+Each call has names of its own, so when a function calls itself, every call in progress keeps its own values. E1.5 uses that to solve a problem by solving smaller copies of it.
 
 </Foreshadow>
 

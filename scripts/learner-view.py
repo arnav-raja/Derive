@@ -100,6 +100,36 @@ def answer_key(ans):
     return ""
 
 
+def format_number(value):
+    """A number as the app shows it (formatNumber in src/lib/content/views.tsx): digits grouped in
+    threes, and very large or very small values as a power of ten."""
+    if value != 0 and (abs(value) >= 1e6 or abs(value) < 1e-3):
+        mantissa, exponent = f"{value:.3e}".split("e")
+        if float(value).is_integer() and abs(value) < 1e15 and float(f"{value:.3e}") != value:
+            return f"{int(value):,}"
+        return f"${float(mantissa):g} \\times 10^{{{int(exponent)}}}$"
+    text = f"{value:,.6f}".rstrip("0").rstrip(".")
+    return text
+
+
+def shown_after(e):
+    """What the app shows under an exercise once it is answered: the answer and why for a one-try
+    question, and the explanation once a worked one is solved."""
+    ans, why = e["answer"], (e.get("explanation") or "").strip()
+    if e["kind"] in ("predict", "recall", "estimate"):
+        t = ans.get("type")
+        if t == "choice":
+            said = "; ".join(o["label"] for o in ans["options"] if o["id"] in ans["correct"])
+        elif t == "number":
+            said = f"{format_number(ans['value'])}{(' ' + ans['unit']) if ans.get('unit') else ''}"
+        else:
+            said = ""
+        return (f"\n[ONCE YOU HAVE ANSWERED {e['id']}, THE APP SHOWS: The answer, and why. Answer: {said}. {why}]\n")
+    if why:
+        return f"\n[ONCE YOU HAVE SOLVED {e['id']}, THE APP SHOWS: Why. {why}]\n"
+    return ""
+
+
 def hide_figure_answers(text):
     """A figure's predict holds the value the learner is asked to guess; the page never shows it first."""
     def strip(m):
@@ -123,7 +153,7 @@ def main():
             if not e:
                 return f"[missing exercise {m.group(1)}]"
             return (f"\n> EXERCISE {e['id']} ({e['kind']}): {e.get('title', '')}\n> {e['prompt'].strip()}\n\n"
-                    f"{answer_shape(e['answer'], e['kind'])}\n")
+                    f"{answer_shape(e['answer'], e['kind'])}\n{shown_after(e)}")
 
         text = hide_figure_answers(text)
         text = re.sub(r'<Exercise id="([^"]+)"\s*/>', exercise, text)

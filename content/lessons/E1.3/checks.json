@@ -207,6 +207,12 @@
           "message": "Calling smoothed changed the main program's smooth. Return the new value instead, and let the loop assign it."
         },
         {
+          "name": "test_record_replaced",
+          "description": "record is gone: the loop calls smoothed and assigns smooth itself.",
+          "passed": true,
+          "message": null
+        },
+        {
           "name": "test_silent",
           "description": "smoothed prints nothing.",
           "passed": true,
@@ -214,7 +220,7 @@
         },
         {
           "name": "test_script",
-          "description": "The script still ends with the smoothed loss, for other losses too.",
+          "description": "The script still ends with smooth holding the smoothed loss, for other losses too.",
           "passed": true,
           "message": null
         }
@@ -245,8 +251,8 @@
         {
           "name": "test_same_twice",
           "description": "Calling it twice with the same arguments gives the same count.",
-          "passed": true,
-          "message": null
+          "passed": false,
+          "message": "steps_to(0.001, 1.0, 0.5) gave None. Does the function return its count?"
         },
         {
           "name": "test_silent",

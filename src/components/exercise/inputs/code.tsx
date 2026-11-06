@@ -53,7 +53,8 @@ function ChromeButton({ label, onClick, children }: { label: string; onClick: ()
 export function ErrorLine({ error }: { error: PyError }) {
   return (
     <p className="font-mono text-sm break-words text-code-incorrect">
-      {error.type}
+      {/* StepLimit is the harness's own name for a runaway program, not one of Python's errors. */}
+      {error.type === "StepLimit" ? "Stopped" : error.type}
       {error.line ? ` on line ${error.line}` : ""}: {error.message}
     </p>
   );
@@ -181,7 +182,11 @@ function Console({ run, fill, hasTests }: { run: RunResult | null; fill: boolean
           run.tests.length > 0 ? (
             <TestList result={run} />
           ) : (
-            <p className="font-mono text-sm text-code-muted">This run had no tests. Run the tests to check your code.</p>
+            <p className="font-mono text-sm text-code-muted">
+              {run.error
+                ? "The script stopped before any test could run. The Console shows where."
+                : "This run had no tests. Run the tests to check your code."}
+            </p>
           )
         ) : (
           // In the order Python gives them: what was printed, then the error that stopped it.
