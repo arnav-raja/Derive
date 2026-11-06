@@ -1,0 +1,90 @@
+code: M1.8
+title: "Proof I: direct proof, contrapositive and contradiction"
+course: M1
+status: draft
+summary: >-
+  The formula $n^2 + n + 41$ gives a prime for each whole number from 0 to 39, forty primes in a
+  row. Is it prime for every whole number? Why agreeing cases prove nothing, and how a proof covers
+  every case at once: starting from definitions, proving a claim directly, by its contrapositive
+  and by contradiction, and the ways an argument that looks like a proof can fail.
+sittings: 2
+minutes:
+  puzzle: 10
+  recall: 10
+  explore: 45
+  derive: 40
+  build: 50
+  explain: 25
+concepts:
+  taught:
+    - id: M1.8/proof
+      name: What a proof is
+      summary: >-
+        A proof is a chain of statements, each following from definitions, from results already
+        proved or from what is assumed, by a stated rule, so that it covers every case at once.
+        Checking cases settles a claim only when every case can be checked. For a claim about
+        infinitely many cases, agreeing cases are evidence, never proof, while one counterexample
+        disproves it. An argument fails when it proves the converse, divides by something that may be 0, or
+        assumes what it set out to prove.
+      usedBy: [M1.9, M3.2, M9.7]
+    - id: M1.8/direct-proof
+      name: Direct proof and proof by cases
+      summary: >-
+        A direct proof of "if $P$ then $Q$" assumes $P$ and works forward to $Q$, usually by writing
+        out the definitions: an integer $n$ is even when $n = 2k$ and odd when $n = 2k + 1$, for some
+        integer $k$. A proof by cases splits the claim into cases that together cover everything, and
+        proves each one.
+      usedBy: [M1.9, M3.2, M3.3]
+    - id: M1.8/contrapositive-proof
+      name: Proof by the contrapositive
+      summary: >-
+        To prove $P \Rightarrow Q$, it is enough to prove $\neg Q \Rightarrow \neg P$, which says the
+        same. It helps when $\neg Q$ gives something concrete to work with, as "if $n^2$ is even, then
+        $n$ is even" becomes "if $n$ is odd, then $n^2$ is odd", which starts from $n = 2k + 1$.
+      usedBy: [M3.2, M3.3]
+    - id: M1.8/contradiction
+      name: Proof by contradiction
+      summary: >-
+        To prove a claim, assume that it is false and show that the assumption leads to something
+        impossible, such as a statement and its denial both true. Then the assumption was false, and
+        the claim is true. So $\sqrt{2}$ is not a fraction, there are infinitely many primes, and a
+        whole number that is not prime has a factor no larger than its square root.
+      usedBy: [M1.9, M3.2, M9.7]
+  used:
+    - M1.2/equivalence
+    - M1.2/solving-equations
+    - M1.3/function-as-mapping
+    - M1.7/connectives
+    - M1.7/implication
+    - M1.7/quantifiers
+links:
+  requires:
+    - lesson: M1.7
+      bridge: >-
+        M1.7 said exactly what a claim says and what would make it false. This lesson proves claims:
+        a direct proof follows "if $P$ then $Q$" forward, a proof by the contrapositive uses M1.7's
+        rule that $\neg Q \Rightarrow \neg P$ says the same, and a proof by contradiction starts from
+        the claim's denial, worked out by M1.7's rules.
+  anotherViewOf:
+    - lesson: E1.2
+      bridge: >-
+        E1.2 proved what a loop computes with an invariant, a statement that every pass keeps true.
+        That is a direct proof about every pass at once, where running the loop checks only the
+        passes it makes.
+  foreshadows:
+    - lesson: M1.9
+      bridge: >-
+        Some claims about every whole number are easiest to prove one step at a time. M1.9's
+        induction proves the first case and that each case gives the next, and so covers every whole
+        number, as forty checks never could.
+    - lesson: M3.2
+      bridge: >-
+        A limit is defined with for every and there is, and its proofs are direct proofs that choose
+        a distance for each tolerance. That a function has only one limit at a point is proved by
+        contradiction.
+    - lesson: M9.7
+      bridge: >-
+        A hypothesis test reasons like a proof by contradiction: assume the model is no better than
+        chance, and show that results this good would then be rare. Rare is not impossible, so the
+        test never reaches a contradiction, and M9.7 shows what it can conclude instead.
+skills: []

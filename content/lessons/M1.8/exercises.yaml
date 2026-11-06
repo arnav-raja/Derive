@@ -1,0 +1,1293 @@
+exercises:
+  # Puzzle ---------------------------------------------------------------------
+  - id: puzzle-forty-primes
+    phase: puzzle
+    kind: predict
+    concept: M1.8/proof
+    title: Forty primes in a row
+    prompt: Is $n^2 + n + 41$ prime for every whole number $n$?
+    answer:
+      type: choice
+      options:
+        - { id: pattern, label: 'Yes: forty primes in a row cannot happen by chance' }
+        - { id: by-hand, label: 'No, and a whole number $n$ for which it is not prime can be found without a computer' }
+        - { id: computer, label: 'No, but only a long computer search could find where it fails' }
+        - { id: unknowable, label: 'No one can know without checking every whole number' }
+      correct: [by-hand]
+    explanation: >-
+      At $n = 41$, every term of $41^2 + 41 + 41$ has a factor of 41, so the value is
+      $41 \times 43$, which is not prime. Reasoning about the shape of the formula settles it in a
+      line. Forty agreeing cases were never a proof: the next case can always break a claim about
+      every whole number, and here it does.
+
+  # Recall ---------------------------------------------------------------------
+  - id: recall-false-if
+    phase: recall
+    kind: recall
+    concept: M1.7/implication
+    prompt: When is "if $P$ then $Q$" false?
+    answer:
+      type: choice
+      options:
+        - { id: p-false, label: 'Whenever $P$ is false' }
+        - { id: both-false, label: 'When $P$ and $Q$ are both false' }
+        - { id: q-false, label: 'Whenever $Q$ is false' }
+        - { id: p-true-q-false, label: 'Only when $P$ is true and $Q$ is false' }
+      correct: [p-true-q-false]
+    explanation: >-
+      "If $P$ then $Q$" promises $Q$ only in the cases where $P$ holds, so it is broken only when
+      $P$ is true and $Q$ is false. When $P$ is false it is true, vacuously, whatever $Q$ is.
+
+  - id: recall-contrapositive
+    phase: recall
+    kind: recall
+    concept: M1.7/implication
+    prompt: Which says exactly the same as "if $n$ is a multiple of 4, then $n$ is even"?
+    answer:
+      type: choice
+      options:
+        - { id: converse, label: 'If $n$ is even, then $n$ is a multiple of 4' }
+        - { id: contrapositive, label: 'If $n$ is not even, then $n$ is not a multiple of 4' }
+        - { id: inverse, label: 'If $n$ is not a multiple of 4, then $n$ is not even' }
+        - { id: and, label: '$n$ is a multiple of 4, and $n$ is even' }
+      correct: [contrapositive]
+    explanation: >-
+      The contrapositive denies both parts and swaps them, and says exactly the same. The converse
+      swaps the parts without denying them, and is false: 6 is even but not a multiple of 4.
+      Denying both parts without swapping them says the same as the converse, and 6 breaks it too.
+
+  - id: recall-deny-every
+    phase: recall
+    kind: recall
+    concept: M1.7/quantifiers
+    prompt: Which is the denial of "for every whole number $n$, $n^2 + n + 41$ is prime"?
+    answer:
+      type: choice
+      options:
+        - { id: none, label: 'For every whole number $n$, $n^2 + n + 41$ is not prime' }
+        - { id: most, label: 'For most whole numbers $n$, $n^2 + n + 41$ is not prime' }
+        - { id: some-not, label: 'For some whole number $n$, $n^2 + n + 41$ is not prime' }
+        - { id: some-prime, label: 'For some whole number $n$, $n^2 + n + 41$ is prime' }
+      correct: [some-not]
+    explanation: >-
+      Not for every is there is with a not: the denial needs a single exception, one whole number
+      for which the value is not prime. The puzzle's $n = 41$ is one.
+
+  - id: recall-de-morgan
+    phase: recall
+    kind: recall
+    concept: M1.7/connectives
+    prompt: Which says the same as "it is not true that $p$ and $q$ are both even"?
+    answer:
+      type: choice
+      options:
+        - { id: at-least-one, label: '$p$ is not even, or $q$ is not even, or both' }
+        - { id: both-not, label: '$p$ is not even, and $q$ is not even' }
+        - { id: exactly-one, label: 'Exactly one of $p$ and $q$ is even' }
+        - { id: p-not, label: '$p$ is not even' }
+      correct: [at-least-one]
+    explanation: >-
+      By De Morgan's laws, not ($P$ and $Q$) is (not $P$) or (not $Q$): "both even" fails as soon as
+      one of them is not even, and also when neither is.
+
+  - id: recall-expand
+    phase: recall
+    kind: recall
+    concept: M1.2/equivalence
+    prompt: Which of these is equal to $(2k + 1)^2$ for every number $k$?
+    answer:
+      type: choice
+      options:
+        - { id: no-middle, label: '$4k^2 + 1$' }
+        - { id: two-k, label: '$4k^2 + 2k + 1$' }
+        - { id: two-squared, label: '$2k^2 + 4k + 1$' }
+        - { id: right, label: '$4k^2 + 4k + 1$' }
+      correct: [right]
+    explanation: >-
+      $(2k + 1)^2 = (2k + 1)(2k + 1) = 4k^2 + 2k + 2k + 1 = 4k^2 + 4k + 1$. A check at $k = 1$:
+      $3^2 = 9$, and $4 + 4 + 1 = 9$.
+
+  # Explore --------------------------------------------------------------------
+  - id: explore-odd-sum
+    phase: explore
+    kind: predict
+    concept: M1.8/direct-proof
+    covers: [M1.8/proof]
+    title: Two odd integers
+    prompt: Which of the four arguments proves that the sum of any two odd integers is even?
+    answer:
+      type: choice
+      options:
+        - { id: checked, label: 'The first, which checks every pair below a million' }
+        - { id: same-letter, label: 'The second, which writes both as $2k + 1$' }
+        - { id: two-letters, label: 'The third, which writes them as $2j + 1$ and $2k + 1$' }
+        - { id: says-so, label: 'The fourth, which says that odd plus odd is always even' }
+      correct: [two-letters]
+    explanation: >-
+      The third gives each number a letter of its own, so it covers every pair of odd integers, and
+      each of its steps follows from the definitions. The first checks only some pairs, the second
+      only an odd integer added to itself, and the fourth assumes the claim it set out to prove.
+    placement: true
+    review:
+      variants:
+        - prompt: Which of these proves that the product of any two even integers is even?
+          answer:
+            type: choice
+            options:
+              - { id: same, label: 'Write both as $2k$. Their product is $4k^2 = 2(2k^2)$, which is even.' }
+              - { id: examples, label: '$2 \times 4 = 8$, $6 \times 10 = 60$ and $-2 \times 8 = -16$ are all even.' }
+              - { id: two, label: 'Write them as $2j$ and $2k$. Their product is $4jk = 2(2jk)$, and $2jk$ is an integer, so it is even.' }
+            correct: [two]
+          explanation: >-
+            Separate letters cover every pair. One letter for both covers only an even integer times
+            itself, and examples cover only themselves.
+        - prompt: >-
+            A proof begins: "Let $a$ and $b$ be odd integers, so that $a = 2k + 1$ and $b = 2k + 1$ for
+            some integer $k$." What is wrong with it?
+          answer:
+            type: choice
+            options:
+              - { id: fine, label: 'Nothing: every odd integer can be written as $2k + 1$' }
+              - { id: equal, label: 'It makes $a$ and $b$ equal, so it covers only an odd integer paired with itself' }
+              - { id: even, label: '$2k + 1$ is even when $k$ is odd' }
+            correct: [equal]
+          explanation: >-
+            Each odd integer is $2k + 1$ for some $k$, but not for the same $k$: 3 needs $k = 1$, and 5
+            needs $k = 2$. Two numbers chosen separately need separate letters, such as $j$ and $k$.
+        - prompt: Which of these proves that the sum of any two even integers is even?
+          answer:
+            type: choice
+            options:
+              - { id: same, label: 'Write both as $2k$. Their sum is $4k = 2(2k)$.' }
+              - { id: two, label: 'Write them as $2j$ and $2k$. Their sum is $2j + 2k = 2(j + k)$, and $j + k$ is an integer.' }
+              - { id: checked, label: 'Every pair of even integers from $-1{,}000$ to $1{,}000$ has an even sum.' }
+              - { id: obvious, label: 'Even plus even is even, so their sum is even.' }
+            correct: [two]
+          explanation: >-
+            $2(j + k)$ is even by the definition, since $j + k$ is an integer, and the letters $j$ and
+            $k$ stand for any integers, so every pair is covered.
+
+  - id: explore-always-odd
+    phase: explore
+    kind: predict
+    concept: M1.8/direct-proof
+    title: Odd or even values
+    prompt: Which of these settles whether $n^2 + n + 41$ is odd for every integer $n$?
+    answer:
+      type: choice
+      options:
+        - { id: forty, label: 'It is: it was odd for all forty values checked' }
+        - { id: product, label: 'It is: $n^2 + n = n(n + 1)$, and one of $n$ and $n + 1$ is even, so $n^2 + n$ is even and adding 41 makes it odd' }
+        - { id: odd-even, label: 'It is not: when $n$ is odd, $n^2$ and $n$ are odd, so $n^2 + n + 41$ is even' }
+        - { id: forty-one, label: 'It is: 41 is odd, so $n^2 + n + 41$ is odd whatever $n$ is' }
+      correct: [product]
+    explanation: >-
+      Of two neighbouring integers one is even, so $n(n + 1)$ is even: if $n$ is even it is, and if
+      $n$ is odd then $n + 1$ is. Those two cases cover every integer, and adding the odd 41 makes
+      every value odd. Forty checks cover forty values, the 41 alone ignores $n^2 + n$, and for odd
+      $n$, $n^2 + n$ is odd plus odd, which is even.
+    review:
+      variants:
+        - prompt: Is $n^2 - n$ even for every integer $n$?
+          answer:
+            type: choice
+            options:
+              - { id: odd-minus-odd, label: 'No: when $n$ is odd, $n^2 - n$ is odd minus odd, which is odd' }
+              - { id: neighbours, label: 'Yes: $n^2 - n = (n - 1)n$, a product of two neighbouring integers, one of which is even' }
+              - { id: only-even, label: 'Only when $n$ is even' }
+            correct: [neighbours]
+          explanation: >-
+            $(n - 1)n$ is a product of two neighbouring integers, and one of any two neighbouring
+            integers is even. Odd minus odd is even, not odd: $(2j + 1) - (2k + 1) = 2(j - k)$.
+        - prompt: >-
+            A proof that a claim holds for every integer $n$ treats two cases, "$n$ is even" and "$n$ is
+            positive", and proves the claim in each. Does it prove the claim for every integer?
+          answer:
+            type: choice
+            options:
+              - { id: yes, label: 'Yes: each case is proved' }
+              - { id: overlap, label: 'No: the cases overlap, since 4 is in both' }
+              - { id: gap, label: 'No: an integer that is odd and not positive, such as $-3$, is in neither case' }
+            correct: [gap]
+          explanation: >-
+            Cases may overlap, which only proves some integers twice, but together they must cover
+            everything. These two leave out the odd integers that are 0 or less, such as $-3$.
+        - prompt: Is $n(n + 1)(n + 2)$ a multiple of 3 for every integer $n$?
+          answer:
+            type: choice
+            options:
+              - { id: checked, label: 'Yes: it is for every $n$ from 1 to 10' }
+              - { id: no, label: 'No: $1 \times 2 \times 3 = 6$ and $2 \times 3 \times 4 = 24$ are not multiples of 3' }
+              - { id: cases, label: 'Yes: $n$ is $3k$, $3k + 1$ or $3k + 2$, and in each case one of the three factors is a multiple of 3' }
+            correct: [cases]
+          explanation: >-
+            If $n = 3k$, $n$ itself is a multiple of 3; if $n = 3k + 1$, then $n + 2 = 3(k + 1)$; and if
+            $n = 3k + 2$, then $n + 1 = 3(k + 1)$. The three cases cover every integer. 6 and 24 are
+            multiples of 3, and ten checks are only evidence.
+
+  - id: explore-which-to-prove
+    phase: explore
+    kind: predict
+    concept: M1.8/contrapositive-proof
+    title: Turning the claim round
+    prompt: Which of these, once proved, also proves that if $n^2$ is even, then $n$ is even?
+    answer:
+      type: choice
+      options:
+        - { id: converse, label: 'If $n$ is even, then $n^2$ is even' }
+        - { id: example, label: '4 is even, and so is its square, 16' }
+        - { id: inverse, label: 'If $n^2$ is odd, then $n$ is odd' }
+        - { id: contrapositive, label: 'If $n$ is odd, then $n^2$ is odd' }
+      correct: [contrapositive]
+    explanation: >-
+      Denying both parts and swapping them gives the contrapositive, "if $n$ is odd, then $n^2$ is
+      odd", which says exactly the same as the claim. The converse swaps the parts without denying
+      them, "if $n^2$ is odd, then $n$ is odd" denies them without swapping, which says the same as
+      the converse, and an example proves nothing about every integer.
+    placement: true
+    review:
+      variants:
+        - prompt: >-
+            To prove "if $xy$ is odd, then $x$ and $y$ are both odd" by the contrapositive, what do you
+            suppose at the start?
+          answer:
+            type: choice
+            options:
+              - { id: xy-even, label: '$xy$ is even' }
+              - { id: one-even, label: '$x$ is even or $y$ is even' }
+              - { id: both-odd, label: '$x$ and $y$ are both odd' }
+              - { id: both-even, label: '$x$ and $y$ are both even' }
+            correct: [one-even]
+          explanation: >-
+            The contrapositive is "if not ($x$ and $y$ both odd), then $xy$ is not odd". By De Morgan's
+            laws, not ($x$ odd and $y$ odd) is $x$ even or $y$ even, so you suppose that, and prove that
+            $xy$ is even.
+        - prompt: >-
+            A proof of "if a training run diverged, then its learning rate was above 0.1" begins
+            "Suppose that the learning rate was at most 0.1." What must it go on to show?
+          answer:
+            type: choice
+            options:
+              - { id: diverged, label: 'That the run diverged' }
+              - { id: above, label: 'That the learning rate was above 0.1' }
+              - { id: not-diverged, label: 'That the run did not diverge' }
+            correct: [not-diverged]
+          explanation: >-
+            Starting from not $Q$, a rate of at most 0.1, a proof by the contrapositive must reach
+            not $P$: the run did not diverge.
+        - prompt: Which pair of statements says exactly the same?
+          answer:
+            type: choice
+            options:
+              - { id: converse, label: '"If $n$ is a multiple of 4, then $n$ is even" and "if $n$ is even, then $n$ is a multiple of 4"' }
+              - { id: inverse, label: '"If $n$ is a multiple of 6, then $n$ is even" and "if $n$ is not a multiple of 6, then $n$ is not even"' }
+              - { id: contrapositive, label: '"If $n^2$ is a multiple of 3, then $n$ is a multiple of 3" and "if $n$ is not a multiple of 3, then $n^2$ is not a multiple of 3"' }
+            correct: [contrapositive]
+          explanation: >-
+            The third pair is a claim and its contrapositive. The first pairs a true claim with its
+            converse, which 6 breaks, and the second pairs a true claim with its inverse, which 2 breaks.
+
+  - id: explore-root-two
+    phase: explore
+    kind: predict
+    concept: M1.8/contradiction
+    title: Both even
+    prompt: Every step after "suppose" follows from the one before. What does the reasoning show?
+    answer:
+      type: choice
+      options:
+        - { id: fraction, label: 'That $\sqrt{2}$ is a fraction after all, with $p$ and $q$ both even' }
+        - { id: false-supposition, label: 'That the supposition is false, so $\sqrt{2}$ cannot be written as a fraction' }
+        - { id: bad-step, label: 'That the step from "$p^2$ is even" to "$p$ is even" must be wrong, since it led to a problem' }
+        - { id: squaring, label: 'Nothing, since squaring both sides can add solutions, as in M1.2' }
+      correct: [false-supposition]
+    explanation: >-
+      The supposition said that $p$ and $q$ are not both even, and valid steps led to both even: a
+      statement and its denial, both true. So the supposition is false, and no fraction equals
+      $\sqrt{2}$. The step about $p^2$ rests on a claim that is proved, so it is not the culprit, and
+      squaring runs one way only here, from $\sqrt{2} = \frac{p}{q}$ to $p^2 = 2q^2$, which is all the
+      reasoning needs.
+    placement: true
+    review:
+      variants:
+        - prompt: To prove by contradiction that there is no largest whole number, how does the proof begin?
+          answer:
+            type: choice
+            options:
+              - { id: no-largest, label: '"Suppose that there is no largest whole number."' }
+              - { id: below, label: '"Suppose that every whole number is less than 1,000,000."' }
+              - { id: largest, label: '"Suppose that there is a largest whole number, $N$."' }
+            correct: [largest]
+          explanation: >-
+            A proof by contradiction supposes the denial of the claim: that there is a largest whole
+            number, $N$. Then $N + 1$ is a larger one, a contradiction.
+        - prompt: A proof supposes that a claim is false and, by valid steps, reaches a contradiction. What has it shown?
+          answer:
+            type: choice
+            options:
+              - { id: claim-true, label: 'That the claim is true' }
+              - { id: unknown, label: 'Nothing yet, until the claim is checked on examples as well' }
+              - { id: claim-false, label: 'That the claim is false' }
+              - { id: both, label: 'That the claim is both true and false' }
+            correct: [claim-true]
+          explanation: >-
+            If every step was valid, the only thing that can be wrong is the supposition, so the
+            claim's denial is false, and the claim is true.
+        - prompt: >-
+            The proof that $\sqrt{2}$ is irrational supposes that $\sqrt{2} = \frac{p}{q}$ in lowest
+            terms. Why does it need "in lowest terms"?
+          answer:
+            type: choice
+            options:
+              - { id: small, label: 'Only to keep the numbers small' }
+              - { id: contradiction, label: 'Because the contradiction is with it: the steps show that $p$ and $q$ are both even, which lowest terms rules out' }
+              - { id: needless, label: 'It does not need it: any fraction would do' }
+            correct: [contradiction]
+          explanation: >-
+            Without it, $p$ and $q$ both even would be no contradiction, since $\frac{2}{2}$ has both
+            even. Every fraction can be put in lowest terms, so supposing it costs nothing.
+
+  - id: explore-euclid
+    phase: explore
+    kind: predict
+    concept: M1.8/contradiction
+    title: Euclid's number for six primes
+    prompt: Is 30,031 prime?
+    answer:
+      type: choice
+      options:
+        - { id: always, label: "Yes: Euclid's proof shows that such a number is always prime" }
+        - { id: no-small, label: 'Yes: no prime up to 13 divides it, so no prime divides it' }
+        - { id: thirteen, label: 'No: 13 divides it' }
+        - { id: bigger, label: 'No: it has a prime factor larger than 13' }
+      correct: [bigger]
+    explanation: >-
+      $30{,}031 = 59 \times 509$. No prime on the list divides it, since each leaves a remainder of
+      1, but its prime factors, 59 and 509, are primes that are not on the list. The proof said only
+      that $N$ has a prime factor missing from the list, never that $N$ is prime.
+    review:
+      variants:
+        - prompt: >-
+            Euclid's proof makes $N = 2 \times 3 \times 5 \times \dots \times P + 1$ from a list of
+            primes supposed to be complete. Which of these does the proof use?
+          answer:
+            type: choice
+            options:
+              - { id: prime, label: '$N$ is prime' }
+              - { id: remainder, label: 'Each prime on the list leaves a remainder of 1 when it divides $N$' }
+              - { id: largest, label: '$P$ is the largest number that is not prime' }
+            correct: [remainder]
+          explanation: >-
+            The remainder of 1 shows that no prime on the list divides $N$. Whether $N$ itself is prime
+            is never needed: its prime factors are missing from the list either way.
+        - prompt: What is $2 \times 3 \times 5 \times 7 + 1$, and is it prime?
+          answer:
+            type: choice
+            options:
+              - { id: product, label: '210, which is not prime' }
+              - { id: factored, label: '211, which is $11 \times 19$' }
+              - { id: prime, label: '211, which is prime' }
+            correct: [prime]
+          explanation: >-
+            $2 \times 3 \times 5 \times 7 = 210$, and 211 is prime: no prime up to $\sqrt{211}$, about
+            14.5, divides it, and $11 \times 19$ is 209. Euclid's numbers for the first one to five
+            primes are all prime, 3, 7, 31, 211 and 2,311, and the sixth, 30,031, is the first that is
+            not.
+        - prompt: >-
+            Euclid's argument works for any list of primes. For the list 3, 5 and 7 it makes
+            $3 \times 5 \times 7 + 1 = 106$. What is the smallest prime factor of 106?
+          answer: { type: number, value: 2, tolerance: { abs: 0 } }
+          explanation: >-
+            $106 = 2 \times 53$, and both 2 and 53 are missing from the list 3, 5 and 7, as the argument
+            says a prime factor must be.
+
+  - id: explore-converse-argument
+    phase: explore
+    kind: predict
+    concept: M1.8/proof
+    title: A gap in the losses
+    prompt: Is the team's argument valid, so that its conclusion must be true whenever its first two sentences are?
+    answer:
+      type: choice
+      options:
+        - { id: valid, label: 'Yes: the conclusion follows from the first two sentences' }
+        - { id: either-way, label: 'Yes: the first sentence and its contrapositive say the same, so it can be read either way' }
+        - { id: converse, label: 'No: the first sentence promises nothing about a model that has not memorised, and such a model could have the same gap' }
+        - { id: false-premise, label: 'No: the first sentence is false, so nothing follows from it' }
+      correct: [converse]
+    explanation: >-
+      The argument has the shape "$P \Rightarrow Q$, and $Q$, so $P$", which needs the converse,
+      $Q \Rightarrow P$. A test set unlike the training data, or a bug in the code that works out the
+      test loss, gives the same gap without any memorising. The contrapositive runs the other way:
+      from $\neg Q$ it gives $\neg P$.
+    placement: true
+    review:
+      variants:
+        - prompt: '"If it rained last night, the grass is wet. The grass is wet. So it rained last night." Is the argument valid?'
+          answer:
+            type: choice
+            options:
+              - { id: valid, label: 'Yes: the conclusion follows' }
+              - { id: converse, label: 'No: it needs the converse, and a garden sprinkler wets the grass too' }
+              - { id: only-if, label: 'Only if it really did rain' }
+            correct: [converse]
+          explanation: >-
+            From $P \Rightarrow Q$ and $Q$, nothing follows about $P$. Wet grass agrees with rain, and
+            with a sprinkler, a burst pipe or dew.
+        - prompt: >-
+            "If the code has this bug, the test fails. The test passes. So the code does not have this
+            bug." Is the argument valid?
+          answer:
+            type: choice
+            options:
+              - { id: converse, label: 'No: it proves the converse' }
+              - { id: passing, label: 'No: a passing test never proves anything' }
+              - { id: valid, label: 'Yes: by the contrapositive, a passing test rules the bug out' }
+            correct: [valid]
+          explanation: >-
+            The first sentence's contrapositive is "if the test passes, the code does not have this
+            bug", so the conclusion follows from a passing test, as long as the first sentence is true.
+            That is the valid form: from $P \Rightarrow Q$ and $\neg Q$, conclude $\neg P$.
+        - prompt: >-
+            "If a model is overfitting, its validation loss rises while its training loss falls. Our
+            validation loss rose while the training loss fell. So our model is overfitting." Which
+            form does the argument have?
+          answer:
+            type: choice
+            options:
+              - { id: tollens, label: 'From $P \Rightarrow Q$ and $\neg Q$, conclude $\neg P$' }
+              - { id: ponens, label: 'From $P \Rightarrow Q$ and $P$, conclude $Q$' }
+              - { id: converse, label: 'From $P \Rightarrow Q$ and $Q$, conclude $P$' }
+            correct: [converse]
+          explanation: >-
+            It argues from $Q$ back to $P$, which needs the converse, so it is not valid as it stands,
+            however often overfitting is in fact the cause.
+
+  - id: explore-one-is-two
+    phase: explore
+    kind: predict
+    concept: M1.8/proof
+    title: A proof that 2 is 1
+    prompt: Which step of the "proof" is wrong?
+    answer:
+      type: choice
+      options:
+        - { id: step-5, label: 'Step 5, which divides both sides by $a - b$' }
+        - { id: step-2, label: 'Step 2, since multiplying both sides by $a$ can add a solution' }
+        - { id: step-4, label: 'Step 4, since $a^2 - b^2$ is not $(a + b)(a - b)$' }
+        - { id: step-7, label: 'Step 7, which divides both sides by $b$' }
+      correct: [step-5]
+    explanation: >-
+      Since $a = b$, $a - b$ is 0, and dividing by 0 is not allowed. Step 4 holds only because both
+      sides are 0, so it cannot show that $a + b = b$. Multiplying both sides by $a$ keeps a true
+      equation true, $a^2 - b^2$ is $(a + b)(a - b)$, and $b$ is not 0, so step 7 is allowed.
+    review:
+      variants:
+        - prompt: >-
+            Starting from $x^2 = 3x$, a student divides both sides by $x$ and concludes that the only
+            solution is $x = 3$. What has gone wrong?
+          answer:
+            type: choice
+            options:
+              - { id: nothing, label: 'Nothing: 3 is the only solution' }
+              - { id: zero, label: 'Dividing by $x$ assumes that $x$ is not 0, and $x = 0$ is a solution too' }
+              - { id: negative, label: 'It lost the solution $x = -3$' }
+            correct: [zero]
+          explanation: >-
+            $x^2 = 3x$ is $x(x - 3) = 0$, so $x = 0$ or $x = 3$. Dividing by $x$ is allowed only where
+            $x$ is not 0, so it quietly lost $x = 0$, as M1.2 found.
+        - prompt: 'A "proof" that $1 = -1$ reads $1 = \sqrt{1} = \sqrt{(-1)^2} = -1$. Which equals sign is wrong?'
+          answer:
+            type: choice
+            options:
+              - { id: first, label: 'The first, $1 = \sqrt{1}$' }
+              - { id: second, label: 'The second, $\sqrt{1} = \sqrt{(-1)^2}$' }
+              - { id: third, label: 'The third, $\sqrt{(-1)^2} = -1$' }
+            correct: [third]
+          explanation: >-
+            $(-1)^2 = 1$, and $\sqrt{1}$ is 1, the root that is not negative, so $\sqrt{(-1)^2} = 1$, not
+            $-1$. Squaring loses the sign, and a square root cannot bring it back.
+
+  # Derive ---------------------------------------------------------------------
+  - id: derive-odd-square
+    phase: derive
+    kind: step
+    concept: M1.8/contrapositive-proof
+    covers: [M1.8/direct-proof]
+    title: An odd square
+    prompt: With $n = 2k + 1$, write $n^2$ in the form $2m + 1$. What is $m$, in terms of $k$?
+    answer:
+      type: expression
+      symbols:
+        - { name: k, integer: true }
+      lhs: 'm ='
+      reference: 2*k**2 + 2*k
+      accept: ['2*k*(k + 1)', '2*k^2 + 2*k', '2k^2+2k']
+      reject: ['4*k**2 + 4*k', '2*k**2 + 2*k + 1', 'k**2 + k', '4*k**2 + 4*k + 1', '2*k**2 + k', '4*k**2 + 2*k']
+    explanation: >-
+      $n^2 = (2k + 1)^2 = 4k^2 + 4k + 1 = 2(2k^2 + 2k) + 1$, so $m = 2k^2 + 2k$, an integer whenever
+      $k$ is one.
+
+  - id: derive-contrapositive-proof
+    phase: derive
+    kind: proof
+    concept: M1.8/contrapositive-proof
+    covers: [M1.8/direct-proof]
+    title: If the square is even
+    prompt: >-
+      Here is a proof that, for every integer $n$, if $n^2$ is even, then $n$ is even. Each line
+      follows from the lines above it. Choose the rule that justifies each line. A rule may be used
+      more than once or not at all.
+    answer:
+      type: steps
+      rules:
+        - { id: def-even, name: Even, label: 'An integer is even when it is $2k$ for some integer $k$.' }
+        - { id: def-odd, name: Odd, label: 'An integer is odd when it is $2k + 1$ for some integer $k$.' }
+        - { id: not-even, name: Not even is odd, label: 'An integer that is not even is odd, and one that is not odd is even.' }
+        - { id: contrapositive, name: Contrapositive, label: '$P \Rightarrow Q$ says the same as $\neg Q \Rightarrow \neg P$, so proving one proves the other.' }
+        - { id: contradiction, name: Contradiction, label: 'If supposing a statement leads to a statement and its denial, the supposition is false.' }
+        - { id: multiply-out, name: Multiply out, label: 'Multiplying out a bracket gives an equal expression.' }
+        - { id: factor, name: Take out a factor, label: 'Taking a common factor out of several terms gives an equal expression, as $2a + 2b = 2(a + b)$.' }
+      start: '\text{Claim: if } n^2 \text{ is even, then } n \text{ is even.}'
+      lines:
+        - math: '\text{It is enough to prove: if } n \text{ is not even, then } n^2 \text{ is not even.}'
+          rule: contrapositive
+        - math: '\text{That is: if } n \text{ is odd, then } n^2 \text{ is odd. Suppose that } n \text{ is odd.}'
+          rule: not-even
+        - math: 'n = 2k + 1 \text{ for some integer } k'
+          rule: def-odd
+        - math: 'n^2 = 4k^2 + 4k + 1'
+          rule: multiply-out
+        - math: 'n^2 = 2(2k^2 + 2k) + 1'
+          rule: factor
+        - math: 'n^2 \text{ is odd, since } 2k^2 + 2k \text{ is an integer}'
+          rule: def-odd
+    explanation: >-
+      The proof swaps the claim for its contrapositive, reads "not even" as "odd", writes the odd $n$
+      out by the definition, multiplies out, takes the factor 2 out of the first two terms, and reads
+      the result by the definition of odd. Even and Contradiction are never needed.
+
+  - id: derive-root-two
+    phase: derive
+    kind: proof
+    concept: M1.8/contradiction
+    covers: [M1.8/contrapositive-proof]
+    title: Root two is not a fraction
+    prompt: >-
+      Each line follows from the lines above it. Choose the rule that justifies each line. A rule may
+      be used more than once or not at all.
+    answer:
+      type: steps
+      rules:
+        - { id: def-even, name: Even, label: 'An integer is even when it is $2k$ for some integer $k$.' }
+        - { id: even-square, name: Even square, label: 'If $n^2$ is even, then $n$ is even, as proved above.' }
+        - { id: contrapositive, name: Contrapositive, label: '$P \Rightarrow Q$ says the same as $\neg Q \Rightarrow \neg P$.' }
+        - { id: contradiction, name: Contradiction, label: 'If supposing a statement leads to a statement and its denial, the supposition is false.' }
+        - { id: both-sides, name: Same on both sides, label: 'Doing the same to both sides of an equation, such as squaring them, or multiplying or dividing them by the same number other than 0, keeps it true.' }
+        - { id: substitute, name: Substitute, label: 'A letter may be replaced by what it equals.' }
+      start: '\text{Suppose } \sqrt{2} = \tfrac{p}{q}\text{, with } p, q \text{ integers, } q \neq 0\text{, not both even.}'
+      lines:
+        - math: 'p^2 = 2q^2'
+          rule: both-sides
+        - math: 'p^2 \text{ is even}'
+          rule: def-even
+        - math: 'p \text{ is even}'
+          rule: even-square
+        - math: 'p = 2r \text{ for some integer } r'
+          rule: def-even
+        - math: '4r^2 = 2q^2'
+          rule: substitute
+        - math: 'q^2 = 2r^2'
+          rule: both-sides
+        - math: 'q^2 \text{ is even}'
+          rule: def-even
+        - math: 'q \text{ is even}'
+          rule: even-square
+        - math: 'p \text{ and } q \text{ are both even, against the start, so } \sqrt{2} \text{ is not a fraction}'
+          rule: contradiction
+    explanation: >-
+      Square both sides and multiply them by $q^2$, read $p^2 = 2q^2$ by the definition of even, use
+      the result proved above to get $p$ even, write $p = 2r$ by the definition, substitute, halve
+      both sides, and do the same again for $q$. Then the start, which said not both even, is
+      contradicted. The contrapositive is not cited, since it was used inside the proof of the
+      even-square result.
+
+  - id: derive-three-square
+    phase: derive
+    kind: step
+    concept: M1.8/direct-proof
+    covers: [M1.8/contrapositive-proof]
+    title: The second case
+    prompt: With $n = 3k + 2$, write $n^2$ in the form $3m + 1$. What is $m$, in terms of $k$?
+    answer:
+      type: expression
+      symbols:
+        - { name: k, integer: true }
+      lhs: 'm ='
+      reference: 3*k**2 + 4*k + 1
+      accept: ['(3*k + 1)*(k + 1)', '3*k^2 + 4*k + 1', '3k^2+4k+1']
+      reject: ['3*k**2 + 4*k', '9*k**2 + 12*k + 3', '3*k**2 + 4*k + 4', '3*k**2 + 2*k', '9*k**2 + 12*k + 4', '3*k**2 + 12*k + 1', '3*k**2 + 4*k + 3']
+    explanation: >-
+      $n^2 = 9k^2 + 12k + 4 = (9k^2 + 12k + 3) + 1 = 3(3k^2 + 4k + 1) + 1$, so $m = 3k^2 + 4k + 1$.
+      The 4 splits into $3 + 1$: the 3 joins the multiple of 3, and the 1 is the remainder.
+
+  - id: derive-small-factor
+    phase: derive
+    kind: proof
+    concept: M1.8/contradiction
+    title: A factor below the square root
+    prompt: >-
+      Prove that every whole number $n$ of at least 2 that is not prime has a factor $d$ with
+      $2 \le d \le \sqrt{n}$. Start from what "not prime" means, write $n = ab$, and suppose, for a
+      contradiction, that $a$ and $b$ are both greater than $\sqrt{n}$.
+    answer:
+      type: text
+      rubric:
+        - { id: setup, criterion: 'Writes $n = ab$ with whole numbers $a$ and $b$, each at least 2 and less than $n$, because $n$ is at least 2 and not prime.' }
+        - { id: suppose, criterion: 'Supposes, for a contradiction, that $a > \sqrt{n}$ and $b > \sqrt{n}$.' }
+        - { id: multiply, criterion: 'Multiplies the two inequalities, which is allowed because every number in them is positive, to get $ab > \sqrt{n} \times \sqrt{n} = n$.' }
+        - { id: contradiction, criterion: 'Says that $ab > n$ contradicts $ab = n$, so the supposition is false.' }
+        - { id: conclude, criterion: 'Concludes that $a \le \sqrt{n}$ or $b \le \sqrt{n}$, so one of them is a factor $d$ with $2 \le d \le \sqrt{n}$.' }
+      reference: >-
+        Since $n$ is at least 2 and not prime, it has a factor other than 1 and $n$, so $n = ab$ for
+        whole numbers $a$ and $b$ with $2 \le a \le n - 1$ and $2 \le b \le n - 1$. Suppose, for a
+        contradiction, that $a > \sqrt{n}$ and $b > \sqrt{n}$. Every number in these two inequalities
+        is positive, so they can be multiplied, giving $ab > \sqrt{n} \times \sqrt{n} = n$. But
+        $ab = n$, and $n > n$ is impossible. So the supposition is false: $a \le \sqrt{n}$ or
+        $b \le \sqrt{n}$. Whichever it is, that number is a factor $d$ of $n$ with $2 \le d \le \sqrt{n}$.
+        So to test whether $n$ is prime, it is enough to try the divisors from 2 to $\sqrt{n}$: if none
+        of them divides $n$, then $n$ is prime.
+      minWords: 40
+      maxWords: 250
+
+  # Build ----------------------------------------------------------------------
+  - id: build-prime-test
+    phase: build
+    kind: build
+    concept: M1.8/contradiction
+    title: A test for primes
+    prompt: >-
+      Replace each `None`. `smallest_factor(n)` gives the smallest whole number from 2 up that divides
+      `n`: it tries each `d` from 2 to `isqrt(n)`, and gives `n` itself when none of them divides it.
+      `is_prime(n)` says whether `n` is prime.
+    answer:
+      type: code
+      starter: |
+        from math import isqrt
+
+        def smallest_factor(n):
+            """The smallest whole number from 2 up that divides n, for a whole number n of at
+            least 2. When no d from 2 to isqrt(n) divides n, n is prime and is its own smallest
+            factor."""
+            return None
+
+        def is_prime(n):
+            """True when n is prime: a whole number of at least 2 whose smallest factor is itself."""
+            return None
+
+        print(smallest_factor(91), smallest_factor(97))
+        print(is_prime(97), is_prime(91), is_prime(1))
+      tests: |
+        from math import isqrt
+
+        def test_filled():
+            """smallest_factor and is_prime both give an answer, not None."""
+            assert smallest_factor(15) is not None, "Replace the None in smallest_factor."
+            assert is_prime(15) is not None, "Replace the None in is_prime."
+
+        def test_smallest_factor():
+            """smallest_factor finds the smallest factor from 2 up."""
+            for n, right in ((4, 2), (15, 3), (91, 7), (221, 13), (30031, 59)):
+                got = smallest_factor(n)
+                assert got == right, f"smallest_factor({n}) gives {got}, not {right}."
+
+        def test_square_root_itself():
+            """The search tries isqrt(n) itself, so 1,681 = 41 × 41 and 1,763 = 41 × 43 are caught."""
+            for n, right in ((9, 3), (49, 7), (1681, 41), (1763, 41)):
+                got = smallest_factor(n)
+                assert got == right, f"smallest_factor({n}) gives {got}, not {right}: the search must try every d up to and including isqrt({n}), which is {isqrt(n)}."
+
+        def test_prime_is_its_own_factor():
+            """A prime is its own smallest factor."""
+            for n in (2, 3, 13, 97, 999983):
+                got = smallest_factor(n)
+                assert got == n, f"smallest_factor({n}) gives {got}, but {n} is prime, so it should give {n}."
+
+        def test_primes_below_sixty():
+            """is_prime picks out exactly the primes below 60."""
+            right = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59]
+            got = [n for n in range(60) if is_prime(n)]
+            assert got == right, f"The whole numbers below 60 that is_prime calls prime are {got}, not {right}."
+
+        def test_below_two():
+            """0 and 1 are not prime."""
+            for n in (0, 1):
+                got = is_prime(n)
+                assert got is False, f"is_prime({n}) gives {got}, not False: a prime is at least 2."
+
+        def test_large_prime():
+            """10,000,019 is prime, and is_prime finds it in good time by stopping at its square root, about 3,162."""
+            got = is_prime(10000019)
+            assert got is True, f"is_prime(10000019) gives {got}, not True."
+
+        def test_true_or_false():
+            """is_prime gives True or False."""
+            for n in (2, 9, 97, 100):
+                got = is_prime(n)
+                assert got is True or got is False, f"is_prime({n}) gives {got}, not True or False."
+      reference: |
+        from math import isqrt
+
+        def smallest_factor(n):
+            """The smallest whole number from 2 up that divides n, for a whole number n of at
+            least 2. When no d from 2 to isqrt(n) divides n, n is prime and is its own smallest
+            factor."""
+            for d in range(2, isqrt(n) + 1):
+                if n % d == 0:
+                    return d
+            return n
+
+        def is_prime(n):
+            """True when n is prime: a whole number of at least 2 whose smallest factor is itself."""
+            return n >= 2 and smallest_factor(n) == n
+
+        print(smallest_factor(91), smallest_factor(97))
+        print(is_prime(97), is_prime(91), is_prime(1))
+      wrong:
+        - code: |
+            from math import isqrt
+
+            def smallest_factor(n):
+                for d in range(2, isqrt(n)):
+                    if n % d == 0:
+                        return d
+                return n
+
+            def is_prime(n):
+                return n >= 2 and smallest_factor(n) == n
+          why: Stops one divisor short, so it never tries isqrt(n), and calls prime every number whose smallest factor is isqrt(n), such as 4, 6, 9 and 1,681.
+        - code: |
+            from math import isqrt
+
+            def smallest_factor(n):
+                for d in range(2, isqrt(n) + 1):
+                    if n % d == 0:
+                        return d
+                return n
+
+            def is_prime(n):
+                return smallest_factor(n) == n
+          why: Leaves out n >= 2, so 0 and 1, which come out as their own smallest factor, count as prime.
+        - code: |
+            from math import isqrt
+
+            def smallest_factor(n):
+                for d in range(2, isqrt(n) + 1):
+                    if n % d == 0:
+                        return d
+                    else:
+                        return n
+                return n
+
+            def is_prime(n):
+                return n >= 2 and smallest_factor(n) == n
+          why: Gives n as soon as the first d fails to divide it, instead of after trying every d.
+        - code: |
+            def smallest_factor(n):
+                for d in range(2, n):
+                    if n % d == 0:
+                        return d
+                return n
+
+            def is_prime(n):
+                return n >= 2 and smallest_factor(n) == n
+          why: Tries every d up to n, which gives the right answers but runs out of steps on a prime as large as 10,000,019.
+    explanation: >-
+      `for d in range(2, isqrt(n) + 1)` tries every divisor up to and including `isqrt(n)`, the first
+      `d` with `n % d == 0` is returned at once, and `n` is returned when none divides it. Then
+      `is_prime(n)` is `n >= 2 and smallest_factor(n) == n`.
+
+  - id: build-break-shift
+    phase: build
+    kind: breakit
+    concept: M1.8/proof
+    title: A minus sign
+    prompt: Predict what happens after the change, then run both versions to see.
+    answer:
+      type: breakit
+      code: |
+        from math import isqrt
+
+        def smallest_factor(n):
+            for d in range(2, isqrt(n) + 1):
+                if n % d == 0:
+                    return d
+            return n
+
+        def is_prime(n):
+            return n >= 2 and smallest_factor(n) == n
+
+        print(all(is_prime(n * n + n + 41) for n in range(41)))
+      broken: |
+        from math import isqrt
+
+        def smallest_factor(n):
+            for d in range(2, isqrt(n) + 1):
+                if n % d == 0:
+                    return d
+            return n
+
+        def is_prime(n):
+            return n >= 2 and smallest_factor(n) == n
+
+        print(all(is_prime(n * n - n + 41) for n in range(41)))
+      change: The formula is now $n^2 - n + 41$, checked for the same values of $n$, 0 to 40.
+      options:
+        - { id: same, label: 'It still prints `False`', when: "output.strip() == 'False'" }
+        - { id: error, label: 'Python stops with an error', when: 'error is not None' }
+        - { id: prints-true, label: 'It prints `True`', when: "output.strip() == 'True'" }
+    explanation: >-
+      It prints `True`. $n^2 - n + 41$ takes at $n$ the value that $n^2 + n + 41$ takes at $n - 1$,
+      so from 0 to 40 it gives 41 and then the forty primes from 41 to 1,601, and it first fails at
+      $n = 41$, one step past the check.
+
+  - id: build-first-failure
+    phase: build
+    kind: build
+    concept: M1.8/proof
+    title: The first counterexample
+    prompt: >-
+      Replace the `None` in `first_failure` so that it gives the first whole number `n` from 0 up to,
+      but not including, `limit` for which `f(n)` is not prime, or `None` when there is no such `n`.
+    answer:
+      type: code
+      starter: |
+        from math import isqrt
+
+        def smallest_factor(n):
+            for d in range(2, isqrt(n) + 1):
+                if n % d == 0:
+                    return d
+            return n
+
+        def is_prime(n):
+            return n >= 2 and smallest_factor(n) == n
+
+        def first_failure(f, limit):
+            """The first whole number n from 0 up to, but not including, limit for which f(n) is
+            not prime, or None when f(n) is prime for every such n."""
+            return None
+
+        def euler(n):
+            return n * n + n + 41
+
+        print(first_failure(euler, 100))
+        print(first_failure(euler, 40))
+      tests: |
+        def euler(n):
+            return n * n + n + 41
+
+        def legendre(n):
+            return n * n - n + 41
+
+        def double(n):
+            return 2 * n
+
+        def plus_two(n):
+            return n + 2
+
+        def test_filled():
+            """first_failure gives an answer for the puzzle's formula, not None."""
+            assert first_failure(euler, 100) is not None, "Replace the None in first_failure: the puzzle's formula fails below 100."
+
+        def test_euler():
+            """The puzzle's formula first fails at n = 40."""
+            got = first_failure(euler, 100)
+            assert got == 40, f"first_failure(euler, 100) gives {got}, not 40. It should give n, the number put into the formula, not the formula's value."
+
+        def test_no_failure():
+            """When f(n) is prime for every n below limit, first_failure gives None."""
+            got = first_failure(euler, 40)
+            assert got is None, f"first_failure(euler, 40) gives {got}, not None: n = 40 is not below the limit."
+
+        def test_moved_along():
+            """n² − n + 41 first fails at n = 41."""
+            got = first_failure(legendre, 100)
+            assert got == 41, f"first_failure(legendre, 100) gives {got}, not 41."
+
+        def test_starts_at_zero():
+            """The search starts at n = 0."""
+            got = first_failure(double, 10)
+            assert got == 0, f"For f(n) = 2n, first_failure gives {got}, not 0: f(0) is 0, which is not prime."
+            got = first_failure(plus_two, 10)
+            assert got == 2, f"For f(n) = n + 2, first_failure gives {got}, not 2: f(0) = 2 and f(1) = 3 are prime, and f(2) = 4 is not."
+
+        def test_empty_range():
+            """With limit 0 there is nothing to check, so there is no failure."""
+            got = first_failure(double, 0)
+            assert got is None, f"first_failure(double, 0) gives {got}, not None."
+      reference: |
+        from math import isqrt
+
+        def smallest_factor(n):
+            for d in range(2, isqrt(n) + 1):
+                if n % d == 0:
+                    return d
+            return n
+
+        def is_prime(n):
+            return n >= 2 and smallest_factor(n) == n
+
+        def first_failure(f, limit):
+            """The first whole number n from 0 up to, but not including, limit for which f(n) is
+            not prime, or None when f(n) is prime for every such n."""
+            for n in range(limit):
+                if not is_prime(f(n)):
+                    return n
+            return None
+
+        def euler(n):
+            return n * n + n + 41
+
+        print(first_failure(euler, 100))
+        print(first_failure(euler, 40))
+      wrong:
+        - code: |
+            from math import isqrt
+
+            def smallest_factor(n):
+                for d in range(2, isqrt(n) + 1):
+                    if n % d == 0:
+                        return d
+                return n
+
+            def is_prime(n):
+                return n >= 2 and smallest_factor(n) == n
+
+            def first_failure(f, limit):
+                for n in range(limit):
+                    if not is_prime(f(n)):
+                        return f(n)
+                return None
+          why: Gives the formula's value, 1,681, instead of n.
+        - code: |
+            from math import isqrt
+
+            def smallest_factor(n):
+                for d in range(2, isqrt(n) + 1):
+                    if n % d == 0:
+                        return d
+                return n
+
+            def is_prime(n):
+                return n >= 2 and smallest_factor(n) == n
+
+            def first_failure(f, limit):
+                for n in range(1, limit):
+                    if not is_prime(f(n)):
+                        return n
+                return None
+          why: Starts the search at 1, so it misses a failure at n = 0.
+        - code: |
+            from math import isqrt
+
+            def smallest_factor(n):
+                for d in range(2, isqrt(n) + 1):
+                    if n % d == 0:
+                        return d
+                return n
+
+            def is_prime(n):
+                return n >= 2 and smallest_factor(n) == n
+
+            def first_failure(f, limit):
+                for n in range(limit):
+                    if not is_prime(f(n)):
+                        return n
+                    return None
+          why: Gives None as soon as the first value is prime, instead of after the whole search.
+        - code: |
+            from math import isqrt
+
+            def smallest_factor(n):
+                for d in range(2, isqrt(n) + 1):
+                    if n % d == 0:
+                        return d
+                return n
+
+            def is_prime(n):
+                return n >= 2 and smallest_factor(n) == n
+
+            def first_failure(f, limit):
+                for n in range(limit):
+                    if not is_prime(n):
+                        return n
+                return None
+          why: Tests whether n is prime, not whether f(n) is.
+    explanation: >-
+      `for n in range(limit)` runs through 0 to `limit - 1`, the first `n` with
+      `not is_prime(f(n))` is returned at once, and `None` is returned only after the loop has
+      found no failure.
+
+  - id: build-break-square
+    phase: build
+    kind: breakit
+    concept: M1.8/contradiction
+    title: One divisor fewer
+    prompt: Predict what happens after the change, then run both versions to see.
+    answer:
+      type: breakit
+      code: |
+        from math import isqrt
+
+        def smallest_factor(n):
+            for d in range(2, isqrt(n) + 1):
+                if n % d == 0:
+                    return d
+            return n
+
+        def is_prime(n):
+            return n >= 2 and smallest_factor(n) == n
+
+        print(is_prime(1681), is_prime(1763))
+      broken: |
+        from math import isqrt
+
+        def smallest_factor(n):
+            for d in range(2, isqrt(n)):
+                if n % d == 0:
+                    return d
+            return n
+
+        def is_prime(n):
+            return n >= 2 and smallest_factor(n) == n
+
+        print(is_prime(1681), is_prime(1763))
+      change: The search's range now stops one divisor sooner, at `isqrt(n) - 1`.
+      options:
+        - { id: same, label: 'It still prints `False False`', when: "output.strip() == 'False False'" }
+        - { id: square-only, label: 'It prints `True False`: only 1,681, a square, slips through', when: "output.strip() == 'True False'" }
+        - { id: both, label: 'It prints `True True`', when: "output.strip() == 'True True'" }
+        - { id: error, label: 'Python stops with an error', when: 'error is not None' }
+    explanation: >-
+      It prints `True True`. `isqrt(1681)` and `isqrt(1763)` are both 41, and 41 is the smallest
+      factor of each, $1{,}681 = 41 \times 41$ and $1{,}763 = 41 \times 43$, so the shorter range,
+      which stops at 40, finds no factor of either.
+
+  - id: build-euclid
+    phase: build
+    kind: build
+    concept: M1.8/contradiction
+    title: "Euclid's numbers"
+    prompt: >-
+      Replace each `None` so that `euclid_number(primes)` gives the product of the primes in the list
+      `primes`, plus 1, and `new_prime(primes)` gives the smallest factor of that number, which
+      Euclid's proof says is a prime missing from the list.
+    answer:
+      type: code
+      starter: |
+        from math import isqrt, prod
+
+        def smallest_factor(n):
+            for d in range(2, isqrt(n) + 1):
+                if n % d == 0:
+                    return d
+            return n
+
+        def is_prime(n):
+            return n >= 2 and smallest_factor(n) == n
+
+        def euclid_number(primes):
+            """The product of the primes in the list primes, plus 1."""
+            return None
+
+        def new_prime(primes):
+            """The smallest factor of euclid_number(primes): a prime that is not in the list."""
+            return None
+
+        print(euclid_number([2, 3, 5]), new_prime([2, 3, 5]))
+        print(euclid_number([2, 3, 5, 7, 11, 13]), new_prime([2, 3, 5, 7, 11, 13]))
+      tests: |
+        FIRST = [2, 3, 5, 7, 11, 13, 17, 19]
+
+        def test_filled():
+            """euclid_number and new_prime both give an answer, not None."""
+            assert euclid_number([2, 3]) is not None, "Replace the None in euclid_number."
+            assert new_prime([2, 3]) is not None, "Replace the None in new_prime."
+
+        def test_small():
+            """Euclid's numbers for the first one, two and three primes are 3, 7 and 31."""
+            for primes, right in (([2], 3), ([2, 3], 7), ([2, 3, 5], 31)):
+                got = euclid_number(primes)
+                assert got == right, f"euclid_number({primes}) gives {got}, not {right}."
+
+        def test_six():
+            """For the first six primes, Euclid's number is 30,031, whose smallest factor is 59."""
+            got = euclid_number(FIRST[:6])
+            assert got == 30031, f"euclid_number({FIRST[:6]}) gives {got}, not 30031."
+            got = new_prime(FIRST[:6])
+            assert got == 59, f"new_prime({FIRST[:6]}) gives {got}, not 59: 30,031 = 59 × 509 is not prime, and its smallest factor is 59."
+
+        def test_missing():
+            """For each of the first eight lists of primes, new_prime is a prime missing from the list."""
+            for k in range(1, 9):
+                primes = FIRST[:k]
+                got = new_prime(primes)
+                assert is_prime(got), f"new_prime({primes}) gives {got}, which is not prime."
+                assert got not in primes, f"new_prime({primes}) gives {got}, which is in the list."
+
+        def test_any_list():
+            """The argument works for any list of primes: for [3, 5] the number is 16, and 2 is missing from the list."""
+            got = euclid_number([3, 5])
+            assert got == 16, f"euclid_number([3, 5]) gives {got}, not 16."
+            got = new_prime([3, 5])
+            assert got == 2, f"new_prime([3, 5]) gives {got}, not 2."
+
+        def test_list_unchanged():
+            """The list given is left as it was."""
+            primes = [2, 3, 5]
+            euclid_number(primes)
+            new_prime(primes)
+            assert primes == [2, 3, 5], f"After the calls, the list is {primes}, not [2, 3, 5]."
+      reference: |
+        from math import isqrt, prod
+
+        def smallest_factor(n):
+            for d in range(2, isqrt(n) + 1):
+                if n % d == 0:
+                    return d
+            return n
+
+        def is_prime(n):
+            return n >= 2 and smallest_factor(n) == n
+
+        def euclid_number(primes):
+            """The product of the primes in the list primes, plus 1."""
+            return prod(primes) + 1
+
+        def new_prime(primes):
+            """The smallest factor of euclid_number(primes): a prime that is not in the list."""
+            return smallest_factor(euclid_number(primes))
+
+        print(euclid_number([2, 3, 5]), new_prime([2, 3, 5]))
+        print(euclid_number([2, 3, 5, 7, 11, 13]), new_prime([2, 3, 5, 7, 11, 13]))
+      wrong:
+        - code: |
+            from math import isqrt, prod
+
+            def smallest_factor(n):
+                for d in range(2, isqrt(n) + 1):
+                    if n % d == 0:
+                        return d
+                return n
+
+            def is_prime(n):
+                return n >= 2 and smallest_factor(n) == n
+
+            def euclid_number(primes):
+                return prod(primes)
+
+            def new_prime(primes):
+                return smallest_factor(euclid_number(primes))
+          why: Leaves out the + 1, so the number is a multiple of every prime on the list.
+        - code: |
+            from math import isqrt, prod
+
+            def smallest_factor(n):
+                for d in range(2, isqrt(n) + 1):
+                    if n % d == 0:
+                        return d
+                return n
+
+            def is_prime(n):
+                return n >= 2 and smallest_factor(n) == n
+
+            def euclid_number(primes):
+                return prod(primes) + 1
+
+            def new_prime(primes):
+                return euclid_number(primes)
+          why: Takes Euclid's number itself to be the new prime, which 30,031 = 59 × 509 shows it need not be.
+        - code: |
+            from math import isqrt, prod
+
+            def smallest_factor(n):
+                for d in range(2, isqrt(n) + 1):
+                    if n % d == 0:
+                        return d
+                return n
+
+            def is_prime(n):
+                return n >= 2 and smallest_factor(n) == n
+
+            def euclid_number(primes):
+                return sum(primes) + 1
+
+            def new_prime(primes):
+                return smallest_factor(euclid_number(primes))
+          why: Adds the primes instead of multiplying them.
+        - code: |
+            from math import isqrt, prod
+
+            def smallest_factor(n):
+                for d in range(2, isqrt(n) + 1):
+                    if n % d == 0:
+                        return d
+                return n
+
+            def is_prime(n):
+                return n >= 2 and smallest_factor(n) == n
+
+            def euclid_number(primes):
+                return prod(primes) + 1
+
+            def new_prime(primes):
+                return smallest_factor(prod(primes))
+          why: Takes the smallest factor of the product without the + 1, which is the smallest prime on the list.
+    explanation: >-
+      `prod(primes) + 1` and `smallest_factor(euclid_number(primes))`. The smallest factor greater
+      than 1 of any whole number above 1 is prime, and here it cannot be on the list, since every
+      prime on the list leaves a remainder of 1.
+
+  # Explain --------------------------------------------------------------------
+  - id: explain-proof
+    phase: explain
+    kind: explain
+    concept: M1.8/proof
+    covers: [M1.8/direct-proof, M1.8/contrapositive-proof, M1.8/contradiction]
+    title: Forty primes and a proof, simply
+    prompt: >-
+      Explain to your friend why forty primes in a row prove nothing about every whole number, and
+      how anyone can see without a computer that $n^2 + n + 41$ is not prime at $n = 41$. Say what a
+      proof does that checking cannot. Then walk your friend through the proof that $\sqrt{2}$ is not
+      a fraction: where it supposes the opposite of what it proves, where it uses the claim about
+      even squares and how that claim was proved, and where the contradiction comes.
+    answer:
+      type: text
+      rubric:
+        - { id: evidence, criterion: 'Says that agreeing cases are evidence and not proof: however many are checked, the next one could break a claim about every whole number, as $n = 40$ and $n = 41$ do here.' }
+        - { id: forty-one, criterion: 'Shows that at $n = 41$ every term has a factor of 41, so the value is $41 \times 43$, which is not prime.' }
+        - { id: proof, criterion: 'Says that a proof reasons from definitions about a letter that stands for any case, each step justified, so that it covers every case at once.' }
+        - { id: suppose, criterion: 'Begins the proof for $\sqrt{2}$ by supposing the opposite, $\sqrt{2} = \frac{p}{q}$ with integers $p$ and $q$ not both even, and says why lowest terms costs nothing.' }
+        - { id: chain, criterion: 'Gives the chain from $p^2 = 2q^2$ to $p$ even, $q^2 = 2r^2$ and $q$ even, using "if $n^2$ is even, then $n$ is even", proved by its contrapositive: an odd $n = 2k + 1$ has an odd square.' }
+        - { id: contradiction, criterion: 'Names the contradiction, $p$ and $q$ both even against not both even, and concludes that the supposition is false, so $\sqrt{2}$ is not a fraction.' }
+      reference: >-
+        Forty primes in a row feel like a law, but they are forty cases, and the claim is about every
+        whole number, of which there are infinitely many. However many cases agree, the next one could
+        be the exception, and here it is: at $n = 41$ every term of $41^2 + 41 + 41$ has a factor of
+        41, so the value is $41 \times 43$, which is not prime. In fact $n = 40$ already fails, since
+        $40^2 + 40 + 41 = 41 \times 41$. Checking can only ever cover finitely many cases. A proof
+        works differently: it reasons about a letter, $n$, that stands for any whole number, starting
+        from definitions and justifying each step, so whatever it shows holds for every case at once.
+        Here is one. To prove that $\sqrt{2}$ is not a fraction, suppose the opposite: $\sqrt{2} =
+        \frac{p}{q}$ for integers $p$ and $q$. We may take the fraction in lowest terms, so that $p$
+        and $q$ are not both even, since halving both while they are even keeps the value and must
+        stop. Squaring gives $p^2 = 2q^2$, so $p^2$ is even. Now use a claim proved earlier: if $n^2$
+        is even, then $n$ is even. It was proved by its contrapositive, "if $n$ is odd, then $n^2$ is
+        odd", which says the same: an odd $n$ is $2k + 1$, and its square is $4k^2 + 4k + 1 =
+        2(2k^2 + 2k) + 1$, which is odd. So $p$ is even, $p = 2r$, and then $4r^2 = 2q^2$, so
+        $q^2 = 2r^2$ is even, and $q$ is even too. Now $p$ and $q$ are both even, which contradicts
+        the supposition that they are not both even. Every step was valid, so the supposition must be
+        false: no fraction equals $\sqrt{2}$.
+      minWords: 100
+      maxWords: 400

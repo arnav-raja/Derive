@@ -1,0 +1,207 @@
+{
+  "version": 1,
+  "expressions": {
+    "derive-odd-square": {
+      "source": "1e31b9d3fb234b63",
+      "points": [
+        {
+          "k": "-8"
+        },
+        {
+          "k": "-6"
+        },
+        {
+          "k": "9"
+        },
+        {
+          "k": "-3"
+        },
+        {
+          "k": "-4"
+        },
+        {
+          "k": "-5"
+        }
+      ],
+      "values": [
+        "112.00000000000000000",
+        "60.000000000000000000",
+        "180.00000000000000000",
+        "12.000000000000000000",
+        "24.000000000000000000",
+        "40.000000000000000000"
+      ]
+    },
+    "derive-three-square": {
+      "source": "1bc7c9ac56851add",
+      "points": [
+        {
+          "k": "1"
+        },
+        {
+          "k": "3"
+        },
+        {
+          "k": "-4"
+        },
+        {
+          "k": "-6"
+        },
+        {
+          "k": "-7"
+        },
+        {
+          "k": "9"
+        }
+      ],
+      "values": [
+        "8.0000000000000000000",
+        "40.000000000000000000",
+        "33.000000000000000000",
+        "85.000000000000000000",
+        "120.00000000000000000",
+        "280.00000000000000000"
+      ]
+    }
+  },
+  "runs": {
+    "build-euclid": {
+      "tests": [
+        {
+          "name": "test_filled",
+          "description": "euclid_number and new_prime both give an answer, not None.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_small",
+          "description": "Euclid's numbers for the first one, two and three primes are 3, 7 and 31.",
+          "passed": false,
+          "message": "euclid_number([2]) gives 2, not 3."
+        },
+        {
+          "name": "test_six",
+          "description": "For the first six primes, Euclid's number is 30,031, whose smallest factor is 59.",
+          "passed": false,
+          "message": "euclid_number([2, 3, 5, 7, 11, 13]) gives 30030, not 30031."
+        },
+        {
+          "name": "test_missing",
+          "description": "For each of the first eight lists of primes, new_prime is a prime missing from the list.",
+          "passed": false,
+          "message": "new_prime([2]) gives 2, which is in the list."
+        },
+        {
+          "name": "test_any_list",
+          "description": "The argument works for any list of primes: for [3, 5] the number is 16, and 2 is missing from the list.",
+          "passed": false,
+          "message": "euclid_number([3, 5]) gives 15, not 16."
+        },
+        {
+          "name": "test_list_unchanged",
+          "description": "The list given is left as it was.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": ""
+    },
+    "build-first-failure": {
+      "tests": [
+        {
+          "name": "test_filled",
+          "description": "first_failure gives an answer for the puzzle's formula, not None.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_euler",
+          "description": "The puzzle's formula first fails at n = 40.",
+          "passed": false,
+          "message": "first_failure(euler, 100) gives 1681, not 40. It should give n, the number put into the formula, not the formula's value."
+        },
+        {
+          "name": "test_no_failure",
+          "description": "When f(n) is prime for every n below limit, first_failure gives None.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_moved_along",
+          "description": "n² − n + 41 first fails at n = 41.",
+          "passed": false,
+          "message": "first_failure(legendre, 100) gives 1681, not 41."
+        },
+        {
+          "name": "test_starts_at_zero",
+          "description": "The search starts at n = 0.",
+          "passed": false,
+          "message": "For f(n) = n + 2, first_failure gives 4, not 2: f(0) = 2 and f(1) = 3 are prime, and f(2) = 4 is not."
+        },
+        {
+          "name": "test_empty_range",
+          "description": "With limit 0 there is nothing to check, so there is no failure.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": ""
+    },
+    "build-prime-test": {
+      "tests": [
+        {
+          "name": "test_filled",
+          "description": "smallest_factor and is_prime both give an answer, not None.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_smallest_factor",
+          "description": "smallest_factor finds the smallest factor from 2 up.",
+          "passed": false,
+          "message": "smallest_factor(4) gives 4, not 2."
+        },
+        {
+          "name": "test_square_root_itself",
+          "description": "The search tries isqrt(n) itself, so 1,681 = 41 × 41 and 1,763 = 41 × 43 are caught.",
+          "passed": false,
+          "message": "smallest_factor(9) gives 9, not 3: the search must try every d up to and including isqrt(9), which is 3."
+        },
+        {
+          "name": "test_prime_is_its_own_factor",
+          "description": "A prime is its own smallest factor.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_primes_below_sixty",
+          "description": "is_prime picks out exactly the primes below 60.",
+          "passed": false,
+          "message": "The whole numbers below 60 that is_prime calls prime are [2, 3, 4, 5, 6, 7, 8, 9, 11, 13, 15, 17, 19, 23, 25, 29, 31, 35, 37, 41, 43, 47, 49, 53, 59], not [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59]."
+        },
+        {
+          "name": "test_below_two",
+          "description": "0 and 1 are not prime.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_large_prime",
+          "description": "10,000,019 is prime, and is_prime finds it in good time by stopping at its square root, about 3,162.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_true_or_false",
+          "description": "is_prime gives True or False.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": ""
+    }
+  }
+}
