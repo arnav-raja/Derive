@@ -523,7 +523,11 @@ Next, in order:
   shell; once it loads, `WireHost` (`src/lib/wire/client.tsx`) asks Derive's server for the
   page's content and renders it, loading the client components it names. An address with no
   file falls to 404.html, which asks the server all the same, so a lesson written after the
-  last build still opens.
+  last build still opens. A new page's content is laid out hidden and shown once every font it
+  uses is in (KaTeX's included), or after 1.5 s, so text does not jump as fonts arrive: M1.8's
+  Explore, which shifted by 0.25 on main before `d4eb2d0`, shifts by 0 at tablet width with the
+  processor slowed four times. That commit's `src/app/fonts/katex.ts` was therefore dropped
+  here, since lesson pages are rendered by the server and its fonts never reached the browser.
 - The server: `src/server/handler.ts`, bundled by `scripts/build-api.ts` with every lesson file
   and every written phase's compiled MDX packed in (about 3.3 MB, under Supabase's 20 MB). It runs
   as the Edge Function `derive-api` in Mumbai (`x-region: ap-south-1`), verifies the learner's
