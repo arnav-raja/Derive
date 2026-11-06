@@ -1,0 +1,53 @@
+The Derive phase proved claims about sums, sequences and trees. Now turn the puzzle's proof into a program that places the tiles, check inductions with SymPy, take away a checker's base case and predict what happens, and mend a power function that halves.
+
+Each exercise in this phase has tests, in the tab `tests.py`. You need not read their code, which uses Python that this lesson does not teach: when they run, each test says in words what it checks, and one that fails says what went wrong, with the values it found.
+
+## Covering the grid
+
+The Explore phase's proof is already a recursive function. `cover(width, top, left, hole)` covers the block of the grid `width` squares wide whose top left square is `[top, left]`, leaving out one square, `hole`: the cut square, or a square that a tile across a larger centre has already covered. The lesson's figures count rows and columns from 1, as people count. Here they are counted from 0 at the top left, as list indexes are, so in a grid 8 by 8 they run from 0 to 7, and the figures' row 2 and column 7 is the square `[1, 6]`. A tile is a list of its three squares, each a `[row, column]` list.
+
+The base case is a block 1 square wide, whose one square is `hole`, so it needs no tiles: one size below the Explore phase's base case. A wider block splits into four quarters, each `half` squares wide, so a block 2 by 2 is the step's first case, where each quarter is a single square and the centre tile takes the three that are not `hole`. `corners` holds the top left square of each quarter, and `middle` the four squares round the centre of the block, one in each quarter, in the same order. `corners[i]` is a `[row, column]` list, so the top of quarter `i` is `corners[i][0]` and its left is `corners[i][1]`. `inside(square, top, left, width)` is `True` when a square lies in a block. `+` joins two lists into a new one, as `a + [3]` did in E1.4, so `tiles = tiles + more` adds the tiles in `more` to the end of `tiles`.
+
+<Exercise id="build-tiles" />
+
+<Reveal for="build-tiles">
+
+The tests tried 90 grids, and the induction on the width covers every grid of every width. For the grid 1,024 wide, `cover` makes $1 + 4 + 16 + \dots + 4^{10} = \frac{4^{11} - 1}{3} = 1{,}398{,}101$ calls, but never more than 11 are in progress at once, one for each width from 1,024 down to 1, far below the 1,000 or so that Python allows. They give $T(10) = 349{,}525$ tiles. The editor here stops a program that runs too long, so try `cover` on grids up to 256 wide, which take 21,845 tiles.
+
+## Checking an induction
+
+SymPy can check both parts of an induction. As in M1.6, `symbols` with `integer=True, positive=True` makes a letter that stands for any whole number from 1 up, so an expression in it is a claim about all of them at once. M1.2 showed that two expressions agree for every value of their letters by turning their difference into 0 with `expand`, and named `simplify`, which tries many more rules: when it turns the difference of two expressions into 0, they are equal for every $n$. Compare the difference with 0, since `==` between two SymPy expressions asks whether they are written alike, not whether they are equal: `(n + 1)**2 == n**2 + 2*n + 1` is `False`. The base case is a claim about one value, which Python can check with `==`. The step is the one the Derive phase proved by hand for the squares, now for any sum and any sequence. The starter also imports `Rational`, SymPy's exact fractions, and writes its formulas with it: `Rational(1, 6)` is $\frac{1}{6}$ exactly, where `1 / 6` would be a float, rounded.
+
+<Exercise id="build-induction-check" />
+
+</Reveal>
+
+<Reveal for="build-induction-check">
+
+As M1.2 warned, `simplify` can fail to reduce a difference that really is 0, so a `False` from `proves` may be wrong about a true step. A `True` means that SymPy reduced the difference to exactly 0.
+
+## Without the base case
+
+Here is `proves` checking whether $\frac{n^2 + n + 6}{2}$ is $1 + 2 + \dots + n$. It prints `False`.
+
+<Exercise id="breakit-no-base" />
+
+</Reveal>
+
+<Reveal for="breakit-no-base">
+
+A checker without its base case "proves" a formula that is wrong at every $n$, as the step for $n^2 + n$ being odd did in the Explore phase.
+
+## A power by halving
+
+Working out $x^{1000}$ one multiplication at a time takes 999 multiplications. Halving takes far fewer: $x^{1000} = x^{500} \times x^{500}$, $x^{500} = x^{250} \times x^{250}$, and so on, so about ten halvings reach the bottom. `power(x, n)` works this way. It calls itself on `n // 2`, which is $n$ halved and rounded down, as in E1.1, and `n % 2` is 0 when `n` is even. The call for `n` leans on the call for `n // 2`, which may be far below `n - 1`, so proving `power` right takes strong induction.
+
+<Exercise id="debug-power" />
+
+</Reveal>
+
+<Reveal for="debug-power">
+
+Every value that leans on a wrong one is wrong too: the original `power(2, 6)` gave 16, not 64, since it squared the wrong value of `power(2, 3)`, though its even case was sound. A proof by strong induction says where to look. Of the step's two cases, even and odd, only the odd one failed. Taking one off `n` at each call, instead of halving it, would also be right, but `power(3, 5000)` would then need a chain of 5,001 calls, more than Python allows.
+
+</Reveal>

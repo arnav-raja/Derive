@@ -9,3 +9,4 @@ export { ScaleLine } from "./scale-line";
 export { SetDiagram } from "./set-diagram";
 export { Staircase } from "./staircase";
 export { TextBytes } from "./text-bytes";
+export { TileGrid } from "./tile-grid";

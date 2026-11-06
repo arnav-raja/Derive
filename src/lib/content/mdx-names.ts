@@ -31,6 +31,7 @@ export const MDX_COMPONENT_NAMES = [
   "TextBytes",
   "SetDiagram",
   "QuantifierGrid",
+  "TileGrid",
 ] as const;
 
 export type MdxComponentName = (typeof MDX_COMPONENT_NAMES)[number];

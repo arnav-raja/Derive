@@ -718,6 +718,14 @@ def _sympy_env(symbols):
     return table, names
 
 
+# Greek letters as they may be typed, and the names that exercises give their symbols.
+_GREEK = {
+    "α": "alpha", "β": "beta", "γ": "gamma", "δ": "delta", "ε": "epsilon", "ϵ": "epsilon",
+    "η": "eta", "θ": "theta", "λ": "lamda", "μ": "mu", "ρ": "rho", "σ": "sigma", "τ": "tau",
+    "φ": "phi", "ϕ": "phi", "ω": "omega",
+}
+
+
 def _parse(text, names, evaluate=True):
     import sympy
     from sympy.parsing.sympy_parser import (
@@ -745,6 +753,11 @@ def _parse(text, names, evaluate=True):
     cleaned = (
         text.replace("×", "*").replace("·", "*").replace("−", "-").replace("÷", "/").strip()
     )
+    # β typed as itself stands for the step's beta, when the step has one; spaces keep 2β and βk
+    # products, as 2 beta and beta k.
+    for letter, word in _GREEK.items():
+        if letter in cleaned and word in names:
+            cleaned = cleaned.replace(letter, f" {word} ").strip()
     return parse_expr(cleaned, local_dict=dict(names), transformations=transformations,
                       evaluate=evaluate)
 

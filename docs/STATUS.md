@@ -1,6 +1,6 @@
 # Status
 
-Updated 6 November 2026 at about 17:50 UTC, when E1.8 went live. On "Pause" or "Resume",
+Updated 6 November 2026 at about 20:55 UTC, when M1.9 went live. On "Pause" or "Resume",
 follow CLAUDE.md and carry on from "Resume here" (phase 1) and "Phase 2: resume here" (phase 2).
 
 ## Where things stand
@@ -23,7 +23,8 @@ its own thread. M1.7 Logic, sets and quantifiers is live (`ready`): written, rev
 reviewers, every finding applied, walked again and tested end to end, with two new figure
 components, the set diagram and the quantifier grid. E1.7 Classes and objects is live too,
 reviewed by both, every finding applied, walked and tested end to end. M1.8 Proof I is live
-too, on the same terms, and so is E1.8 Debugging as an experiment. M1.9 Proof II is next.
+too, on the same terms, and so are E1.8 Debugging as an experiment and M1.9 Proof II:
+induction and recursion. E1.9 Testing and property-based testing is next.
 
 ### Done
 
@@ -430,13 +431,56 @@ Done so far:
   "Stopped", as the code card does.
 - The tutor's and the grader's calls go through `apiFetch`, the one way the browser calls
   Derive's server (commits `84b50c0` and `c925474`), ready for the hosting move.
+- M1.9 Proof II: induction and recursion, live (`ready`) since 6 November: all six phases and 24
+  exercises (a puzzle on whether tiles of three squares always cover a grid 1,024 wide with one
+  square cut out, 5 recall, 7 explore predictions, 3 proofs of rules, 2 derivation steps and a
+  written proof, 3 builds and a break-it, and the explain-back), four tiling figures, tutor notes
+  with 12 misconceptions, and checks.json (42 items). It requires M1.6 and M1.8, builds on E1.5,
+  and leads to M1.10, M5.1 and E1.10; E1.10 now builds on M1.9, and must list in `used` the M1.9
+  concepts it uses. Reviewed by both (the simulated learner, 24 of 24 right with 17 findings; the
+  independent reviewer, 1 blocker, 15 should-fix findings and 12 nits; in
+  `derive-resume/review/M1.9-*.md`), and every finding applied apart from two optional nits
+  (below): the explain-back's prompt now asks everything its rubric checks, with `maxWords: 500`;
+  the puzzle's figure shows only the grid, and the summary no longer hints at the answer; titles,
+  headings and set-up lines that answered their items are gone ("Odd or even" now heads the step
+  with no base case); the facts about inequalities are stated, with their reasons, before
+  $2^n > n^2$ uses them; the sum of the squares has a rule, "Factorise a quadratic", for its line
+  6; the Build phase says that its rows and columns count from 0 where the figures count from 1,
+  what `corners[i]` holds, that `==` between SymPy expressions asks whether they are written
+  alike, why its formulas use `Rational`, and that the editor stops a program that runs too long;
+  the tests no longer give away the break-it or the power fix; build-induction-check accepts
+  SymPy's own True and False, and says, for a true claim judged False, where its base case is
+  and how `==` compares; build-tiles tells lists appended instead of joined from an empty centre
+  tile, and cuts every value it shows to 80 characters; the strong-induction summary and
+  Definition say how `power` is proved right, instead of saying that any function that halves its
+  argument is; placement asks three questions instead of one; and 18 rungs, the notes, five
+  misconception cues and three wrong programs' reasons were rewritten. The reviewers' and the
+  learner's 74 programs were run against the final tests (`derive-resume/m19walk/programs/`, with
+  `make.py`, `run-all.sh` and `summary.py`): every right one passes, the four that leave SymPy's
+  answer unsettled (an `Eq`, the None of `is_zero`, or both sides simplified and compared with
+  `==`) fail with a message that says why, and every slip fails with a message that names its
+  cause. `check:exercises` passes all its 42 items, the lesson was walked again in all six phases
+  with no page errors other than the grader's 503 in local mode (store
+  `derive-resume/m19walk/store-before-M1.9-walk.json`; the store after it is
+  `store-after-M1.9-walk.json`), and its end-to-end tests pass at all three widths. Optional nits
+  not done: a heavier outline on the last level of tiles, and the history of Bernoulli's
+  inequality before Bernoulli (Sluse, 1668).
+- Engine changes with M1.9: a new figure component, `TileGrid` (a grid 2, 4, 8 or 16 wide with
+  one square cut out and its quarters dashed; the learner sets the width and the cut square and
+  places the tiles a level at a time, as induction builds the covering; `counts` shows the tiles
+  each level places, `tilesLocked` with `lockedNote` keeps the tiles closed until an exercise is
+  done, and `gridOnly` shows the grid alone, for a puzzle). Its words come from `tilingWords` in
+  `tiling.ts`, with unit tests, and never promise tiles the figure does not show. The expression
+  checker reads a Greek letter typed as itself (β as `beta`, and α, γ, δ, ε, η, θ, λ, μ, ρ, σ, τ,
+  φ and ω) when the item's symbols use its name. curriculum.json also syncs E1.8's `leadsTo`
+  with its foreshadows of E1.9 and E3.2.
 
 Next, in order:
 
-1. M1.9 Proof II: induction and recursion (it requires M1.6 and M1.8, and builds on E1.5), then
-   E1.9, M1.10, E1.10, M1.11, E1.11, M1.12 and E1.12, then the start of stage 2, each written,
-   checked, reviewed by both and walked before it goes live, adding the remaining figure
-   components as the lessons need them. The phase 2 features (item 3) come first once the
+1. E1.9 Testing and property-based testing (first design notes in `derive-resume/e19plan.md`;
+   add E1.4 to its requirements, since its tests work on lists), then M1.10, E1.10, M1.11, E1.11,
+   M1.12 and E1.12, then the start of stage 2, each written, checked, reviewed by both and walked
+   before it goes live, adding the remaining figure components as the lessons need them. The phase 2 features (item 3) come first once the
    hosting pull request has landed. E1.9 picks up E1.8's preview: tests that run on every change,
    and property-based tests. E1.10 must show how to give a class a `__hash__` that agrees with
    its `__eq__` (E1.7 promises it, and E1.10 now requires E1.7); the E1.8 reviewer suggests E1.8

@@ -1,0 +1,188 @@
+## One size at a time
+
+A grid 1,024 wide is too big to think about, so start small. A grid 2 by 2 with one square cut out is exactly one tile, whichever square is cut. A grid 4 by 4 with one square cut out takes five tiles, and with some patience you can place them for each of the 16 places for its cut square.
+
+The next width is 8. Suppose, for the moment, that every grid 4 by 4 with one square cut out can be covered, wherever the cut is. A grid 8 by 8 splits into four quarters, each 4 by 4, and the cut square lies in one of them, which the supposition covers. The other three quarters are whole.
+
+<TileGrid
+  title="A grid 8 by 8 in quarters"
+  description="A grid of squares 8 by 8 with one square cut out, in row 2 and column 7, which is in the top right quarter. Dashed lines split the grid into its four quarters, each 4 by 4. Controls set the width of the grid and the row and column of the cut square."
+  width={8}
+  cut={[2, 7]}
+  tilesAfter="explore-centre-tile"
+/>
+
+<Exercise id="explore-centre-tile" />
+
+<Reveal for="explore-centre-tile">
+
+The figure places the tile across the centre. Step through the levels to see each quarter covered in the same way, with a tile across its own centre, down to blocks 2 by 2.
+
+<TileGrid
+  title="The tile across the centre"
+  description="The grid 8 by 8 with its cut square in row 2 and column 7, and one tile across the centre, with a square in each of the three quarters without the cut square. Dashed outlines mark the four quarters, each now a grid 4 by 4 with one square taken. A control steps through the levels of tiles, down to blocks 2 by 2."
+  width={8}
+  cut={[2, 7]}
+  placed={1}
+/>
+
+Nothing in the argument used the number 4. Write $P(n)$ for the claim that every grid $2^n$ squares wide, with one square cut out anywhere, can be covered. $P(1)$ is true, since a grid 2 by 2 less one square is one tile: it is the *base case*. The tile across the centre is the *inductive step*: it turns the claim for one width into the claim for twice that width, whatever the width. So $P(1)$ gives $P(2)$, $P(2)$ gives $P(3)$, and nine steps reach $P(10)$, the grid $2^{10} = 1{,}024$ wide. The chain does not stop there: every grid whose width is a power of 2 can be covered.
+
+## What the step must show
+
+M1.6 found that the odd numbers add up to squares: $1 = 1^2$, $1 + 3 = 2^2$, $1 + 3 + 5 = 3^2$, and in general $1 + 3 + 5 + \dots + (2n - 1) = n^2$. Induction proves it the way it proved the tiles.
+
+<Exercise id="explore-what-to-show" />
+
+</Reveal>
+
+<Reveal for="explore-what-to-show">
+
+Here is that step for the odd numbers. It supposes the claim for one $k$, that $\sum_{i=1}^{k} (2i - 1) = k^2$, and must reach the claim for $k + 1$, whose last odd number is $2(k + 1) - 1 = 2k + 1$:
+
+<Steps>
+  <Step why="split off the last term">$\sum_{i=1}^{k+1} (2i - 1) = \sum_{i=1}^{k} (2i - 1) + (2k + 1)$</Step>
+  <Step why="the supposition, for this k">$= k^2 + 2k + 1$</Step>
+  <Step why="the square of k + 1 multiplies out to the same">$= (k + 1)^2$</Step>
+</Steps>
+
+That is the claim for $k + 1$, and with the base case, $1 = 1^2$, the chain reaches every $n$.
+
+This way of proving a claim about every whole number has a name. A *proof by induction* of a claim $P(n)$, for every whole number $n$ from some first value $n_0$ up, proves two things:
+
+- the *base case*, $P(n_0)$;
+- the *inductive step*: for every $k \ge n_0$, if $P(k)$ is true, then $P(k + 1)$ is true.
+
+In the step, $P(k)$ is the *inductive hypothesis*. It is supposed only for the one $k$ that the step starts from, and since $k$ stands for any whole number from $n_0$ up, as a letter does in M1.8's proofs, one step covers them all. A row of dominoes falls the same way: the first is pushed over, and each one knocks over the next, so every domino falls, however long the row.
+
+The base case can be any whole number. $2^n > n^2$ is false at $n = 2$, 3 and 4, since $4 = 4$, $8 < 9$ and $16 = 16$, but it is true from $n = 5$ on. Its step needs two facts about inequalities: multiplying both sides by a positive number keeps an inequality, as M1.8 found, and so does adding the same number to both sides, since $(a + c) - (b + c) = a - b$. Base case: $2^5 = 32 > 25$. Step: suppose that $2^k > k^2$ for some $k \ge 5$. Then
+
+<Steps>
+  <Step why="the hypothesis, with both sides multiplied by 2">$2^{k+1} = 2 \times 2^k > 2k^2 = k^2 + k^2$</Step>
+  <Step why="k is at least 3, so k times k is at least 3k; then k squared is added to both sides">$\ge k^2 + 3k$</Step>
+  <Step why="3k is 2k + k, and k is more than 1">$> k^2 + 2k + 1 = (k + 1)^2$</Step>
+</Steps>
+
+which is the claim for $k + 1$, so the claim holds for every $n \ge 5$. The chain says nothing about the cases below its base case.
+
+## Odd or even
+
+Here is a step that works perfectly. Suppose that $k^2 + k$ is odd, for some whole number $k$. Then
+
+$$
+(k + 1)^2 + (k + 1) = k^2 + 2k + 1 + k + 1 = (k^2 + k) + 2(k + 1),
+$$
+
+an odd number plus an even one, which is odd. So for every $k$, if $k^2 + k$ is odd, then $(k + 1)^2 + (k + 1)$ is odd too.
+
+<Exercise id="explore-no-base" />
+
+</Reveal>
+
+<Reveal for="explore-no-base">
+
+So the base case is not a formality to be waved through, however easy it looks.
+
+## All the same answer
+
+Here is an argument with a base case and a step, for the claim that any number of models, given the same question, all give the same answer. Write $P(n)$ for the claim that any $n$ models give the same answer to the same question.
+
+- Base case: one model gives the same answer as itself, so $P(1)$ is true.
+- Step: suppose $P(k)$, and take any $k + 1$ models, numbered 1 to $k + 1$. Models 1 to $k$ are $k$ models, so by the hypothesis they all give the same answer. So do models 2 to $k + 1$, which are $k$ models too. Model 2 is in both groups, so both groups give model 2's answer, and all $k + 1$ models agree.
+
+<Exercise id="explore-all-same" />
+
+</Reveal>
+
+<Reveal for="explore-all-same">
+
+A step must hold for every $k$ from the base case up, and its first few values are where a hidden assumption, here that the two groups overlap, is most likely to fail. George Pólya set this argument as an exercise in a book of 1954, about girls whose eyes are all the same colour; it is better known now with horses.
+
+## Counting the tiles
+
+How many tiles does the grid 1,024 wide take? Write $T(n)$ for the number of tiles that cover a grid $2^n$ squares wide with one square cut out. A grid 2 by 2 takes one, so $T(1) = 1$, and the tile across the centre says how each count comes from the one before.
+
+<Exercise id="explore-tile-rule" />
+
+</Reveal>
+
+<Reveal for="explore-tile-rule">
+
+A rule that gives each term of a sequence from the terms before it is a *recurrence*, and with its first term it defines the sequence *recursively*, as E1.5's functions defined their answers: $T(1) = 1$, $T(2) = 5$, $T(3) = 21$, $T(4) = 85$, and so on. To reach $T(10)$, the recurrence needs every term before it. A *closed form* gives the $n$th term directly.
+
+The first terms suggest one. Three times each term is one less than a power of 4: $3 = 4 - 1$, $15 = 16 - 1$, $63 = 64 - 1$ and $255 = 256 - 1$. So perhaps $T(n) = \frac{4^n - 1}{3}$. A guess from four terms is evidence, as M1.8 warned, and induction proves it. Base case: $\frac{4^1 - 1}{3} = 1 = T(1)$. Step: suppose that $T(k) = \frac{4^k - 1}{3}$. Then
+
+<Steps>
+  <Step why="the recurrence">$T(k + 1) = 4T(k) + 1$</Step>
+  <Step why="the inductive hypothesis">$= 4 \times \frac{4^k - 1}{3} + 1$</Step>
+  <Step why="over a common denominator, with 4 times 4 to the k as 4 to the k + 1">$= \frac{4^{k+1} - 4 + 3}{3} = \frac{4^{k+1} - 1}{3}$</Step>
+</Steps>
+
+which is the closed form for $k + 1$. So the grid 1,024 wide takes $T(10) = \frac{4^{10} - 1}{3} = \frac{1{,}048{,}575}{3} = 349{,}525$ tiles, the count from the puzzle, since a grid $2^n$ wide has $4^n$ squares, one of them cut out and the rest three to a tile. The figure counts the tiles level by level.
+
+<TileGrid
+  title="Tiles, level by level"
+  description="A grid 16 by 16 with its cut square in row 5 and column 12, and two levels of tiles placed: the tile across the centre, then a tile across the centre of each quarter. Dashed outlines mark the sixteen blocks 4 by 4, each with one square taken. A control steps through the levels, and the table gives the tiles placed at each level and the total so far."
+  width={16}
+  cut={[5, 12]}
+  placed={2}
+  counts
+/>
+
+## Leaning further back
+
+Stamps come in 4 rupees and 5 rupees. Which amounts can be made exactly? $8 = 4 + 4$, $9 = 4 + 5$ and $10 = 5 + 5$ can, but 11 cannot, and nor can 6 or 7. From 12 on, it seems, every amount can be made. Here is a step: an amount $k + 1$ can be made from the amount $k - 3$ and one more stamp of 4, so 20 comes from 16.
+
+<Exercise id="explore-stamps" />
+
+</Reveal>
+
+<Reveal for="explore-stamps">
+
+The stamps need a step that leans four cases back, and four cases made by hand to lean on. This is *strong induction*. Its step may suppose the claim for every case from the base case up to $k$, not only for $k$, and must prove it for $k + 1$, so it can lean as far back as it needs. It needs as many base cases as the step reaches back. It is just as sound as ordinary induction. In fact it is ordinary induction, applied to the claim "every case from $n_0$ to $n$ is true", whose step is exactly the step of strong induction.
+
+Strong induction also proves that every whole number from 2 up is a product of primes, where a prime on its own counts as a product of one prime. Base case: 2 is prime. Step: suppose that every whole number from 2 to $k$ is a product of primes. If $k + 1$ is prime, it is a product of one. If not, $k + 1 = ab$ for whole numbers $a$ and $b$ from 2 to $k$, and each of them is a product of primes, by the hypothesis, so $ab$ is one too. So $12 = 2 \times 6$ leans on 2 and on 6, and 6 leans on 2 and 3. Ordinary induction could not do this, since knowing that 11 is a product of primes says nothing about 12.
+
+## Proofs about programs
+
+E1.5 trusted `total`, which adds up a list, with three checks: every call is given a shorter list, the base case is right, and the recursive case is right if the smaller call is. That was a proof by induction on the length of the list. The base case is the empty list, and the step shows that if `total` is right for every list of length $k$, it is right for every list of length $k + 1$, since such a list is its first number followed by a list of length $k$. E1.2's loop invariants are induction too: true before the first pass is the base case, and kept true by each pass is the step, so an invariant holds after every pass, however many there are. A function that calls itself on something much smaller than $n - 1$, such as half of $n$, as the Build phase's `power` does, needs strong induction to be proved right.
+
+The same idea works on trees. M1.2 drew an expression as a tree, with an operation at each branch point and numbers at the leaves, and E1.5 stored one as nested lists, such as `["+", 2, ["*", 3, 4]]` for $2 + 3 \times 4$. Each operation joins two parts, each of them a number or a smaller tree. Count the numbers and the operations in a few trees: $7$, a tree that is a single number; $2 + 3 \times 4$; $(1 + 2) \times (3 + 4)$; $((1 + 2) + 3) + 4$.
+
+<Exercise id="explore-leaves" />
+
+</Reveal>
+
+<Reveal for="explore-leaves">
+
+Each of those trees has one more number than operations. A pattern in four trees is evidence, and induction proves it, on the structure of the trees rather than on a single number $n$. A single number has one number and no operations. A larger tree is an operation that joins two smaller trees, and if each of those has one more number than operations, the larger tree has all their numbers, two more than their operations put together, and one operation more, its own: again one more number than operations. Every tree is built from single numbers by joins, so every tree has one more number than operations. The Derive phase sets out this proof line by line.
+
+So a sum of $n$ numbers takes $n - 1$ additions however it is bracketed, and the brackets decide only the order. Adding up 1,024 gradients, one from each of 1,024 chips, takes 1,023 additions whichever way. One after another, that is 1,023 additions in a row, each waiting for the one before. In pairs, as a tree, it is 512 additions at once, then 256, and so on down to 1: the same $512 + 256 + \dots + 1 = 1{,}023$ additions, in only 10 rounds.
+
+## The names
+
+<Definition term="Proof by induction">
+
+To prove a claim $P(n)$ for every whole number $n$ from $n_0$ up, prove the *base case*, $P(n_0)$, and the *inductive step*: for every $k \ge n_0$, if $P(k)$ is true, then $P(k + 1)$ is true. The step supposes $P(k)$ for the one $k$ it starts from, its *inductive hypothesis*, and never the claim for every $n$. Both parts are needed: a step with no base case can carry a false claim, as it did for $n^2 + n$ being odd, and a step that fails for one $k$, as from one model to two, breaks the chain there.
+
+</Definition>
+
+<Definition term="Strong induction">
+
+In *strong induction*, the step may suppose the claim for every case from $n_0$ up to $k$, not only $P(k)$, and must then prove $P(k + 1)$. It needs as many base cases as the step reaches back: a step that makes $k + 1$ rupees from $k - 3$ rupees needs four, from 12 to 15. It proves that every whole number from 2 up is a product of primes, and it is how a recursive function that calls itself on half its argument, such as `power`, is proved right.
+
+</Definition>
+
+<Definition term="Recurrences and closed forms">
+
+A sequence can be defined *recursively*, by its first term and a *recurrence* that gives each term from earlier ones, as $T(1) = 1$ and $T(k + 1) = 4T(k) + 1$ count the tiles. A *closed form* gives the $n$th term directly, here $T(n) = \frac{4^n - 1}{3}$. One can be guessed from the first few terms and then proved by induction.
+
+</Definition>
+
+<Definition term="Induction on structure">
+
+*Induction on structure* proves a claim for the smallest pieces, such as the single numbers of an expression tree, and then for each larger piece on the supposition that the claim holds for the parts the piece is made of. So every tree whose operations each join two parts has one more number than operations. A recursive function is proved right by induction on the size of its argument, as `total` is on the length of its list, and a loop by induction on its passes, which is what an invariant does.
+
+</Definition>
+
+</Reveal>

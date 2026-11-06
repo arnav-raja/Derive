@@ -1,0 +1,21 @@
+A *tile*, in this puzzle, is three squares in the shape of an L: a block of 2 by 2 squares with one of its four squares missing. Take a grid of squares 1,024 wide and 1,024 high, and cut one square out of it, anywhere at all.
+
+The count does not rule the tiles out. The grid has $1{,}024 \times 1{,}024 = 1{,}048{,}576$ squares, so $1{,}048{,}575$ are left, which is $3 \times 349{,}525$, a whole number of tiles. But a count says nothing about shape, and there are 1,048,576 places for the cut square. The figure shows a grid 8 by 8: move the cut square, change the width, and picture where tiles could go.
+
+<TileGrid
+  title="A grid with one square cut out"
+  description="A grid of squares 8 by 8 with one square cut out, in row 2 and column 7. Dashed lines split it into four quarters, each 4 by 4. Controls set the width of the grid, from 2 to 16 squares, and the row and column of the cut square."
+  width={8}
+  cut={[2, 7]}
+  gridOnly
+/>
+
+<Exercise id="puzzle-tiles" />
+
+<Reveal for="puzzle-tiles">
+
+The proof starts from the smallest grid, 2 by 2, which one tile covers whichever square is cut out, and shows that if every grid of one width can be covered, so can every grid twice as wide. Nine doublings take 2 to 1,024. Solomon Golomb published the puzzle and this proof in 1954, in an article about shapes made of squares joined edge to edge, which he called *polyominoes*.
+
+An argument that proves a first case, and then proves that each case gives the next, is a proof by *induction*. This lesson builds it from the tiles: the first case and the step, why the two together reach every whole number, what goes wrong when either is missing, steps that lean further back, formulas for sequences defined one term at a time, and proofs that recursive programs are right.
+
+</Reveal>
