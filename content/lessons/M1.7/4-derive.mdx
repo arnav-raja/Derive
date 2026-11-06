@@ -1,4 +1,4 @@
-Explore found its rules from truth tables, pictures and cases. Now derive them for every set and every statement, count a union in two ways, and pin down exactly what would break the puzzle's claim. This phase writes not, and and or as $\neg$, $\land$ and $\lor$, and $=$ between two equivalent statements, as M1.2 wrote it between two equivalent expressions.
+Explore found its rules from truth tables, pictures and a single count. Now prove the count for every pair of finite sets, count a union a second way, prove the contrapositive by rules rather than by rows, and pin down exactly what would break the puzzle's claim. This phase writes not, and and or as $\neg$, $\land$ and $\lor$, as the names at the end of Explore did, and $=$ between two equivalent statements, as M1.2 wrote it between two equivalent expressions.
 
 ## Counting a union
 
@@ -22,11 +22,11 @@ $$
 |A \cup B| = |A| + |B| - |A \cap B|.
 $$
 
-Adding $|A|$ and $|B|$ counts each element of the overlap twice, and taking away $|A \cap B|$ once puts that right. This is the simplest case of *inclusion and exclusion*, a way of counting unions that M1.10 and M4.2 extend. For sets that do not overlap, $A \cap B = \varnothing$, and the count of the union is just $|A| + |B|$.
+Adding $|A|$ and $|B|$ counts each element of the overlap twice, and taking away $|A \cap B|$ once puts that right. This is the simplest case of *inclusion and exclusion*, a way of counting unions that M4.2 extends to more sets and to probabilities. For sets that do not overlap, $A \cap B = \varnothing$, and the count of the union is just $|A| + |B|$.
 
 ## Truth as a number
 
-Now count the same union a second way, by arithmetic on truth values. Write 1 for true and 0 for false. Then $\neg p$ is $1 - p$, which turns 1 into 0 and 0 into 1, and $p \land q$ is $pq$, since a product of 0s and 1s is 1 only when both are 1. Check both against the truth table.
+Now count the same union a second way, by arithmetic on truth values. Write 1 for true and 0 for false, and use small letters for these numbers: $p$ is 1 when $P$ is true and 0 when it is false, and $q$ is the same for $Q$. Then $\neg p$ is $1 - p$, which turns 1 into 0 and 0 into 1, and $p \land q$ is $pq$, since a product of 0s and 1s is 1 only when both are 1. Check both against the truth table.
 
 <Exercise id="derive-or-number" />
 
@@ -34,7 +34,7 @@ Now count the same union a second way, by arithmetic on truth values. Write 1 fo
 
 <Reveal for="derive-or-number">
 
-So $p \lor q$ is $p + q - pq$, the same shape as the count of a union, and that is no accident. Give each email $x$ two numbers: $s(x)$ is 1 if the email is short and 0 if not, and $e(x)$ is 1 if it is in English and 0 if not. A number that is 1 on a set and 0 off it is the set's *indicator*. Then $s(x) + e(x) - s(x)e(x)$ is the indicator of $S \cup E$, by the rule just derived. Add each of the three terms up over all the emails. The $s(x)$ add up to $|S|$, the $e(x)$ to $|E|$, and the products $s(x)e(x)$, which are 1 only for emails in both, to $|S \cap E|$, while the indicator of the union adds up to $|S \cup E|$. So
+So $p \lor q$ is $p + q - pq$, the same shape as the count of a union, and that is no accident. Give each email $x$ two numbers: $s(x)$ is 1 if the email is short and 0 if not, and $e(x)$ is 1 if it is in English and 0 if not. Like M1.3's functions, $s$ and $e$ give each input one output, and a function that is 1 on a set and 0 off it is that set's *indicator*. Then $s(x) + e(x) - s(x)e(x)$ is the indicator of $S \cup E$, by the rule just derived. Add each of the three terms up over all the emails. The $s(x)$ add up to $|S|$, the $e(x)$ to $|E|$, and the products $s(x)e(x)$, which are 1 only for emails in both, to $|S \cap E|$, while the indicator of the union adds up to $|S \cup E|$. So
 
 $$
 |S \cup E| = |S| + |E| - |S \cap E|
@@ -44,7 +44,7 @@ again, this time by algebra rather than by a picture. Machine learning uses indi
 
 ## The contrapositive, by the rules
 
-Explore checked the contrapositive case by case. A chain of equivalent statements proves it for every $P$ and $Q$ at once. One more rule is needed, which the truth table confirms: $A \Rightarrow B$ agrees with $\neg A \lor B$ in every row, since both are false only when $A$ is true and $B$ is false.
+Explore checked the contrapositive case by case, and since the four rows are every case there is, that settles it. A chain of equivalent statements settles it a second way, without listing cases, which is the way that still works when there are too many cases to list. One more rule is needed, which the truth table confirms: $A \Rightarrow B$ agrees with $\neg A \lor B$ in every row, since both are false only when $A$ is true and $B$ is false.
 
 <Exercise id="derive-contrapositive" />
 

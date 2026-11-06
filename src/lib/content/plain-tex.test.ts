@@ -26,6 +26,11 @@ describe("texToText", () => {
     expect(texToText(String.raw`\hat{x} + \widetilde{y}`)).toBe("x + y");
   });
 
+  it("writes the signs of logic and sets", () => {
+    expect(texToText(String.raw`P \cap Q^c = \varnothing`)).toBe("P ∩ Qᶜ = ∅");
+    expect(texToText(String.raw`P \Leftrightarrow Q`)).toBe("P ⇔ Q");
+  });
+
   it("handles subscripts", () => {
     expect(texToText("x_1 + x_{n}")).toBe("x₁ + xₙ");
   });

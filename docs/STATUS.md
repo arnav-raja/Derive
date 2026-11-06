@@ -1,7 +1,7 @@
 # Status
 
-Updated 6 November 2026, after Arnav's "Resume" of 11:51 UTC. On "Pause" or "Resume", follow
-CLAUDE.md and carry on from "Resume here" (phase 1) and "Phase 2: resume here" (phase 2).
+Updated 6 November 2026 at about 13:45 UTC, when M1.7 went live. On "Pause" or "Resume",
+follow CLAUDE.md and carry on from "Resume here" (phase 1) and "Phase 2: resume here" (phase 2).
 
 ## Where things stand
 
@@ -13,14 +13,17 @@ them), and said he must be able to study a phase as soon as it is complete and t
 be an AI chat widget; so the 12 lessons went live without the tests, with the Tutor panel in
 every lesson, and CLAUDE.md now has the rule that a lesson goes live once written, checked,
 reviewed and walked. Phase 1's gate, Arnav finishing three lessons end to end, is his to pass.
-Hosting is to move to GitHub Pages with GitHub Actions, in its own thread ("Move Derive hosting
-to GitHub Pages"); the tutor, which needs a server for the Anthropic key and the private
-references, has to move with it (asked of that thread on 6 November).
+Hosting is moving to GitHub Pages with GitHub Actions, in its own thread ("Move Derive hosting
+to GitHub Pages"), with the tutor, which needs a server for the Anthropic key and the private
+references, in a Supabase Edge Function. Its pull request (PR 2, branch
+`claude/project-thread-ahko0m`) was open on 6 November; that thread merges it once CI is green.
 
 Phase 2 (the full learning loop, and the lessons after the first slice) began on 6 November in
-its own thread. M1.7 Logic, sets and quantifiers is written, as a `draft`, with two new figure
-components, the set diagram and the quantifier grid. Nothing of phase 2 is visible in
-production yet: drafts show only with `DERIVE_SHOW_DRAFTS=1`.
+its own thread. M1.7 Logic, sets and quantifiers is live (`ready`): written, reviewed by both
+reviewers, every finding applied, walked again and tested end to end, with two new figure
+components, the set diagram and the quantifier grid. E1.7 Classes and objects is written as a
+`draft` (drafts show only with `DERIVE_SHOW_DRAFTS=1`), and its two reviews were running when
+this was written.
 
 ### Done
 
@@ -298,33 +301,64 @@ of Arnav. Each lesson goes live (`ready`) once it is written, checked, reviewed 
 
 Done so far:
 
-- M1.7 Logic, sets and quantifiers, at `draft`: all six phases, 24 exercises (a puzzle on which
-  cards test "if spam, then a link", 5 recall, 7 explore predictions, 3 derivation steps and 2
-  proofs of rules, 3 builds and 2 break-its, and the explain-back), tutor notes with 12
-  misconceptions, and checks.json. It now requires M1.3 as well as M1.2 (predicates are M1.3's
-  functions with true or false outputs, and the Build phase uses `def`), synced into
-  curriculum.json. `npm run check` and `npm run check:exercises -- M1.7` pass, and the SymPy
-  logic functions (`satisfiable`, `simplify_logic`) run in the browser's Pyodide.
+- M1.7 Logic, sets and quantifiers, live (`ready`) since 6 November: all six phases, 24
+  exercises (a puzzle on which cards test "if spam, then a link", 5 recall, 7 explore
+  predictions, 3 derivation steps and 2 proofs of rules, 3 builds and 2 break-its, and the
+  explain-back), tutor notes with 12 misconceptions, and checks.json. It requires M1.2 and M1.3,
+  and its sets now lead to M1.10 as well. Reviewed by both (the simulated learner, 23 of 24 right
+  at the first answer with 25 findings; the independent reviewer, 2 blockers, 21 should-fix
+  findings and nits; in `derive-resume/review/M1.7-*.md`), and every finding applied: a lab's
+  rule ("if a job runs for more than a day, then it must be approved") replaces the item that
+  repeated the puzzle's card, and its placement question asks the harder case; the filters say
+  "and drop every other email" instead of "if"; subsets are practised (a new review variant, and
+  the claim's figure asks for the set the claim allows, $P^c \cup Q$); the explain-back asks
+  which set must be empty; a truth table is said to settle a rule, with the chain of rules as a
+  second proof; the Build phase says what Python's `and` and `or` do to sets and to SymPy's
+  symbols, that `satisfiable` is a small SAT solver and does not try every row, and gives a
+  nested example before the quantifier build; new tests catch `distinct` that lists ids, and a
+  `short_filter` built with Python's own `and`; and rewritten rungs, notes and reveals.
+  `check:exercises` passes all its 44 items, and the lesson was walked again in all six phases
+  (store `derive-resume/store-after-M1.7-rewalk.json`), with its figures in both themes at 1,100
+  and 390 px: no horizontal overflow and no page errors. Its end-to-end tests pass at all three
+  widths.
 - Two figure components, with unit tests: `SetDiagram` (two sets in a rectangle; four regions
-  shaded from the picture or a list; it asks for sets written with ∪, ∩ and ᶜ in turn, says what
-  is wrong with a shading, and points out when two sets are the same region, De Morgan's laws)
-  and `QuantifierGrid` (a grid of ticks with four statements; `verdictsAfter="<exercise>"`
-  keeps the verdicts, the evidence cells and editing closed until that exercise is done, and
-  check-content checks the exercise exists in the same phase).
-- M1.7 walked through all six phases in local mode (every exercise, wrong and right answers,
-  both figures, the reveals and the re-teach), and its figures checked in both themes at 1,100
-  and 390 px: no horizontal overflow and no page errors.
+  shaded from the picture or a list; it asks for sets written with ∪, ∩ and ᶜ in turn, names
+  the regions shaded rightly before what is wrong, says when nothing is shaded, and says "It is
+  the same set as" when two sets match, De Morgan's laws) and `QuantifierGrid` (a grid of ticks
+  with four statements; `verdictsAfter="<exercise>"` keeps the verdicts, the evidence cells and
+  editing closed until that exercise is done; a screen reader hears which statements a change
+  made true or false, from one status line).
+- E1.7 Classes and objects, at `draft`: all six phases and 23 exercises (commit `fbfc754`,
+  whose message says 24 by mistake), linked to M6.5, L3.4 and E5.4. The step-through figure now
+  shows each object's attributes (the harness records them, and the frames look a name up
+  through the object), skips the frames of class bodies, and stops a `__call__` that calls
+  itself after 200 calls. Its end-to-end tests pass. Its build promises that E1.10 shows how to
+  give a class a `__hash__`, so E1.10 must.
+- Engine changes: Pyodide starts with a fixed hash seed (`PYTHONHASHSEED=0`) in the browser's
+  worker and in Node, so sets of strings and SymPy's searches come out the same on every run
+  and the runs kept in checks.json stay true (without it `check:exercises` failed about half
+  the time on M1.7); the end-to-end tests scroll the page back after the figure screenshots, as
+  a figure left under the sticky header had its buttons counted as too small to touch; an
+  option's plain-text name now writes `\varnothing`, `\Leftrightarrow`, `\setminus` and
+  `\supseteq` as signs; and the review and notebook answer lines drop a label's full stop
+  before joining labels with semicolons.
+- The tutor's and the grader's calls go through `apiFetch`, the one way the browser calls
+  Derive's server (commits `84b50c0` and `c925474`), ready for the hosting move.
 
 Next, in order:
 
-1. Review M1.7 as the earlier lessons were: an independent reviewer and a simulated learner,
-   with the briefs in `derive-resume/review/prompts/` changed from E1.6 to M1.7 (ancestors M1.1
-   to M1.3; the two new figures). Apply what they find, walk the changed parts again, set M1.7 to
-   `ready` (the rule in CLAUDE.md), add it to the end-to-end tests' learners and budgets if they
-   do not pick it up on their own (`e2e/learners.ts`, `e2e/performance.spec.ts`), run
-   `npm run test:e2e`, and push.
-2. E1.7 Classes and objects (requires E1.3 and E1.4); check whether ProgramTrace can show an
-   object's attributes, and extend it if not.
+1. E1.7: when its two reviews finish (the briefs are `derive-resume/review/E1.7-*-prompt.md`;
+   the findings go to `derive-resume/review/E1.7-findings.md` and
+   `E1.7-learner-findings.md`), apply every finding, walk the changed parts again, set it to
+   `ready`, run the end-to-end tests for it, and push.
+2. When the hosting pull request lands: pages move to `src/server/app/` (a new page needs a line
+   in `src/server/routes.ts` and a static shell in `src/app/`, copied from
+   `src/app/today/page.tsx`); server components cannot use state or effects; client components
+   call server actions through `src/lib/actions.ts` and use `refreshPage()` from
+   `src/lib/wire/client.tsx`; `npm run dev` runs the site on 3000 and the server on 3101; walk
+   scripts wait for `html[data-page="ready"]`; and `npm run build:api` rewrites
+   `src/generated/client-modules.ts`, which is committed. Tell that thread before changing a
+   route's shape or adding a route.
 3. The phase 2 features: the "This confused me" button (records the exact step as a notebook
    entry of kind `confused`; `NOTEBOOK_KINDS` already has it), automatic revision flags, the Map
    coloured by mastery with what unlocks next, the concept map, the novice explain-back mode
@@ -332,6 +366,9 @@ Next, in order:
    course viva (the tutor's `examiner` mode).
 4. The rest of stage 1, M1.8 to M1.12 and E1.8 to E1.12, then the start of stage 2, each with
    both reviews, adding the remaining figure components as the lessons need them.
+5. A follow-up from the M1.7 checks: give the workspace `scroll-padding` for its sticky header
+   and footer, so that a control reached by the keyboard is never hidden under them (WCAG
+   2.4.11, focus not obscured).
 
 ### Working notes
 
@@ -347,11 +384,15 @@ Next, in order:
   so a walk checks them with `check({ force: true })`.
 - Walking M1.7: `derive-resume/store-before-M1.7-walk.json` is the store after the E1.6 walk with
   E1.4, E1.5 and E1.6 started before Monday 2 November, E1.6's concepts provisional and every
-  card's due date moved to 20 November, so that M1.7 can begin on 6 November. Copy it to
-  `.derive-local/store.json`. `walk-m17.cjs` walks the phases (`node walk-m17.cjs overview
-  puzzle recall explore derive build explain`), `m17figs.cjs` takes the figures in both themes
-  at both widths, and `store-after-M1.7-walk.json` is the store after the walk. The scripts name
-  `/home/user/Derive` as the repository; change that if the clone is elsewhere.
+  card's due date moved to 20 November, so that M1.7 can begin on 6 November. Copy it to a
+  store folder and start the production build on it (`DERIVE_LOCAL_STORE=1
+  DERIVE_LOCAL_DIR=<folder> DERIVE_SHOW_DRAFTS=1 npx next start -p 3100`). `walk-m17.cjs` walks
+  the phases (`node walk-m17.cjs overview puzzle recall explore derive build explain`),
+  `walk-m17-codefb.cjs` prints the whole result of each build's wrong programs, `m17figs.cjs`
+  takes the figures in both themes at both widths, and `store-after-M1.7-rewalk.json` is the
+  store after the second walk. The M1.7 scripts name `/home/claude/derive` as the repository;
+  change that if the clone is elsewhere. Probe scripts that load Pyodide in Node must run from
+  the repository's folder, since it finds Pyodide from there.
 - In development, a build page whose code is wider than its box logs a hydration warning:
   `ScrollStops`, in the root layout, gives the `<pre>` a tab stop before that part of the page
   has hydrated. It happens on E1.6's build page too, changes nothing a learner sees, and does

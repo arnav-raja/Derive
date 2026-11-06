@@ -2,7 +2,7 @@ misconceptions:
   - id: exclusive-or
     belief: '"$P$ or $Q$" means one or the other but not both.'
     why: >-
-      In mathematics and in every programming language, or is inclusive: "$P$ or $Q$" is true when
+      In mathematics and in programming languages, or is inclusive: "$P$ or $Q$" is true when
       at least one is true, both included. The exclusive kind is said in full when it is meant.
     cue: The learner leaves out the short email in English in explore-or, or says a run on the trusted list with two approvals may not start.
   - id: not-distributes
@@ -10,7 +10,7 @@ misconceptions:
     why: >-
       "Short and in English" fails as soon as one part fails, so its denial is (not $P$) or (not $Q$).
       De Morgan's laws swap and and or as the not passes inside.
-    cue: The learner chooses "neither short nor in English" in explore-drop, or writes `not short and not english` for the stricter filter's drops.
+    cue: The learner chooses "neither short nor in English" in explore-drop, or (not $P$) or (not $Q$) for not ($P$ or $Q$) in its review.
   - id: confirm-only
     belief: A claim is tested by looking for cases that agree with it.
     why: >-
@@ -28,20 +28,20 @@ misconceptions:
     why: >-
       $P \Rightarrow Q$ is a promise about the cases where $P$ holds, and is broken only when $P$ is
       true and $Q$ false. When $P$ is false nothing can break it, so it is true, vacuously.
-    cue: The learner marks an email not labelled spam as breaking the claim in explore-break-rule, or answers "neither" when $P$ is false.
+    cue: The learner marks a job of an hour as breaking the rule in explore-break-rule, or answers "neither" when $P$ is false.
   - id: inverse-equivalent
     belief: $\neg P \Rightarrow \neg Q$ says the same as $P \Rightarrow Q$.
     why: >-
-      Denying both parts without swapping them gives the inverse, which is equivalent to the
-      converse, not to the original. Only denying both and swapping them, $\neg Q \Rightarrow \neg P$,
-      keeps the meaning.
+      Denying both parts without swapping them gives $\neg P \Rightarrow \neg Q$, which says the
+      same as the converse, not the original. Only denying both and swapping them,
+      $\neg Q \Rightarrow \neg P$, keeps the meaning.
     cue: The learner chooses "if an email is not labelled spam, then it contains no link" in explore-same-claim, or compares with `Implies(Not(p), Not(q))` in build-sympy-logic.
   - id: not-every-is-none
     belief: Not every $x$ has $P(x)$ means that no $x$ has it.
     why: >-
       "Not every run converged" is true as soon as a single run failed. Its denial is
       $\exists x : \neg P(x)$, at least one exception, not $\forall x : \neg P(x)$.
-    cue: The learner chooses "no training run converged" in explore-not-every, or the rule "not there is" for the first line of derive-negate-claim.
+    cue: 'The learner chooses "no training run converged" in explore-not-every, or $\forall x : \neg P(x)$ for $\neg\,\forall x : P(x)$ in its review.'
   - id: quantifier-order-irrelevant
     belief: Swapping "for every" and "there is" leaves a claim's meaning unchanged.
     why: >-
@@ -54,7 +54,7 @@ misconceptions:
       An element in both sets is counted once in $|A|$ and again in $|B|$, so the overlap must be
       taken away once: $|A \cup B| = |A| + |B| - |A \cap B|$, which equals $|A| + |B|$ only for sets
       that do not overlap.
-    cue: The learner answers 0 in explore-neither, writes $a + b$ in derive-union, or uses `len(train) + len(test)` in build-split.
+    cue: The learner answers $-100$ or 0 in explore-neither, writes $a + b$ in derive-union, or uses `len(train) + len(test)` in build-split.
   - id: empty-all-false
     belief: '`all` over an empty list is `False`, since nothing was checked.'
     why: >-
@@ -71,7 +71,8 @@ misconceptions:
     belief: Checking many examples proves a claim about every case.
     why: >-
       One counterexample breaks a for-every claim, so examples can only fail to find one. A proof
-      covers every case at once, as the chains of rules in Derive did.
+      covers every case at once, as a truth table does by listing all four rows, and as the chains
+      of rules in the Derive phase did.
     cue: The learner says a claim is proved because many emails agree with it, or proves an equivalence by checking one row.
 
 exercises:
@@ -101,8 +102,9 @@ exercises:
       - Try Explore's numbers, $a = 400$, $b = 700$ and $c = 300$, for which the union holds 800. What does each of the three regions hold?
       - >-
         If your answer adds the three regions, that is the right plan, and the trouble is in one of
-        them: check each against Explore's numbers. If it adds $a$ and $b$ alone, ask how many times
-        an email in both sets is counted.
+        them: check each against Explore's numbers. If it adds only two regions, ask which part of
+        the union it leaves out. If it starts from $a + b$, ask how many times that counts an email
+        in both sets, and how many times it should.
       - >-
         In a class of 30, 12 play chess, 8 play the piano and 5 play both. The students who play
         either are $(12 - 5) + 5 + (8 - 5) = 15$, and the same as $12 + 8 - 5$: adding 12 and 8
@@ -119,9 +121,10 @@ exercises:
         Check a row: at $p = 1$ and $q = 0$, $p \lor q$ is true, so your expression must give 1, and
         at $p = q = 1$ it must give 1 too.
       - >-
-        If your expression gives 1, 1, 1 and 0 in the four rows, it is right, and only its shape is
-        left: no bracket may remain. If it fails a row, the trouble is in how one of the $\neg$s
-        became a number: check the inner ones and the outer one separately.
+        If your working turns $\neg p \land \neg q$ into a number and takes it from 1, that is the
+        right route, and what is left is to multiply out every bracket and collect the terms. If it
+        does not, start there: write $\neg p \land \neg q$ as a number first, then apply the outer
+        $\neg$.
       - >-
         To write "$p$ and not $q$" as a number: not $q$ is $1 - q$, and and multiplies, so it is
         $p(1 - q) = p - pq$, which is 1 only at $p = 1$ and $q = 0$.
@@ -129,17 +132,19 @@ exercises:
       $p + q$ gives 2 when both are true, which is not a truth value: the overlap is counted twice, as
       in the union. $pq$ is and, not or. $1 - pq$ is not ($p$ and $q$). $1 - p - q + pq$ forgets the
       outer $\neg$: it is $\neg p \land \neg q$ itself. $1 - (1 - p)(1 - q)$ is right but still has
-      its bracket.
+      its bracket. The check compares answers at fractions, not at 0 and 1, so an answer that equals
+      $p \lor q$ only on truth values, such as $p + q - p^2 q$, is refused as not equal.
   derive-contrapositive:
     rungs:
       - What changes from each line to the next, and which rule allows exactly that change?
       - Just before this exercise, the truth table showed that $A \Rightarrow B$ agrees with $\neg A \lor B$ in every row.
       - Look at the first line alone. Which rule turns $P \Rightarrow Q$ into a statement with or?
       - >-
-        If your rules for the first two lines are right, the trouble is later: in the third line
-        nothing moves and one letter is written in a new way, and in the last line a statement with
-        or becomes an if-then again. If the first line is wrong, compare $P \Rightarrow Q$ with the
-        rules whose left side has an arrow.
+        If your rule for the first line turns the arrow into an or, that is right, and the trouble is
+        in a later line. For each one, say what changed: whether two parts only changed places, a
+        letter was written in a new way, or an or became an arrow again, and find the rule whose two
+        sides differ in exactly that way. If the first line is wrong, compare $P \Rightarrow Q$ with
+        the rules whose left side has an arrow.
       - >-
         To show that $\neg(\neg P \land Q)$ is $P \lor \neg Q$: De Morgan's laws carry the not inside,
         giving $\neg(\neg P) \lor \neg Q$, and the double not gives $P \lor \neg Q$. Each line uses
@@ -157,9 +162,10 @@ exercises:
         Think of a single email. What would it take for the claim to fail for that email? Then match
         each line to the rule that moves the not one step further in.
       - >-
-        If your rule for the first line moves the not past the quantifier, that is right, and the
-        trouble is in what follows: in each later line, find the not that moved, changed or vanished,
-        and the rule that did it. If not, look at what happened to the $\forall$ in the first line.
+        If the rule you chose for the first line has $\neg\,\forall$ on its left side, as the start
+        does, that part is right, and the trouble is in what follows: in each later line, find the
+        not that moved, changed or vanished, and the rule that did it. If not, compare the quantifier
+        in the start with the quantifier on the left of the rule you chose.
       - >-
         To deny $\forall x : P(x) \lor Q(x)$: not for every gives $\exists x : \neg\big(P(x) \lor Q(x)\big)$,
         and De Morgan's laws give $\exists x : \neg P(x) \land \neg Q(x)$, an $x$ with neither.
@@ -178,7 +184,7 @@ exercises:
       - >-
         If `leaked` and `unseen` pass, the set operations are right, and the trouble is in the count:
         an id in both sets must be counted once. If `unseen` fails, check which set the difference
-        starts from.
+        starts from. If `leaked` fails, ask which operation keeps only the ids that are in both sets.
       - >-
         To find the words that are in exactly one of two sets of words, `a` and `b`, take the words
         in either and remove the words in both: `(a | b) - (a & b)`. Each phrase of the question
@@ -195,44 +201,54 @@ exercises:
         In this phase, `all(... for w in widths)` was $\forall$ over the widths, and `any` was
         $\exists$. In Explore, the order of two quantifiers decided what a claim said.
       - >-
-        Try one width first: for the width 64, what is `any(trains_well(64, r) for r in rates)`? Then
-        ask what must hold for every width.
+        Try one width first: for the width 64 and the script's rates, is there a rate that trains it
+        well? Write that question with `any`, then ask what must hold for every width.
       - >-
-        If `every_width_has_a_rate` passes, the pattern is right, and the trouble is in
-        `one_rate_for_all`: read its comment again, and check which list the outer `for` runs
-        through. If neither passes, check that the quantifier said first in each comment is the outer
-        call.
+        If `every_width_has_a_rate` gives the answers the tests expect, the pattern is right, and the
+        trouble is in `one_rate_for_all`: read its comment again, and check both its quantifiers and
+        the list each `for` runs through. If only `one_rate_for_all` gives the expected answers, make
+        the same check on `every_width_has_a_rate`. If neither does, check in each function that the
+        quantifier its comment says first is the outer call, the one it says second is the inner
+        call, and each `for` runs through the list its quantifier is about.
       - >-
         To check that every row of a table, a list of lists, holds a zero, write
         `all(any(x == 0 for x in row) for row in table)`: the outer `all` runs over the rows, and for
         each row the inner `any` looks for a zero.
     notes: >-
-      Swapping the two functions fails test_script. `all(any(...) for r in rates)` with the inner
-      `for` over the widths asks whether every rate suits some width, and fails
-      test_rate_that_suits_no_width. `any(all(...) for w in widths)` with the inner `for` over the
-      rates asks whether some width suits every rate, and fails test_one_width. Two `all`s or two
-      `any`s fail test_script.
+      Swapping the two functions fails test_script and test_rate_that_suits_no_width.
+      `all(any(...) for r in rates)` with the inner `for` over the widths asks whether every rate
+      suits some width, and fails test_one_rate_suits_all and test_rate_that_suits_no_width.
+      `any(all(...) for w in widths)` with the inner `for` over the rates asks whether some width
+      suits every rate, and fails test_one_rate_suits_all and test_one_width. Two `all`s in
+      `every_width_has_a_rate` fail test_script, test_one_rate_suits_all and
+      test_rate_that_suits_no_width, and two `any`s there fail only test_width_with_no_rate. Two
+      `all`s in `one_rate_for_all` fail test_one_rate_suits_all and test_one_width, and two `any`s
+      there fail test_script and test_width_with_no_rate.
   build-sympy-logic:
     rungs:
       - What question does each `None` ask, and which SymPy function answers it?
       - >-
-        Just before this exercise, `satisfiable(Not(Equivalent(a, b)))` gave `False` exactly when `a`
-        and `b` are equivalent, and the starter's `de_morgan` line uses it.
+        In Explore, the contrapositive agreed with $p \Rightarrow q$ in every row and the converse did
+        not, and the starter's `de_morgan` line asks the same kind of question about De Morgan's law.
       - Fill in `contrapositive` first and print it. Is it `False`, as Explore said it must be?
       - >-
         If `contrapositive` passes, the pattern is right, and the trouble is in another line: for
         `converse`, check what `satisfiable` is asked to find, and for `short_filter`, check that the
-        rule you simplify keeps both of the filter's cases. If `contrapositive` fails, compare the
-        statement it is set against with the definition of the contrapositive.
+        rule is written with `And`, `Or` and `Not`, keeps both of the filter's cases, and is passed to
+        `simplify_logic`. If `contrapositive` fails, check two things: that the search looks for a
+        row where the two statements differ, and that the statement set against $p \Rightarrow q$ is
+        its contrapositive.
       - >-
         To ask whether $p \lor q$ and $q \lor p$ can differ, write
         `satisfiable(Not(Equivalent(Or(p, q), Or(q, p))))`, which gives `False`: they agree in every
         row. And `simplify_logic(And(p, Or(p, q)))` gives `p`.
     notes: >-
-      Comparing with `Implies(Not(p), Not(q))` tests the inverse, which differs from $p \Rightarrow q$,
-      so `contrapositive` is a row instead of `False`. Leaving out the `Not` around `Equivalent` finds
-      a row where the two agree. The filter's rule typed in without `simplify_logic` is right in
-      every row but fails test_short_filter_simplest.
+      Comparing with `Implies(Not(p), Not(q))` tests $\neg p \Rightarrow \neg q$, which differs from
+      $p \Rightarrow q$, so `contrapositive` is a row instead of `False`. Leaving out the `Not` around
+      `Equivalent` finds a row where the two agree, so in `contrapositive` it gives a row instead of
+      `False`. The filter's rule typed in without `simplify_logic` is right in every row but fails
+      test_short_filter_simplest. Writing the rule with Python's `and`, `or` and `not` gives `q` with
+      no error, since Python treats each symbol as true, and fails test_short_filter.
 
 novice:
   - Why is "if $P$ then $Q$" true when $P$ is false? It feels as if it should be unknown.

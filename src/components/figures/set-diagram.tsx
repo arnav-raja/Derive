@@ -112,7 +112,7 @@ export function SetDiagram({
     setResult(null);
   };
 
-  // An earlier set with the same region as this one, which the figure points out once this one is right.
+  // An earlier set with the same regions as this one, which the figure points out once this one is right.
   const twin = result?.ok && task ? asked.slice(0, step).find((t) => sameRegions(t.regions, task.regions)) : undefined;
   const last = step >= asked.length - 1;
 
@@ -216,7 +216,7 @@ export function SetDiagram({
                         {twin ? (
                           <>
                             {" "}
-                            It is the same region as <span className="sr-only">{twin.spoken}</span>
+                            It is the same set as <span className="sr-only">{twin.spoken}</span>
                             <span aria-hidden="true">
                               <Tex tex={twin.tex} />
                             </span>
@@ -231,12 +231,21 @@ export function SetDiagram({
                       <CrossIcon className="mt-0.5 size-4 shrink-0 text-incorrect" aria-hidden="true" />
                       <span>
                         <span className="font-semibold text-incorrect">Not yet. </span>
-                        {result.extra.length
-                          ? `${listWords(result.extra.map((x) => quoted(names[x])))} ${result.extra.length === 1 ? "is" : "are"} shaded but not in the set. `
-                          : ""}
-                        {result.missing.length
-                          ? `${listWords(result.missing.map((x) => quoted(names[x])))} ${result.missing.length === 1 ? "is" : "are"} in the set but not shaded.`
-                          : ""}
+                        {result.right.length === 0 && result.extra.length === 0 ? (
+                          "Nothing is shaded yet: choose the regions that make up the set, in the picture or in the list."
+                        ) : (
+                          <>
+                            {result.right.length
+                              ? `${listWords(result.right.map((x) => quoted(names[x])))} ${result.right.length === 1 ? "is" : "are"} rightly shaded. `
+                              : ""}
+                            {result.extra.length
+                              ? `${listWords(result.extra.map((x) => quoted(names[x])))} ${result.extra.length === 1 ? "is" : "are"} shaded but not in the set. `
+                              : ""}
+                            {result.missing.length
+                              ? `${listWords(result.missing.map((x) => quoted(names[x])))} ${result.missing.length === 1 ? "is" : "are"} in the set but not shaded.`
+                              : ""}
+                          </>
+                        )}
                       </span>
                     </p>
                   )
@@ -268,7 +277,6 @@ export function SetDiagram({
                     {shaded.has(region) ? <CheckIcon className="size-3" strokeWidth={3} /> : null}
                   </span>
                   <span>{names[region]}</span>
-                  <span className="sr-only">{shaded.has(region) ? ", shaded" : ", not shaded"}</span>
                 </button>
               ))}
             </div>

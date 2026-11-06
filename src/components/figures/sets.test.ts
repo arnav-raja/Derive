@@ -63,9 +63,9 @@ describe("regions and shading", () => {
 
   it("says what a shading has too many of and too few of", () => {
     const target = regionsOf(parseSetExpression("S ∩ Eᶜ", SYMS));
-    expect(compareShading(new Set(["first"]), target)).toEqual({ ok: true, extra: [], missing: [] });
-    expect(compareShading(new Set(["first", "both"]), target)).toEqual({ ok: false, extra: ["both"], missing: [] });
-    expect(compareShading(new Set(), target)).toEqual({ ok: false, extra: [], missing: ["first"] });
+    expect(compareShading(new Set(["first"]), target)).toEqual({ ok: true, right: ["first"], extra: [], missing: [] });
+    expect(compareShading(new Set(["first", "both"]), target)).toEqual({ ok: false, right: ["first"], extra: ["both"], missing: [] });
+    expect(compareShading(new Set(), target)).toEqual({ ok: false, right: [], extra: [], missing: ["first"] });
   });
 });
 
