@@ -32,13 +32,18 @@ function tex(source: string) {
   return renderInline(`$${source}$`);
 }
 
+/** An option's label, with the plain text that names it when the label holds maths. */
+export function optionView(id: string, label: string) {
+  return /\$[^$]+\$/.test(label) ? { id, label: renderInline(label), text: labelToText(label) } : { id, label: renderInline(label) };
+}
+
 export function publicAnswer(answer: Answer, checks: ChecksFile, key: string): AnswerView {
   switch (answer.type) {
     case "choice":
       return {
         type: "choice",
         multiple: answer.multiple,
-        options: answer.options.map((o) => ({ id: o.id, label: renderInline(o.label) })),
+        options: answer.options.map((o) => optionView(o.id, o.label)),
       };
     case "number":
       return {
@@ -72,7 +77,7 @@ export function publicAnswer(answer: Answer, checks: ChecksFile, key: string): A
         code: answer.code,
         broken: answer.broken,
         change: renderMarkdown(answer.change),
-        options: answer.options.map((o) => ({ id: o.id, label: renderInline(o.label), when: o.when })),
+        options: answer.options.map((o) => ({ ...optionView(o.id, o.label), when: o.when })),
       };
     case "text":
       return {

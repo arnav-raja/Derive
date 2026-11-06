@@ -11,10 +11,17 @@ import type { Json, PhaseId } from "@/lib/store/types";
 
 export type SymbolSpec = { name: string; positive?: boolean; integer?: boolean };
 
+/**
+ * An option's label, and, when the label holds maths, the label as plain text. Browsers give a
+ * control no name from KaTeX's maths, so an option whose label is all maths would have none;
+ * `text` is its name instead.
+ */
+export type OptionView = { id: string; label: ReactNode; text?: string };
+
 export type ChoiceView = {
   type: "choice";
   multiple: boolean;
-  options: { id: string; label: ReactNode }[];
+  options: OptionView[];
 };
 
 export type NumberView = { type: "number"; unit?: string; factor?: number };
@@ -42,7 +49,7 @@ export type BreakitView = {
   code: string;
   broken: string;
   change: ReactNode;
-  options: { id: string; label: ReactNode; when: string }[];
+  options: (OptionView & { when: string })[];
 };
 
 export type TextView = {

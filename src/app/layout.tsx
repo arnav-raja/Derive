@@ -4,9 +4,12 @@ import "@fontsource-variable/inter/opsz.css";
 import "@fontsource-variable/jetbrains-mono/wght.css";
 import "katex/dist/katex.min.css";
 import "./globals.css";
+import "./fonts/sans";
 
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
+
+import { ScrollStops } from "@/components/ui/scroll-stops";
 
 export const metadata: Metadata = {
   title: { default: "Derive", template: "%s · Derive" },
@@ -35,7 +38,10 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className="bg-paper text-ink">{children}</body>
+      <body className="bg-paper text-ink">
+        {children}
+        <ScrollStops />
+      </body>
     </html>
   );
 }

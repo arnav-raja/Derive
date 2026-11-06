@@ -1,6 +1,6 @@
 import { clsx } from "clsx";
 import Link from "next/link";
-import type { ReactNode } from "react";
+import type { ComponentProps, ReactNode } from "react";
 
 import { ArrowLeftIcon, ArrowRightIcon, InfoIcon, WarningIcon } from "@/components/ui/icons";
 import { lesson as lessonMeta } from "@/lib/curriculum/data";
@@ -62,6 +62,15 @@ function Aside({
 }
 
 /** An aside: a remark, a caution or a check worth doing. */
+/** A table in lesson text. A wide one scrolls sideways in its own box on a phone, not the page. */
+export function Table(props: ComponentProps<"table">) {
+  return (
+    <div className="table-scroll">
+      <table {...props} />
+    </div>
+  );
+}
+
 export function Note({ title = "Note", children }: { title?: string; children: ReactNode }) {
   return <Aside label={title}>{children}</Aside>;
 }
@@ -99,7 +108,7 @@ export function Definition({ term, children }: { term: string; children: ReactNo
   return (
     <div className="not-prose overflow-hidden rounded-lg border border-accent/30 bg-surface font-sans shadow-xs">
       <p className="flex items-center gap-2 border-b border-accent/20 bg-accent-soft px-4 py-2 text-sm font-semibold text-accent">
-        <span className="text-xs font-semibold text-accent/80">Definition</span>
+        <span className="text-xs font-semibold text-accent">Definition</span>
         <span aria-hidden="true">·</span>
         {term}
       </p>
@@ -159,7 +168,7 @@ export function Step({ why, children }: { why?: string; children: ReactNode }) {
     // it when there is room and moves below it when there is not, so a long reason never squeezes
     // the mathematics; a step wider than the page scrolls within its own row.
     <li className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1 rounded-lg border border-rule bg-surface px-4 py-2 shadow-xs">
-      <div className="max-w-full overflow-x-auto py-1 text-base whitespace-nowrap text-ink">{children}</div>
+      <div className="max-w-full overflow-x-auto overflow-y-hidden py-1 text-base whitespace-nowrap text-ink">{children}</div>
       {why ? <p className="min-w-48 flex-1 text-sm text-ink-muted sm:text-right">{why}</p> : null}
     </li>
   );

@@ -72,6 +72,14 @@ const SYMBOLS: Record<string, string> = {
   max: "max",
   min: "min",
   lim: "lim",
+  // Commands that only set the size or spacing of what follows say nothing of their own.
+  displaystyle: "",
+  textstyle: "",
+  scriptstyle: "",
+  limits: "",
+  nolimits: "",
+  quad: " ",
+  qquad: " ",
 };
 
 const SUPERSCRIPT: Record<string, string> = {

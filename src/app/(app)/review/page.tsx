@@ -1,3 +1,5 @@
+import "@/app/fonts/serif";
+
 import { clsx } from "clsx";
 import type { Metadata } from "next";
 import Link from "next/link";

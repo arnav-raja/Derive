@@ -12,7 +12,7 @@ import type { CheckItem } from "@/lib/learning/mixed-check";
 import { hintsFrom, type ExerciseState } from "@/lib/learning/state";
 import type { Attempt, PhaseId } from "@/lib/store/types";
 
-import { Callback, Definition, Figure, Foreshadow, Note, Stated, Step, Steps, Sym } from "./prose";
+import { Callback, Definition, Figure, Foreshadow, Note, Stated, Step, Steps, Sym, Table } from "./prose";
 
 /*
  * The components a lesson phase's MDX is rendered with. Gated content is
@@ -210,6 +210,7 @@ export function phaseComponents(ctx: PhaseContext): MDXComponents {
   }
 
   return {
+    table: Table,
     Exercise: ExerciseSlot,
     Reveal,
     Reteach,

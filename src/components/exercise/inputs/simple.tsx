@@ -51,6 +51,7 @@ export function ChoiceInput({
               name={name}
               value={o.id}
               checked={checked}
+              aria-label={o.text}
               onChange={(e) => {
                 if (view.multiple) onChange(e.target.checked ? [...selected, o.id] : selected.filter((s) => s !== o.id));
                 else onChange([o.id]);
@@ -169,13 +170,13 @@ export function StepsInput({
           ))}
         </ul>
       </div>
-      <div className="overflow-x-auto rounded-lg border border-rule bg-surface px-4 py-2.5 text-base">{view.start}</div>
+      <div className="overflow-x-auto overflow-y-hidden rounded-lg border border-rule bg-surface px-4 py-2.5 text-base">{view.start}</div>
       <ol className="flex flex-col gap-2">
         {view.lines.map((line, i) => (
           <li key={i} className="flex flex-col gap-2 rounded-lg border border-rule bg-surface px-4 py-3">
             <div className="flex items-baseline gap-3">
               <span className="tabular shrink-0 text-xs font-semibold text-ink-muted">Line {i + 1}</span>
-              <div className="min-w-0 overflow-x-auto py-1 text-base">{line.math}</div>
+              <div className="min-w-0 overflow-x-auto overflow-y-hidden py-1 text-base">{line.math}</div>
             </div>
             <label className="flex flex-col gap-1 text-sm">
               <span className="sr-only">The rule that justifies line {i + 1}</span>

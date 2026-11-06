@@ -46,7 +46,7 @@ guard), Vercel (region bom1). Next.js here differs from older versions: read the
 | `npm run check` | Type check, lint, unit tests, graph rules and content checks |
 | `npm run check:graph` | The plan's graph rules; `-- --fix` syncs links from lesson.yaml into curriculum.json |
 | `npm run check:exercises` | Runs every reference solution (must pass) and wrong solution (must fail) |
-| `npm run test:e2e` | Playwright end-to-end tests in local mode |
+| `npm run test:e2e` | Builds the app, then opens every page and lesson phase at phone, tablet and desktop widths in both themes, checking layout, figures and accessibility (axe), and holds each page to its performance budget; screenshots are kept in `test-results/e2e/` and the report in `playwright-report/` |
 
 Local mode (`DERIVE_LOCAL_STORE=1`) skips sign-in and keeps learner data in `.derive-local/`.
 It is for development and tests only and refuses to run on Vercel.
@@ -65,6 +65,7 @@ It is for development and tests only and refuses to run on Vercel.
 | `content/curriculum/curriculum.json` | All 332 lessons, 34 courses and 9 capstones with their links |
 | `content/lessons/<code>/` | One lesson: lesson.yaml, six phase MDX files, exercises, tutor notes, references |
 | `supabase/migrations/` | Every database change, applied in order |
+| `e2e/` | End-to-end tests: every page and lesson phase, the test learners and their stores, the performance budgets |
 
 ## Conventions
 

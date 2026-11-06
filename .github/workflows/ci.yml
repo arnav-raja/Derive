@@ -46,5 +46,37 @@ jobs:
       - name: Lesson content
         run: npm run check:content
 
+      - name: Exercises
+        run: npm run check:exercises
+
       - name: Build
         run: npm run build
+
+  e2e:
+    name: Pages, lessons and performance
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Every page and lesson phase, at three widths in both themes, and the budgets
+        run: npm run test:e2e
+
+      - name: Keep the report, with every screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-report
+          path: playwright-report/
+          retention-days: 14

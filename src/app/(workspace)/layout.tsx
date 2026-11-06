@@ -1,3 +1,5 @@
+import "@/app/fonts/serif";
+
 import type { ReactNode } from "react";
 
 import { requireSession } from "@/lib/auth";

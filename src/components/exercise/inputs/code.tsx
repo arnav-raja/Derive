@@ -429,7 +429,15 @@ export function BreakitInput({
                 disabled && "cursor-default",
               )}
             >
-              <input type="radio" name={name} value={o.id} checked={isSelected} onChange={() => onSelect(o.id)} className="peer sr-only" />
+              <input
+                type="radio"
+                name={name}
+                value={o.id}
+                checked={isSelected}
+                aria-label={o.text}
+                onChange={() => onSelect(o.id)}
+                className="peer sr-only"
+              />
               <span
                 aria-hidden="true"
                 className={clsx(

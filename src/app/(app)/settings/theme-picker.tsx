@@ -12,22 +12,25 @@ const OPTIONS: { value: ThemePreference; label: string; detail: string; Icon: ty
   { value: "dark", label: "Dark", detail: "Dark canvas, light text", Icon: MoonIcon },
 ];
 
-/** A small drawing of the app in one theme, drawn with that theme's own tokens. */
+/**
+ * A small drawing of the app in one theme, drawn with that theme's own tokens. On a phone it is
+ * drawn smaller and tighter, so that every part of it fits its 96 by 64 pixel box.
+ */
 function Preview({ theme }: { theme: "light" | "dark" }) {
   return (
     <span data-preview={theme} className="flex h-full w-full bg-paper">
-      <span className="flex w-1/4 flex-col gap-2 border-r border-rule bg-surface p-2">
+      <span className="flex w-1/4 flex-col gap-1 border-r border-rule bg-surface p-1 sm:gap-2 sm:p-2">
         <span className="h-2 w-3/4 rounded-full bg-accent" />
         <span className="h-1 w-full rounded-full bg-rule-strong" />
         <span className="h-1 w-2/3 rounded-full bg-rule-strong" />
         <span className="h-1 w-5/6 rounded-full bg-rule-strong" />
       </span>
-      <span className="flex flex-1 flex-col gap-2 p-3">
+      <span className="flex min-w-0 flex-1 flex-col gap-1 p-1 sm:gap-2 sm:p-3">
         <span className="h-2 w-1/2 rounded-full bg-ink-faint" />
-        <span className="flex flex-1 flex-col gap-2 rounded-sm border border-rule bg-surface p-2">
+        <span className="flex flex-1 flex-col gap-1 rounded-sm border border-rule bg-surface p-1 sm:gap-2 sm:p-2">
           <span className="h-1 w-full rounded-full bg-rule-strong" />
           <span className="h-1 w-4/5 rounded-full bg-rule-strong" />
-          <span className="mt-auto h-3 w-10 rounded-xs bg-accent" />
+          <span className="mt-auto h-2 w-2/5 rounded-xs bg-accent sm:h-3 sm:w-10" />
         </span>
       </span>
     </span>

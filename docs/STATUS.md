@@ -6,9 +6,9 @@ CLAUDE.md and carry on from "Resume here".
 ## Where things stand
 
 Phase 0 (set-up) is done apart from the steps waiting on Arnav. Phase 1 (the first slice of 12
-lessons) is under way: eleven lessons written (M1.1 to M1.6 and E1.1 to E1.5), one to go. E1.6 is
-drafted, checked and reviewed by the simulated learner; its independent review was still running
-at the last update.
+lessons) is under way: all 12 lessons are written (M1.1 to M1.6 and E1.1 to E1.6), and the
+end-to-end tests and performance budgets are written, pass, and run in CI. What is left of
+phase 1: the tutor leak tests and the deployment.
 
 ### Done
 
@@ -202,6 +202,49 @@ at the last update.
   to run line 7 in `countdown(1)`") and its table says what each line prints; and the scale
   line's guess starts at the left end, with "Move the slider to set your guess" beside the
   waiting Lock button.
+- E1.6 Text, files and strings: written on 6 November, walked end to end, and reviewed by both
+  (the simulated learner, 22 of 24 right with 15 findings; the independent reviewer, 2 blockers,
+  11 should-fix findings and nits; in `derive-resume/review/E1.6-*.md`). Every finding applied:
+  the text around the bytes figure no longer answers its café prediction; the proof now proves
+  that every character of the Devanagari block (2,304 to 2,431) takes three bytes, from rules
+  that hold, and the text names the rare signs kept in other blocks; string order
+  explained (capitals before small letters, a string before any longer one that starts with it);
+  the bits of é worked through, hexadecimal and printed bytes explained; `for line in f`, the last
+  line without a newline, and empty fields from `split` covered; a new figure caption for the log
+  trace; reordered options and variants; new tests for large steps and for naming the encoding,
+  two new wrong programs for each of read_log and truncate, and a test that truncate does not
+  use `errors=`; rewritten rungs, two new misconceptions, and a foreshadow of E1.11. All 44 items
+  pass `check:exercises`, and the lesson was walked again end to end with no errors
+  (`store-after-E1.6-walk.json`). Engine changes from its review: the bytes figure has one "Show
+  the bits" toggle, marks its Hindi text as Hindi for screen readers, and labels its bits column
+  "UTF-8 bytes, marker bits first"; and an error raised inside a test now names the learner's
+  line and function, as the console does for the program ("IndexError on line 4, in truncate:
+  index out of range").
+- Phase 1's end-to-end tests (`e2e/`, `npm run test:e2e`): the production build in local mode,
+  with two test learners on their own stores, one just signed up and one who has finished every
+  written lesson (so every Reveal is open). Every app page for both, the sign-in pages and the
+  not-found page, and every phase of every written lesson, are opened at phone, tablet and
+  desktop widths and looked at in both themes: a full-page screenshot of each, a screenshot of
+  each figure, checks for the failures the plan names (anything wider than the window, content
+  cut off, the browser's default font or background, a font that failed, layout shift while
+  loading above 0.1, figures without a title, a description or room), axe's WCAG 2.2 A and AA
+  rules, and no errors logged. Screenshot tests check these properties and keep the screenshots
+  with the report; they are not compared with saved pictures, since the pages change with every
+  lesson and rendering differs between machines. What they found, and what changed: options
+  whose label is all maths had no accessible name, so each option with maths is now named by its
+  label as plain text (with a unit test over every lesson); a box that scrolls sideways is made
+  a tab stop while it does not fit, so the keyboard can scroll it (`ScrollStops`), and boxes of
+  maths no longer scroll up and down by a pixel or two; lesson tables scroll in their own box on
+  a phone; the theme previews in Settings fit at phone width; and the Definition label has
+  enough contrast. Text also jumped as the fonts arrived on a slow phone (a layout shift of
+  0.142), so the Latin faces of Inter and Source Serif are now served by the app and preloaded
+  (`src/app/fonts/`), the serif only on the pages that use it; with the processor slowed six
+  times the shift is now at most 0.004. The performance budgets (`e2e/performance.spec.ts`) hold
+  each app page and every lesson phase to its bytes of script, style, fonts and HTML and to its
+  number of elements; they were set on 6 November, about 15 per cent above what each page
+  measured, and a page over its budget fails the build. Times are not budgeted, since they
+  differ from machine to machine. CI runs `check:exercises` and the end-to-end tests, and keeps
+  the report with its screenshots for 14 days.
 - Placement: the check's "at most n to go" counted only the lessons it could ask about yet, so the
   number grew as lessons passed (3 to go, then 7). It now counts every question still reachable
   if every answer is right. Found by the new placement unit tests.
@@ -220,22 +263,12 @@ learner views come from `python3 -I scripts/learner-view.py . <code> <scratch di
 answer key in a separate folder). The briefs given to the reviewer and the simulated learner are
 in `derive-resume/review/prompts/`; change the lesson and the paths in them for another lesson.
 
-1. Finish E1.6 Text, files and strings. Its draft is in `derive-resume/e16-draft/` (all six
-   phases, 25 exercises, the rungs; 44 items pass `check:exercises` in a scratch copy). The
-   simulated learner's findings are in `derive-resume/review/E1.6-learner-findings.md`; if
-   `E1.6-findings.md` is missing there, run the independent reviewer again from its brief in
-   `derive-resume/review/prompts/`. Copy the draft to `content/lessons/E1.6/`, run
-   `npm run check:graph -- --fix`, `check:content` and `check:exercises -- E1.6 --write`, apply
-   both reviews, walk it end to end with `walk-e16.cjs` and `e16figs.cjs` (its store: run
-   `prep-store.py` on `store-after-E1.5-rewalk.json` with E1.4 and E1.5 moved to the two days
-   before, then `provisional.py` for E1.5), and commit. The learner's finding 14 asks the
-   harness to give the line of an error raised inside a test, as it does for the program.
-2. Tests and CI: unit tests for the mixed check, the review queue and placement are written.
-   Still to do: Playwright end-to-end tests (no config yet) with axe and screenshots in both
-   themes; add `check:exercises` to CI; update the commands table in CLAUDE.md.
-3. Tutor leak tests (the Anthropic key is in Vercel; see below), recorded in each lesson's
+1. Check that CI's two jobs pass on the commits of 6 November. If the end-to-end job fails
+   there but not here, its report (kept with the run, with every screenshot) names the page.
+   A budget is raised only on purpose, with the reason in the commit.
+2. Tutor leak tests (the Anthropic key is in Vercel; see below), recorded in each lesson's
    leaks.json; then set lessons to `ready`.
-4. Finish phase 1: build, push, check the deployment and `/api/health`, and remove the test
+3. Finish phase 1: build, push, check the deployment and `/api/health`, and remove the test
    address from `private.allowed_emails` (needs Arnav's approval on the prompt).
 
 ### Working notes

@@ -189,8 +189,9 @@
   --shadow-*: initial;
   --font-*: initial;
 
-  --font-serif: "Source Serif 4 Variable", ui-serif, Georgia, "Times New Roman", serif;
-  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* The Latin faces come first, preloaded (src/app/fonts/); Fontsource's other subsets follow. */
+  --font-serif: DeriveSerif, "Source Serif 4 Variable", ui-serif, Georgia, "Times New Roman", serif;
+  --font-sans: DeriveSans, "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono Variable", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 
   /* A fixed type scale. Line heights sit on the 4 px grid. */
@@ -497,6 +498,13 @@
     font-family: var(--font-sans);
     font-size: 0.8em;
     font-variant-numeric: lining-nums tabular-nums;
+  }
+
+  /* A wide table scrolls sideways in its own box on a narrow screen, so the page never does. */
+  .prose-derive .table-scroll {
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
   }
 
   .prose-derive :where(th):not(:where(.not-prose, .not-prose *):not(:where(.not-prose .prose-derive *))),
