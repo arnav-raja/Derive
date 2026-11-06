@@ -1,0 +1,19 @@
+In 1772 Leonhard Euler wrote down a formula that seems to make primes. A *prime* is a whole number of at least 2 whose only factors are 1 and itself, such as 2, 3, 5, 7 and 11. Put the whole numbers $n = 0, 1, 2, 3, \dots$ into $n^2 + n + 41$:
+
+| $n$ | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| $n^2 + n + 41$ | 41 | 43 | 47 | 53 | 61 | 71 | 83 | 97 | 113 | 131 |
+
+Every value in the table is prime, and so is every value after it as far as $n = 39$, which gives 1,601: at least forty primes in a row.
+
+<Exercise id="puzzle-forty-primes" />
+
+<Reveal for="puzzle-forty-primes">
+
+The pattern breaks even one step sooner than $n = 41$: at $n = 40$, $40^2 + 40 + 41 = 40 \times 41 + 41 = 41 \times 41$, which is not prime either.
+
+So the forty-first case breaks the claim. A machine could check a million cases, or a billion, and be no closer to every case, since there is always another. Only an argument about every $n$ at once can settle such a claim: a *proof*.
+
+This lesson builds proofs: starting from definitions, proving a claim directly, by its contrapositive and by contradiction, and spotting the arguments that look like proofs and are not.
+
+</Reveal>

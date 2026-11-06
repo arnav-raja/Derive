@@ -46,6 +46,11 @@ async function checkLesson(code: string, errors: string[], warnings: string[]) {
     return;
   }
   const lesson = lessonResult.file;
+  // The title and summary are shown as plain text, on the Today page and the lesson overview, so
+  // TeX in them would show as raw dollar signs and backslashes. Write n² + n + 41 and the like.
+  for (const [field, value] of [["title", lesson.title], ["summary", lesson.summary]] as const) {
+    if (/\$|\\[a-zA-Z]/.test(value)) errors.push(`${code}/lesson.yaml: its ${field} is shown as plain text, so it must not contain TeX; write symbols such as n² directly.`);
+  }
   const exercisesResult = readExercisesFile(code);
   if (!exercisesResult.ok) {
     errors.push(...exercisesResult.errors);

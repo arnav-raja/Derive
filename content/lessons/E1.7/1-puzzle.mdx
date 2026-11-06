@@ -1,4 +1,4 @@
-A team searches for good training settings by trying many configs, each a learning rate and a batch size. To save time, its search keeps a list, `tried`, of the configs it has trained, and skips any config that is already `in tried`. Yet the bill shows that it trained every config twice.
+A team searches for good training settings by trying many configs, each a learning rate and a batch size. To save time, its search keeps a list, `tried`, of the configs it has trained, and skips any config that is already `in tried`.
 
 Each config is a `Config`, a kind of value the team wrote for the job:
 
@@ -19,7 +19,7 @@ The first four lines make `Config`, and this lesson shows how they work. For now
 
 <Reveal for="puzzle-equal-configs">
 
-The two configs hold the same settings, yet Python says that they are not equal. So `in`, which compares a value with each item of a list in turn, never found the earlier config in `tried`, and the search trained it again. A list of numbers or strings would have worked. What is different here is that `Config` is a kind of value that the team made, and nothing in its four lines says when two configs are equal.
+The two configs hold the same settings, yet Python says that they are not equal. So `in`, which compares a value with each item of a list in turn, never found the earlier config in `tried`, and the search trained it again: that is why the team's bill showed every config trained twice. A list of numbers or strings would have worked. What is different here is that `Config` is a kind of value that the team made, and nothing in its four lines says when two configs are equal.
 
 This lesson shows how to make a new kind of value with a *class*: what each of its objects holds, how the functions written inside it work on those objects, and how a class tells Python what `==`, `print`, `+` and `*` mean for its objects. A PyTorch model, each of its layers and every tensor it works on are objects of classes written in just this way.
 

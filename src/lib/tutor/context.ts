@@ -132,7 +132,7 @@ function describeCode(p: Extract<AnswerPayload, { type: "code" }>): string[] {
   const out: string[] = [];
   const failed = p.tests.filter((t) => !t.passed);
   if (p.error && p.tests.length === 0) {
-    out.push(`The program stopped with ${p.error.type}${p.error.line ? ` on line ${p.error.line}` : ""}: ${p.error.message}`);
+    out.push(`The program stopped with ${p.error.type}${p.error.line ? ` on line ${p.error.line}` : ""}${p.error.message ? `: ${p.error.message}` : ", with no message"}`);
   }
   out.push(`${p.tests.length - failed.length} of ${p.tests.length} tests pass.`);
   for (const t of failed.slice(0, 6)) {

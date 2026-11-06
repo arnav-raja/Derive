@@ -1,0 +1,53 @@
+The Explore phase tested guesses by running programs and looking. Now reason about them on paper: work out what a buggy function gives for every input, why bisection checks the version midway, why it always finds the first bad version, and what it finds when a history is less tidy.
+
+## The wrong mean, for every n
+
+The Explore phase found `mean_up_to(4)` giving 1.5 and worked out that `mean_up_to(10)` would give 4.5. Stepping through it showed why: `range(4)` gives 0, 1, 2 and 3, so the loop adds a 0 and never adds the 4. A hypothesis is strongest when it predicts the result for every input, since then any observation at all can test it, and E1.3's `triangle` turns this one into an expression.
+
+<Exercise id="derive-wrong-mean" />
+
+<Reveal for="derive-wrong-mean">
+
+The expression predicts values that nobody has observed yet, such as 0.0 for $n = 1$ and 49.5 for $n = 100$, and any one of them, checked, could have ruled the hypothesis out. Being exactly 1 too low for every $n$ has a reason too: each of the $n$ numbers the loop adds is 1 less than the number it should add, 0 in place of 1 and so on up to $n - 1$ in place of $n$, so the total is $n$ too small and the mean 1 too small. A result that is out by the same small amount for every input is often the mark of an *off-by-one* mistake, a range or a count that starts or stops one place out.
+
+## How fast the gap closes
+
+Bisection keeps `lo`, known to be good, and `hi`, known to be bad, and checks the version midway between them. Why midway?
+
+<Exercise id="derive-checks-left" />
+
+</Reveal>
+
+<Reveal for="derive-checks-left">
+
+Checking midway does better: the larger part is then half the gap, so after $k$ checks a gap of $N$, a power of 2, is $\frac{N}{2^k}$, and no other choice makes the larger part smaller. A third of the way, a million versions can take 34 checks, against bisection's 20.
+
+When $N$ is not a power of 2, the midpoint, rounded down, splits an odd gap into two parts that differ by 1, and the larger part is just over half. The search then takes at most the smallest $k$ with $2^k$ at least $N$, so a million, which lies between $2^{19} = 524{,}288$ and $2^{20} = 1{,}048{,}576$, takes at most 20, as the Explore phase found. Each doubling of $N$ adds one check, and since $2^{10} \approx 10^3$, each factor of a thousand adds about 10: $10^{12}$, a thousand to the fourth power, takes 40. That is why a search that halves can afford to look anywhere, among $10^{12}$ training steps or every version that a project has ever had.
+
+## Why it finds the first bad one
+
+A test shows what a program did on the inputs it tried, and the Explore phase's search could be tried on a few runs of versions. A proof covers every run at once, and E1.2 proved what a loop does by finding a statement that holds before its first pass and that each pass keeps true. For bisection that statement is: `lo` is good, `hi` is bad, and `lo` is below `hi`.
+
+<Exercise id="derive-bisect-proof" />
+
+</Reveal>
+
+<Reveal for="derive-bisect-proof">
+
+That is the usual shape of a proof about a loop: what every pass keeps, why the loop ends at all, and what is true once it has. The middle part needs an argument of its own, since a loop can keep a statement true for ever without ending.
+
+## When bad does not stay bad
+
+The proof used the rule that bad stays bad. Real histories are not always so tidy.
+
+<Exercise id="derive-not-monotone" />
+
+</Reveal>
+
+<Reveal for="derive-not-monotone">
+
+Git's `git bisect`, which E3.2 uses, says of the version it ends on that it is "the first bad commit". That is true when bad stays bad, and otherwise it is still a version that a change broke, which is usually what was wanted.
+
+A proof shows which assumptions a result rests on, and so what to check before relying on it. Bisection rests on the statement being true before the first pass, which is why `git bisect` asks for a version that works and one that does not before it starts: a search begun from a `lo` that was never checked can end on a change that broke nothing.
+
+</Reveal>

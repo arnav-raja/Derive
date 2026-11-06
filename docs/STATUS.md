@@ -1,6 +1,6 @@
 # Status
 
-Updated 6 November 2026 at about 13:45 UTC, when M1.7 went live. On "Pause" or "Resume",
+Updated 6 November 2026 at about 17:50 UTC, when E1.8 went live. On "Pause" or "Resume",
 follow CLAUDE.md and carry on from "Resume here" (phase 1) and "Phase 2: resume here" (phase 2).
 
 ## Where things stand
@@ -23,9 +23,9 @@ site works end to end, and is removed only when Arnav says so.
 Phase 2 (the full learning loop, and the lessons after the first slice) began on 6 November in
 its own thread. M1.7 Logic, sets and quantifiers is live (`ready`): written, reviewed by both
 reviewers, every finding applied, walked again and tested end to end, with two new figure
-components, the set diagram and the quantifier grid. E1.7 Classes and objects is written as a
-`draft` (drafts show only with `DERIVE_SHOW_DRAFTS=1`), and its two reviews were running when
-this was written.
+components, the set diagram and the quantifier grid. E1.7 Classes and objects is live too,
+reviewed by both, every finding applied, walked and tested end to end. M1.8 Proof I is live
+too, on the same terms, and so is E1.8 Debugging as an experiment. M1.9 Proof II is next.
 
 ### Done
 
@@ -328,12 +328,29 @@ Done so far:
   with four statements; `verdictsAfter="<exercise>"` keeps the verdicts, the evidence cells and
   editing closed until that exercise is done; a screen reader hears which statements a change
   made true or false, from one status line).
-- E1.7 Classes and objects, at `draft`: all six phases and 23 exercises (commit `fbfc754`,
-  whose message says 24 by mistake), linked to M6.5, L3.4 and E5.4. The step-through figure now
-  shows each object's attributes (the harness records them, and the frames look a name up
-  through the object), skips the frames of class bodies, and stops a `__call__` that calls
-  itself after 200 calls. Its end-to-end tests pass. Its build promises that E1.10 shows how to
-  give a class a `__hash__`, so E1.10 must.
+- E1.7 Classes and objects, live (`ready`) since 6 November: all six phases and 23 exercises (a
+  puzzle on two configs with equal settings that `==` calls unequal, 5 recall, 7 explore
+  predictions, a proof of rules, 2 derivation steps and an estimate, 3 builds, a debug and a
+  break-it, and the explain-back), tutor notes with 19 misconceptions, and checks.json. It
+  requires E1.3 and E1.4, and its special methods lead to M6.5, L3.4, E5.1, E5.5 and E1.10.
+  Reviewed by both (the simulated learner, 23 of 23 right with 14 findings; the independent
+  reviewer, 2 blockers, 8 should-fix findings and 9 nits; in `derive-resume/review/E1.7-*.md`),
+  and every finding applied: the puzzle's story no longer says that every config was trained
+  twice before the question (its reveal does); titles and set-up text no longer answer their
+  items; the first figure's stop asks for `a.lr` in the second call, which tests that `self` is
+  the new object; prose that a stop checks moved into the next Reveal; a class with no
+  `__init__`, `str(a)`, and an `__init__` that must return `None` are explained; the names
+  section says an attribute is missing only when neither the object nor its class has it; the
+  proof names lines by their text; the tests now accept a copy of the parents passed in, and
+  catch parents kept as a tuple, parents in the wrong order (with a message of their own), a
+  first loss of 1e300 and a `__repr__` that calls itself; and rewritten rungs, notes and three
+  new misconceptions. E1.10 now requires E1.7, as E1.7's build promises that E1.10 shows how to
+  give a class a `__hash__`; the promise is not repeated as a preview in E1.7's last phase,
+  which already has the three it may hold. Explore is 55 minutes, over the plan's 30 to 45 as
+  E1.6's was, since it has seven items and three figures. `check:exercises` passes all 669 items
+  in the 15 lessons, and the lesson was walked in all six phases with no errors
+  (`derive-resume/e17walk/`, from `store-before-E1.7-walk.json` with M1.7 started a day earlier
+  by `prep-store.py`; the store after it is `store-after-E1.7-walk.json`).
 - Engine changes: Pyodide starts with a fixed hash seed (`PYTHONHASHSEED=0`) in the browser's
   worker and in Node, so sets of strings and SymPy's searches come out the same on every run
   and the runs kept in checks.json stay true (without it `check:exercises` failed about half
@@ -342,15 +359,90 @@ Done so far:
   option's plain-text name now writes `\varnothing`, `\Leftrightarrow`, `\setminus` and
   `\supseteq` as signs; and the review and notebook answer lines drop a label's full stop
   before joining labels with semicolons.
+- Engine changes with E1.7: the step-through figure shows each object's attributes (the harness
+  records them, and the frames look a name up through the object) and skips the frames of class
+  bodies. A call of a special method (`__call__`, `__repr__`, `__eq__`, `__add__` and the rest)
+  more than 200 deep stops with Python's own `RecursionError`, since Pyodide's stack in Chromium
+  overflows at 300 to 400 nested calls of `__call__` and 500 to 600 of the others (Firefox and
+  Safari are untested). The figure's code now keeps the width of its longest line, and the
+  variables move below the code when there is no room for them beside it, so a code line is cut
+  only on a phone; before, lines were cut at 1,280 px in E1.1, E1.6 and E1.7, and at every width
+  in E1.6. A figure's stop can now ask for an attribute that an object finds in its class, or a
+  class's own, such as `self.losses` or `Run.losses`, since the harness records the attributes
+  that reading finds, not only an object's own.
+- M1.8 Proof I: direct proof, contrapositive and contradiction, live (`ready`) since 6
+  November: all six phases and 25 exercises (a puzzle on Euler's n² + n + 41, 5 recall, 7
+  explore predictions, 2 derivation steps, 4 proofs, 2 of them rules to cite and 2 written, 3
+  builds and 2 break-its, and the explain-back), tutor notes with 14 misconceptions, and
+  checks.json. It requires M1.7 and leads to M1.9. Reviewed by both (the simulated learner, 24 of
+  24 right with 21 findings; the independent reviewer, 1 blocker, 17 should-fix findings and 16
+  nits; in `derive-resume/review/M1.8-*.md`), and every finding applied apart from three
+  optional nits (below): the explain-back's prompt now asks everything its rubric checks; no
+  prose before a question names the method it asks about, and the names of direct proof, proof
+  by cases, the contrapositive and contradiction come after their questions; a new written proof,
+  odd times odd, gives the learner a direct proof of their own; the proof of the contrapositive
+  has a line for "Suppose that n is odd", with a rule of its own; the small-factor proof is
+  written in full, with a generic rubric; Euclid's item asks what the argument says about
+  30,031, and Euclid's own direct form follows it; the Explore phase proves that no prime below 41
+  divides any value of the formula (197 remainders); the prime test's tests catch a range that
+  stops one short with squares such as 49, and no longer give away the break-it on 1,681, nor
+  depend on a margin of steps; and rewritten options (no right option is longer than every other
+  by 15% or more, and four right answers moved first), rungs and notes. The lesson summary is now
+  plain text, since the overview and Today show it without maths, and `check:content` now
+  rejects TeX in a lesson's title or summary. `check:exercises` passes all its 45 items, the
+  lesson was walked in all six phases with no page errors (store from
+  `store-after-E1.7-walk.json`, with M1.7 and E1.7 a day earlier and their concepts provisional),
+  and its end-to-end tests pass at all three widths. Optional nits not done: a figure of factor
+  pairs, an optional `factorint` item, and a superscript for k² in the checker's "Read as" line.
+- E1.8 Debugging as an experiment, live (`ready`) since 6 November: all six phases and 22
+  exercises (a puzzle on how few hour-long checks always find which of 1,000 changes broke a
+  training script, 5 recall, 7 explore predictions, 2 derivation steps, a proof of rules and a
+  prediction, a debug, 2 builds and a break-it, and the explain-back), two step-through figures,
+  tutor notes with 28 misconceptions, and checks.json. It requires E1.3, contrasts with M1.8,
+  applies M1.1 and foreshadows E1.9, E3.2 and E10.3. Reviewed by both (the simulated learner, 22
+  of 22 right with 16 findings; the independent reviewer, 1 blocker, 11 should-fix findings and
+  nits; in `derive-resume/review/E1.8-*.md`), and every finding applied: the sentence under the
+  second figure that answered its stop moved into the break-it's reveal; the first figure's stop
+  asks for `k`, which is not yet on screen and is the value that tells the two hypotheses apart;
+  the Derive phase's gap item now asks for a search that checks a third of the way, whose worst
+  case is $N(2/3)^k$, and its reveal says why midway is best (34 checks for a million versions
+  against 20); set-up lines that narrowed two items are gone, and "Not fooling yourself" is now
+  "Three changes in one afternoon"; Python that the ancestors do not teach is gone (a loop over
+  a tuple, a number's truth value, f-strings in the reference); the debug item's starter has two
+  comment lines for the hypothesis and its prediction; the mean's form check counts operations as
+  typed (`maxOps: 3`), so an uncancelled fraction gets the form message however it is written;
+  build-assert's factor test no longer hangs on a factor of 1, and a single assert for both
+  parameters, a message in capitals and a learner's own assert in a good call each get a message
+  that fits; build-first-bad says "gives None" instead of "a NoneType", and names a search that
+  never asks the tests' `is_bad`; the explain-back asks whether an error's line is always the one
+  to change; and rewritten reveals, rungs and notes, with three new misconceptions.
+  `check:exercises` passes all its 38 items (708 in the 16 lessons), the lesson was walked again
+  in all six phases with no page errors (store `derive-resume/e18walk/store-before-E1.8-walk.json`,
+  from `store-after-M1.8-walk.json` with M1.7, E1.7 and M1.8 started in the week before by
+  `prep-store.py`, as the week's three new lessons had been used; the store after it is
+  `store-after-E1.8-walk.json`), and its end-to-end tests pass at all three widths.
+- Engine changes with E1.8: an error with no message, as a bare `assert` raises, is shown as
+  "AssertionError on line 5" with no ": " after it, in the code card, the step-through figure and
+  the tutor's context ("with no message"); an AssertionError raised by the learner's own code
+  while a test runs is shown as the Console shows it, with its line ("AssertionError on line 7,
+  in first_bad: ..."), not as the test's own message, and an empty message no longer leaves a
+  trailing ": " in a test's error or in `rerun`; and a step-through figure that runs too long says
+  "Stopped", as the code card does.
 - The tutor's and the grader's calls go through `apiFetch`, the one way the browser calls
   Derive's server (commits `84b50c0` and `c925474`), ready for the hosting move.
 
 Next, in order:
 
-1. E1.7: when its two reviews finish (the briefs are `derive-resume/review/E1.7-*-prompt.md`;
-   the findings go to `derive-resume/review/E1.7-findings.md` and
-   `E1.7-learner-findings.md`), apply every finding, walk the changed parts again, set it to
-   `ready`, run the end-to-end tests for it, and push.
+1. M1.9 Proof II: induction and recursion (it requires M1.6 and M1.8, and builds on E1.5), then
+   E1.9, M1.10, E1.10, M1.11, E1.11, M1.12 and E1.12, then the start of stage 2, each written,
+   checked, reviewed by both and walked before it goes live, adding the remaining figure
+   components as the lessons need them. The phase 2 features (item 3) come first once the
+   hosting pull request has landed. E1.9 picks up E1.8's preview: tests that run on every change,
+   and property-based tests. E1.10 must show how to give a class a `__hash__` that agrees with
+   its `__eq__` (E1.7 promises it, and E1.10 now requires E1.7); the E1.8 reviewer suggests E1.8
+   as a requirement of E1.10 too, with E1.10 among the uses of `E1.8/bisection`, since binary
+   search is E1.8's search on a sorted list. The E1.7 reviewer suggests E1.7 as a requirement of
+   E1.11, if E1.11 writes an iterator class, and of E3.4, if its configuration is a class.
 2. When the hosting pull request lands: pages move to `src/server/app/` (a new page needs a line
    in `src/server/routes.ts` and a static shell in `src/app/`, copied from
    `src/app/today/page.tsx`); server components cannot use state or effects; client components
@@ -364,11 +456,13 @@ Next, in order:
    coloured by mastery with what unlocks next, the concept map, the novice explain-back mode
    (`noviceQuestion` in `src/lib/tutor/grade.ts` already picks an authored question) and the
    course viva (the tutor's `examiner` mode).
-4. The rest of stage 1, M1.8 to M1.12 and E1.8 to E1.12, then the start of stage 2, each with
-   both reviews, adding the remaining figure components as the lessons need them.
-5. A follow-up from the M1.7 checks: give the workspace `scroll-padding` for its sticky header
+4. A follow-up from the M1.7 checks: give the workspace `scroll-padding` for its sticky header
    and footer, so that a control reached by the keyboard is never hidden under them (WCAG
    2.4.11, focus not obscured).
+5. A nit from the E1.7 review, to fix once the hosting pull request has landed, since that pull
+   request changes the file: the comment above `TraceFrame` in `src/lib/python/client.ts` says
+   that `refs` holds tags only for a list, dict or set, though it holds them for objects of the
+   program's classes too.
 
 ### Working notes
 
@@ -395,6 +489,14 @@ Next, in order:
   store after the second walk. The M1.7 scripts name `/home/claude/derive` as the repository;
   change that if the clone is elsewhere. Probe scripts that load Pyodide in Node must run from
   the repository's folder, since it finds Pyodide from there.
+- Walking E1.7: copy `derive-resume/store-before-E1.7-walk.json` into a store folder with
+  `prep-store.py <snapshot> <folder>/store.json M1.7=<yesterday>`, so that a new lesson can
+  begin today, start the production build on it as above, and run `walk-e17.cjs` and
+  `walk-e17-codefb.cjs` from `derive-resume/e17walk/`. `trace-widths.cjs <url>` reports, at six
+  widths, whether a trace figure's code is cut and whether its variables sit beside it or below.
+  A production server runs as `next-server`, so stop it with `pkill -f next-server`;
+  `pkill -f "next start"` misses it, and a second `next start` on the same port then fails
+  while the old server goes on serving pages whose styles the new build has replaced.
 - In development, a build page whose code is wider than its box logs a hydration warning:
   `ScrollStops`, in the root layout, gives the `<pre>` a tab stop before that part of the page
   has hydrated. It happens on E1.6's build page too, changes nothing a learner sees, and does

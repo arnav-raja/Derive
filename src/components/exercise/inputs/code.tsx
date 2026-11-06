@@ -55,7 +55,9 @@ export function ErrorLine({ error }: { error: PyError }) {
     <p className="font-mono text-sm break-words text-code-incorrect">
       {/* StepLimit is the harness's own name for a runaway program, not one of Python's errors. */}
       {error.type === "StepLimit" ? "Stopped" : error.type}
-      {error.line ? ` on line ${error.line}` : ""}: {error.message}
+      {error.line ? ` on line ${error.line}` : ""}
+      {/* An assert with no message raises AssertionError with an empty message. */}
+      {error.message ? `: ${error.message}` : ""}
     </p>
   );
 }

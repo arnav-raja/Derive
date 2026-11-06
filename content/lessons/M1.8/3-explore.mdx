@@ -1,0 +1,144 @@
+## Evidence and proof
+
+The puzzle's forty primes were evidence, and $n = 40$ was a counterexample: as M1.7 found, one counterexample breaks a claim about every case. A claim with only a few cases, as a truth table has four rows, is settled by checking them all. A claim about every whole number has infinitely many cases, and to show that it holds in each of them, mathematics uses a *proof*: a chain of statements, each of which follows from a definition, from a result already proved, or from what was assumed, by a rule that can be named. Such a proof reasons about a letter, such as $n$, that stands for any whole number at all, so what it shows holds for each of them at once.
+
+## Starting from definitions
+
+A proof can use only what its words mean, so it starts from definitions. The *integers* are the whole numbers and their negatives: $\dots, -2, -1, 0, 1, 2, \dots$. An integer $n$ is *even* when $n = 2k$ for some integer $k$, and *odd* when $n = 2k + 1$ for some integer $k$. So 6 is even, with $k = 3$, and $-7$ is odd, with $k = -4$. Dividing an integer by 2 leaves a remainder of 0 or 1, so every integer is even or odd, and none is both. Adding, taking away or multiplying integers always gives an integer, so an expression such as $j + k + 1$ or $2k^2 + 2k$ is an integer whenever $j$ and $k$ are.
+
+Here is a claim: the sum of any two odd integers is even. Four arguments are offered for it.
+
+1. $1 + 3 = 4$ and $5 + 7 = 12$, and a computer checked every pair of odd integers below a million: each sum was even.
+2. Write the two odd integers as $2k + 1$ and $2k + 1$. Their sum is $4k + 2 = 2(2k + 1)$, which is even.
+3. Write them as $2j + 1$ and $2k + 1$, for integers $j$ and $k$. Their sum is $2j + 2k + 2 = 2(j + k + 1)$, and $j + k + 1$ is an integer, so the sum is even.
+4. An odd integer plus an odd integer is always even, so the sum of these two is even.
+
+<Exercise id="explore-odd-sum" />
+
+<Reveal for="explore-odd-sum">
+
+Two odd integers chosen separately, such as 1 and 3, need letters of their own: with one letter for both, the second argument covers only an odd integer added to itself.
+
+The claim says: if $a$ and $b$ are odd integers, then $a + b$ is even. The third argument is a *direct proof*. It assumes the first part, that $a$ and $b$ are odd, writes them as $2j + 1$ and $2k + 1$ by the definition, and works forward, one justified step at a time, to the second part, that $a + b$ is even. Its letters $j$ and $k$ stand for any integers, so it covers every pair at once.
+
+## Odd values
+
+The puzzle's formula gave forty odd numbers, from 41 to 1,601. Is $n^2 + n + 41$ odd for every integer $n$?
+
+<Exercise id="explore-always-odd" />
+
+</Reveal>
+
+<Reveal for="explore-always-odd">
+
+Written out by the definitions, the two cases are these. If $n$ is even, $n = 2k$, and $n(n + 1) = 2k(n + 1)$ is even. If $n$ is odd, $n = 2k + 1$, so $n + 1 = 2(k + 1)$, and $n(n + 1) = 2(k + 1)n$ is even. They cover every integer, since each is even or odd. A *proof by cases* splits a claim into cases that together cover everything, and proves each one.
+
+In fact more is true: no prime below 41 divides any of its values, which is why its primes last so long. The reason is short. Putting $n + p$ in place of $n$ changes the value by $(n + p)^2 + (n + p) - n^2 - n = p(2n + p + 1)$, a multiple of $p$, so a prime $p$ divides the value at $n + p$ exactly when it divides the value at $n$. Every integer is one of $0, 1, \dots, p - 1$ moved along by a multiple of $p$, so only those $p$ values need checking: 197 checks in all for the twelve primes below 41, few enough for a machine, and none finds a factor. A claim about infinitely many cases has become a claim about finitely many, by a proof.
+
+## Turning a claim round
+
+Here is a claim about every integer $n$: if $n^2$ is even, then $n$ is even. A direct proof starts from $n^2 = 2k$ and soon stalls, at $n = \sqrt{2k}$ or $n = -\sqrt{2k}$, which says nothing about whether $n$ is even. Is there another statement whose proof would do the job?
+
+<Exercise id="explore-which-to-prove" />
+
+</Reveal>
+
+<Reveal for="explore-which-to-prove">
+
+Not "$n$ is even" is "$n$ is odd", since every integer is one or the other, and not "$n^2$ is even" is "$n^2$ is odd". So the contrapositive starts from $n = 2k + 1$, something concrete to work with, and the Derive phase finishes it. The converse is true as well, but a proof of it would prove nothing about the claim. Proving $\neg Q \Rightarrow \neg P$ in place of $P \Rightarrow Q$, which M1.7 found says exactly the same, is a *proof by the contrapositive*.
+
+## Assuming the opposite
+
+Some claims have no if to assume, such as "$\sqrt{2}$ is not a fraction". A number is *rational* when it can be written as a fraction $\frac{p}{q}$ of integers, with $q \neq 0$, and *irrational* when it cannot. Every fraction can be put in *lowest terms*, where no whole number greater than 1 divides both $p$ and $q$: divide both by any number that does, which keeps the fraction's value and makes $q$ smaller in size, and repeat, which must stop, since the size of $q$ is a whole number of at least 1, and a whole number cannot keep getting smaller for ever. In lowest terms, in particular, $p$ and $q$ are not both even.
+
+Another way in is to suppose, for the moment, the opposite of the claim, and see where that leads. Here is the reasoning for $\sqrt{2}$, as far as the point where something goes wrong. It uses the claim of the last section, if $n^2$ is even then $n$ is even, whose proof the Derive phase completes.
+
+Suppose that $\sqrt{2} = \frac{p}{q}$, with $p$ and $q$ integers, $q \neq 0$, and the fraction in lowest terms, so that $p$ and $q$ are not both even. Squaring both sides gives $2 = \frac{p^2}{q^2}$, so $p^2 = 2q^2$, and $p^2$ is even. By the claim of the last section, $p$ is even, say $p = 2r$. Then $4r^2 = 2q^2$, so $q^2 = 2r^2$, and $q^2$ is even, so $q$ is even too. So $p$ and $q$ are both even.
+
+<Exercise id="explore-root-two" />
+
+</Reveal>
+
+<Reveal for="explore-root-two">
+
+So $\sqrt{2}$ is *irrational*. This is a *proof by contradiction*: to prove a claim $C$, suppose $\neg C$, reason until some statement and its denial are both true, and conclude $C$, since when every step is valid only the supposition can be to blame. The irrationality of $\sqrt{2}$ was known in ancient Greece, and the Derive phase justifies each step of its proof.
+
+## Infinitely many primes
+
+Euclid, around 300 BC, proved that the primes never run out. Here is his argument, told as a proof by contradiction. Suppose that there were only finitely many primes, and that $2, 3, 5, \dots, P$ is the complete list. Multiply them all together and add 1:
+
+$$
+N = 2 \times 3 \times 5 \times \dots \times P + 1.
+$$
+
+Dividing $N$ by any prime on the list leaves a remainder of 1, since the product is a multiple of each of them, so none of them divides $N$. But $N$ is greater than 1, so it has a smallest factor greater than 1. Call it $d$, so that $N = dm$ for some whole number $m$. If $d$ were not prime, it would be $ab$ for whole numbers $a$ and $b$ with $1 < a < d$, and then $N = dm = a \times (bm)$, so $a$ would be a factor of $N$ greater than 1 and smaller than $d$. So $d$ is prime, and since no prime on the list divides $N$, it is not on the list, so the list was not complete after all. The supposition is false, and there are infinitely many primes.
+
+Now take the first six primes, which are not the complete list, and make the same number from them: $N = 2 \times 3 \times 5 \times 7 \times 11 \times 13 + 1 = 30{,}031$.
+
+<Exercise id="explore-euclid" />
+
+</Reveal>
+
+<Reveal for="explore-euclid">
+
+Euclid himself put the argument directly: from any finite list of primes, his number gives a prime that is not on it. Reading more into a proof than it proves is as easy as reading too much into forty cases. The Build phase checks Euclid's numbers by machine.
+
+## Checking an argument
+
+A team reasons like this about a model:
+
+> If a model has memorised its training examples, its loss on them, a measure of its errors, is far below its loss on new data. Our model's training loss is far below its test loss. So our model has memorised its training examples.
+
+<Exercise id="explore-converse-argument" />
+
+</Reveal>
+
+<Reveal for="explore-converse-argument">
+
+Some arguments look like proofs and are not. The commonest reasons from the converse: it treats "if $P$ then $Q$" as if it also said "if $Q$ then $P$". Had the training loss not been far below the test loss, the team could have concluded, by the contrapositive, that the model had not memorised its examples: from $P \Rightarrow Q$ and $\neg Q$, conclude $\neg P$. Whether the first sentence is true is a separate question: an argument is valid when its conclusion follows from the statements it starts from, its *premises*, whether or not those are true.
+
+Here is a "proof" that $2 = 1$. Let $a$ and $b$ be equal numbers, neither of them 0.
+
+1. $a = b$.
+2. $a^2 = ab$, multiplying both sides by $a$.
+3. $a^2 - b^2 = ab - b^2$, taking $b^2$ from both sides.
+4. $(a + b)(a - b) = b(a - b)$, factorising both sides.
+5. $a + b = b$, dividing both sides by $a - b$.
+6. $2b = b$, since $a = b$.
+7. $2 = 1$, dividing both sides by $b$.
+
+<Exercise id="explore-one-is-two" />
+
+</Reveal>
+
+<Reveal for="explore-one-is-two">
+
+The second common failure divides by 0. As M1.2 found, dividing both sides of an equation by an expression is safe only where the expression is not 0, and a "proof" that hides a division by 0 can reach any conclusion at all. A third failure is circular: the fourth argument for the odd sum assumed the very claim it set out to prove.
+
+## The names
+
+<Definition term="Proof">
+
+A *proof* of a claim is a chain of statements, each following from definitions, from results already proved or from what is assumed, by a rule that can be named, and ending with the claim. A letter that stands for any case lets one proof cover every case at once. Checking cases settles a claim only when every case is checked, as in a truth table. For a claim about infinitely many cases, agreeing cases are evidence, not proof, while one counterexample disproves it. An argument fails when it reasons from the converse, divides by something that may be 0, or assumes what it set out to prove.
+
+</Definition>
+
+<Definition term="Direct proof and proof by cases">
+
+A *direct proof* of "if $P$ then $Q$" assumes $P$ and works forward to $Q$, usually by writing out definitions: the *integers* are the whole numbers and their negatives, and an integer $n$ is *even* when $n = 2k$ and *odd* when $n = 2k + 1$, for some integer $k$. A *proof by cases* splits a claim into cases that together cover everything, such as $n$ even and $n$ odd, and proves each one.
+
+</Definition>
+
+<Definition term="Proof by the contrapositive">
+
+To prove $P \Rightarrow Q$, it is enough to prove $\neg Q \Rightarrow \neg P$, which says the same. It helps when $\neg Q$ gives more to start from than $P$ does, as "$n$ is odd" gives $n = 2k + 1$.
+
+</Definition>
+
+<Definition term="Proof by contradiction">
+
+To prove a claim, suppose that it is false and reason until some statement and its denial are both true. The supposition must then be false, so the claim is true. A number is *rational* when it can be written as a fraction $\frac{p}{q}$ of integers with $q \neq 0$, and *irrational* when it cannot: $\sqrt{2}$ is irrational, and there are infinitely many primes, both proved by contradiction.
+
+</Definition>
+
+</Reveal>

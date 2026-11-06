@@ -8,19 +8,19 @@ From here on, almost every value in the course is an object of some class: a ten
 
 <Foreshadow lesson="M6.5">
 
-An expression worked out with objects whose `+` and `*` remember their inputs leaves behind its whole tree, as Derive's `Value` did. M6.5 calls that tree a computational graph, and finds every derivative of the result by walking it backwards, once.
+An expression worked out with objects whose `+` and `*` remember their inputs leaves behind its whole tree, as the Derive phase's `Value` did. M6.5 calls that tree a computational graph, and finds every derivative of the result by walking it backwards, once.
 
 </Foreshadow>
 
 <Foreshadow lesson="L3.4">
 
-Build's `Value` keeps a number and the values it was made from. L3.4 gives it a gradient and a backward step, and builds from it an autograd engine that trains a small network.
+The Build phase's `Value` keeps a number and the values it was made from. L3.4 gives it a gradient and a backward step, and builds from it an autograd engine that trains a small network.
 
 </Foreshadow>
 
 <Foreshadow lesson="E5.4">
 
-Every layer of a PyTorch model is a subclass of `Module`, whose `__call__` does some bookkeeping and then runs the layer's own `forward`, as Explore's `Layer` did. E5.4 looks at modules, the parameters they own, the state they keep and the hooks that run around `forward`.
+Every layer of a PyTorch model is a subclass of `Module`, whose `__call__` does some bookkeeping and then runs the layer's own `forward`, as the Explore phase's `Layer` did. E5.4 looks at modules, the parameters they own, the state they keep and the hooks that run around `forward`.
 
 </Foreshadow>
 

@@ -1,4 +1,6 @@
-Derive reasoned from Python's rules for attributes, `==` and operators. Now write classes of your own: an object that carries its state from one call to the next, a layer made of other layers, and a value that remembers where it came from, and mend a `+` that changes what it adds. The tests make many objects of your classes, and some check that an operation leaves its inputs as they were.
+The Derive phase reasoned from Python's rules for attributes, `==` and operators. Now write classes of your own: an object that carries its state from one call to the next, a layer made of other layers, and a value that remembers where it came from, and mend a `+` that changes what it adds. The tests make many objects of your classes, and some check that an operation leaves its inputs as they were.
+
+Each exercise in this phase has tests, in the tab `tests.py`. You need not read their code, which uses Python that this lesson does not teach: when they run, each test says in words what it checks, and one that fails says what went wrong, with the values it found.
 
 ## Knowing when to stop
 
@@ -6,7 +8,7 @@ Derive reasoned from Python's rules for attributes, `==` and operators. Now writ
 
 <Reveal for="build-early-stop">
 
-Everything that a call of `step` needs from the calls before it, the best loss so far and the count since it, lives on the object, so two watchers kept for two runs never mix their counts. PyTorch's `ReduceLROnPlateau`, which lowers the learning rate once the loss stops improving, keeps a best loss, a patience and a count of bad epochs in just this way, and is called once an epoch, as `step` was here.
+Everything that a call of `step` needs from the calls before it, the best loss so far and the count since it, lives on the object, so two watchers kept for two runs never mix their counts. PyTorch's `ReduceLROnPlateau`, which lowers the learning rate once the loss stops improving, keeps a best loss, a patience and a count of bad epochs as `EarlyStop` does, and is called once an epoch, as `step` was here, though it acts only once the count is more than the patience, and counts a loss as a new best only when it beats the best by a small margin.
 
 ## Layers in a row
 
@@ -26,7 +28,7 @@ A `Sequential` can itself be called with one argument, so it is a layer too, and
 
 <Reveal for="build-break-hash">
 
-A set works out where to look for a value from a number that the value's method `__hash__` gives, and two equal values must give the same number, or the set would look for one of them in the wrong place. A class without `__eq__` gets a `__hash__` worked out from the object itself, which suits an `==` that asks whether two objects are one. Once a class defines `__eq__`, that `__hash__` no longer agrees with it, so Python takes it away, and the class's objects can go in no set and be no key of a dict: an error is better than a set that quietly holds two equal configs. A class can give its objects a `__hash__` of its own that agrees with its `__eq__`, and E1.10, on hashing, shows how such a method is made. Until then a list keeps the search right, and for a few hundred configs it is quick enough.
+The same goes for a dict: the class's objects can be no key of a dict either, and an error is better than a set or a dict that quietly holds two equal configs. A class can give its objects a `__hash__` of its own that agrees with its `__eq__`, and E1.10, on hashing, shows how such a method is made. Until then a list keeps the search right, and for a few hundred configs it is quick enough.
 
 ## A value that remembers
 
@@ -36,7 +38,7 @@ A set works out where to look for a value from a number that the value's method 
 
 <Reveal for="build-value">
 
-Each result keeps its parents, and through them the whole expression that made it, as Derive counted. L3.4 gives each `Value` a gradient as well, and a method that walks this graph backwards, and with them trains a small network.
+Each result keeps its parents, and through them the whole expression that made it, as the Derive phase counted. L3.4 gives each `Value` a gradient as well, and a method that walks this graph backwards, and with them trains a small network.
 
 ## A sum that changes its inputs
 
@@ -46,6 +48,6 @@ Each result keeps its parents, and through them the whole expression that made i
 
 <Reveal for="debug-vec-add">
 
-`return self` handed back the left vector itself, changed. An operator that makes a new value should leave its inputs alone, as `+` on numbers does, since code such as `w = u + v` goes on to use `u`. Python keeps separate operators for changing a value in place: `u += v` calls `u.__iadd__(v)` when the class has that method, and PyTorch marks its methods that change a tensor in place, such as `add_`, with an underscore at the end.
+An operator that makes a new value should leave its inputs alone, as `+` on numbers does, since code such as `w = u + v` goes on to use `u`. Changing a value in place has operators of its own: `u += v`, which on numbers is short for `u = u + v`, calls `u.__iadd__(v)` when the class has that method, which may change `u` in place, and otherwise works out `u + v` and makes `u` refer to the new object. PyTorch marks its methods that change a tensor in place, such as `add_`, with an underscore at the end.
 
 </Reveal>

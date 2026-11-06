@@ -1,0 +1,115 @@
+code: E1.8
+title: Debugging as an experiment
+course: E1
+status: ready
+summary: >-
+  A training script worked a thousand changes ago and is broken today, and each check of a version
+  takes an hour of training. How few checks are always enough to find the change that broke it?
+  Debugging as an experiment: hypotheses that make predictions, observations chosen to tell them
+  apart, a search that closes in on the first bad step, and assertions, which make a program check
+  its own assumptions as it runs.
+sittings: 2
+minutes:
+  puzzle: 10
+  recall: 10
+  explore: 45
+  derive: 35
+  build: 55
+  explain: 25
+concepts:
+  taught:
+    - id: E1.8/hypothesis
+      name: Hypotheses
+      summary: >-
+        A hypothesis is a guess at the cause of a bug that says what the program will do. A good
+        one explains every fact observed, so one fact that it cannot explain rules it out, however
+        likely it seemed. It is tested by working out what it predicts before running anything,
+        and then looking. Changing one thing at a time keeps each test about one hypothesis, and a
+        fix that works does not show which hypothesis was true.
+      usedBy: [E1.9, E10.1, E10.3]
+    - id: E1.8/observation
+      name: Choosing an observation
+      summary: >-
+        An observation is worth making where the hypotheses predict different things, so what to
+        look at, and where, decides what it can tell. Printing a name inside a loop, or stepping
+        through a program, shows values that a function's result hides. Checking a chain of values
+        in order, each against an estimate made beforehand, finds the first wrong one, and the
+        mistake lies in the step that made it. An error message is an observation too: its type,
+        the line where Python stopped, which need not be the line of the cause, and its details.
+      usedBy: [E3.5, E3.6, E10.3]
+    - id: E1.8/bisection
+      name: Bisection
+      summary: >-
+        Bisection finds the first bad one of a run of numbered things, such as versions or steps,
+        when every one after a bad one is bad too. It keeps `lo`, known to be good, and `hi`,
+        known to be bad, checks the one midway between them, and moves `lo` or `hi` to it, so that
+        `lo` stays good and `hi` bad, until the two are next to each other and `hi` is the first
+        bad one. Each check halves the gap, so a gap of $N$ takes the smallest $k$ with $2^k$ at
+        least $N$: 10 checks for a thousand, 20 for a million and 40 for $10^{12}$.
+      usedBy: [E3.2, E7.10, E10.3]
+    - id: E1.8/assertion
+      name: Assertions
+      summary: >-
+        `assert condition, message` does nothing when the condition is `True`, and stops the
+        program with `AssertionError` and the message when it is `False`. Asserts at the top of a
+        function check the conditions of its contract before any work is done, so that a bad call
+        fails at once, with a message that names what was wrong, instead of giving a wrong answer
+        or never ending. An assertion writes down an assumption, and turns a quiet wrong value
+        into an error at the place where the assumption fails.
+      usedBy: [E1.9, E3.4, E10.3]
+  used:
+    - E1.1/evaluation-order
+    - E1.1/values-and-types
+    - E1.1/floats-are-approximate
+    - E1.2/conditions
+    - E1.2/loops
+    - E1.2/loop-invariants
+    - E1.2/accumulator-pattern
+    - E1.3/defining-functions
+    - E1.3/scope
+    - E1.3/pure-functions
+    - E1.3/abstraction
+    - M1.1/powers-of-ten
+    - M1.1/fermi-estimation
+    - M1.1/units-as-algebra
+links:
+  requires:
+    - lesson: E1.3
+      bridge: >-
+        E1.3 built programs from small functions, each with a contract that says what it takes and
+        what it gives back. When a program gives a wrong answer, the contracts say what each
+        function should have given, so the search for the mistake can test one function at a
+        time, and an assertion can make a function check its own contract as it runs.
+  contrastsWith:
+    - lesson: M1.8
+      bridge: >-
+        A proof, as in M1.8, shows that a statement holds in every case. An experiment can test
+        only the cases it runs, so a test that passes shows that a program worked on those inputs,
+        never that it has no bugs. One case that fails is enough to show a bug, as one
+        counterexample is enough to disprove a claim.
+  applies:
+    - lesson: M1.1
+      bridge: >-
+        M1.1's powers of ten make bisection's counts easy to work out: $2^{10} = 1{,}024$ is close
+        to $10^3$, so a thousand versions take 10 checks, a million take 20 and $10^{12}$ take 40.
+        M1.1's habit of estimating a value before working it out also gives each value in a chain
+        something to be checked against.
+  foreshadows:
+    - lesson: E1.9
+      bridge: >-
+        An assertion checks one assumption while the program runs. E1.9 gathers such checks into
+        tests that run on every change, and into property-based tests, which try hundreds of
+        inputs chosen by the computer to find the one that breaks a function.
+    - lesson: E3.2
+      bridge: >-
+        Git keeps every version of a program, and its command `git bisect` runs this lesson's
+        search over them: it checks out the version midway between one that works and one that
+        does not, asks whether it works, and halves again, until it names the change that broke
+        the program.
+    - lesson: E10.3
+      bridge: >-
+        A large training run that goes wrong after days is debugged in the same way: hypotheses
+        about the cause, observations such as the size of each layer's gradients, bisection over
+        saved checkpoints to find the first step that went bad, and assertions that stop the run
+        as soon as a number stops being finite.
+skills: []

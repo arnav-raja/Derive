@@ -244,9 +244,12 @@ export function ProgramTrace({
               setStep((s) => Math.max(0, s - 1));
             }
           }}
-          className="grid gap-3 rounded-md md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]"
+          className="flex flex-wrap gap-3 rounded-md"
         >
-          <pre className="overflow-x-auto rounded-md border border-rule bg-inset py-2 font-mono text-sm leading-6 text-ink">
+          {/* The code keeps the width of its longest line, and the variables sit beside it only
+              when that leaves them 12rem, so a line is cut only when the figure itself is narrower
+              than the line, as on a phone. Otherwise the variables move below the code. */}
+          <pre className="w-max max-w-full grow overflow-x-auto rounded-md border border-rule bg-inset py-2 font-mono text-sm leading-6 text-ink">
             {lines.map((l, i) => {
               const here = current?.line === i + 1 && current.event === "line";
               return (
@@ -262,7 +265,7 @@ export function ProgramTrace({
               );
             })}
           </pre>
-          <div className="flex min-w-0 flex-col gap-3">
+          <div className="flex min-w-0 grow-2 basis-48 flex-col gap-3">
             {trace ? (
               <>
                 {frames.length > 1 ? (
@@ -437,8 +440,10 @@ export function ProgramTrace({
               ) : null}
               {trace.error ? (
                 <p className="text-sm text-incorrect">
-                  {trace.error.type}
-                  {trace.error.line ? ` on line ${trace.error.line}` : ""}: {trace.error.message}
+                  {/* StepLimit is the harness's own name for a runaway program, as in ErrorLine. */}
+                  {trace.error.type === "StepLimit" ? "Stopped" : trace.error.type}
+                  {trace.error.line ? ` on line ${trace.error.line}` : ""}
+                  {trace.error.message ? `: ${trace.error.message}` : ""}
                 </p>
               ) : null}
             </>

@@ -1,4 +1,6 @@
 import "server-only";
+// Preloads the two KaTeX faces on every lesson phase page (see the file).
+import "@/app/fonts/katex";
 
 import type { MDXComponents } from "mdx/types";
 import type { ComponentProps, ReactNode } from "react";

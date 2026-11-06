@@ -1,0 +1,177 @@
+{
+  "version": 1,
+  "expressions": {
+    "derive-checks-left": {
+      "source": "254567d58d1c31b6",
+      "points": [
+        {
+          "N": "26",
+          "k": "5"
+        },
+        {
+          "N": "17/5",
+          "k": "5"
+        },
+        {
+          "N": "40/3",
+          "k": "3"
+        },
+        {
+          "N": "15",
+          "k": "7"
+        },
+        {
+          "N": "19/4",
+          "k": "2"
+        },
+        {
+          "N": "33/2",
+          "k": "8"
+        }
+      ],
+      "values": [
+        "3.4238683127572016461",
+        "0.44773662551440329218",
+        "3.9506172839506172840",
+        "0.87791495198902606310",
+        "2.1111111111111111111",
+        "0.64380429812528577961"
+      ]
+    },
+    "derive-wrong-mean": {
+      "source": "3f2b0e8ea80ae674",
+      "points": [
+        {
+          "n": "6"
+        },
+        {
+          "n": "3"
+        },
+        {
+          "n": "4"
+        },
+        {
+          "n": "7"
+        },
+        {
+          "n": "1"
+        },
+        {
+          "n": "2"
+        }
+      ],
+      "values": [
+        "2.5000000000000000000",
+        "1.0000000000000000000",
+        "1.5000000000000000000",
+        "3.0000000000000000000",
+        "0",
+        "0.50000000000000000000"
+      ]
+    }
+  },
+  "runs": {
+    "build-assert": {
+      "tests": [
+        {
+          "name": "test_good_calls",
+          "description": "Calls that keep the contract work as before: 10 halvings from 1.0 to 0.001, 14 steps of 0.9 from 4.0 to 1.0, and none when the start is already low enough.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_target",
+          "description": "A target of 0, or below 0, stops the call with AssertionError.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_factor",
+          "description": "A factor of 0 or below, or of 1 or above, stops the call with AssertionError.",
+          "passed": false,
+          "message": "steps_to(0.001, 1.0, -0.5) gives 1 instead of stopping with AssertionError, though its factor is not between 0 and 1."
+        },
+        {
+          "name": "test_messages",
+          "description": "Each message names the parameter at fault: the one for a bad target says target, the one for a bad factor says factor, and the two are not the same.",
+          "passed": false,
+          "message": "steps_to(0.001, 1.0, -0.5) should stop with AssertionError."
+        }
+      ],
+      "error": null,
+      "output": "10\n"
+    },
+    "build-first-bad": {
+      "tests": [
+        {
+          "name": "test_filled",
+          "description": "first_bad gives a step, not None.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_million",
+          "description": "Between 0 and 1,000,000, with the first bad step at 637,000, it gives 637,000, asking is_bad at most 20 times.",
+          "passed": false,
+          "message": "first_bad has asked is_bad 21 times, more than the 20 that halving needs here."
+        },
+        {
+          "name": "test_trillion",
+          "description": "Between 0 and 10**12, a million million, with the first bad step at 777,777,777,777, it gives that step, asking is_bad at most 40 times.",
+          "passed": false,
+          "message": "first_bad has asked is_bad 41 times, more than the 40 that halving needs here."
+        },
+        {
+          "name": "test_anywhere",
+          "description": "Between 0 and 64, it finds the first bad step wherever it is, from 1 to 64, asking at most 6 times.",
+          "passed": false,
+          "message": "first_bad has asked is_bad 7 times, more than the 6 that halving needs here."
+        },
+        {
+          "name": "test_next_to_each_other",
+          "description": "When hi is lo + 1, hi is the first bad step, and no check is needed.",
+          "passed": false,
+          "message": "first_bad has asked is_bad 1 time, more than the 0 that halving needs here."
+        },
+        {
+          "name": "test_whole_number",
+          "description": "It gives a whole number, an int, as step numbers are.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": "637\n"
+    },
+    "debug-schedule": {
+      "tests": [
+        {
+          "name": "test_examples",
+          "description": "Steps 0, 9, 10 and 25 of the schedule in the task have the rates 0.1, 0.1, 0.05 and 0.025.",
+          "passed": false,
+          "message": "lr_at(9, 0.1, 0.5, 10) gives 0.05, not 0.1."
+        },
+        {
+          "name": "test_first_change",
+          "description": "With every set to 4, the rate is still the start at step 3 and first changes at step 4.",
+          "passed": false,
+          "message": "lr_at(1, 1.0, 0.5, 4) gives 0.5, not 1.0: the rate should first change at step 4."
+        },
+        {
+          "name": "test_compounds",
+          "description": "Each change multiplies the rate reached so far, so three changes of 0.9 from 0.1 give 0.1 × 0.9 × 0.9 × 0.9 = 0.0729.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_every_step",
+          "description": "With every set to 1, the rate changes at every step, so step 3 has 1.0 × 0.5 × 0.5 × 0.5 = 0.125.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": "0 0.1\n9 0.05\n10 0.05\n25 0.0125\n"
+    }
+  }
+}

@@ -1,0 +1,61 @@
+This lesson builds on E1.1's order of working out an expression, on E1.2's loops and the statements they keep true, and on E1.3's functions and their local names. Five quick questions check that they are ready. Answer from memory, without running anything. A miss opens a short re-teach straight away.
+
+<Exercise id="recall-order" />
+
+<Reteach for="recall-order">
+
+<Callback lesson="E1.1">
+
+`*` and `/` have the same precedence, so Python works out a run of them from left to right. `120 / 60 * 60` is `(120 / 60) * 60`, which is `2.0 * 60`, and that is 120.0. Brackets change the tree: `120 / (60 * 60)` divides by 3,600 and gives about 0.033.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-range" />
+
+<Reteach for="recall-range">
+
+<Callback lesson="E1.2">
+
+`range(n)` starts at 0 and stops before `n`, so `for k in range(4):` runs four passes, with `k` equal to 0, 1, 2 and 3 in turn, and never 4. `range(1, 5)` would start at 1 and stop before 5, giving 1, 2, 3 and 4.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-none" />
+
+<Reteach for="recall-none">
+
+<Callback lesson="E1.3">
+
+A call's value is the value after the first `return` it reaches, and a function that ends without reaching a `return` gives `None`. `report` prints a line and returns nothing, so the call prints `loss 0.5` and its value, kept in `x`, is `None`, which the last line prints.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-local" />
+
+<Reteach for="recall-local">
+
+<Callback lesson="E1.3">
+
+A name that a function assigns is local to the call, unless the function has a `global` line for it. `rate = 2.0` inside `scaled` makes a new `rate` of the call's own, which the multiplication uses, and the main program's `rate` is never touched. So `y` is 2.0, and `rate` is still 0.1.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-invariant" />
+
+<Reteach for="recall-invariant">
+
+<Callback lesson="E1.2">
+
+Each pass halves `lr` and adds 1 to `halvings`, so `lr` times 2 to the power `halvings` stays 1, the loop's invariant. The loop stops at the first check where `lr` is no longer above 0.001, which is the first count $h$ with $2^h$ at least 1,000. $2^9 = 512$ is not, and $2^{10} = 1{,}024$ is, so it prints 10.
+
+</Callback>
+
+</Reteach>

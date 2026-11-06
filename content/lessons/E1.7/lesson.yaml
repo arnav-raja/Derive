@@ -1,12 +1,12 @@
 code: E1.7
 title: Classes and objects
 course: E1
-status: draft
+status: ready
 summary: >-
-  A search over training settings skips every setting it has already tried, yet it trains each one
-  twice. Classes, which make new kinds of value: objects and their attributes, the methods that
-  work on them, the special methods behind `==`, `print`, `+` and `*`, and the order in which
-  Python looks an attribute up.
+  A search over training settings keeps a list of the configs it has tried, and skips any config
+  already in it. Are two configs with the same learning rate and batch size equal? Classes, which
+  make new kinds of value: objects and their attributes, the methods that work on them, the special
+  methods behind `==`, `print`, `+` and `*`, and the order in which Python looks an attribute up.
 sittings: 2
 minutes:
   puzzle: 10
@@ -23,7 +23,7 @@ concepts:
         A class is a new type of value. Calling it, as in `Config(0.01, 32)`, makes a new object of
         that type, an instance, and runs the class's `__init__` with `self` referring to the new
         object, so that lines such as `self.lr = lr` give the object its attributes. The call gives
-        back the object, whatever `__init__` returns. `a.lr` reads an attribute and `a.lr = 0.1`
+        back the object, and `__init__` itself must return `None`. `a.lr` reads an attribute and `a.lr = 0.1`
         sets one, and each instance keeps attributes of its own. Names refer to objects as they
         refer to lists, so after `b = a` a change made through `b` shows through `a`.
       usedBy: [L3.4, E5.4]
@@ -48,7 +48,7 @@ concepts:
         need. Operators keep Python's order of working out an expression, so the expression's tree
         decides the order of the calls, and operators that make new objects leave their inputs as
         they were.
-      usedBy: [M6.5, L3.4, E5.1]
+      usedBy: [M6.5, L3.4, E5.1, E5.5, E1.10]
     - id: E1.7/attribute-lookup
       name: Looking up an attribute
       summary: >-
@@ -68,10 +68,12 @@ concepts:
     - E1.2/accumulator-pattern
     - E1.3/defining-functions
     - E1.3/scope
+    - E1.3/pure-functions
     - E1.3/abstraction
     - E1.4/lists
     - E1.4/dicts-and-sets
     - E1.4/aliasing-and-mutation
+    - E1.4/cost-of-operations
     - M1.1/powers-of-ten
     - M1.1/fermi-estimation
     - M1.3/composition

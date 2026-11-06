@@ -1,0 +1,1285 @@
+exercises:
+  # Puzzle ---------------------------------------------------------------------
+  - id: puzzle-first-broken
+    phase: puzzle
+    kind: predict
+    concept: E1.8/bisection
+    title: A thousand changes
+    prompt: >-
+      What is the smallest number of checks that is always enough to find the change that broke
+      the script, however the versions turn out?
+    answer:
+      type: choice
+      options:
+        - { id: thousand, label: 'About 1,000' }
+        - { id: five-hundred, label: 'About 500' }
+        - { id: hundred, label: 'About 100' }
+        - { id: ten, label: 'About 10' }
+      correct: [ten]
+    explanation: >-
+      Check the version midway first: whether it works or not, one check halves the changes that
+      could be to blame, from 1,000 to 500. Each later check halves what is left, and
+      $2^{10} = 1{,}024$ is more than 1,000, so after 10 checks one change is left, the one that
+      broke the script. Checking in order could take 999 checks, since today's version is already
+      known to be broken, and every 10th version and then the gap about 100.
+
+  # Recall ---------------------------------------------------------------------
+  - id: recall-order
+    phase: recall
+    kind: recall
+    concept: E1.1/evaluation-order
+    prompt: |
+      What number does this program print?
+
+      ```python
+      print(120 / 60 * 60)
+      ```
+    answer: { type: number, value: 120, tolerance: { abs: 0 } }
+    explanation: >-
+      `*` and `/` have the same precedence, so Python works from left to right: `120 / 60` is 2.0,
+      and `2.0 * 60` is 120.0.
+
+  - id: recall-range
+    phase: recall
+    kind: recall
+    concept: E1.2/loops
+    prompt: Which values does `k` take, in order, in the loop `for k in range(4):`?
+    answer:
+      type: choice
+      options:
+        - { id: one-to-four, label: '1, 2, 3, 4' }
+        - { id: zero-to-four, label: '0, 1, 2, 3, 4' }
+        - { id: zero-to-three, label: '0, 1, 2, 3' }
+        - { id: one-to-three, label: '1, 2, 3' }
+      correct: [zero-to-three]
+    explanation: >-
+      `range(4)` starts at 0 and stops before 4, so the loop runs four passes, with `k` equal to 0,
+      1, 2 and 3.
+
+  - id: recall-none
+    phase: recall
+    kind: recall
+    concept: E1.3/defining-functions
+    prompt: |
+      What does this program print?
+
+      ```python
+      def report(loss):
+          print("loss", loss)
+
+      x = report(0.5)
+      print(x)
+      ```
+    answer:
+      type: choice
+      options:
+        - { id: twice, label: '`loss 0.5`, and then `loss 0.5` again' }
+        - { id: value, label: '`loss 0.5`, and then `0.5`' }
+        - { id: none-first, label: '`None`, and then `loss 0.5`' }
+        - { id: right, label: '`loss 0.5`, and then `None`' }
+      correct: [right]
+    explanation: >-
+      The call prints `loss 0.5`, and since `report` reaches no `return`, its value is `None`,
+      which is kept in `x` and printed by the last line.
+
+  - id: recall-local
+    phase: recall
+    kind: recall
+    concept: E1.3/scope
+    prompt: |
+      What does this program print?
+
+      ```python
+      rate = 0.1
+
+      def scaled(x):
+          rate = 2.0
+          return x * rate
+
+      y = scaled(1.0)
+      print(rate, y)
+      ```
+    answer:
+      type: choice
+      options:
+        - { id: both-changed, label: '`2.0 2.0`' }
+        - { id: right, label: '`0.1 2.0`' }
+        - { id: unchanged, label: '`0.1 0.1`' }
+        - { id: error, label: 'Nothing: Python stops with `UnboundLocalError`' }
+      correct: [right]
+    explanation: >-
+      `rate = 2.0` inside `scaled` makes a local `rate` of the call's own, which the
+      multiplication uses, so `y` is 2.0. The main program's `rate` is never touched and is still
+      0.1. Nothing reads the local `rate` before it is assigned, so there is no error.
+
+  - id: recall-invariant
+    phase: recall
+    kind: recall
+    concept: E1.2/loop-invariants
+    prompt: |
+      What does E1.2's loop print?
+
+      ```python
+      lr = 1.0
+      halvings = 0
+      while lr > 0.001:
+          lr = lr / 2
+          halvings = halvings + 1
+      print(halvings)
+      ```
+    answer: { type: number, value: 10, tolerance: { abs: 0 } }
+    explanation: >-
+      `lr` times $2^{\text{halvings}}$ stays 1, so the loop stops at the first count $h$ with $2^h$
+      at least 1,000. $2^9 = 512$ is not, and $2^{10} = 1{,}024$ is, so it prints 10.
+
+  # Explore --------------------------------------------------------------------
+  - id: explore-which-hypothesis
+    phase: explore
+    kind: predict
+    concept: E1.8/hypothesis
+    title: Three results, one cause
+    prompt: Which guess at the cause explains all three results?
+    placement: true
+    answer:
+      type: choice
+      options:
+        - { id: starts-at-one, label: 'The count starts at 1 instead of 0' }
+        - { id: one-pass, label: 'The loop stops after its first pass' }
+        - { id: big-divide, label: 'Each pass divides `lr` by much more than 2' }
+        - { id: after-loop, label: 'The count goes up once, after the loop has ended' }
+      correct: [after-loop]
+    explanation: >-
+      Only a count that goes up once, after the loop, gives 1 for every rate, even for 0.0005,
+      where the loop never runs. A count that started at 1 would give 11 and 8 for the first two
+      rates, and a loop that stopped after one pass, or divided by much more than 2, would give 0
+      for 0.0005, since a `while` loop checks its test before the first pass.
+    review:
+      variants:
+        - prompt: >-
+            A function should give the largest of the losses it is given. Given 0.3, 0.9 and 0.5 it
+            gives 0.5, given 0.8 and 0.2 it gives 0.2, and given the one loss 0.4 it gives 0.4.
+            Which guess explains all three?
+          answer:
+            type: choice
+            options:
+              - { id: last, label: 'It gives the last loss it is given' }
+              - { id: smallest, label: 'It gives the smallest loss it is given' }
+              - { id: second, label: 'It gives the second loss it is given' }
+              - { id: first, label: 'It gives the first loss it is given' }
+            correct: [last]
+          explanation: >-
+            The last loss is 0.5, 0.2 and 0.4 in turn. The smallest of 0.3, 0.9 and 0.5 is 0.3, so is
+            the first, and a single loss has no second: one result rules out each of the others.
+        - prompt: >-
+            A function should count the steps whose loss is above 1.0. Given the losses 2.0, 0.5 and
+            3.0 it gives 3, given 0.5 and 0.5 it gives 2, and given no losses at all it gives 0.
+            Which guess explains all three?
+          answer:
+            type: choice
+            options:
+              - { id: below, label: 'It counts the steps whose loss is below 1.0' }
+              - { id: every, label: 'It counts every step, whatever its loss' }
+              - { id: plus-one, label: 'It counts the steps above 1.0, and adds 1' }
+              - { id: above-half, label: 'It counts the steps whose loss is above 0.5' }
+            correct: [every]
+          explanation: >-
+            Counting every step gives 3, 2 and 0. Counting the steps below 1.0 gives 1 for the
+            first losses, counting those above 0.5 gives 2 for them, and the right count plus 1
+            gives 1 for 0.5 and 0.5.
+        - prompt: >-
+            Two hypotheses both explain what a buggy function did on its first two inputs. On a
+            third input, the first predicts 5 and the second predicts 7, and the function gives 7.
+            What follows?
+          answer:
+            type: choice
+            options:
+              - { id: proved, label: 'The second hypothesis is now proved to be the cause' }
+              - { id: wait, label: 'Neither can be judged until many more inputs are tried' }
+              - { id: first-out, label: 'The first is ruled out, and the second is not yet proved' }
+              - { id: both-out, label: 'Both are ruled out, since they disagreed with each other' }
+            correct: [first-out]
+          explanation: >-
+            One result that a hypothesis cannot explain rules it out, so the first is gone. The
+            second has passed a test it could have failed, which makes it more likely, but another
+            input could still rule it out, so it is not proved.
+
+  - id: explore-tell-apart
+    phase: explore
+    kind: predict
+    concept: E1.8/observation
+    title: Two guesses, one result
+    prompt: Which of these would tell the colleague's two hypotheses apart?
+    placement: true
+    answer:
+      type: choice
+      options:
+        - { id: ten, label: 'Call `mean_up_to(10)` and compare the result with 5.5' }
+        - { id: one, label: 'Call `mean_up_to(1)` and compare the result with 1' }
+        - { id: print-k, label: 'Print `k` on every pass of the loop' }
+        - { id: fix, label: 'Change the loop to `range(1, n + 1)` and check the mean' }
+      correct: [print-k]
+    explanation: >-
+      Printing `k` shows 0, 1, 2, 3 under the first hypothesis and 1, 2, 3 under the second.
+      Adding 0 never changes a total, so both predict 4.5 for `mean_up_to(10)` and 0.0 for
+      `mean_up_to(1)`, and `range(1, n + 1)` would mend the function under either, so none of
+      those can tell them apart.
+    review:
+      variants:
+        - prompt: >-
+            A function should give the largest of the losses it is given, and given 0.2, 0.9 and 0.4
+            it gives 0.4. One hypothesis says that it gives the last loss, and another that it gives
+            the smallest loss above 0.3. Which losses, given to it, tell the two apart?
+          answer:
+            type: choice
+            options:
+              - { id: low-first, label: '0.1 and 0.4' }
+              - { id: single, label: '0.6 alone' }
+              - { id: mixed, label: '0.3, 0.8 and 0.5' }
+              - { id: rising, label: '0.5 and 0.7' }
+            correct: [rising]
+          explanation: >-
+            For 0.5 and 0.7 the last loss is 0.7 and the smallest above 0.3 is 0.5, so the two
+            predict different results. For each of the others both give the same value: 0.4, 0.6
+            and 0.5.
+        - prompt: >-
+            Two hypotheses explain a wrong total equally well, and both say that the same change
+            will mend it. The change is made, and the total comes out right. What has been learned
+            about which hypothesis was true?
+          answer:
+            type: choice
+            options:
+              - { id: nothing, label: 'Nothing, since both predicted that the change would work' }
+              - { id: first, label: 'The first was true, since it was the first to be thought of' }
+              - { id: both, label: 'Both were true, since the change that they shared worked' }
+              - { id: neither, label: 'Neither was true, since a working fix replaces them both' }
+            correct: [nothing]
+          explanation: >-
+            An observation tells hypotheses apart only where they predict different things. Both
+            predicted that the change would work, so its working fits either, and the bug is mended
+            without its cause being known.
+
+  - id: explore-first-wrong
+    phase: explore
+    kind: predict
+    concept: E1.8/observation
+    title: Twenty million days
+    prompt: Which line makes the first wrong value?
+    answer:
+      type: choice
+      options:
+        - { id: tokens, label: '`return batch * length`' }
+        - { id: steps, label: '`return total_tokens / tokens_per_step(batch, length)`' }
+        - { id: call, label: '`steps = steps_needed(total_tokens, batch, length)`' }
+        - { id: days, label: '`return steps * seconds_per_step / 60 * 60 * 24`' }
+      correct: [days]
+    explanation: >-
+      $500 \times 2{,}000 = 10^6$ tokens a step and $10^{12} / 10^6 = 10^6$ steps are right, but
+      $10^6$ steps of 0.864 seconds are 864,000 seconds, which is 10 days, not twenty million. The
+      first wrong value comes from the last line, where `/ 60 * 60 * 24` divides by 60 and then
+      multiplies by 60 and by 24, since Python works from left to right.
+    review:
+      variants:
+        - prompt: >-
+            Three functions run one after another, each using the value before. They give 64, then
+            4,096, then 40.96, where estimates made beforehand say about 60, about 4,000 and about
+            4,000. Where should the search for the mistake start?
+          answer:
+            type: choice
+            options:
+              - { id: first, label: 'In the first function, since 64 is not exactly 60' }
+              - { id: third, label: 'In the third function, which made 40.96 from 4,096' }
+              - { id: second, label: 'In the second function, which made the largest value' }
+              - { id: all, label: 'In all three at once, since the result is wrong' }
+            correct: [third]
+          explanation: >-
+            64 and 4,096 agree with their estimates, so the functions that made them are not to
+            blame. 40.96 is the first value that disagrees, so the mistake lies in the step that
+            made it, the third function.
+        - prompt: >-
+            In a chain of functions, each using the value before, the first value is right, the
+            second is wrong, and every value after it is wrong too. Where does the mistake lie?
+          answer:
+            type: choice
+            options:
+              - { id: start, label: 'In the first function, since the chain starts there' }
+              - { id: end, label: 'In the last function, which made the final wrong result' }
+              - { id: anywhere, label: 'Anywhere after the first, since every later value is wrong' }
+              - { id: second, label: 'In the second function, which made the first wrong value' }
+            correct: [second]
+          explanation: >-
+            The first value is right, so the first function is not to blame, and the later values
+            may be wrong only because they were made from a wrong one. The mistake lies in the
+            step that made the first wrong value.
+
+  - id: explore-read-error
+    phase: explore
+    kind: predict
+    concept: E1.8/observation
+    title: Where Python stopped
+    prompt: Which line holds the cause of the error?
+    answer:
+      type: choice
+      options:
+        - { id: line-1, label: 'Line 1: `total = 0`' }
+        - { id: line-4, label: 'Line 4: `print("adding", loss, "to", total)`' }
+        - { id: line-5, label: 'Line 5: `total = total + loss`' }
+        - { id: line-7, label: 'Line 7: `add_loss(0.5)`' }
+      correct: [line-5]
+    explanation: >-
+      Line 5 assigns `total` inside `add_loss`, which makes `total` local to the whole call, so
+      line 4 reads a local name that has no value yet. Python stops at line 4, but the cause is the
+      assignment on line 5.
+    review:
+      variants:
+        - prompt: |
+            This program stops with `UnboundLocalError on line 4: cannot access local variable 'count' where it is not associated with a value`. Why?
+
+            ```python
+            count = 0
+
+            def tick():
+                count = count + 1
+
+            tick()
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: zero, label: '`count` is 0, and Python cannot add 1 to a name holding 0' }
+              - { id: local, label: 'Assigning `count` in `tick` makes it local, with no value yet' }
+              - { id: order, label: '`tick` is called before Python has finished defining it' }
+              - { id: unseen, label: 'Names set outside a function can never be read inside one' }
+            correct: [local]
+          explanation: >-
+            Line 4 assigns `count`, so `count` is local to the whole call, and the right side reads
+            that local name before it has a value. Without the assignment, `tick` could read the
+            main program's `count`.
+        - prompt: >-
+            A program stops with `ZeroDivisionError on line 12: division by zero`. What does line
+            12 tell you?
+          answer:
+            type: choice
+            options:
+              - { id: change, label: 'Which line must be changed to mend the bug' }
+              - { id: made, label: 'The line where the zero was first worked out' }
+              - { id: stopped, label: 'Where Python stopped, which need not be where the cause is' }
+              - { id: nothing, label: 'Nothing useful, since the message names no variable' }
+            correct: [stopped]
+          explanation: >-
+            Line 12 is where a division by zero was tried. The zero may have been made anywhere
+            earlier, and the line to change may be there, so the line in a message is where to start
+            looking, not always where the cause is.
+
+  - id: explore-versions
+    phase: explore
+    kind: predict
+    concept: E1.8/bisection
+    title: A million versions
+    prompt: >-
+      A project has a million versions. The first works, the last is broken, and once a version is
+      broken every later one is broken too. At most how many checks does bisection need to find the
+      first broken version?
+    placement: true
+    answer: { type: number, value: 20, tolerance: { abs: 0 } }
+    explanation: >-
+      Each check halves the gap, and $2^{20} = 1{,}048{,}576$ is more than a million while
+      $2^{19} = 524{,}288$ is not, so 20 checks always suffice and some versions need all 20. Since
+      $2^{10} \approx 10^3$, a million, a thousand thousands, takes 10 checks and 10 more.
+    review:
+      variants:
+        - prompt: >-
+            Bisection over a thousand versions takes at most 10 checks. At most how many does it
+            take over a billion versions?
+          answer: { type: number, value: 30, tolerance: { abs: 0 } }
+          explanation: >-
+            A billion is a thousand thousand thousands, and each factor of a thousand adds 10
+            checks, since $2^{10} = 1{,}024$: $2^{30}$ is about $1.07 \times 10^9$, more than a
+            billion.
+        - prompt: >-
+            Bisection searches training steps from step 0, known to be good, to step 4,096, known
+            to be bad. How many checks does it make?
+          answer: { type: number, value: 12, tolerance: { abs: 0 } }
+          explanation: >-
+            The gap of 4,096 is $2^{12}$, and each check halves it exactly, to 2,048, then 1,024,
+            and so on down to 1, which takes 12 checks whatever the first bad step is.
+        - prompt: >-
+            Each check of a version takes an hour of training. At most how many hours does
+            bisection need over 30,000 versions?
+          answer: { type: number, value: 15, tolerance: { abs: 0 } }
+          explanation: >-
+            $2^{14} = 16{,}384$ is less than 30,000 and $2^{15} = 32{,}768$ is more, so 15 checks
+            always suffice, and some searches need all 15: 15 hours, against up to 30,000 for
+            checking in order.
+
+  - id: explore-fooled
+    phase: explore
+    kind: predict
+    concept: E1.8/hypothesis
+    title: Three changes at once
+    prompt: Which change mended the run?
+    answer:
+      type: choice
+      options:
+        - { id: averaging, label: 'The fix to the averaging, since a bug in the loss is the likeliest cause' }
+        - { id: unknown, label: 'There is no telling yet: undo the changes one at a time to find out' }
+        - { id: rate, label: 'The smaller learning rate, the usual cure for a loss that will not fall' }
+        - { id: batch, label: 'The larger batch, since each step then learns from more examples' }
+      correct: [unknown]
+    explanation: >-
+      Three changes were tested at once, so the result fits many hypotheses: any one of them, two
+      together, or one that did harm hidden by the others. Undoing them one at a time, or making
+      them one at a time, tests one hypothesis per run.
+    review:
+      variants:
+        - prompt: >-
+            Training became slower after four settings were changed together. Which plan finds out
+            which setting slowed it?
+          answer:
+            type: choice
+            options:
+              - { id: one-at-a-time, label: 'Put the settings back one at a time, timing a run after each' }
+              - { id: all-back, label: 'Put all four back at once, and see whether it speeds up again' }
+              - { id: likeliest, label: 'Put back the likeliest setting, and keep the other three' }
+              - { id: again, label: 'Run again with all four, since a slowdown may not happen twice' }
+            correct: [one-at-a-time]
+          explanation: >-
+            Putting the settings back one at a time makes each run a test of one hypothesis.
+            Putting all four back can show that one of them was to blame, but not which, and
+            changing only the likeliest one tests only one of the four.
+        - prompt: After a change to a program, a test that failed now passes. What has that shown?
+          answer:
+            type: choice
+            options:
+              - { id: bug-free, label: 'That the program now has no bugs left, at least in this function' }
+              - { id: cause, label: 'That the hypothesis behind the change was the true cause of it' }
+              - { id: nothing, label: 'Nothing at all, since a test that passes can never show anything' }
+              - { id: this-case, label: 'That the change mended this case, not that the program has no bugs' }
+            correct: [this-case]
+          explanation: >-
+            A passing test shows that the program now works on the inputs the test tries. Other
+            inputs may still fail, and the change may have worked for a reason other than the
+            hypothesis behind it.
+
+  - id: explore-assert-place
+    phase: explore
+    kind: predict
+    concept: E1.8/assertion
+    title: Where the check goes
+    prompt: Where in `halvings_to` should the line `assert target > 0, "the target must be above 0"` go?
+    placement: true
+    answer:
+      type: choice
+      options:
+        - { id: after-return, label: 'After `return count`, as the last line of the body' }
+        - { id: before-return, label: 'Between the loop and `return count`' }
+        - { id: top, label: 'As the first line of the body, before `lr = 1.0`' }
+        - { id: anywhere, label: 'Anywhere in the body, since `target` never changes' }
+      correct: [top]
+    explanation: >-
+      At the top, a bad call fails at once. After `return` the assert never runs, and between the
+      loop and the `return` it runs only after 1,075 halvings for a target of 0, and never for a
+      negative target, whose loop never ends. The condition is the same anywhere, but where it is
+      checked decides when.
+    review:
+      variants:
+        - prompt: |
+            What does this program do?
+
+            ```python
+            def scale(x, factor):
+                assert factor > 0, "factor must be positive"
+                return x * factor
+
+            print(scale(2, 3))
+            print(scale(2, -1))
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: right, label: 'It prints `6`, then stops with `AssertionError`' }
+              - { id: message, label: 'It prints `6`, then prints the message `factor must be positive`' }
+              - { id: both, label: 'It prints `6` and then `-2`, since the assert only warns' }
+              - { id: stops-first, label: 'It stops with `AssertionError` before printing anything' }
+            correct: [right]
+          explanation: >-
+            The first call passes its assert and returns 6, which is printed. In the second,
+            `factor > 0` is `False`, so the assert stops the program with
+            `AssertionError on line 2: factor must be positive` before `x * factor` is worked out.
+        - prompt: A function's contract says that `rate` is between 0 and 1. Which line checks it?
+          answer:
+            type: choice
+            options:
+              - { id: lower-only, label: '`assert rate > 0, "rate must be between 0 and 1"`' }
+              - { id: either, label: '`assert 0 < rate or rate < 1, "rate must be between 0 and 1"`' }
+              - { id: right, label: '`assert 0 < rate < 1, "rate must be between 0 and 1"`' }
+              - { id: warn, label: '`if rate > 1: print("rate must be between 0 and 1")`' }
+            correct: [right]
+          explanation: >-
+            `0 < rate < 1` is `True` exactly when `rate` is between 0 and 1. `assert rate > 0`
+            checks only the lower bound, so a rate of 2 gets through, the `or` is `True` for every
+            number, since each is above 0 or below 1, and the `print` lets the program carry on with
+            a bad rate, and misses rates of 0 or below.
+
+  # Derive ---------------------------------------------------------------------
+  - id: derive-wrong-mean
+    phase: derive
+    kind: step
+    concept: E1.8/hypothesis
+    title: The wrong mean, for every n
+    prompt: >-
+      The Explore phase's `mean_up_to(n)` adds $0 + 1 + \dots + (n - 1)$ and divides by $n$. E1.3's
+      `triangle(m)` gives $1 + 2 + \dots + m = \frac{m(m + 1)}{2}$. What does `mean_up_to(n)`
+      give, as an expression in $n$?
+    answer:
+      type: expression
+      symbols:
+        - { name: n, positive: true, integer: true }
+      lhs: '\texttt{mean\_up\_to}(n) ='
+      reference: (n - 1)/2
+      accept: ['n/2 - 1/2', '(n-1)/2', '0.5*(n - 1)']
+      reject: ['(n + 1)/2', 'n*(n - 1)/2', 'n/2', 'n - 1', '(n - 1)/n', '(n**2 - n)/(2*n)', '(n-1)*n/(2*n)', '((n-1)*n/2)/n']
+      form:
+        maxOps: 3
+        message: That is the right value, but it can be written more simply. If it still divides by $n$, cancel the $n$ that the sum and the division share.
+    explanation: >-
+      The loop adds $0 + 1 + \dots + (n - 1)$, which is `triangle(n - 1)`, $\frac{(n - 1)n}{2}$, and
+      dividing by $n$ gives $\frac{n - 1}{2}$: 1.5 at $n = 4$ and 4.5 at $n = 10$, always 1 below
+      the right mean, $\frac{n + 1}{2}$.
+
+  - id: derive-checks-left
+    phase: derive
+    kind: step
+    concept: E1.8/bisection
+    title: The gap after k checks
+    prompt: >-
+      Checking any version strictly between `lo` and `hi` keeps `lo` good and `hi` bad, so a search
+      could check the version a third of the way from `lo` to `hi` instead of the one midway. Take
+      a gap of $N$ that every check splits exactly into thirds. If the first bad version always
+      lies in the larger part, what is the gap after $k$ checks?
+    answer:
+      type: expression
+      symbols:
+        - { name: N, positive: true }
+        - { name: k, positive: true, integer: true }
+      lhs: '\text{gap} ='
+      reference: N*(2/3)**k
+      accept: ['(2/3)**k*N', 'N*2**k/3**k', 'N/(3/2)**k', 'N*(2/3)^k']
+      reject: ['N/3**k', 'N*(1/3)**k', 'N/2**k', 'N*(2/3)*k', '2*N/(3*k)', 'N - k*N/3']
+    explanation: >-
+      A check a third of the way splits the gap into a third and two thirds, and with the first bad
+      version in the larger part, one check leaves $\frac{2N}{3}$. Each later check keeps two thirds
+      of what is left, so two leave $\frac{4N}{9}$ and $k$ leave $N\left(\frac{2}{3}\right)^k$.
+
+  - id: derive-bisect-proof
+    phase: derive
+    kind: proof
+    concept: E1.8/bisection
+    title: Why bisection finds the first bad one
+    prompt: >-
+      Versions are numbered in order, and every version after a bad one is bad too. Bisection
+      starts with `lo` good and `hi` bad. While they are more than 1 apart, it checks the version
+      $m$ midway between them, rounded down, and moves `hi` to $m$ if $m$ is bad, or `lo` to $m$ if
+      it is good. When it stops, it gives `hi`. Here is a proof that `hi` is then the first bad
+      version. Each line follows from the lines above it. Choose the rule that justifies each line.
+      A rule may be used more than once or not at all.
+    answer:
+      type: steps
+      rules:
+        - { id: invariant, name: Invariant, label: 'A statement that is true before the first pass of a loop, and that each pass keeps true, is true after every pass, as in E1.2.' }
+        - { id: stop, name: The loop stops, label: 'A `while` loop ends at the first check where its test is `False`, as in E1.2.' }
+        - { id: accumulator, name: Accumulator, label: 'A name set before a loop and updated by each pass holds, after the loop, the result over all the passes, as in E1.2.' }
+        - { id: monotone, name: Bad stays bad, label: 'Every version after a bad version is bad too.' }
+        - { id: branch, name: The branch taken, label: 'An `if` runs its block only when its test is `True`, and its `else` block only when the test is `False`.' }
+        - { id: middle, name: Midway, label: 'When two whole numbers are more than 1 apart, the whole number midway between them, rounded down, is strictly between them.' }
+        - { id: shrink, name: Shrinking, label: 'A whole number that every pass of a loop makes smaller, and that stays above 0, cannot shrink for ever, so the loop ends.' }
+      start: '\text{Before the first pass, } \texttt{lo} \text{ is good, } \texttt{hi} \text{ is bad, and } \texttt{lo} < \texttt{hi}.'
+      lines:
+        - math: '\text{In a pass, } \texttt{hi} - \texttt{lo} > 1 \text{, so } \texttt{lo} < m < \texttt{hi}.'
+          rule: middle
+        - math: '\text{If } m \text{ is bad, } \texttt{hi} \text{ becomes } m \text{: still bad, and still above } \texttt{lo}.'
+          rule: branch
+        - math: '\text{If } m \text{ is good, } \texttt{lo} \text{ becomes } m \text{: still good, and still below } \texttt{hi}.'
+          rule: branch
+        - math: '\text{So after every pass, } \texttt{lo} \text{ is good, } \texttt{hi} \text{ is bad, and } \texttt{lo} < \texttt{hi}.'
+          rule: invariant
+        - math: '\text{Each pass makes } \texttt{hi} - \texttt{lo} \text{ smaller, as } m \text{ is strictly between them, so the loop ends.}'
+          rule: shrink
+        - math: '\text{When it ends, its test } \texttt{hi} - \texttt{lo} > 1 \text{ is false, and } \texttt{lo} < \texttt{hi} \text{ still holds, so } \texttt{hi} = \texttt{lo} + 1.'
+          rule: stop
+        - math: '\text{No version up to } \texttt{lo} \text{ is bad, or } \texttt{lo} \text{ would be bad too, so } \texttt{hi} \text{ is the first bad version.}'
+          rule: monotone
+    explanation: >-
+      Midway puts $m$ strictly between `lo` and `hi`. By The branch taken, each of the two
+      branches keeps `lo` good, `hi` bad and `lo` below `hi`, so by the invariant rule that holds
+      after every pass. Shrinking shows that the loop ends: `hi - lo` is a whole number that every
+      pass makes smaller and that stays above 0. The loop stops says what is true once it has: the
+      test `hi - lo > 1` is `False`, and with `lo < hi` that leaves `hi = lo + 1`. Bad stays bad
+      then rules out a bad version at or before `lo`, which would make `lo` bad too. Accumulator is
+      never needed.
+
+  - id: derive-not-monotone
+    phase: derive
+    kind: predict
+    concept: E1.8/bisection
+    title: When bad does not stay bad
+    prompt: >-
+      Suppose that a later change can mend the script again, so that the versions may run good,
+      bad, good, bad. Bisection starts with `lo` good and `hi` bad, as before. What does it find?
+    answer:
+      type: choice
+      options:
+        - { id: first, label: 'The first bad version, since nothing in the search changes' }
+        - { id: never, label: 'Nothing, since with good and bad mixed the loop never ends' }
+        - { id: broke, label: 'A version that broke the script, though not always the first' }
+        - { id: random, label: 'Some version at random, since its checks no longer mean anything' }
+      correct: [broke]
+    explanation: >-
+      The invariant, that `lo` is good, `hi` is bad and `lo` is below `hi`, never used the rule
+      that bad stays bad, and neither did the proof that the loop ends. So bisection still ends with
+      a good version just before a bad one, and the change between them broke the script. Only the
+      last line needed bad to stay bad, to rule out an earlier break that a later change mended.
+
+  # Build ----------------------------------------------------------------------
+  - id: debug-schedule
+    phase: build
+    kind: debug
+    concept: E1.8/observation
+    covers: [E1.8/hypothesis]
+    title: A schedule that changes too soon
+    prompt: >-
+      `lr_at` should keep the learning rate at `start` for the first `every` steps, then multiply
+      it by `decay` at step `every`, again at step `2 * every`, and so on. With a start of 0.1, a
+      decay of 0.5 and `every` of 10, steps 0, 9, 10 and 25 should have the rates 0.1, 0.1, 0.05
+      and 0.025, but the script prints 0.1, 0.05, 0.05 and 0.0125. Write a hypothesis and its
+      prediction in the two comments at the top, make the observation that tests it, and then mend
+      the function. The tests try other schedules too.
+    answer:
+      type: code
+      starter: |
+        # Hypothesis:
+        # If it is right, printing k and lr on every pass of lr_at(10, 0.1, 0.5, 10) will show:
+
+        def lr_at(step, start, decay, every):
+            """The learning rate at a step: start until step every, then multiplied
+            by decay at step every, again at step 2 * every, and so on."""
+            lr = start
+            for k in range(step):
+                if k % every == 0:
+                    lr = lr * decay
+            return lr
+
+
+        print(0, lr_at(0, 0.1, 0.5, 10))
+        print(9, lr_at(9, 0.1, 0.5, 10))
+        print(10, lr_at(10, 0.1, 0.5, 10))
+        print(25, lr_at(25, 0.1, 0.5, 10))
+      tests: |
+        def close(got, expected):
+            """True when got is a number within a millionth of expected, since floats can differ in their last digits."""
+            return isinstance(got, (int, float)) and abs(got - expected) <= 1e-6 * abs(expected)
+
+        def test_examples():
+            """Steps 0, 9, 10 and 25 of the schedule in the task have the rates 0.1, 0.1, 0.05 and 0.025."""
+            for step, expected in [(0, 0.1), (9, 0.1), (10, 0.05), (25, 0.025)]:
+                got = lr_at(step, 0.1, 0.5, 10)
+                assert close(got, expected), f"lr_at({step}, 0.1, 0.5, 10) gives {got!r}, not {expected}."
+
+        def test_first_change():
+            """With every set to 4, the rate is still the start at step 3 and first changes at step 4."""
+            for step, expected in [(1, 1.0), (3, 1.0), (4, 0.5), (5, 0.5)]:
+                got = lr_at(step, 1.0, 0.5, 4)
+                assert close(got, expected), f"lr_at({step}, 1.0, 0.5, 4) gives {got!r}, not {expected}: the rate should first change at step 4."
+
+        def test_compounds():
+            """Each change multiplies the rate reached so far, so three changes of 0.9 from 0.1 give 0.1 × 0.9 × 0.9 × 0.9 = 0.0729."""
+            got = lr_at(30, 0.1, 0.9, 10)
+            assert close(got, 0.0729), f"lr_at(30, 0.1, 0.9, 10) gives {got!r}, not 0.0729, which is 0.1 × 0.9 × 0.9 × 0.9."
+
+        def test_every_step():
+            """With every set to 1, the rate changes at every step, so step 3 has 1.0 × 0.5 × 0.5 × 0.5 = 0.125."""
+            got = lr_at(3, 1.0, 0.5, 1)
+            assert close(got, 0.125), f"lr_at(3, 1.0, 0.5, 1) gives {got!r}, not 0.125."
+      reference: |
+        # Hypothesis:
+        # If it is right, printing k and lr on every pass of lr_at(10, 0.1, 0.5, 10) will show:
+
+        def lr_at(step, start, decay, every):
+            """The learning rate at a step: start until step every, then multiplied
+            by decay at step every, again at step 2 * every, and so on."""
+            lr = start
+            for k in range(step):
+                if (k + 1) % every == 0:
+                    lr = lr * decay
+            return lr
+
+
+        print(0, lr_at(0, 0.1, 0.5, 10))
+        print(9, lr_at(9, 0.1, 0.5, 10))
+        print(10, lr_at(10, 0.1, 0.5, 10))
+        print(25, lr_at(25, 0.1, 0.5, 10))
+      wrong:
+        - code: |
+            # Hypothesis:
+            # If it is right, printing k and lr on every pass of lr_at(10, 0.1, 0.5, 10) will show:
+
+            def lr_at(step, start, decay, every):
+                """The learning rate at a step: start until step every, then multiplied
+                by decay at step every, again at step 2 * every, and so on."""
+                lr = start
+                for k in range(step):
+                    if k % every == 0:
+                        lr = lr * decay
+                return lr
+
+
+            print(0, lr_at(0, 0.1, 0.5, 10))
+            print(9, lr_at(9, 0.1, 0.5, 10))
+            print(10, lr_at(10, 0.1, 0.5, 10))
+            print(25, lr_at(25, 0.1, 0.5, 10))
+          why: The original, which changes the rate on the pass for `k = 0`, before any step is completed.
+        - code: |
+            # Hypothesis:
+            # If it is right, printing k and lr on every pass of lr_at(10, 0.1, 0.5, 10) will show:
+
+            def lr_at(step, start, decay, every):
+                """The learning rate at a step: start until step every, then multiplied
+                by decay at step every, again at step 2 * every, and so on."""
+                lr = start
+                for k in range(step):
+                    if k % every == 0 and k > 0:
+                        lr = lr * decay
+                return lr
+
+
+            print(0, lr_at(0, 0.1, 0.5, 10))
+            print(9, lr_at(9, 0.1, 0.5, 10))
+            print(10, lr_at(10, 0.1, 0.5, 10))
+            print(25, lr_at(25, 0.1, 0.5, 10))
+          why: Skips the change at `k = 0`, but then makes each change one step late, at step 11 instead of 10.
+        - code: |
+            # Hypothesis:
+            # If it is right, printing k and lr on every pass of lr_at(10, 0.1, 0.5, 10) will show:
+
+            def lr_at(step, start, decay, every):
+                """The learning rate at a step: start until step every, then multiplied
+                by decay at step every, again at step 2 * every, and so on."""
+                lr = start
+                for k in range(step + 1):
+                    if k % every == 0:
+                        lr = lr * decay
+                return lr
+
+
+            print(0, lr_at(0, 0.1, 0.5, 10))
+            print(9, lr_at(9, 0.1, 0.5, 10))
+            print(10, lr_at(10, 0.1, 0.5, 10))
+            print(25, lr_at(25, 0.1, 0.5, 10))
+          why: Runs one pass more, which changes the rate even at step 0.
+        - code: |
+            # Hypothesis:
+            # If it is right, printing k and lr on every pass of lr_at(10, 0.1, 0.5, 10) will show:
+
+            def lr_at(step, start, decay, every):
+                """The learning rate at a step: start until step every, then multiplied
+                by decay at step every, again at step 2 * every, and so on."""
+                lr = start
+                for k in range(step):
+                    if (k + 1) % every == 0:
+                        lr = start * decay
+                return lr
+
+
+            print(0, lr_at(0, 0.1, 0.5, 10))
+            print(9, lr_at(9, 0.1, 0.5, 10))
+            print(10, lr_at(10, 0.1, 0.5, 10))
+            print(25, lr_at(25, 0.1, 0.5, 10))
+          why: Multiplies the start each time instead of the rate reached so far, so the rate never falls below one change.
+        - code: |
+            # Hypothesis:
+            # If it is right, printing k and lr on every pass of lr_at(10, 0.1, 0.5, 10) will show:
+
+            def lr_at(step, start, decay, every):
+                """The learning rate at a step: start until step every, then multiplied
+                by decay at step every, again at step 2 * every, and so on."""
+                return start * decay ** (step / every)
+
+
+            print(0, lr_at(0, 0.1, 0.5, 10))
+            print(9, lr_at(9, 0.1, 0.5, 10))
+            print(10, lr_at(10, 0.1, 0.5, 10))
+            print(25, lr_at(25, 0.1, 0.5, 10))
+          why: Divides with `/`, which gives a fraction of a change between the steps where the rate should change.
+    explanation: >-
+      `range(step)` gives `k` from 0, and `k % every == 0` is `True` at `k = 0`, so the rate is
+      multiplied by `decay` on the very first pass, before any step has been completed, and every
+      rate after step 0 is one change ahead. After the pass for `k`, `k + 1` steps are done, so
+      `(k + 1) % every == 0` makes the changes at steps `every`, `2 * every` and so on. Printing
+      `k` and `lr` inside the loop for step 10 shows the change at `k = 0`, where it should come at
+      `k = 9`.
+
+  - id: build-first-bad
+    phase: build
+    kind: build
+    concept: E1.8/bisection
+    title: The first bad step
+    prompt: >-
+      Write `first_bad(lo, hi)` by bisection. Given that step `lo` is good, step `hi` is bad and
+      every step after a bad one is bad too, it gives the first bad step, and asks `is_bad` no more
+      often than halving needs. Steps are whole numbers, so the step midway between two of them is
+      rounded down, as in the Derive phase's proof. The `is_bad` here is a quick stand-in for an hour of training; the
+      tests swap in stand-ins of their own, which count how often they are asked.
+    answer:
+      type: code
+      starter: |
+        def is_bad(step):
+            """A stand-in for an hour of training: True when the run has gone bad
+            by this step. The tests swap in stand-ins of their own."""
+            return step >= 637
+
+
+        def first_bad(lo, hi):
+            """The first bad step after lo, given that lo is good, hi is bad, and
+            every step after a bad one is bad too."""
+            return None
+
+
+        print(first_bad(0, 1000))
+      tests: |
+        def show(value):
+            """A number with its digits grouped in threes, as the lesson writes it."""
+            return f"{value:,}" if isinstance(value, (int, float)) and not isinstance(value, bool) else repr(value)
+
+        def stand_in(first, limit):
+            """Puts in an is_bad whose first bad step is first, which fails the test once it has been asked more than limit times, and gives the list of the steps it is asked about."""
+            asked = []
+            def is_bad(step):
+                asked.append(step)
+                n = len(asked)
+                assert n <= limit, f"first_bad has asked is_bad {n} time{'' if n == 1 else 's'}, more than the {limit} that halving needs here."
+                return step >= first
+            first_bad.__globals__["is_bad"] = is_bad
+            return asked
+
+        def test_filled():
+            """first_bad gives a step, not None."""
+            stand_in(7, 100)
+            got = first_bad(0, 10)
+            assert got is not None, "first_bad(0, 10) gives None. Replace the None with the search."
+
+        def test_million():
+            """Between 0 and 1,000,000, with the first bad step at 637,000, it gives 637,000, asking is_bad at most 20 times."""
+            asked = stand_in(637000, 20)
+            got = first_bad(0, 1000000)
+            assert got == 637000 or got is None or asked, "first_bad never asked the tests' is_bad, which they put in place of the one at the top of the script. Call that is_bad by its name, not through another name or a default argument."
+            assert got == 637000, f"first_bad(0, 1000000) gives {show(got)}, not 637,000."
+
+        def test_trillion():
+            """Between 0 and 10**12, a million million, with the first bad step at 777,777,777,777, it gives that step, asking is_bad at most 40 times."""
+            stand_in(777777777777, 40)
+            got = first_bad(0, 10**12)
+            assert got == 777777777777, f"first_bad(0, 10**12) gives {show(got)}, not 777,777,777,777."
+
+        def test_anywhere():
+            """Between 0 and 64, it finds the first bad step wherever it is, from 1 to 64, asking at most 6 times."""
+            for first in range(1, 65):
+                stand_in(first, 6)
+                got = first_bad(0, 64)
+                assert got == first, f"With the first bad step at {first}, first_bad(0, 64) gives {show(got)}."
+
+        def test_next_to_each_other():
+            """When hi is lo + 1, hi is the first bad step, and no check is needed."""
+            stand_in(5, 0)
+            got = first_bad(4, 5)
+            assert got == 5, f"first_bad(4, 5) gives {show(got)}, not 5: when lo is good and hi = lo + 1 is bad, hi is the first bad step."
+
+        def test_whole_number():
+            """It gives a whole number, an int, as step numbers are."""
+            stand_in(7, 100)
+            got = first_bad(0, 10)
+            what = "None" if got is None else f"{show(got)}, a {type(got).__name__}"
+            assert isinstance(got, int) and not isinstance(got, bool), f"first_bad(0, 10) gives {what}, not an int."
+      reference: |
+        def is_bad(step):
+            """A stand-in for an hour of training: True when the run has gone bad
+            by this step. The tests swap in stand-ins of their own."""
+            return step >= 637
+
+
+        def first_bad(lo, hi):
+            """The first bad step after lo, given that lo is good, hi is bad, and
+            every step after a bad one is bad too."""
+            while hi - lo > 1:
+                mid = (lo + hi) // 2
+                if is_bad(mid):
+                    hi = mid
+                else:
+                    lo = mid
+            return hi
+
+
+        print(first_bad(0, 1000))
+      wrong:
+        - code: |
+            def is_bad(step):
+                """A stand-in for an hour of training: True when the run has gone bad
+                by this step. The tests swap in stand-ins of their own."""
+                return step >= 637
+
+
+            def first_bad(lo, hi):
+                """The first bad step after lo, given that lo is good, hi is bad, and
+                every step after a bad one is bad too."""
+                for step in range(lo + 1, hi + 1):
+                    if is_bad(step):
+                        return step
+
+
+            print(first_bad(0, 1000))
+          why: Checks every step in order, which finds the right step but asks hundreds of thousands of times.
+        - code: |
+            def is_bad(step):
+                """A stand-in for an hour of training: True when the run has gone bad
+                by this step. The tests swap in stand-ins of their own."""
+                return step >= 637
+
+
+            def first_bad(lo, hi):
+                """The first bad step after lo, given that lo is good, hi is bad, and
+                every step after a bad one is bad too."""
+                while hi - lo > 1:
+                    mid = (lo + hi) // 2
+                    if is_bad(mid):
+                        lo = mid
+                    else:
+                        hi = mid
+                return hi
+
+
+            print(first_bad(0, 1000))
+          why: Swaps the branches, so a bad midpoint becomes `lo`, and the search heads away from the first bad step.
+        - code: |
+            def is_bad(step):
+                """A stand-in for an hour of training: True when the run has gone bad
+                by this step. The tests swap in stand-ins of their own."""
+                return step >= 637
+
+
+            def first_bad(lo, hi):
+                """The first bad step after lo, given that lo is good, hi is bad, and
+                every step after a bad one is bad too."""
+                while hi - lo > 1:
+                    mid = (lo + hi) // 2
+                    if is_bad(mid):
+                        hi = mid
+                    else:
+                        lo = mid
+                return lo
+
+
+            print(first_bad(0, 1000))
+          why: Gives `lo`, the last good step, which is one before the first bad one.
+        - code: |
+            def is_bad(step):
+                """A stand-in for an hour of training: True when the run has gone bad
+                by this step. The tests swap in stand-ins of their own."""
+                return step >= 637
+
+
+            def first_bad(lo, hi):
+                """The first bad step after lo, given that lo is good, hi is bad, and
+                every step after a bad one is bad too."""
+                while hi - lo > 1:
+                    mid = (lo + hi) / 2
+                    if is_bad(mid):
+                        hi = mid
+                    else:
+                        lo = mid
+                return hi
+
+
+            print(first_bad(0, 1000))
+          why: Divides with `/`, so the midpoints are fractions of a step, and the answer is a float a little above 637,000.
+        - code: |
+            def is_bad(step):
+                """A stand-in for an hour of training: True when the run has gone bad
+                by this step. The tests swap in stand-ins of their own."""
+                return step >= 637
+
+
+            def first_bad(lo, hi):
+                """The first bad step after lo, given that lo is good, hi is bad, and
+                every step after a bad one is bad too."""
+                while hi - lo > 0:
+                    mid = (lo + hi) // 2
+                    if is_bad(mid):
+                        hi = mid
+                    else:
+                        lo = mid
+                return hi
+
+
+            print(first_bad(0, 1000))
+          why: Keeps going once `hi` is `lo + 1`, where the midpoint rounds down to `lo` and nothing changes, so it never ends.
+    explanation: >-
+      `lo` stays good and `hi` stays bad while the midpoint `(lo + hi) // 2`, a whole number
+      strictly between them, replaces one of them. The loop runs while they are more than 1 apart,
+      and then `hi` is the first bad step. Each pass halves the gap, so a million steps take 20
+      checks and $10^{12}$ take 40.
+
+  - id: breakit-bisect
+    phase: build
+    kind: breakit
+    concept: E1.8/bisection
+    title: A looser test
+    prompt: Predict what happens after the change, then run both versions to see.
+    answer:
+      type: breakit
+      code: |
+        def is_bad(step):
+            return step >= 637
+
+
+        def first_bad(lo, hi):
+            while hi - lo > 1:
+                mid = (lo + hi) // 2
+                if is_bad(mid):
+                    hi = mid
+                else:
+                    lo = mid
+            return hi
+
+
+        print(first_bad(0, 1000))
+      broken: |
+        def is_bad(step):
+            return step >= 637
+
+
+        def first_bad(lo, hi):
+            while hi - lo > 0:
+                mid = (lo + hi) // 2
+                if is_bad(mid):
+                    hi = mid
+                else:
+                    lo = mid
+            return hi
+
+
+        print(first_bad(0, 1000))
+      change: The loop's test is now `hi - lo > 0`, so the loop runs while `lo` and `hi` differ at all.
+      options:
+        - { id: same, label: 'It still prints `637`', when: "error is None and output.strip() == '637'" }
+        - { id: one-early, label: 'It prints `636`, one step too early', when: "error is None and output.strip() == '636'" }
+        - { id: never-ends, label: 'It never ends, and is stopped for running too long', when: "error == 'StepLimit'" }
+        - { id: error, label: 'Python stops with an error', when: "error is not None and error != 'StepLimit'" }
+    explanation: >-
+      It never ends. Once `hi` is `lo + 1`, the midpoint `(lo + hi) // 2` rounds down to `lo`,
+      which is good, so `lo` is set to itself and nothing changes: the gap is stuck at 1, the test
+      stays `True`, and the loop runs for ever. The Derive phase's shrinking rule needs the midpoint
+      strictly between `lo` and `hi`, which holds only while they are more than 1 apart.
+
+  - id: build-assert
+    phase: build
+    kind: build
+    concept: E1.8/assertion
+    title: A contract that checks itself
+    prompt: >-
+      E1.3's `steps_to` counts how many times `start` must be multiplied by `factor` to fall to
+      `target` or below. Its contract asks for a target above 0 and a factor between 0 and 1, and a
+      call that breaks it gives a wrong count or never ends. Add asserts at the top of `steps_to` so
+      that such a call stops at once with `AssertionError`, with a message that names the parameter
+      at fault: one assert for `target`, and one for `factor`.
+    answer:
+      type: code
+      starter: |
+        def steps_to(target, start, factor):
+            """The number of steps that take a value from start to target or below,
+            when each step multiplies it by factor. The target must be above 0, and
+            the factor between 0 and 1."""
+            value = start
+            steps = 0
+            while value > target:
+                value = value * factor
+                steps = steps + 1
+            return steps
+
+
+        print(steps_to(0.001, 1.0, 0.5))
+      tests: |
+        def show(value):
+            """A number with its digits grouped in threes, as the lesson writes it."""
+            return f"{value:,}" if isinstance(value, (int, float)) and not isinstance(value, bool) else repr(value)
+
+        def outcome(call):
+            """Runs call, and gives ("error", the AssertionError) if it raises one, or ("value", what it gives)."""
+            try:
+                return ("value", call())
+            except AssertionError as error:
+                return ("error", error)
+
+        def test_good_calls():
+            """Calls that keep the contract work as before: 10 halvings from 1.0 to 0.001, 14 steps of 0.9 from 4.0 to 1.0, and none when the start is already low enough."""
+            for args, expected in [((0.001, 1.0, 0.5), 10), ((1.0, 4.0, 0.9), 14), ((0.5, 0.25, 0.5), 0)]:
+                kind, got = outcome(lambda: steps_to(*args))
+                assert kind == "value", f"steps_to{args} keeps the contract, but an assert stopped it, with the message {str(got)!r}."
+                assert got == expected, f"steps_to{args} gives {show(got)}, not {expected}."
+
+        def test_target():
+            """A target of 0, or below 0, stops the call with AssertionError."""
+            for target in (0, -1):
+                kind, got = outcome(lambda: steps_to(target, 1.0, 0.5))
+                assert kind == "error", f"steps_to({target}, 1.0, 0.5) gives {show(got)} instead of stopping with AssertionError, though its target is not above 0."
+
+        def test_factor():
+            """A factor of 0 or below, or of 1 or above, stops the call with AssertionError."""
+            for start, factor in [(1.0, -0.5), (1.0, 0.0), (0.0005, 1.0), (0.0005, 1.5)]:
+                kind, got = outcome(lambda: steps_to(0.001, start, factor))
+                assert kind == "error", f"steps_to(0.001, {start}, {factor}) gives {show(got)} instead of stopping with AssertionError, though its factor is not between 0 and 1."
+
+        def test_messages():
+            """Each message names the parameter at fault: the one for a bad target says target, the one for a bad factor says factor, and the two are not the same."""
+            kind, target_error = outcome(lambda: steps_to(0, 1.0, 0.5))
+            assert kind == "error", "steps_to(0, 1.0, 0.5) should stop with AssertionError."
+            assert "target" in str(target_error).lower(), f"For a target of 0 the message is {str(target_error)!r}, which does not name target."
+            kind, factor_error = outcome(lambda: steps_to(0.001, 1.0, -0.5))
+            assert kind == "error", "steps_to(0.001, 1.0, -0.5) should stop with AssertionError."
+            assert "factor" in str(factor_error).lower(), f"For a factor of -0.5 the message is {str(factor_error)!r}, which does not name factor."
+            assert str(target_error) != str(factor_error), "A bad target and a bad factor give the same message: write one assert for target and one for factor, each naming its own parameter."
+      reference: |
+        def steps_to(target, start, factor):
+            """The number of steps that take a value from start to target or below,
+            when each step multiplies it by factor. The target must be above 0, and
+            the factor between 0 and 1."""
+            assert target > 0, "target must be above 0, not " + str(target)
+            assert 0 < factor < 1, "factor must be between 0 and 1, not " + str(factor)
+            value = start
+            steps = 0
+            while value > target:
+                value = value * factor
+                steps = steps + 1
+            return steps
+
+
+        print(steps_to(0.001, 1.0, 0.5))
+      wrong:
+        - code: |
+            def steps_to(target, start, factor):
+                """The number of steps that take a value from start to target or below,
+                when each step multiplies it by factor. The target must be above 0, and
+                the factor between 0 and 1."""
+                assert target > 0, "target must be above 0, not " + str(target)
+                value = start
+                steps = 0
+                while value > target:
+                    value = value * factor
+                    steps = steps + 1
+                return steps
+
+
+            print(steps_to(0.001, 1.0, 0.5))
+          why: Checks the target only, so a factor of -0.5 still gives a count of 1.
+        - code: |
+            def steps_to(target, start, factor):
+                """The number of steps that take a value from start to target or below,
+                when each step multiplies it by factor. The target must be above 0, and
+                the factor between 0 and 1."""
+                assert target >= 0, "target must be above 0, not " + str(target)
+                assert 0 < factor < 1, "factor must be between 0 and 1, not " + str(factor)
+                value = start
+                steps = 0
+                while value > target:
+                    value = value * factor
+                    steps = steps + 1
+                return steps
+
+
+            print(steps_to(0.001, 1.0, 0.5))
+          why: Lets a target of 0 through, which then takes 1,075 steps.
+        - code: |
+            def steps_to(target, start, factor):
+                """The number of steps that take a value from start to target or below,
+                when each step multiplies it by factor. The target must be above 0, and
+                the factor between 0 and 1."""
+                value = start
+                steps = 0
+                while value > target:
+                    value = value * factor
+                    steps = steps + 1
+                assert target > 0, "target must be above 0, not " + str(target)
+                assert 0 < factor < 1, "factor must be between 0 and 1, not " + str(factor)
+                return steps
+
+
+            print(steps_to(0.001, 1.0, 0.5))
+          why: Checks after the loop, which a negative target or a factor of 1 never leaves.
+        - code: |
+            def steps_to(target, start, factor):
+                """The number of steps that take a value from start to target or below,
+                when each step multiplies it by factor. The target must be above 0, and
+                the factor between 0 and 1."""
+                if target <= 0:
+                    print("target must be above 0")
+                if not 0 < factor < 1:
+                    print("factor must be between 0 and 1")
+                value = start
+                steps = 0
+                while value > target:
+                    value = value * factor
+                    steps = steps + 1
+                return steps
+
+
+            print(steps_to(0.001, 1.0, 0.5))
+          why: Prints a warning and carries on, so a bad call still gives a wrong count or never ends.
+    explanation: >-
+      `assert target > 0` and `assert 0 < factor < 1`, as the first lines of the body, stop a call
+      that breaks the contract before any work is done. After the loop they would come too late, or
+      never, and a `print` only warns and carries on.
+
+  # Explain --------------------------------------------------------------------
+  - id: explain-debugging
+    phase: explain
+    kind: explain
+    concept: E1.8/hypothesis
+    covers: [E1.8/observation, E1.8/bisection, E1.8/assertion]
+    title: Debugging as an experiment, simply
+    prompt: >-
+      Explain to your friend how to debug as an experiment. Cover what a hypothesis is, how one is
+      tested and what rules one out; how to choose an observation, with an example, and why a fix
+      that works may say nothing about the cause; what the parts of an error message tell you, and
+      whether the line it names is always the one to change; how bisection finds the first bad version, what stays true as it runs, and how many checks it
+      needs for a thousand versions and for a million, and why; and what an `assert` does, and why
+      the asserts of a contract go at the top of a function.
+    answer:
+      type: text
+      rubric:
+        - { id: hypothesis, criterion: 'Says that a hypothesis is a guess at the cause that predicts what the program will do, that it is tested by working out the prediction before running anything, and that one fact it cannot explain rules it out.' }
+        - { id: observation, criterion: 'Says that an observation is worth making where the hypotheses predict different things, with an example such as printing a name inside a loop, and that a fix that works under every hypothesis does not show which one was true.' }
+        - { id: error, criterion: 'Reads an error message as an observation: its type, the line where Python stopped, which need not be the line of the cause, and its details.' }
+        - { id: bisection, criterion: 'Explains bisection: `lo` is known to be good and `hi` known to be bad, checking the version midway and moving one of them to it keeps that true and halves the gap, and when the two are next to each other `hi` is the first bad version.' }
+        - { id: count, criterion: 'Gives the number of checks, about 10 for a thousand versions and 20 for a million, because each check halves the gap and $2^{10}$ is about a thousand.' }
+        - { id: assertion, criterion: 'Says what `assert` does when its condition is `True` and when it is `False`, and that asserts which check a contract go at the top of the function so that a bad call fails at once, with a message, before any wrong work is done.' }
+      reference: >-
+        Debugging by changing things until the output looks right can go on for hours, and even when
+        it works you do not know why. Treat it as an experiment instead. A hypothesis is a guess at
+        the cause of the bug that says what the program will do. Before running anything, work out
+        what it predicts, and then look. One fact it cannot explain rules it out, however likely it
+        seemed, as a count that went up once after a loop was the only guess that gave 1 even when
+        the loop never ran. To test hypotheses, choose an observation where they predict different
+        things. Printing a name inside a loop, or stepping through the code, shows values that the
+        function's result hides: printing k told apart two guesses about range that gave the same
+        mean. A fix that would work under either guess says nothing about which was true, and
+        three changes made at once cannot say which one helped, so change one thing at a time. An
+        error message is an observation too: its type says what went wrong, the line is where
+        Python stopped, which need not be where the cause is, and the details name what was
+        involved. For a bug that appeared somewhere in a long history, use bisection. Keep lo, a
+        version known to be good, and hi, one known to be bad. Check the version midway between
+        them, and move hi to it if it is bad or lo if it is good. lo stays good and hi stays bad,
+        the gap halves, and when they are next to each other hi is the first bad version. Each
+        check halves the gap, and 2 to the 10 is 1,024, so a thousand versions take about 10
+        checks and a million take 20. Finally, assert condition, message does nothing when the
+        condition is true and stops the program with AssertionError and the message when it is
+        false. Put the asserts of a function's contract at the top, so that a bad call fails at
+        once with a clear message, instead of giving a wrong answer or never ending.
+      minWords: 100
+      maxWords: 400
