@@ -1,0 +1,62 @@
+The Derive phase reasoned about a buggy mean and about bisection without running anything. Now run experiments of your own: debug a learning-rate schedule by testing a hypothesis, write the search, break it, and make a function check its own contract.
+
+Each exercise in this phase has tests, in the tab `tests.py`. You need not read their code, which uses Python that this lesson does not teach: when they run, each test says in words what it checks, and one that fails says what went wrong, with the values it found.
+
+## A schedule that changes too soon
+
+Training often lowers the learning rate in steps: it keeps one rate for a while, multiplies it by a factor such as 0.5, keeps the new rate for as long again, and so on. Debug this one as an experiment. Before changing any line, write down a hypothesis about the cause in the two comments at the top of the code, and what it predicts you will see if you print `k` and `lr` on every pass. Then print them, and compare.
+
+<Exercise id="debug-schedule" />
+
+<Reveal for="debug-schedule">
+
+The four rates in the task ruled some hypotheses out before anything was printed, and an observation chosen to tell the rest apart pointed at a line: that is the order of an experiment.
+
+The loop makes one change for each multiple of `every` from `every` up to `step`, and there are `step // every` of those, so the same rate is `start * decay ** (step // every)`, worked out in one line, though the two can differ in their last digits, as floats do: for `lr_at(30, 0.1, 0.9, 10)` the loop gives `0.07290000000000002` and the power `0.0729`. Working a value out in two ways and checking that they agree, within a tolerance for floats, is a good test of both, and E1.9 builds tests on that idea. PyTorch's `StepLR` keeps this schedule, multiplying the rate by its `gamma` once every `step_size` epochs, an epoch being one pass through all the training data.
+
+## The first bad step
+
+Now write the Explore phase's search as a function. The stand-in `is_bad` answers at once, but think of each call as an hour of training: the tests swap in stand-ins that count how often they are asked.
+
+<Exercise id="build-first-bad" />
+
+</Reveal>
+
+<Reveal for="build-first-bad">
+
+The search is the loop that the Derive phase proved right. Checking in order would have taken 637,000 checks in the test over a million steps, and 777,777,777,777 in the one over $10^{12}$. Step through a search over 16 steps whose first bad step is 11:
+
+<ProgramTrace
+  title="Closing in"
+  description="The program makes the functions `is_bad` and `first_bad`, calls `first_bad` with 0 and 16 and prints the result. Each step of the figure shows the line about to run, the names as they stand, with each call's names listed apart from the main program's, and what has been printed so far."
+  code={"def is_bad(step):\n    return step >= 11\n\ndef first_bad(lo, hi):\n    while hi - lo > 1:\n        mid = (lo + hi) // 2\n        if is_bad(mid):\n            hi = mid\n        else:\n            lo = mid\n    return hi\n\nprint(first_bad(0, 16))"}
+  predict={[{ line: 6, variable: "mid", pass: 2, prompt: "Line 6 is about to run for the second time. Once it has run, what will `mid` be?" }]}
+/>
+
+It made four checks, one for each halving of the gap of $2^4 = 16$, and ended with `lo` and `hi` next to each other.
+
+## A looser test
+
+<Exercise id="breakit-bisect" />
+
+</Reveal>
+
+<Reveal for="breakit-bisect">
+
+The search over 16 steps checked 8, which was good, then 12, bad, 10, good, and 11, bad, and left `lo` at 10 and `hi` at 11, where the test `hi - lo > 0` would check 10 again on every pass. So a loop's test and its midpoint have to be chosen together: the midpoint, rounded down, lies strictly between `lo` and `hi` only while they are more than 1 apart, and the test must stop the loop as soon as they are not. A count of checks catches such a loop at once: under the tests' stand-ins, this version would have failed on its 21st check of a million steps, one more than halving needs.
+
+## A contract that checks itself
+
+E1.3's `steps_to` has a contract in its docstring, but nothing makes a call keep it: `steps_to(0.001, 1.0, -0.5)` gives 1, a count that means nothing, and `steps_to(-1, 1.0, 0.5)` never ends.
+
+<Exercise id="build-assert" />
+
+</Reveal>
+
+<Reveal for="build-assert">
+
+Each message names the parameter at fault, so the error appears where the assumption fails, not as a wrong count three functions later. A message can give the value as well, as `"target must be above 0, not " + str(target)` does, which saves an experiment to find it.
+
+An assert checks a program's own assumptions, the things that should be true if the code is right. Python skips every `assert` when it is run with the option `-O`, so a check that must always happen, such as one on a file that a user gives, belongs in an `if`, not an `assert`.
+
+</Reveal>

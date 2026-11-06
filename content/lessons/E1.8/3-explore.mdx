@@ -1,0 +1,214 @@
+## Guessing the cause
+
+A function `halvings(lr)` should count how many times a learning rate can be halved before it is no longer above 0.001, as E1.2's loop did. Its code is hidden for now. Here is what it gives for three starting rates, beside the right answers:
+
+| Call | Gives | Right answer |
+| --- | --- | --- |
+| `halvings(1.0)` | 1 | 10 |
+| `halvings(0.1)` | 1 | 7 |
+| `halvings(0.0005)` | 1 | 0 |
+
+<Exercise id="explore-which-hypothesis" />
+
+<Reveal for="explore-which-hypothesis">
+
+Here is the code:
+
+```python
+def halvings(lr):
+    count = 0
+    while lr > 0.001:
+        lr = lr / 2
+    count = count + 1
+    return count
+```
+
+`count = count + 1` is indented only as far as `while`, so it is not part of the loop. The loop halves `lr` until it is small enough, and then `count` goes up by 1, once, whatever the rate was.
+
+A guess at the cause of a bug is a *hypothesis*, and a useful one says what the program will do, so that it can be checked against what the program did. Each of the other guesses predicted a table that at least one row contradicts. One fact that a hypothesis cannot explain rules it out, however likely it seemed, and the row that did the most work was the one with nothing to halve.
+
+## Telling guesses apart
+
+This function should give the mean of the whole numbers from 1 to `n`:
+
+```python
+def mean_up_to(n):
+    total = 0
+    for k in range(n):
+        total = total + k
+    return total / n
+```
+
+`mean_up_to(4)` should be $(1 + 2 + 3 + 4) / 4 = 2.5$, but it gives 1.5. A colleague who has forgotten exactly what `range(4)` gives has two hypotheses. In the first, it gives 0, 1, 2 and 3, so the loop adds a 0, which does nothing, and never adds the 4. In the second, it gives 1, 2 and 3, starting at 1 and stopping before 4. Both explain the 1.5, since $0 + 1 + 2 + 3$ and $1 + 2 + 3$ are both 6.
+
+<Exercise id="explore-tell-apart" />
+
+</Reveal>
+
+<Reveal for="explore-tell-apart">
+
+An observation is worth making where the hypotheses predict different things, and a value inside a loop, which the function's result hides, is often where they do.
+
+Stepping through the program shows the same values without changing it. Python's debugger, and the one built into most editors, can stop a program at any line and show every name, which is the same observation made with a tool:
+
+<ProgramTrace
+  title="Inside the mean"
+  description="The program makes the function `mean_up_to`, calls it with 4 and prints the result. Each step of the figure shows the line about to run, the names as they stand, with the call's names listed apart from the main program's, and what has been printed so far."
+  code={"def mean_up_to(n):\n    total = 0\n    for k in range(n):\n        total = total + k\n    return total / n\n\nprint(mean_up_to(4))"}
+  predict={[{ line: 3, variable: "k", pass: 1, prompt: "Line 3 is about to run for the first time. Once it has run, what will `k` be? The first hypothesis says 0, and the second 1." }]}
+/>
+
+## Following the values
+
+A team plans a training run of $10^{12}$ tokens, in batches of 500 sequences of 2,000 tokens each, and each step takes 0.864 seconds. Three small functions, each with a contract as in E1.3, work out how long the run will take:
+
+```python
+def tokens_per_step(batch, length):
+    return batch * length
+
+def steps_needed(total_tokens, batch, length):
+    return total_tokens / tokens_per_step(batch, length)
+
+def days_needed(total_tokens, batch, length, seconds_per_step):
+    steps = steps_needed(total_tokens, batch, length)
+    return steps * seconds_per_step / 60 * 60 * 24
+
+print(tokens_per_step(500, 2000))
+print(steps_needed(10**12, 500, 2000))
+print(days_needed(10**12, 500, 2000, 0.864))
+```
+
+It prints `1000000`, then `1000000.0`, then `20736000.0`, which is more than twenty million days. Before reading each value closely, estimate what it should be with powers of ten, as M1.1 did, and compare.
+
+<Exercise id="explore-first-wrong" />
+
+</Reveal>
+
+<Reveal for="explore-first-wrong">
+
+In all, the seconds were multiplied by 24: $864{,}000 \times 24 = 20{,}736{,}000$. Brackets, `/ (60 * 60 * 24)`, divide by the 86,400 seconds in a day, as the line meant to.
+
+Checking a chain of values in order, each against an estimate made before looking, finds the first wrong one, and the mistake lies in the step that made it: every value before it was right, so the steps that made those are not to blame. Contracts make this possible, since each function's contract says what its value should be.
+
+## Reading an error
+
+An error message is an observation too. This program keeps a running total of losses:
+
+```python
+total = 0
+
+def add_loss(loss):
+    print("adding", loss, "to", total)
+    total = total + loss
+
+add_loss(0.5)
+```
+
+Python stops with this message:
+
+```
+UnboundLocalError on line 4: cannot access local variable 'total' where it is not associated with a value
+```
+
+<Exercise id="explore-read-error" />
+
+</Reveal>
+
+<Reveal for="explore-read-error">
+
+A line `global total` at the top of the function would make `total` the main program's, though passing the total in and returning the new one, as E1.3's contracts do, is usually clearer.
+
+An error message holds three observations: its type, which says what kind of thing went wrong; the line where Python stopped, which need not be the line of the cause; and the details after the colon, which here name `total`. Reading all three before changing anything is the first step of the experiment.
+
+## Halving the search
+
+The puzzle's search works whenever the things to search are numbered in order, such as versions, training steps or batch sizes, and everything after the first bad one is bad too. Keep two numbers: `lo`, known to be good, and `hi`, known to be bad. Check the one midway between them. If it is bad, it becomes the new `hi`, and if it is good, the new `lo`. Either way `lo` is still good, `hi` is still bad, and the gap between them has halved. When the two are next to each other, nothing is left between them, so `hi` is the first bad one.
+
+This search is *bisection*, from the Latin for cutting in two. Git, the tool that keeps every version of a project, has it built in as `git bisect`. The same search finds the largest batch that fits in a GPU's memory: every batch larger than that one fails, so a batch that fits is good, one that does not is bad, and the largest that fits is `lo` when the search ends.
+
+<Exercise id="explore-versions" />
+
+</Reveal>
+
+<Reveal for="explore-versions">
+
+At an hour a check, 20 checks take less than a day, where checking the versions in order could take a million hours, more than a century. M1.1's rule of thumb $2^{10} \approx 10^3$ is what makes such counts quick to find.
+
+## Three changes in one afternoon
+
+A training run's loss has stopped falling. In one afternoon an engineer makes three changes: a smaller learning rate, a larger batch, and a fix to how the loss is averaged over a batch. The next run's loss falls steadily.
+
+<Exercise id="explore-fooled" />
+
+</Reveal>
+
+<Reveal for="explore-fooled">
+
+Changing one thing at a time is slower for a day and faster for a week.
+
+Richard Feynman, in a talk at Caltech in 1974, said that the first principle is that "you must not fool yourself", and that "you are the easiest person to fool". A fix that seems to work is the easiest way to fool yourself, since a bug that has gone quiet can come back with the next change.
+
+## A program that checks itself
+
+Some bugs give no error at all, only a wrong value that travels on through the program. Python's `assert` lets a program check an assumption as it runs. `assert condition, message` does nothing when the condition is `True`, and stops the program with `AssertionError` and the message when it is `False`:
+
+```python
+lr = 0.1
+assert lr > 0, "lr must be above 0"
+print("fine")
+lr = -0.1
+assert lr > 0, "lr must be above 0"
+print("never printed")
+```
+
+This prints `fine`, then stops with `AssertionError on line 5: lr must be above 0`, and the last line never runs. Without a message, `assert lr > 0` stops with `AssertionError on line 5` and nothing more, so a message that says what was assumed is worth writing.
+
+Here is a function whose contract says that the target is above 0:
+
+```python
+def halvings_to(target):
+    lr = 1.0
+    count = 0
+    while lr > target:
+        lr = lr / 2
+        count = count + 1
+    return count
+```
+
+`halvings_to(0.001)` gives 10. A call that breaks the contract gives no error. With a target of 0 the loop halves `lr` 1,075 times, until it is too small for a float to hold and becomes 0.0, and with a negative target it never ends, since 0.0 halved is still 0.0.
+
+<Exercise id="explore-assert-place" />
+
+</Reveal>
+
+<Reveal for="explore-assert-place">
+
+Asserts at the top of a function check the conditions of its contract, which E1.3 wrote in words. An assertion turns a quiet wrong value into an error at the place where the assumption fails, which is where a debugging experiment would otherwise have to search for it.
+
+## The names
+
+<Definition term="Hypothesis">
+
+A *hypothesis* is a guess at the cause of a bug that says what the program will do. A good one explains every fact observed, so one fact that it cannot explain rules it out. It is tested by working out what it predicts before running anything, and then looking. Changing one thing at a time keeps each test about one hypothesis, and a fix that works does not show which hypothesis was true.
+
+</Definition>
+
+<Definition term="Choosing an observation">
+
+An observation is worth making where the hypotheses predict different things. Printing a name inside a loop, or stepping through a program, shows values that a function's result hides. Checking a chain of values in order, each against an estimate made beforehand, finds the first wrong one, and the mistake lies in the step that made it. An error message gives its type, the line where Python stopped, which need not be the line of the cause, and its details.
+
+</Definition>
+
+<Definition term="Bisection">
+
+*Bisection* finds the first bad one of a run of numbered things, when every one after a bad one is bad too. It keeps `lo`, known to be good, and `hi`, known to be bad, checks the one midway between them and moves `lo` or `hi` to it, until the two are next to each other and `hi` is the first bad one. Each check halves the gap, so a thousand take 10 checks and a million take 20.
+
+</Definition>
+
+<Definition term="Assertion">
+
+`assert condition, message` does nothing when the condition is `True`, and stops the program with `AssertionError` and the message when it is `False`. Asserts at the top of a function check its contract before any work is done, so that a bad call fails at once with a message that names what was wrong, instead of giving a wrong answer or never ending.
+
+</Definition>
+
+</Reveal>

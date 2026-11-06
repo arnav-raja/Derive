@@ -1,0 +1,384 @@
+misconceptions:
+  - id: while-runs-once
+    belief: A `while` loop runs its block at least once before it checks its test.
+    why: >-
+      Python checks a `while` loop's test before every pass, the first included, as E1.2 found.
+      When the test is `False` at the start, as `0.0005 > 0.001` is, the block never runs.
+    cue: The learner chooses `one-pass` or `big-divide` in explore-which-hypothesis.
+  - id: likeliest-guess
+    belief: A guess that explains most of the results is good enough, even if one result does not fit it.
+    why: >-
+      A hypothesis must explain every fact observed, so one result that it cannot explain rules it
+      out, however likely it seemed. The results that rule guesses out, such as a call where a loop
+      never runs, do the most work.
+    cue: >-
+      The learner chooses `starts-at-one` in explore-which-hypothesis, or `smallest`, `second` or
+      `first` in its first review.
+  - id: passing-proves
+    belief: A hypothesis that has passed a test is proved to be the cause.
+    why: >-
+      A test that a hypothesis could have failed makes it more likely when it passes, but another
+      observation could still rule it out. Only a result that it cannot explain is decisive, and
+      that rules it out.
+    cue: >-
+      The learner chooses `proved` in the third review of explore-which-hypothesis, or `cause` in
+      the second review of explore-fooled.
+  - id: any-input-tests
+    belief: Running a function on more inputs always helps to tell two hypotheses apart.
+    why: >-
+      An observation tells hypotheses apart only where they predict different things. Two guesses
+      about `range` that differ only by an added 0 predict the same total for every `n`, so no
+      result of the function separates them, while a value inside the loop does.
+    cue: >-
+      The learner chooses `ten` or `one` in explore-tell-apart, or `low-first`, `single` or `mixed`
+      in its first review.
+  - id: fix-shows-cause
+    belief: A fix that works shows which hypothesis was the cause.
+    why: >-
+      A change that would mend the bug under either hypothesis works whichever was true, so its
+      working says nothing about which. It mends the bug without explaining it, and a bug that is
+      not understood can come back.
+    cue: The learner chooses `fix` in explore-tell-apart, or `first` or `both` in its second review.
+  - id: float-is-wrong
+    belief: A value printed as a float, such as `1000000.0`, is a sign that something has gone wrong.
+    why: >-
+      `/` always gives a float, as E1.1 found, even when the division comes out whole, so
+      $10^{12} / 10^6$ gives `1000000.0`, the right number of steps. A value is wrong when it
+      disagrees with its estimate, not because of how it is written.
+    cue: The learner chooses `steps` in explore-first-wrong.
+  - id: estimate-exact
+    belief: A value that does not match its estimate exactly is wrong.
+    why: >-
+      An estimate made with powers of ten, as in M1.1, is good to a factor of 2 or 3, so 64 agrees
+      with about 60. A value out by a factor of 100, such as 40.96 against about 4,000, is the one
+      to look at.
+    cue: The learner chooses `first` in the first review of explore-first-wrong.
+  - id: blame-the-end
+    belief: The mistake lies where the wrong result shows, in the last function of a chain or in the one that made the largest value.
+    why: >-
+      A wrong value passed on makes every later value wrong too, though the later functions may be
+      right. The first value that disagrees with its estimate was made by the step that holds the
+      mistake, since every value before it was right.
+    cue: >-
+      The learner chooses `second` or `all` in the first review of explore-first-wrong, or `end` or
+      `anywhere` in its second review.
+  - id: blame-the-call
+    belief: The line that calls a function is to blame for what goes wrong inside it, or for the value it gets back.
+    why: >-
+      `steps = steps_needed(...)` only keeps the value that `steps_needed` returns, and that value
+      agrees with its estimate of a million steps. `add_loss(0.5)` passes a good number, and the
+      function itself reads `total` before it has a value.
+    cue: The learner chooses `call` in explore-first-wrong or `line-7` in explore-read-error.
+  - id: blame-the-start
+    belief: The mistake in a chain of values lies at its start, since everything after it is made from the first value.
+    why: >-
+      A value that agrees with its estimate was made right, so the step that made it is not to
+      blame. In the chain of training days the first value, $10^6$ tokens a step, agrees with its
+      estimate, and so does the second; the first value that disagrees points at the step that holds
+      the mistake.
+    cue: The learner chooses `tokens` in explore-first-wrong, or `start` in its second review.
+  - id: error-line-is-cause
+    belief: The line named in an error message is always the line that holds the mistake.
+    why: >-
+      The line in the message is where Python stopped, and the cause can be on another line. In
+      `add_loss`, Python stops at the `print` that reads `total`, but the assignment on the next
+      line is what made `total` local to the whole call.
+    cue: The learner chooses `line-4` in explore-read-error, or `change` or `made` in its second review.
+  - id: outside-names-hidden
+    belief: A function cannot read a name that the main program set.
+    why: >-
+      A function can read a name of the main program as long as it never assigns that name, as
+      E1.3 found. An assignment anywhere in the function's body makes the name local to the whole
+      call.
+    cue: The learner chooses `line-1` in explore-read-error, or `unseen` in its first review.
+  - id: halving-is-slow
+    belief: A search must check about as many versions as there are, or a fixed share of them.
+    why: >-
+      Each check of the version midway halves the versions that could be to blame, so the number
+      left falls from 1,000 to 500, 250 and so on, and 10 checks leave one. Multiplying the
+      versions by a thousand adds about 10 checks, since $2^{10} = 1{,}024$, and does not multiply
+      them.
+    cue: >-
+      The learner chooses `thousand`, `five-hundred` or `hundred` in the puzzle, or answers a number
+      in the thousands or more in explore-versions or its first review.
+  - id: many-changes-at-once
+    belief: When several changes made together mend a run, the likeliest of them is the one that mended it.
+    why: >-
+      Changes made together fit many hypotheses: any one of them, two together, or one that did harm
+      hidden by the others. Undoing them one at a time, or making them one at a time, makes each run
+      a test of one hypothesis.
+    cue: >-
+      The learner chooses `averaging`, `rate` or `batch` in explore-fooled, or `all-back` or
+      `likeliest` in its first review.
+  - id: passing-test-bug-free
+    belief: A test that passes shows that the program has no bugs.
+    why: >-
+      A test shows what the program did on the inputs it tried. As Dijkstra put it, testing can show
+      that a program has bugs, but never that it has none, since other inputs may still fail.
+    cue: The learner chooses `bug-free` in the second review of explore-fooled.
+  - id: assert-place-irrelevant
+    belief: Where an assert goes in a function does not matter, since it checks the same condition anywhere.
+    why: >-
+      Where an assert sits decides when it runs. At the top, a bad call fails at once. After a loop,
+      it runs only once the loop has ended, which for a bad call may be after much wasted work, or
+      never.
+    cue: >-
+      The learner chooses `anywhere` or `before-return` in explore-assert-place, or puts the asserts
+      after the loop in build-assert.
+  - id: after-return-runs
+    belief: Lines after `return` still run when the function is called.
+    why: A call ends at the first `return` it reaches, as E1.3 found, so no line after it runs.
+    cue: The learner chooses `after-return` in explore-assert-place.
+  - id: assert-warns
+    belief: A failing assert prints its message and lets the program carry on.
+    why: >-
+      An assert whose condition is `False` stops the program with `AssertionError`, and the message
+      is part of that error. Nothing after it runs, which is the point: a wrong value never travels
+      on.
+    cue: >-
+      The learner chooses `message` or `both` in the first review of explore-assert-place, `warn` in
+      its second review, or uses `print` in place of `assert` in build-assert.
+  - id: asserts-checked-first
+    belief: Python checks every assert in a program before it runs any of it.
+    why: >-
+      An assert runs when its line is reached, like any other line, so `scale(2, 3)` returns 6 and
+      it is printed before `scale(2, -1)` reaches the assert and stops.
+    cue: The learner chooses `stops-first` in the first review of explore-assert-place.
+  - id: or-for-between
+    belief: '`0 < rate or rate < 1` checks that `rate` is between 0 and 1.'
+    why: >-
+      `or` is `True` when either side is, and every number is above 0 or below 1, so the condition
+      is always `True`. Both must hold, which `and` says, or E1.2's chain `0 < rate < 1`.
+    cue: The learner chooses `either` in the second review of explore-assert-place.
+  - id: range-includes-end
+    belief: '`range(n)` runs from 1 up to `n`, from 0 up to `n`, or from 1 up to `n - 1`.'
+    why: >-
+      `range(n)` starts at 0 and stops before `n`, as E1.2 found, so it gives $n$ values, 0 up to
+      $n - 1$.
+    cue: >-
+      The learner chooses `one-to-four`, `zero-to-four` or `one-to-three` in recall-range, or
+      answers $\frac{n + 1}{2}$ in derive-wrong-mean.
+  - id: repeated-fraction
+    belief: Applying the same fraction $k$ times multiplies by $k$ times that fraction, or takes the same amount off each time.
+    why: >-
+      Each check keeps two thirds of what is left, not of the first gap, so the fractions multiply:
+      $k$ checks keep $\left(\frac{2}{3}\right)^k$ of it, as $k$ halvings keep $\frac{1}{2^k}$.
+    cue: The learner answers $\frac{2N}{3k}$, $\frac{2N}{3} \times k$ or $N - \frac{kN}{3}$ in derive-checks-left.
+  - id: best-case
+    belief: A search's count of checks is set by the case where each check leaves the smaller part.
+    why: >-
+      A count that is always enough has to hold whichever part the first bad version lies in, so it
+      comes from the worst case, where every check leaves the larger part: two thirds of the gap,
+      for a check a third of the way.
+    cue: The learner answers $\frac{N}{3^k}$ in derive-checks-left.
+  - id: no-monotone-no-answer
+    belief: Bisection gives a meaningless answer unless every version after a bad one is bad.
+    why: >-
+      The search keeps `lo` good and `hi` bad whatever the versions are like, and it always ends, so
+      it ends with a good version just before a bad one, and the change between them broke the
+      program. Only the claim that this change is the first needs bad to stay bad.
+    cue: The learner chooses `random` or `never` in derive-not-monotone.
+  - id: first-whatever
+    belief: Bisection finds the first bad version even when a later change can mend the program again.
+    why: >-
+      When a program can be mended and broken again, an earlier break may lie at or below `lo`,
+      among versions that the search never checked. The search still finds a change that broke the
+      program, but only the rule that bad stays bad makes it the first.
+    cue: The learner chooses `first` in derive-not-monotone.
+  - id: off-by-one-harmless
+    belief: Testing `hi - lo > 0` in place of `hi - lo > 1` changes a search by one step at most.
+    why: >-
+      Once `hi` is `lo + 1`, the midpoint rounded down is `lo` itself, so a pass under the wider
+      test sets `lo` to `lo`, changes nothing, and the test stays `True` for ever.
+    cue: >-
+      The learner chooses `same` or `one-early` in breakit-bisect, or loops while `hi - lo > 0` or
+      `lo < hi` in build-first-bad.
+  - id: mod-first-true
+    belief: '`k % every == 0` first becomes `True` when `k` reaches `every`.'
+    why: >-
+      `0 % every` is 0, so the test is `True` at `k = 0`, on the very first pass, before any block
+      of `every` steps is done.
+    cue: The learner keeps `k % every == 0` in debug-schedule and changes another line.
+  - id: slash-midpoint
+    belief: '`(lo + hi) / 2` gives a whole number of steps.'
+    why: >-
+      `/` always gives a float, as E1.1 found, and halfway between two whole numbers can be a half,
+      so the search moves to fractions of a step. `//` divides and rounds down, so the midpoint
+      stays a whole number.
+    cue: The learner uses `/` for the midpoint in build-first-bad.
+
+exercises:
+  derive-wrong-mean:
+    rungs:
+      - Which numbers does the loop add for a given $n$, and how many of them are there?
+      - "E1.3: `triangle(m)` gives $1 + 2 + \\dots + m = \\frac{m(m + 1)}{2}$ for every whole number $m$. E1.2: `range(n)` gives 0 up to $n - 1$."
+      - Take $n = 4$. Which numbers does the loop add, which call of `triangle` gives their total, and what is the mean? Your expression should give 1.5 there.
+      - >-
+        If your expression gives 1.5 at $n = 4$ and 4.5 at $n = 10$, its value is right: if it is
+        not accepted, it can be written more simply, so cancel any $n$ that the sum and the
+        division share. If it gives 2.5 at $n = 4$, it is the right mean, not this function's: look
+        again at where `range(n)` starts and stops. If it gives 6 at $n = 4$, it is the loop's
+        total: look at what the function does with the total before it returns. If it gives 3 at
+        $n = 4$, check the 2 in `triangle`'s formula.
+      - >-
+        A loop `for k in range(1, n + 1):` that adds `k` adds $1 + 2 + \dots + n$, which is
+        `triangle(n)`, so dividing by $n$ gives $\frac{n(n + 1)}{2n} = \frac{n + 1}{2}$, the right
+        mean: 2.5 for $n = 4$.
+    notes: >-
+      $\frac{n + 1}{2}$ is the right mean, from adding 1 up to $n$, so the learner has not used
+      where `range(n)` starts and stops. $\frac{n(n - 1)}{2}$ is the total, not divided by $n$.
+      $\frac{(n - 1)n}{2n}$ and the like are right but not cancelled, which the form check names.
+      $n - 1$ drops the 2 of `triangle`'s formula. $\frac{n}{2}$ often comes from the right total
+      divided by $n + 1$, and $\frac{n - 1}{n}$ divides $n - 1$ by $n$ without the triangle.
+  derive-checks-left:
+    rungs:
+      - In the worst case, what fraction of the gap is left after one check a third of the way, and after two?
+      - "E1.2: a loop that halves `lr` on every pass keeps `lr` times $2^{\\text{halvings}}$ equal to its start, so a factor applied on every pass becomes a power of that factor. Explore: the search keeps the part that holds the first bad version."
+      - Take $N = 27$. How large is the larger part after 1, 2 and 3 checks?
+      - >-
+        If your expression gives 18 for $N = 27$ and $k = 1$, the first check is right. Then try
+        $k = 3$: if it gives 0, it takes the same amount off at every check, so look at what the
+        second check splits; if it gives 6, it divides by $k$, so look at what three checks in a
+        row multiply by. If it gives 9 for $k = 1$, it keeps the smaller part. If it gives 13.5, it
+        halves the gap, as bisection does: look at the size of the larger part. If it grows as $k$
+        grows, it multiplies where each check should shrink the gap.
+      - >-
+        A schedule multiplies the learning rate by 0.9 at every change. From a rate $r$, one change
+        gives $0.9r$, two give $0.9 \times 0.9r = 0.9^2 r$, and $c$ changes give $0.9^c r$: a factor
+        applied again and again becomes a power.
+    notes: >-
+      $\frac{N}{3^k}$ keeps the smaller part, the best case, not the worst. $N - \frac{kN}{3}$ takes
+      a third of the first gap off at every check. $\frac{N}{2^k}$ is bisection's gap, not this
+      search's. $\frac{2N}{3k}$ and $\frac{2N}{3} \times k$ treat $k$ checks as one division or one
+      multiplication by $k$.
+  derive-bisect-proof:
+    rungs:
+      - For each line, what does it rest on? Where $m$ lies, which branch ran, what every pass keeps, whether the loop ends, or what the versions are like?
+      - "E1.2: a statement that holds before the first pass and that each pass keeps true holds after every pass, and a `while` loop ends at the first check where its test is `False`. Explore: bisection keeps `lo` good and `hi` bad."
+      - Try it on versions 0 to 8, with 0 good, 8 bad and the first bad version at 5. Which lines can you check on each pass, and which only once the loop has ended?
+      - >-
+        If the first line cites Midway, it is right, since it is about where $m$ lies. Then, if a
+        line about one of the two cases cites the invariant rule, ask whether that line is about one
+        pass or about every pass. If the line about every pass cites The branch taken, ask which rule
+        turns what one pass keeps into what is true after all of them. If the line that says the
+        loop ends cites The loop stops, ask whether that rule shows that the test ever becomes
+        `False`, or only what follows once it has. If the last line cites the invariant rule, ask
+        what rules out a bad version at or below `lo`, which the search never checked. If any line
+        cites Accumulator, ask whether `lo` or `hi` is a running total.
+      - >-
+        E1.2's halving loop keeps `lr` times 2 to the power `halvings` equal to 1. That holds before
+        the first pass, and each pass halves `lr` and adds 1 to `halvings`, which keeps it, so it
+        holds after every pass. It says nothing about whether the loop ends: that takes a second
+        argument, that `lr` halves on every pass, so that the test `lr > 0.001` must fail at last.
+        And what is true at the end comes from the invariant together with the test being `False`.
+    notes: >-
+      Citing the invariant rule for one of the two cases means the learner has not told apart what
+      one pass does and what every pass keeps, and The branch taken for the fourth line is the same
+      confusion the other way round. Citing The loop stops for the line that says the loop ends
+      confuses what is true when it ends with whether it ends, which only Shrinking shows. Citing
+      the invariant rule for the last line misses that the search never checked a version below
+      `lo`, so only Bad stays bad rules them out. Accumulator is the decoy.
+  debug-schedule:
+    rungs:
+      - Which steps have the wrong rate, and by how many changes is each one out?
+      - "E1.2: `range(step)` gives `k` from 0 up to `step - 1`, one value for each pass. E1.1: `a % b` is the remainder when `a` is divided by `b`."
+      - >-
+        Take a smaller schedule: `lr_at(3, 1.0, 0.5, 2)` should be 0.5, after one change at step 2.
+        Before running it, work out by hand on which passes of the loop the rate changes, and what
+        the function gives.
+      - >-
+        If test_examples passes, the four rates in the task are right, and what is left is how the
+        schedule depends on `every`: if test_first_change or test_every_step fails, look for a
+        number written into the function where `every` belongs. If test_examples says that step 9
+        gives 0.05, the first change still comes too early: look at which pass of the loop makes it,
+        and how many steps are done once that pass ends. If it says that step 10 gives 0.1, the
+        change at step 10 now comes one pass late. If step 0 gives 0.05, count the passes the loop
+        makes for step 0. If step 25 gives 0.05, or test_compounds gives about 0.09, the first
+        change is right: look at what the second change multiplies. If step 9 gives about 0.054,
+        look at whether the power can be a fraction.
+      - >-
+        A loop that should print a note after every 3 steps, for `steps` steps, runs
+        `for k in range(steps):`. After the pass for `k`, `k + 1` steps are done, so after the pass
+        for `k = 2` three steps are done. A test on `k` alone, such as `k % 3 == 0`, is `True` on
+        the passes for `k` = 0, 3 and 6, after which 1, 4 and 7 steps are done, so every note comes
+        two steps early. Counting the steps themselves, with `for s in range(1, steps + 1):` and the
+        test `s % 3 == 0`, gives the notes after 3, 6 and 9 steps, as wanted.
+    notes: >-
+      Step 9 halved means the change still comes on the pass for `k = 0`. `and k > 0` makes each
+      change one step late, so step 10 gives 0.1. `range(step + 1)` changes the rate at step 0. 0.09
+      in test_compounds, or 0.05 at step 25, means `lr = start * decay`. About 0.054 at step 9 means
+      `decay ** (step / every)`. A fix that passes test_examples but fails test_first_change means a
+      10 is written in for `every`.
+  build-first-bad:
+    rungs:
+      - What does the search know before any check, and what does one check of the step midway tell it?
+      - "Explore: keep `lo` good and `hi` bad, check the one midway between them, and move `lo` or `hi` to it, until the two are next to each other. E1.1: `//` divides and rounds down to a whole number."
+      - Work through `first_bad(0, 8)` by hand, with the first bad step at 5. What are `lo`, `hi` and the step checked on each pass, and when should the search stop?
+      - >-
+        If test_filled and test_whole_number pass, the search already gives a whole step. Then, if
+        test_million says that `is_bad` was asked more than 20 times, count the calls of `is_bad` in
+        one pass and before the loop: halving needs one a pass and none outside it, and if there is
+        just one a pass, ask whether each check moves `lo` or `hi` to the step midway. If a result
+        is one below the first bad step, such as 636,999, look at what the function gives back, and
+        at whether `lo` and `hi` move to the midway step itself. If it gives a step far below
+        637,000, such as 1, look at which of `lo` and `hi` a bad midpoint should replace. If the
+        result has a fraction, such as 637,000.08, look at how the midpoint is worked out. If your
+        own script is stopped for running too long, ask whether the loop's test ever becomes
+        `False` once `lo` and `hi` are next to each other. If only test_next_to_each_other fails,
+        look for a check made before the loop's test. If test_million says that first_bad never
+        asked the tests' is_bad, look at the name your search calls it by.
+      - >-
+        To find the largest batch that fits in memory, when a batch of 0 fits, one of 64 does not,
+        and every batch larger than one that does not fit fails too, keep `lo` as a batch that fits
+        and `hi` as one that does not. 32 fits, so `lo` becomes 32; 48 does not, so `hi` becomes
+        48; 40 fits, so `lo` becomes 40; and 44, 42 and 41 do not, so `hi` becomes 44, then 42, then
+        41. Now `hi` is `lo + 1`, and the largest batch that fits is `lo`, 40, found with 6 checks,
+        one for each halving of the gap of 64.
+    notes: >-
+      `None` means the starter's `return None` is still there. More than 20 asks for a million
+      steps means a scan in order, a check that moves less than halfway, two calls of `is_bad` in
+      one pass, or a call before the loop, which also fails test_next_to_each_other. A message that
+      first_bad never asked the tests' is_bad means the search calls `is_bad` through another name
+      or a default argument, which the tests cannot swap. 636,999 means `return lo`, and a step one
+      below the first bad one in test_trillion or test_anywhere alone means `return mid` or a move
+      past the midway step. A result of 1, with the first bad step at 637,000, means the branches
+      are swapped. A float a little above 637,000, or a failing test_whole_number, means `/ 2`. A
+      script stopped before any test could run means the loop's test is `hi - lo > 0` or
+      `lo < hi`, so it never ends once the two are next to each other. A failing
+      test_next_to_each_other alone means a step is checked before the loop's test, as in a
+      `while True:` loop that tests at the end of a pass.
+  build-assert:
+    rungs:
+      - What must be true of `target` and of `factor` for the loop to give a right count, and where in the function can that be checked before any work is done?
+      - "Explore: `assert condition, message` does nothing when the condition is `True`, and stops the program with `AssertionError` and the message when it is `False`. E1.2: Python chains comparisons, so `0 < x < 1` means `0 < x and x < 1`."
+      - Take the call `steps_to(0, 1.0, 0.5)`. Which of your asserts should stop it, and should it stop before the loop or after it?
+      - >-
+        If test_good_calls passes, every call that keeps the contract gets through your asserts.
+        Then, if test_target or test_factor says that a bad call gives a count, such as 0, 1 or
+        1,075, that call got past every check: look at the assert for that parameter, whether there
+        is one, and whether its bound lets that value through. If test_target is stopped for running
+        too long, look at where the asserts are, since a negative target never leaves the loop. If a
+        bad call prints a warning and still gives a count, it uses `print`, which only warns. If only
+        test_messages fails, look at whether each parameter has an assert of its own, with a message
+        that names it. If test_good_calls fails, an assert stops a call that keeps the contract:
+        check each comparison and its bounds.
+      - >-
+        A function `per_step(total, steps)` whose contract asks for `steps` above 0 can begin with
+        `assert steps > 0, "steps must be above 0"`. Then `per_step(10, 0)` stops at once with
+        `AssertionError on line 2: steps must be above 0`, instead of with a `ZeroDivisionError` further down
+        that says nothing about which argument was wrong.
+    notes: >-
+      A count of 1 for a factor of -0.5 means no assert on the factor, or one joined with `or`. A
+      target of 0 let through means `>= 0`, a factor of 0.0 let through means `>= 0` on the factor,
+      and a factor of 1.0 let through, which gives a count of 0, means `<= 1` or no upper bound.
+      test_target stopped for running too long means the asserts sit after the loop. A warning
+      printed and a count given means `print` in place of `assert`. A message without the
+      parameter's name fails test_messages, and so does a single assert for both parameters, whose
+      message is the same for a bad target and a bad factor.
+
+novice:
+  - What is the difference between an error and a bug?
+  - Should I take out the `print` lines I added for debugging once the bug is fixed?
+  - Is a debugger better than adding `print` lines?
+  - Why are mistakes in programs called bugs?
+  - Do asserts make a program slower?

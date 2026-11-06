@@ -440,8 +440,10 @@ export function ProgramTrace({
               ) : null}
               {trace.error ? (
                 <p className="text-sm text-incorrect">
-                  {trace.error.type}
-                  {trace.error.line ? ` on line ${trace.error.line}` : ""}: {trace.error.message}
+                  {/* StepLimit is the harness's own name for a runaway program, as in ErrorLine. */}
+                  {trace.error.type === "StepLimit" ? "Stopped" : trace.error.type}
+                  {trace.error.line ? ` on line ${trace.error.line}` : ""}
+                  {trace.error.message ? `: ${trace.error.message}` : ""}
                 </p>
               ) : null}
             </>

@@ -136,7 +136,15 @@ def _test_error(exc):
         frame, line = found
         name = frame.f_code.co_name
         label += f" on line {line:,}" if name == "<module>" else f" on line {line:,}, in {name}"
-    return f"{label}: {described['message']}"
+    # An assert with no message raises AssertionError with an empty one, as the console shows it.
+    return f"{label}: {described['message']}" if described["message"] else label
+
+
+def _raised_in_learner_code(exc):
+    """True when an exception was raised by a line of the learner's own code, such as an assert of
+    theirs, so that it is shown as the console shows a program's error, not as a test's message."""
+    frames = list(traceback.walk_tb(exc.__traceback__))
+    return bool(frames) and frames[-1][0].f_code.co_filename == LEARNER_FILE
 
 
 def _describe(exc):
@@ -256,9 +264,8 @@ def _rerun_helper(code, max_steps, files):
             sys.settrace(tracer)
         if error:
             shown = ", ".join(typed) if typed else "no input"
-            raise AssertionError(
-                f"Typing {shown}, the program stopped with {error['type']}: {error['message']}"
-            )
+            said = f"{error['type']}: {error['message']}" if error["message"] else error["type"]
+            raise AssertionError(f"Typing {shown}, the program stopped with {said}")
         names = {k: v for k, v in again.items() if k not in ("__builtins__", "__name__", "input")}
         return names, printed
 
@@ -286,7 +293,11 @@ def _run_tests(ns, output, tests, max_steps, code=None, files=None):
                 fn()
             except AssertionError as exc:
                 entry["passed"] = False
-                entry["message"] = str(exc) or "This check did not hold."
+                if _raised_in_learner_code(exc):
+                    entry["message"] = _test_error(exc)
+                    entry["line"] = _learner_line(exc)
+                else:
+                    entry["message"] = str(exc) or "This check did not hold."
             except BaseException as exc:  # noqa: BLE001
                 entry["passed"] = False
                 entry["message"] = _test_error(exc)

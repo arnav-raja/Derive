@@ -1,0 +1,27 @@
+The test of understanding is explaining it simply to someone who was not there. Your friend has written loops and functions with you, from E1.1 to E1.3, but has only ever debugged by changing lines until the output looked right.
+
+<Exercise id="explain-debugging" />
+
+## Where this leads
+
+Edsger Dijkstra, in his Notes on Structured Programming of 1970, put the limit of every experiment on a program plainly: testing can show that a program has bugs, but never that it has none. A proof can show that a program is right for every input, as the Derive phase did for bisection. The rest of the course uses both: experiments to find bugs, and reasoning to rule them out.
+
+<Foreshadow lesson="E1.9">
+
+An assertion checks one assumption while the program runs. E1.9 gathers such checks into tests that run on every change, and into property-based tests, which try hundreds of inputs chosen by the computer to find the one that breaks a function.
+
+</Foreshadow>
+
+<Foreshadow lesson="E3.2">
+
+Git keeps every version of a program, and its command `git bisect` runs this lesson's search over them: it checks out the version midway between one that works and one that does not, asks whether it works, and halves again, until it names the change that broke the program.
+
+</Foreshadow>
+
+<Foreshadow lesson="E10.3">
+
+A large training run that goes wrong after days is debugged in the same way: hypotheses about the cause, observations such as the size of each layer's gradients, bisection over saved checkpoints to find the first step that went bad, and assertions that stop the run as soon as a number stops being finite.
+
+</Foreshadow>
+
+<MixedCheck />

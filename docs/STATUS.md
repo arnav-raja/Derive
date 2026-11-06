@@ -1,6 +1,6 @@
 # Status
 
-Updated 6 November 2026 at about 15:45 UTC, when M1.8 went live. On "Pause" or "Resume",
+Updated 6 November 2026 at about 17:50 UTC, when E1.8 went live. On "Pause" or "Resume",
 follow CLAUDE.md and carry on from "Resume here" (phase 1) and "Phase 2: resume here" (phase 2).
 
 ## Where things stand
@@ -23,9 +23,7 @@ its own thread. M1.7 Logic, sets and quantifiers is live (`ready`): written, rev
 reviewers, every finding applied, walked again and tested end to end, with two new figure
 components, the set diagram and the quantifier grid. E1.7 Classes and objects is live too,
 reviewed by both, every finding applied, walked and tested end to end. M1.8 Proof I is live
-too, on the same terms. E1.8 Debugging as an experiment is planned, and its lesson.yaml and
-puzzle are written but kept out of the repository (in `derive-resume/e18-wip/`) until the whole
-lesson passes its checks, since an incomplete lesson folder fails the checks and the build.
+too, on the same terms, and so is E1.8 Debugging as an experiment. M1.9 Proof II is next.
 
 ### Done
 
@@ -396,20 +394,56 @@ Done so far:
   `store-after-E1.7-walk.json`, with M1.7 and E1.7 a day earlier and their concepts provisional),
   and its end-to-end tests pass at all three widths. Optional nits not done: a figure of factor
   pairs, an optional `factorint` item, and a superscript for k² in the checker's "Read as" line.
+- E1.8 Debugging as an experiment, live (`ready`) since 6 November: all six phases and 22
+  exercises (a puzzle on how few hour-long checks always find which of 1,000 changes broke a
+  training script, 5 recall, 7 explore predictions, 2 derivation steps, a proof of rules and a
+  prediction, a debug, 2 builds and a break-it, and the explain-back), two step-through figures,
+  tutor notes with 28 misconceptions, and checks.json. It requires E1.3, contrasts with M1.8,
+  applies M1.1 and foreshadows E1.9, E3.2 and E10.3. Reviewed by both (the simulated learner, 22
+  of 22 right with 16 findings; the independent reviewer, 1 blocker, 11 should-fix findings and
+  nits; in `derive-resume/review/E1.8-*.md`), and every finding applied: the sentence under the
+  second figure that answered its stop moved into the break-it's reveal; the first figure's stop
+  asks for `k`, which is not yet on screen and is the value that tells the two hypotheses apart;
+  the Derive phase's gap item now asks for a search that checks a third of the way, whose worst
+  case is $N(2/3)^k$, and its reveal says why midway is best (34 checks for a million versions
+  against 20); set-up lines that narrowed two items are gone, and "Not fooling yourself" is now
+  "Three changes in one afternoon"; Python that the ancestors do not teach is gone (a loop over
+  a tuple, a number's truth value, f-strings in the reference); the debug item's starter has two
+  comment lines for the hypothesis and its prediction; the mean's form check counts operations as
+  typed (`maxOps: 3`), so an uncancelled fraction gets the form message however it is written;
+  build-assert's factor test no longer hangs on a factor of 1, and a single assert for both
+  parameters, a message in capitals and a learner's own assert in a good call each get a message
+  that fits; build-first-bad says "gives None" instead of "a NoneType", and names a search that
+  never asks the tests' `is_bad`; the explain-back asks whether an error's line is always the one
+  to change; and rewritten reveals, rungs and notes, with three new misconceptions.
+  `check:exercises` passes all its 38 items (708 in the 16 lessons), the lesson was walked again
+  in all six phases with no page errors (store `derive-resume/e18walk/store-before-E1.8-walk.json`,
+  from `store-after-M1.8-walk.json` with M1.7, E1.7 and M1.8 started in the week before by
+  `prep-store.py`, as the week's three new lessons had been used; the store after it is
+  `store-after-E1.8-walk.json`), and its end-to-end tests pass at all three widths.
+- Engine changes with E1.8: an error with no message, as a bare `assert` raises, is shown as
+  "AssertionError on line 5" with no ": " after it, in the code card, the step-through figure and
+  the tutor's context ("with no message"); an AssertionError raised by the learner's own code
+  while a test runs is shown as the Console shows it, with its line ("AssertionError on line 7,
+  in first_bad: ..."), not as the test's own message, and an empty message no longer leaves a
+  trailing ": " in a test's error or in `rerun`; and a step-through figure that runs too long says
+  "Stopped", as the code card does.
 - The tutor's and the grader's calls go through `apiFetch`, the one way the browser calls
   Derive's server (commits `84b50c0` and `c925474`), ready for the hosting move.
 
 Next, in order:
 
-1. E1.8 Debugging as an experiment: copy `derive-resume/e18-wip/E1.8/` (lesson.yaml and the
-   puzzle, written) to `content/lessons/E1.8/`, write the other phases, exercises.yaml and
-   tutor.yaml to the plan in `derive-resume/design/E1.8-plan-v2.md` (it supersedes
-   E1.8-design.md), fix the empty-message error line it needs (`ErrorLine` in
-   `src/components/exercise/inputs/code.tsx` and the error line in
-   `src/components/figures/program-trace.tsx` print ": " before an empty message, as an
-   `assert` with no message gives), run the checks and both reviews, walk it and release it. Then
-   M1.9 and E1.9 onwards.
-3. When the hosting pull request lands: pages move to `src/server/app/` (a new page needs a line
+1. M1.9 Proof II: induction and recursion (it requires M1.6 and M1.8, and builds on E1.5), then
+   E1.9, M1.10, E1.10, M1.11, E1.11, M1.12 and E1.12, then the start of stage 2, each written,
+   checked, reviewed by both and walked before it goes live, adding the remaining figure
+   components as the lessons need them. The phase 2 features (item 3) come first once the
+   hosting pull request has landed. E1.9 picks up E1.8's preview: tests that run on every change,
+   and property-based tests. E1.10 must show how to give a class a `__hash__` that agrees with
+   its `__eq__` (E1.7 promises it, and E1.10 now requires E1.7); the E1.8 reviewer suggests E1.8
+   as a requirement of E1.10 too, with E1.10 among the uses of `E1.8/bisection`, since binary
+   search is E1.8's search on a sorted list. The E1.7 reviewer suggests E1.7 as a requirement of
+   E1.11, if E1.11 writes an iterator class, and of E3.4, if its configuration is a class.
+2. When the hosting pull request lands: pages move to `src/server/app/` (a new page needs a line
    in `src/server/routes.ts` and a static shell in `src/app/`, copied from
    `src/app/today/page.tsx`); server components cannot use state or effects; client components
    call server actions through `src/lib/actions.ts` and use `refreshPage()` from
@@ -417,20 +451,15 @@ Next, in order:
    scripts wait for `html[data-page="ready"]`; and `npm run build:api` rewrites
    `src/generated/client-modules.ts`, which is committed. Tell that thread before changing a
    route's shape or adding a route.
-4. The phase 2 features: the "This confused me" button (records the exact step as a notebook
+3. The phase 2 features: the "This confused me" button (records the exact step as a notebook
    entry of kind `confused`; `NOTEBOOK_KINDS` already has it), automatic revision flags, the Map
    coloured by mastery with what unlocks next, the concept map, the novice explain-back mode
    (`noviceQuestion` in `src/lib/tutor/grade.ts` already picks an authored question) and the
    course viva (the tutor's `examiner` mode).
-5. The rest of stage 1, M1.9 to M1.12 and E1.9 to E1.12, then the start of stage 2, each with
-   both reviews, adding the remaining figure components as the lessons need them. E1.10 must
-   show how to give a class a `__hash__` that agrees with its `__eq__` (E1.7 promises it, and
-   E1.10 now requires E1.7). The E1.7 reviewer suggests E1.7 as a requirement of E1.11, if E1.11
-   writes an iterator class, and of E3.4, if its configuration is a class.
-6. A follow-up from the M1.7 checks: give the workspace `scroll-padding` for its sticky header
+4. A follow-up from the M1.7 checks: give the workspace `scroll-padding` for its sticky header
    and footer, so that a control reached by the keyboard is never hidden under them (WCAG
    2.4.11, focus not obscured).
-7. A nit from the E1.7 review, to fix once the hosting pull request has landed, since that pull
+5. A nit from the E1.7 review, to fix once the hosting pull request has landed, since that pull
    request changes the file: the comment above `TraceFrame` in `src/lib/python/client.ts` says
    that `refs` holds tags only for a list, dict or set, though it holds them for objects of the
    program's classes too.

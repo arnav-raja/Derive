@@ -1,0 +1,15 @@
+A team's training script gave sensible losses in March. Since then it has been changed 1,000 times, one small change after another, and every version has been kept, so any of them can be run again. Today's version, after the 1,000th change, gives a loss that grows on every step instead of falling.
+
+To *check* a version, the team trains a small model with it for an hour and looks at the loss, which shows whether that version works or is broken. The version from March works, today's is broken, and once a change has broken the script, every later version is broken too.
+
+<Exercise id="puzzle-first-broken" />
+
+<Reveal for="puzzle-first-broken">
+
+If the version after the 500th change is broken, the change to blame is the 500th or an earlier one, and if it works, a later one. Ten checks are 10 hours of training, where checking in order takes about 500 hours on average, and in the worst case 999, six weeks of checks day and night.
+
+A mistake in a program is called a *bug*, and finding and mending one is *debugging*. Engineers called faults bugs long before there were computers: in 1878 Thomas Edison wrote to a colleague of "bugs", "as such little faults and difficulties are called". In 1947 the team running Harvard's Mark II computer found a moth trapped in one of its relays, and taped it into their log book with the words "First actual case of bug being found".
+
+Debugging is often done by guessing, changing something and running the program again, which can go on for hours. This lesson treats it as an experiment instead: say what you think the cause is, work out what that would make the program do, choose the observation that shows whether you are right, and narrow the search, as the halving did, until the bug has nowhere left to hide. It ends with a line of Python that makes a program check its own assumptions while it runs.
+
+</Reveal>
