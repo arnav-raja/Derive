@@ -29,6 +29,8 @@ export const MDX_COMPONENT_NAMES = [
   "PartialSums",
   "FloatLine",
   "TextBytes",
+  "SetDiagram",
+  "QuantifierGrid",
 ] as const;
 
 export type MdxComponentName = (typeof MDX_COMPONENT_NAMES)[number];

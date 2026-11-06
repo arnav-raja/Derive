@@ -1,0 +1,82 @@
+Derive proved the rules for every case. Now put them to work in Python, whose truth values, sets and quantifiers follow this lesson's rules exactly, and check a dataset, a claim about learning rates and two of the rules by machine.
+
+## Truth values and sets in Python
+
+Python has two truth values, `True` and `False`, and its comparisons give them: `3 < 5` is `True`, `2 == 3` is `False`, `!=` asks "not equal to", and `<=` and `>=` ask "at most" and "at least". Comparisons can be chained, so `1 <= x <= 10` means `1 <= x and x <= 10`. `and`, `or` and `not` follow the truth tables of Explore, and a function can return a truth value, as a predicate does:
+
+```python
+def is_short(words):
+    return words < 50
+
+print(is_short(12), is_short(80), not is_short(80))   # prints True False True
+```
+
+Python's sets are written with braces, as on paper: `{101, 102, 103}`. `x in A` asks whether `x` is an element of `A`. `A | B` is the union, `A & B` the intersection, and `A - B` the elements of `A` that are not in `B`. `len(A)` counts the elements, and `A <= B` asks whether `A` is a subset of `B`. The empty set is written `set()`, because `{}` means something else in Python. A set prints its elements in an order of its own, which need not be the order they were written in, and that never matters, since a set has no order.
+
+## A leak between training and test
+
+A model is trained on one set of examples and tested on another. If an example is in both, the test asks the model about something it has already seen, and its score says more about its memory than about how well it will do on new data. Such an example is called a *leak*. Each example here has an id number.
+
+<Exercise id="build-split" />
+
+<Reveal for="build-split">
+
+Each function is one symbol: the intersection for the leaks, a difference for the test ids that are new, and the length of the union for the count. Before training, a careful team checks exactly this, often with ids made from the examples' contents, so that the same text copied twice gets the same id.
+
+## Quantifiers in Python
+
+`all(...)` is $\forall$ and `any(...)` is $\exists$, over the values that a `for` inside the brackets runs through:
+
+```python
+widths = [64, 256, 1024]
+print(all(w >= 64 for w in widths))   # True: every width is at least 64
+print(any(w > 1000 for w in widths))  # True: some width is more than 1,000
+```
+
+`[64, 256, 1024]` is a *list*, which keeps its values in order, and `for w in widths` makes `w` stand for each of them in turn. `all(w >= 64 for w in widths)` works out `w >= 64` for every `w` in the list and is `True` only if every result is `True`. `any` is `True` if at least one is. The `for` can run through a set, a list or `range(a, b)`, the whole numbers from `a` up to but not including `b`.
+
+<Exercise id="build-quantifiers" />
+
+</Reveal>
+
+<Reveal for="build-quantifiers">
+
+The order of the two quantifiers became the order of the brackets: whichever quantifier comes first in the statement is the outer call. With `all` outside and `any` inside, the inner `any` runs again for each width, so each width may find a rate of its own.
+
+## Every loss in no losses
+
+A check written with `all` and `any` behaves just as the quantifiers do, at the edges too.
+
+<Exercise id="build-break-empty" />
+
+</Reveal>
+
+<Reveal for="build-break-empty">
+
+`all` of nothing is `True`, since an empty list holds no counterexample, and `any` of nothing is `False`, since it holds no witness. That is vacuous truth again, and it is a common source of bugs: a check that every test passed, run over a list of tests that is empty because of a typo in a file name, passes without testing anything. A careful check also asks how many cases it looked at.
+
+## The order Python reads not
+
+Python works out `not` before `and`, and `and` before `or`, just as it works out `*` before `+`. So each line of Python has a tree, as in M1.2, and brackets change its shape.
+
+<Exercise id="build-break-precedence" />
+
+</Reveal>
+
+<Reveal for="build-break-precedence">
+
+Python read `not short and english` as `(not short) and english`, whose tree has `not` low down, on `short` alone, so the filter dropped only the long emails in English and let every other email through. De Morgan's laws give a way to write the original without the outer brackets: `not short or not english`. When a condition is easy to misread, brackets cost nothing.
+
+## Compare with the library
+
+SymPy, the algebra library from M1.2 and M1.3, has a part for logic. `symbols("p q")` makes two symbols at once, one for each name. `And(p, q)`, `Or(p, q)` and `Not(p)` are the three words, `Implies(p, q)` is $p \Rightarrow q$, and `Equivalent(a, b)` is $a \Leftrightarrow b$, true when `a` and `b` have the same truth value. `satisfiable(s)` searches every row of the truth table for one that makes `s` true: it gives the values of that row, as in `{p: True, q: False}`, or `False` if there is no such row. So `satisfiable(Not(Equivalent(a, b)))` is `False` exactly when `a` and `b` are equivalent, and otherwise it gives a row where they differ, a counterexample. `simplify_logic(s)` gives the simplest statement it can find that is equivalent to `s`.
+
+<Exercise id="build-sympy-logic" />
+
+</Reveal>
+
+<Reveal for="build-sympy-logic">
+
+SymPy settled each question by trying every row of the truth table, which is exactly what a truth table proof does. With two letters there are four rows. Each new letter doubles them, so a statement in 30 letters has more than a billion rows. Programs that decide such questions at that size, called *SAT solvers*, use far cleverer searches, and they check hardware designs and software for bugs. `simplify_logic` found that the filter's two cases cover every email that is short, whatever its language, so the language never mattered.
+
+</Reveal>

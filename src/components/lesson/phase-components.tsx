@@ -4,7 +4,19 @@ import type { MDXComponents } from "mdx/types";
 import type { ComponentProps, ReactNode } from "react";
 
 import { ExerciseCard } from "@/components/exercise/exercise-card";
-import { ExpressionTree, FloatLine, FunctionPlot, MappingDiagram, PartialSums, ProgramTrace, ScaleLine, Staircase, TextBytes } from "@/components/figures";
+import {
+  ExpressionTree,
+  FloatLine,
+  FunctionPlot,
+  MappingDiagram,
+  PartialSums,
+  ProgramTrace,
+  QuantifierGrid,
+  ScaleLine,
+  SetDiagram,
+  Staircase,
+  TextBytes,
+} from "@/components/figures";
 import { HintIcon, LockIcon } from "@/components/ui/icons";
 import { loadLesson, type LoadedLesson } from "@/lib/content/lesson";
 import { exerciseView, variantView } from "@/lib/content/views";
@@ -162,6 +174,25 @@ export function phaseComponents(ctx: PhaseContext): MDXComponents {
     );
   }
 
+  /** A quantifier grid whose verdicts, and the changing of its cells, wait for an exercise they would answer. */
+  function QuantifierGridSlot({ verdictsAfter, ...props }: ComponentProps<typeof QuantifierGrid> & { verdictsAfter?: string }) {
+    if (verdictsAfter && !lesson.byId.has(verdictsAfter)) {
+      return <Problem>a quantifier grid waits for {verdictsAfter}, which does not exist.</Problem>;
+    }
+    const title = verdictsAfter ? lesson.byId.get(verdictsAfter)?.title : undefined;
+    return (
+      <QuantifierGrid
+        {...props}
+        verdictsLocked={verdictsAfter ? !states.get(verdictsAfter)?.done : false}
+        lockedNote={
+          verdictsAfter
+            ? `Whether each statement holds, and changing the cells, open once you have answered ${title ? `"${title}"` : "the question below"}.`
+            : undefined
+        }
+      />
+    );
+  }
+
   function MixedCheck() {
     if (phase !== "explain") return <Problem>the mixed check belongs in the Explain phase.</Problem>;
     const items = ctx.check?.items ?? [];
@@ -233,5 +264,7 @@ export function phaseComponents(ctx: PhaseContext): MDXComponents {
     PartialSums: PartialSumsSlot,
     FloatLine: FloatLineSlot,
     TextBytes: TextBytesSlot,
+    SetDiagram,
+    QuantifierGrid: QuantifierGridSlot,
   };
 }

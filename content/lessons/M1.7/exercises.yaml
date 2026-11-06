@@ -1,0 +1,1081 @@
+exercises:
+  # Puzzle ---------------------------------------------------------------------
+  - id: puzzle-which-cards
+    phase: puzzle
+    kind: predict
+    concept: M1.7/implication
+    title: Which cards to turn
+    prompt: >-
+      Which cards must you turn over to find out whether the claim holds for all four emails? Choose
+      every card you need, and no others.
+    answer:
+      type: choice
+      multiple: true
+      options:
+        - { id: card-1, label: 'Card 1, labelled spam' }
+        - { id: card-2, label: 'Card 2, labelled not spam' }
+        - { id: card-3, label: 'Card 3, contains a link' }
+        - { id: card-4, label: 'Card 4, contains no link' }
+      correct: [card-1, card-4]
+    explanation: >-
+      Only an email that is labelled spam and contains no link breaks the claim. Card 1 is labelled
+      spam, so if its other side says "contains no link", the claim is false: turn it over. Card 4
+      has no link, so if its other side says "labelled spam", the claim is false: turn it over too.
+      Card 3 already contains a link, so whatever its label, it cannot break the claim, and the claim
+      makes no promise about card 2, which is not labelled spam.
+
+  # Recall ---------------------------------------------------------------------
+  - id: recall-equivalent
+    phase: recall
+    kind: recall
+    concept: M1.2/equivalence
+    prompt: Which of these is equivalent to $2(x + 3) - x$?
+    answer:
+      type: choice
+      options:
+        - { id: x-three, label: '$x + 3$' }
+        - { id: two-x-six, label: '$2x + 6$' }
+        - { id: x-six, label: '$x + 6$' }
+        - { id: three-x-six, label: '$3x + 6$' }
+      correct: [x-six]
+    explanation: >-
+      Multiplying out gives $2x + 6 - x$, and collecting the $x$ terms gives $x + 6$. At $x = 1$ both
+      are 7, a quick check against a slip.
+
+  - id: recall-counterexample
+    phase: recall
+    kind: recall
+    concept: M1.2/equivalence
+    prompt: Is $(a + b)^2 = a^2 + b^2$ true for every pair of numbers $a$ and $b$?
+    answer:
+      type: choice
+      options:
+        - { id: zero, label: 'Yes: at $a = 0$ and $b = 0$ both sides are 0' }
+        - { id: one-one, label: 'No: at $a = 1$ and $b = 1$ the left side is 4 and the right side is 2' }
+        - { id: rule, label: 'Yes: the square of a sum is the sum of the squares' }
+        - { id: unknown, label: 'There is no way to tell without trying every pair' }
+      correct: [one-one]
+    explanation: >-
+      A single pair where the two sides differ breaks a claim about every pair: at $a = b = 1$,
+      $(1 + 1)^2 = 4$ but $1^2 + 1^2 = 2$. Agreeing at $a = b = 0$ proves nothing, and multiplying out
+      shows the missing term, $(a + b)^2 = a^2 + 2ab + b^2$.
+
+  - id: recall-solutions
+    phase: recall
+    kind: recall
+    concept: M1.2/solving-equations
+    prompt: What are all the solutions of $x^2 = 9$?
+    answer:
+      type: choice
+      options:
+        - { id: three, label: '$3$ only' }
+        - { id: nines, label: '$-9$ and $9$' }
+        - { id: minus-three, label: '$-3$ only' }
+        - { id: both, label: '$-3$ and $3$' }
+      correct: [both]
+    explanation: >-
+      The solutions are all the values that make the equation true. $3^2 = 9$ and $(-3)^2 = 9$, so
+      there are two, $-3$ and $3$.
+
+  - id: recall-one-to-one
+    phase: recall
+    kind: recall
+    concept: M1.3/injective-surjective
+    prompt: When is a function one-to-one?
+    answer:
+      type: choice
+      options:
+        - { id: no-two, label: 'When no two different inputs give the same output' }
+        - { id: onto, label: 'When every possible output is reached by some input' }
+        - { id: one-each, label: 'When every input has exactly one output' }
+        - { id: line, label: 'When its graph is a straight line' }
+      correct: [no-two]
+    explanation: >-
+      One-to-one means that different inputs always give different outputs, so each output points
+      back to a single input. Reaching every possible output is being onto, and having exactly one
+      output for each input is what makes it a function at all.
+
+  - id: recall-def
+    phase: recall
+    kind: recall
+    concept: M1.3/function-as-mapping
+    prompt: |
+      After these lines, what is `f(3)`?
+
+      ```python
+      def f(x):
+          return x * x - 4
+      ```
+    answer: { type: number, value: 5, tolerance: { abs: 0 } }
+    explanation: >-
+      `f(3)` runs the body with `x` standing for 3, so it returns $3 \times 3 - 4 = 5$.
+
+  # Explore --------------------------------------------------------------------
+  - id: explore-or
+    phase: explore
+    kind: predict
+    concept: M1.7/connectives
+    title: Short or in English
+    prompt: Which of these emails does the filter keep? Choose all that apply.
+    answer:
+      type: choice
+      multiple: true
+      options:
+        - { id: short-english, label: 'A short email in English' }
+        - { id: short-hindi, label: 'A short email in Hindi' }
+        - { id: long-english, label: 'A long email in English' }
+        - { id: long-hindi, label: 'A long email in Hindi' }
+      correct: [short-english, short-hindi, long-english]
+    explanation: >-
+      The filter keeps an email when at least one of the two parts is true. A short email in English
+      makes both parts true, and it is kept too: or means one or the other or both. Only the long
+      email in Hindi, for which both parts are false, is dropped.
+    review:
+      variants:
+        - prompt: >-
+            A rule says "a training run may start if two people approve it or it is on the trusted
+            list". A run is on the trusted list, and two people have approved it as well. May it
+            start?
+          answer:
+            type: choice
+            options:
+              - { id: no-both, label: 'No: only one of the two may hold' }
+              - { id: yes, label: 'Yes' }
+              - { id: unclear, label: 'The rule does not say' }
+            correct: [yes]
+          explanation: >-
+            Or means one or the other or both, so a run for which both parts hold may start.
+        - prompt: When is "$P$ or $Q$" false?
+          answer:
+            type: choice
+            options:
+              - { id: one-false, label: 'When at least one of $P$ and $Q$ is false' }
+              - { id: both-true, label: 'When both are true' }
+              - { id: both-false, label: 'Only when both are false' }
+              - { id: never, label: 'Never' }
+            correct: [both-false]
+          explanation: >-
+            "$P$ or $Q$" needs at least one of the two to be true, so it is false only when both are
+            false.
+
+  - id: explore-drop
+    phase: explore
+    kind: predict
+    concept: M1.7/connectives
+    title: The stricter filter
+    prompt: Which emails does the stricter filter drop?
+    answer:
+      type: choice
+      options:
+        - { id: neither, label: 'The emails that are neither short nor in English' }
+        - { id: long, label: 'The long emails, whatever their language' }
+        - { id: either-fails, label: 'The emails that are not short, or not in English, or both' }
+        - { id: long-english, label: 'The long emails in English' }
+      correct: [either-fails]
+    explanation: >-
+      "Short and in English" fails as soon as one part fails, so the filter drops an email that is
+      long, an email that is not in English, and an email that is both. Dropping only the emails that
+      are neither short nor in English would be the first filter's rule, the one with or.
+    placement: true
+    review:
+      variants:
+        - prompt: >-
+            A team needs a model that is "accurate and fast". Which models fail that requirement?
+          answer:
+            type: choice
+            options:
+              - { id: both-bad, label: 'Only the models that are inaccurate and slow' }
+              - { id: inaccurate, label: 'Only the inaccurate models' }
+              - { id: either, label: 'The models that are inaccurate, or slow, or both' }
+              - { id: slow, label: 'Only the slow models' }
+            correct: [either]
+          explanation: >-
+            "Accurate and fast" fails as soon as one part fails: not (accurate and fast) is
+            (not accurate) or (not fast).
+        - prompt: A job needs a machine with a GPU or a TPU. On which machines can it not run?
+          answer:
+            type: choice
+            options:
+              - { id: neither, label: 'Those with neither a GPU nor a TPU' }
+              - { id: no-gpu, label: 'Those without a GPU' }
+              - { id: either-missing, label: 'Those without a GPU, or without a TPU, or both' }
+              - { id: both, label: 'Those with both' }
+            correct: [neither]
+          explanation: >-
+            "A GPU or a TPU" fails only when both parts fail: not ($P$ or $Q$) is (not $P$) and
+            (not $Q$), a machine with neither.
+        - prompt: Which of these is equivalent to not ($P$ or $Q$)?
+          answer:
+            type: choice
+            options:
+              - { id: not-p-or-not-q, label: '(not $P$) or (not $Q$)' }
+              - { id: p-and-q, label: '$P$ and $Q$' }
+              - { id: not-p-or-q, label: '(not $P$) or $Q$' }
+              - { id: not-p-and-not-q, label: '(not $P$) and (not $Q$)' }
+            correct: [not-p-and-not-q]
+          explanation: >-
+            The not passes inside the brackets and turns or into and, by De Morgan's laws: not ($P$ or
+            $Q$) is (not $P$) and (not $Q$). It is true only when both $P$ and $Q$ are false, the last
+            row of the truth table.
+
+  - id: explore-neither
+    phase: explore
+    kind: predict
+    concept: M1.7/sets
+    title: Neither short nor in English
+    prompt: >-
+      Of 1,000 emails, 400 are short, 700 are in English, and 300 are both short and in English. How
+      many are neither short nor in English?
+    answer: { type: number, value: 200, tolerance: { abs: 0 } }
+    explanation: >-
+      The 400 short emails and the 700 English ones overlap in 300, so together they cover
+      $400 + 700 - 300 = 800$ emails, the union $S \cup E$. The other $1{,}000 - 800 = 200$ are in
+      $(S \cup E)^c$, neither short nor in English.
+    placement: true
+    review:
+      variants:
+        - prompt: >-
+            Of 1,000 emails, 600 have an attachment, 250 are labelled spam, and 50 are both. How many
+            have an attachment or are labelled spam?
+          answer: { type: number, value: 800, tolerance: { abs: 0 } }
+          explanation: >-
+            Adding 600 and 250 counts the 50 that are both twice, so the union holds
+            $600 + 250 - 50 = 800$ emails.
+        - prompt: >-
+            Of 200 training runs, 120 used a large batch, 90 used a warm-up, and 40 used both. How
+            many used neither?
+          answer: { type: number, value: 30, tolerance: { abs: 0 } }
+          explanation: >-
+            $120 + 90 - 40 = 170$ runs used a large batch or a warm-up, so $200 - 170 = 30$ used
+            neither.
+        - prompt: >-
+            $A$ has 10 elements and $B$ has 7, and $A \cup B$ has 12. How many elements does
+            $A \cap B$ have?
+          answer: { type: number, value: 5, tolerance: { abs: 0 } }
+          explanation: >-
+            $|A \cup B| = |A| + |B| - |A \cap B|$, so $12 = 10 + 7 - |A \cap B|$, and
+            $|A \cap B| = 5$.
+
+  - id: explore-break-rule
+    phase: explore
+    kind: predict
+    concept: M1.7/implication
+    title: Breaking the promise
+    prompt: >-
+      Which emails would make the claim "if an email is labelled spam, then it contains a link"
+      false? Choose all that apply.
+    answer:
+      type: choice
+      multiple: true
+      options:
+        - { id: spam-link, label: 'An email labelled spam that contains a link' }
+        - { id: spam-no-link, label: 'An email labelled spam that contains no link' }
+        - { id: ham-link, label: 'An email not labelled spam that contains a link' }
+        - { id: ham-no-link, label: 'An email not labelled spam that contains no link' }
+      correct: [spam-no-link]
+    explanation: >-
+      The claim promises a link for every email labelled spam, so only an email labelled spam with
+      no link breaks it. An email that is not labelled spam cannot break a promise about the emails
+      labelled spam, whether or not it has a link.
+    placement: true
+    review:
+      variants:
+        - prompt: >-
+            A training script follows the rule "if the loss goes up, then lower the learning rate".
+            Which of these runs broke the rule?
+          answer:
+            type: choice
+            options:
+              - { id: down-lowered, label: 'The loss went down, and the rate was lowered' }
+              - { id: down-kept, label: 'The loss went down, and the rate was kept' }
+              - { id: up-kept, label: 'The loss went up, and the rate was kept' }
+              - { id: up-lowered, label: 'The loss went up, and the rate was lowered' }
+            correct: [up-kept]
+          explanation: >-
+            The rule is broken only when its "if" part is true and its "then" part is false: the loss
+            went up and the rate was not lowered. When the loss went down, the rule asks for nothing.
+        - prompt: $P$ is false and $Q$ is true. Is $P \Rightarrow Q$ true or false?
+          answer:
+            type: choice
+            options:
+              - { id: is-false, label: 'False' }
+              - { id: is-true, label: 'True' }
+              - { id: neither, label: 'Neither, since $P$ is false' }
+            correct: [is-true]
+          explanation: >-
+            $P \Rightarrow Q$ is false only when $P$ is true and $Q$ is false. Here $P$ is false, so
+            the implication is true, vacuously.
+        - prompt: $P$ is true and $Q$ is false. Is $P \Rightarrow Q$ true or false?
+          answer:
+            type: choice
+            options:
+              - { id: is-true, label: 'True' }
+              - { id: neither, label: 'Neither' }
+              - { id: is-false, label: 'False' }
+            correct: [is-false]
+          explanation: >-
+            This is the one case that breaks an implication: $P$ holds and $Q$ does not.
+
+  - id: explore-same-claim
+    phase: explore
+    kind: predict
+    concept: M1.7/implication
+    title: Rewording the claim
+    prompt: >-
+      Which of these say exactly the same as "if an email is labelled spam, then it contains a
+      link"? Choose all that apply.
+    answer:
+      type: choice
+      multiple: true
+      options:
+        - { id: converse, label: 'If an email contains a link, then it is labelled spam.' }
+        - { id: contrapositive, label: 'If an email contains no link, then it is not labelled spam.' }
+        - { id: inverse, label: 'If an email is not labelled spam, then it contains no link.' }
+        - { id: none-spam-no-link, label: 'No email is labelled spam and contains no link.' }
+        - { id: exactly, label: 'An email is labelled spam exactly when it contains a link.' }
+      correct: [contrapositive, none-spam-no-link]
+    explanation: >-
+      The claim is false in exactly one case, an email labelled spam with no link. "If an email
+      contains no link, then it is not labelled spam" is false in that same case and no other, and
+      "no email is labelled spam and contains no link" rules out exactly that case, so both say the
+      same as the claim. The other three are all broken by a newsletter that contains a link and is
+      not labelled spam, which the claim allows.
+    review:
+      variants:
+        - prompt: Which of these says the same as "if a test fails, then the build is stopped"?
+          answer:
+            type: choice
+            options:
+              - { id: converse, label: 'If the build is stopped, then a test failed.' }
+              - { id: inverse, label: 'If no test fails, then the build is not stopped.' }
+              - { id: none, label: 'None of these' }
+              - { id: contrapositive, label: 'If the build is not stopped, then no test failed.' }
+            correct: [contrapositive]
+          explanation: >-
+            The contrapositive denies both parts and swaps them, and it is false in exactly the case
+            that breaks the original, a failed test with the build not stopped. The first two are
+            broken by a build stopped for some other reason, which the original allows.
+        - prompt: What is the converse of $P \Rightarrow Q$?
+          answer:
+            type: choice
+            options:
+              - { id: converse, label: '$Q \Rightarrow P$' }
+              - { id: contrapositive, label: '$\neg Q \Rightarrow \neg P$' }
+              - { id: inverse, label: '$\neg P \Rightarrow \neg Q$' }
+              - { id: p-not-q, label: '$P \Rightarrow \neg Q$' }
+            correct: [converse]
+          explanation: >-
+            The converse swaps the two parts: $Q \Rightarrow P$. Unlike the contrapositive,
+            $\neg Q \Rightarrow \neg P$, it need not say the same as $P \Rightarrow Q$.
+
+  - id: explore-not-every
+    phase: explore
+    kind: predict
+    concept: M1.7/quantifiers
+    title: Not every run
+    prompt: A report says "every training run converged", and it is false. What must be true?
+    answer:
+      type: choice
+      options:
+        - { id: none, label: 'No training run converged' }
+        - { id: some-converged, label: 'At least one training run converged' }
+        - { id: some-failed, label: 'At least one training run did not converge' }
+        - { id: no-run, label: 'There were no training runs' }
+      correct: [some-failed]
+    explanation: >-
+      "Every run converged" is false as soon as a single run did not converge, so that is all its
+      denial says. It could be that no run converged, but it need not be: one failed run among a
+      hundred good ones is enough.
+    placement: true
+    review:
+      variants:
+        - prompt: '"Some prediction was exactly right" is false. What must be true?'
+          answer:
+            type: choice
+            options:
+              - { id: some-wrong, label: 'At least one prediction was off' }
+              - { id: most-wrong, label: 'Most predictions were off' }
+              - { id: every-wrong, label: 'Every prediction was off, at least a little' }
+              - { id: one-right, label: 'Exactly one prediction was right' }
+            correct: [every-wrong]
+          explanation: >-
+            Not ($\exists x : P(x)$) is $\forall x : \neg P(x)$: if no prediction was exactly right,
+            then every prediction was off.
+        - prompt: Someone claims that $x^2 > 0$ for every number $x$. Which of these breaks the claim?
+          answer:
+            type: choice
+            options:
+              - { id: one, label: '$x = 1$, since $1^2$ is not much more than 0' }
+              - { id: zero, label: '$x = 0$, since $0^2 = 0$' }
+              - { id: minus, label: '$x = -2$, since $-2$ is negative' }
+              - { id: nothing, label: 'Nothing breaks it' }
+            correct: [zero]
+          explanation: >-
+            One counterexample breaks a for-every claim: at $x = 0$, $x^2 = 0$, which is not more than
+            0. At $x = -2$, $x^2 = 4 > 0$, so that value agrees with the claim.
+        - prompt: 'Which of these is equivalent to $\neg\,\forall x : P(x)$?'
+          answer:
+            type: choice
+            options:
+              - { id: all-not, label: '$\forall x : \neg P(x)$' }
+              - { id: some-not, label: '$\exists x : \neg P(x)$' }
+              - { id: not-some, label: '$\neg\,\exists x : P(x)$' }
+              - { id: some, label: '$\exists x : P(x)$' }
+            correct: [some-not]
+          explanation: >-
+            Not every $x$ has $P(x)$ means that at least one $x$ does not: $\exists x : \neg P(x)$.
+
+  - id: explore-order
+    phase: explore
+    kind: predict
+    concept: M1.7/quantifiers
+    title: Two quantifiers
+    prompt: >-
+      Which of the figure's four statements are true for the grid as it stands? Choose all that
+      apply.
+    answer:
+      type: choice
+      multiple: true
+      options:
+        - { id: every-model, label: 'Every model trains well at some learning rate.' }
+        - { id: some-rate, label: 'Some learning rate trains every model well.' }
+        - { id: every-rate, label: 'Every learning rate trains some model well.' }
+        - { id: some-model, label: 'Some model trains well at every learning rate.' }
+      correct: [every-model, every-rate]
+    explanation: >-
+      Each model has a rate that trains it well: small at 0.1, medium at 0.01 and large at 0.001.
+      And each rate trains some model well. But no single rate trains all three, since 0.01 fails the
+      large model and the other two rates fail the medium one, and no model trains well at every
+      rate. The first two statements use the same words in a different order, and only one of them
+      is true.
+    review:
+      variants:
+        - prompt: >-
+            A function $f$ takes every number to a number. Which of these says that $f$ is onto, so
+            that every number is an output?
+          answer:
+            type: choice
+            options:
+              - { id: some-x-every-y, label: '$\exists x\ \forall y : f(x) = y$' }
+              - { id: every-x-some-y, label: '$\forall x\ \exists y : f(x) = y$' }
+              - { id: every-y-some-x, label: '$\forall y\ \exists x : f(x) = y$' }
+              - { id: some-y-every-x, label: '$\exists y\ \forall x : f(x) = y$' }
+            correct: [every-y-some-x]
+          explanation: >-
+            Onto says that each output $y$ has an input of its own, so $y$ comes first and $x$ after
+            it: $\forall y\ \exists x : f(x) = y$. $\forall x\ \exists y$ says only that each input
+            has an output, which every function does, $\exists y\ \forall x$ says that $f$ gives the
+            same output everywhere, and $\exists x\ \forall y$ asks one input to give every output at
+            once.
+        - prompt: For whole numbers $x$ and $y$, which of these is true?
+          answer:
+            type: choice
+            options:
+              - { id: largest, label: '$\exists y\ \forall x : y > x$' }
+              - { id: larger, label: '$\forall x\ \exists y : y > x$' }
+              - { id: both, label: 'Both' }
+              - { id: neither, label: 'Neither' }
+            correct: [larger]
+          explanation: >-
+            For every $x$, $y = x + 1$ is larger, so $\forall x\ \exists y : y > x$ is true. The other
+            asks for one $y$ larger than every $x$, itself included, and $y > y$ is false, so no such
+            $y$ exists.
+        - prompt: >-
+            A team finds that some batch size trains every one of its models well. Which of these must
+            then be true as well?
+          answer:
+            type: choice
+            options:
+              - { id: every-model, label: 'Every model trains well at some batch size' }
+              - { id: every-batch, label: 'Every batch size trains some model well' }
+              - { id: some-model, label: 'Some model trains well at every batch size' }
+              - { id: none, label: 'None of these needs to be true' }
+            correct: [every-model]
+          explanation: >-
+            If one batch size trains every model well, then every model has a batch size that trains
+            it well: that one. $\exists b\ \forall m$ always carries $\forall m\ \exists b$ with it.
+
+  # Derive ---------------------------------------------------------------------
+  - id: derive-only-short
+    phase: derive
+    kind: step
+    concept: M1.7/sets
+    title: Short but not in English
+    prompt: >-
+      How many emails are short but not in English? Write $|S \cap E^c|$ in terms of $a$, $b$ and
+      $c$.
+    answer:
+      type: expression
+      symbols:
+        - { name: a, positive: true, integer: true }
+        - { name: b, positive: true, integer: true }
+        - { name: c, positive: true, integer: true }
+      lhs: '|S \cap E^c| ='
+      reference: a - c
+      accept: ['-c + a', 'a-c']
+      reject: ['a', 'a - b', 'b - c', 'a + c', 'a - b + c', 'a - 2*c', 'c - a']
+    explanation: >-
+      The $a$ short emails are of two kinds: the $c$ that are in English, and the rest. So
+      $|S \cap E^c| = a - c$.
+
+  - id: derive-union
+    phase: derive
+    kind: step
+    concept: M1.7/sets
+    title: The size of a union
+    prompt: Add up the three regions. Write $|S \cup E|$ in terms of $a$, $b$ and $c$.
+    answer:
+      type: expression
+      symbols:
+        - { name: a, positive: true, integer: true }
+        - { name: b, positive: true, integer: true }
+        - { name: c, positive: true, integer: true }
+      lhs: '|S \cup E| ='
+      reference: a + b - c
+      accept: ['(a - c) + c + (b - c)', 'b + a - c', 'a - c + b']
+      reject: ['a + b', 'a + b + c', 'a + b - 2*c', 'a*b - c', 'a + b - c^2', '2*a + 2*b - c']
+    explanation: >-
+      The three regions hold $a - c$, $c$ and $b - c$ emails, and they do not overlap, so
+      $|S \cup E| = (a - c) + c + (b - c) = a + b - c$.
+
+  - id: derive-or-number
+    phase: derive
+    kind: step
+    concept: M1.7/connectives
+    title: Or as a number
+    prompt: >-
+      De Morgan's laws give $p \lor q = \neg(\neg p \land \neg q)$. Use the rules for $\neg$ and
+      $\land$ to write $p \lor q$ with $+$, $-$ and $\times$ only, with every bracket multiplied out.
+    answer:
+      type: expression
+      symbols:
+        - { name: p }
+        - { name: q }
+      lhs: 'p \lor q ='
+      reference: p + q - p*q
+      accept: ['q + p - q*p', '-p*q + p + q', 'p+q-pq']
+      reject: ['p + q', 'p*q', '1 - (1 - p)*(1 - q)', 'p + q - 2*p*q', '1 - p*q', '1 - p - q + p*q', 'p + q + p*q']
+      form:
+        expanded: true
+        message: >-
+          That is equal, but it still has a bracket in it. Multiply every bracket out, to see what
+          each term counts.
+    explanation: >-
+      $\neg p \land \neg q$ is $(1 - p)(1 - q)$, and the outer $\neg$ takes it from 1:
+      $p \lor q = 1 - (1 - p)(1 - q) = 1 - (1 - p - q + pq) = p + q - pq$. In the four rows of the
+      truth table it gives 1, 1, 1 and 0, the column for or.
+
+  - id: derive-contrapositive
+    phase: derive
+    kind: proof
+    concept: M1.7/implication
+    covers: [M1.7/connectives]
+    title: The contrapositive, by the rules
+    prompt: >-
+      Each line is equivalent to the one before. Choose the rule that justifies each line. A rule may
+      be used more than once or not at all.
+    answer:
+      type: steps
+      rules:
+        - { id: double-not, name: Double not, label: '$\neg(\neg A) = A$: denying a statement twice gives it back.' }
+        - { id: de-morgan, name: "De Morgan's laws", label: '$\neg(A \land B) = \neg A \lor \neg B$, and $\neg(A \lor B) = \neg A \land \neg B$.' }
+        - { id: swap, name: Swap the order, label: '$A \lor B = B \lor A$, and $A \land B = B \land A$.' }
+        - { id: distribute, name: Distribute, label: '$A \land (B \lor C) = (A \land B) \lor (A \land C)$.' }
+        - { id: if-as-or, name: If as or, label: '$A \Rightarrow B = \neg A \lor B$.' }
+      start: 'P \Rightarrow Q'
+      lines:
+        - math: '= \neg P \lor Q'
+          rule: if-as-or
+        - math: '= Q \lor \neg P'
+          rule: swap
+        - math: '= \neg(\neg Q) \lor \neg P'
+          rule: double-not
+        - math: '= \neg Q \Rightarrow \neg P'
+          rule: if-as-or
+    explanation: >-
+      Write the implication as an or, swap the two sides of the or, write $Q$ as $\neg(\neg Q)$, and
+      read the result as an implication again, with $\neg Q$ for $A$ and $\neg P$ for $B$. De
+      Morgan's laws and distributing are never needed.
+
+  - id: derive-negate-claim
+    phase: derive
+    kind: proof
+    concept: M1.7/quantifiers
+    covers: [M1.7/implication, M1.7/connectives]
+    title: Denying the claim
+    prompt: >-
+      The lines deny the claim one step at a time, until no $\neg$ stands in front of a bracket or a
+      quantifier. Each line is equivalent to the one before. Choose the rule that justifies each
+      line. A rule may be used more than once or not at all.
+    answer:
+      type: steps
+      rules:
+        - { id: de-morgan, name: "De Morgan's laws", label: '$\neg(A \land B) = \neg A \lor \neg B$, and $\neg(A \lor B) = \neg A \land \neg B$.' }
+        - { id: not-some, name: Not there is, label: '$\neg\,\exists x : A(x) = \forall x : \neg A(x)$.' }
+        - { id: double-not, name: Double not, label: '$\neg(\neg A) = A$: denying a statement twice gives it back.' }
+        - { id: swap, name: Swap the order, label: '$A \lor B = B \lor A$, and $A \land B = B \land A$.' }
+        - { id: not-every, name: Not for every, label: '$\neg\,\forall x : A(x) = \exists x : \neg A(x)$.' }
+        - { id: if-as-or, name: If as or, label: '$A \Rightarrow B = \neg A \lor B$.' }
+      start: '\neg\,\big(\forall x : P(x) \Rightarrow Q(x)\big)'
+      lines:
+        - math: '= \exists x : \neg\big(P(x) \Rightarrow Q(x)\big)'
+          rule: not-every
+        - math: '= \exists x : \neg\big(\neg P(x) \lor Q(x)\big)'
+          rule: if-as-or
+        - math: '= \exists x : \neg\big(\neg P(x)\big) \land \neg Q(x)'
+          rule: de-morgan
+        - math: '= \exists x : P(x) \land \neg Q(x)'
+          rule: double-not
+    explanation: >-
+      Move the not past the quantifier, which turns for every into there is, write the implication
+      as an or, carry the not inside the bracket by De Morgan's laws, and drop the double not. The
+      denial says that some email is labelled spam and contains no link.
+
+  # Build ----------------------------------------------------------------------
+  - id: build-split
+    phase: build
+    kind: build
+    concept: M1.7/sets
+    title: Leaks between training and test
+    prompt: >-
+      Replace each `None` so that `leaked` gives the set of ids that are in both sets, `unseen` the
+      set of test ids that are not in the training set, and `distinct` the number of different ids
+      in the two sets together.
+    answer:
+      type: code
+      starter: |
+        def leaked(train, test):
+            return None    # the ids in both sets
+
+        def unseen(train, test):
+            return None    # the test ids that are not in the training set
+
+        def distinct(train, test):
+            return None    # how many different ids there are in all
+
+        train = {101, 102, 103, 104, 105, 106}
+        test = {105, 106, 107, 108}
+        print(leaked(train, test))
+        print(unseen(train, test))
+        print(distinct(train, test))
+      tests: |
+        def test_filled():
+            """leaked, unseen and distinct all give an answer, not None."""
+            for name, f in (("leaked", leaked), ("unseen", unseen), ("distinct", distinct)):
+                assert f({1, 2}, {2, 3}) is not None, f"Replace the None in {name}."
+
+        def test_leaked():
+            """leaked gives the set of ids that are in both sets, and no others."""
+            for a, b, right in (({1, 2, 3}, {3, 4}, {3}), ({1, 2}, {3, 4}, set()), ({5, 6}, {5, 6}, {5, 6}), (set(), {7, 8}, set())):
+                got = leaked(a, b)
+                assert got == right, f"With training ids {a} and test ids {b}, leaked gives {got}, not {right}."
+
+        def test_unseen():
+            """unseen gives the set of test ids that are not in the training set."""
+            for a, b, right in (({1, 2, 3}, {3, 4}, {4}), ({1, 2}, {3, 4}, {3, 4}), ({5, 6}, {5, 6}, set()), ({9, 10, 11}, set(), set())):
+                got = unseen(a, b)
+                assert got == right, f"With training ids {a} and test ids {b}, unseen gives {got}, not {right}."
+
+        def test_distinct():
+            """distinct counts each different id once, even when it is in both sets."""
+            for a, b, right in (({1, 2, 3}, {3, 4}, 4), ({1, 2}, {3, 4}, 4), ({5, 6}, {5, 6}, 2), (set(), {7, 8}, 2), ({9, 10, 11}, set(), 3)):
+                got = distinct(a, b)
+                assert got == right, f"With training ids {a} and test ids {b}, distinct gives {got}, not {right}."
+
+        def test_large():
+            """With the even ids below 10,000 for training and the multiples of 3 for testing, all three are right."""
+            a = set(range(0, 10000, 2))
+            b = set(range(0, 10000, 3))
+            assert leaked(a, b) == set(range(0, 10000, 6)), "leaked should give the multiples of 6, the ids that are even and multiples of 3."
+            assert unseen(a, b) == set(range(3, 10000, 6)), "unseen should give the odd multiples of 3."
+            got = distinct(a, b)
+            assert got == 6667, f"distinct gives {got:,}, but 5,000 even ids and 3,334 multiples of 3, with 1,667 in both, make 6,667 different ids."
+      reference: |
+        def leaked(train, test):
+            return train & test    # the ids in both sets
+
+        def unseen(train, test):
+            return test - train    # the test ids that are not in the training set
+
+        def distinct(train, test):
+            return len(train | test)    # how many different ids there are in all
+
+        train = {101, 102, 103, 104, 105, 106}
+        test = {105, 106, 107, 108}
+        print(leaked(train, test))
+        print(unseen(train, test))
+        print(distinct(train, test))
+      wrong:
+        - code: |
+            def leaked(train, test):
+                return train & test
+
+            def unseen(train, test):
+                return test - train
+
+            def distinct(train, test):
+                return len(train) + len(test)
+          why: Adds the sizes of the two sets, which counts every id in both of them twice.
+        - code: |
+            def leaked(train, test):
+                return train & test
+
+            def unseen(train, test):
+                return train - test
+
+            def distinct(train, test):
+                return len(train | test)
+          why: Takes the difference the wrong way round, giving the training ids that are not in the test set.
+        - code: |
+            def leaked(train, test):
+                return train | test
+
+            def unseen(train, test):
+                return test - train
+
+            def distinct(train, test):
+                return len(train | test)
+          why: Uses the union, which holds every id, instead of the intersection.
+        - code: |
+            def leaked(train, test):
+                return train & test
+
+            def unseen(train, test):
+                return test - train
+
+            def distinct(train, test):
+                return len(train & test)
+          why: Counts only the ids in both sets, the intersection, instead of every id in either.
+    explanation: >-
+      `train & test`, `test - train` and `len(train | test)`: the intersection, the difference that
+      starts from the test set, and the size of the union, which counts an id in both sets once.
+
+  - id: build-quantifiers
+    phase: build
+    kind: build
+    concept: M1.7/quantifiers
+    title: A rate for every width
+    prompt: >-
+      In this exercise a model of a given width trains well at a learning rate when the width times
+      the rate is between 1 and 10, a made-up rule of thumb. Replace each `None` using `all`, `any`
+      and `trains_well`, so that each function answers the question in its comment.
+    answer:
+      type: code
+      starter: |
+        def trains_well(width, rate):
+            return 1 <= width * rate <= 10    # a made-up rule of thumb
+
+        def every_width_has_a_rate(widths, rates):
+            return None    # for every width, is there a rate that trains it well?
+
+        def one_rate_for_all(widths, rates):
+            return None    # is there one rate that trains every width well?
+
+        widths = [64, 256, 1024]
+        rates = [0.1, 0.01, 0.001]
+        print(every_width_has_a_rate(widths, rates))
+        print(one_rate_for_all(widths, rates))
+      tests: |
+        def test_filled():
+            """Both functions give an answer, not None."""
+            assert every_width_has_a_rate([64], [0.1]) is not None, "Replace the None in every_width_has_a_rate."
+            assert one_rate_for_all([64], [0.1]) is not None, "Replace the None in one_rate_for_all."
+
+        def test_script():
+            """For the widths 64, 256 and 1,024 and the rates 0.1, 0.01 and 0.001, every width has a rate, but no one rate suits all three."""
+            w, r = [64, 256, 1024], [0.1, 0.01, 0.001]
+            got = (every_width_has_a_rate(w, r), one_rate_for_all(w, r))
+            assert got == (True, False), f"The two functions give {got}, not (True, False): 64 trains well at 0.1, 256 at 0.01 and 1,024 at 0.001, and each rate fails some width."
+
+        def test_one_rate_suits_all():
+            """When one rate trains every width well, both are True."""
+            w, r = [100, 200], [0.03, 0.2]
+            got = (every_width_has_a_rate(w, r), one_rate_for_all(w, r))
+            assert got == (True, True), f"For widths {w} and rates {r} the functions give {got}, not (True, True): 0.03 trains both widths well."
+
+        def test_width_with_no_rate():
+            """When some width has no rate that trains it well, both are False."""
+            w, r = [64, 100000], [0.1, 0.01]
+            got = (every_width_has_a_rate(w, r), one_rate_for_all(w, r))
+            assert got == (False, False), f"For widths {w} and rates {r} the functions give {got}, not (False, False): no rate trains the width 100,000 well."
+
+        def test_rate_that_suits_no_width():
+            """A rate that trains no width well does not stop every width from having a rate."""
+            w, r = [64, 256], [0.1, 0.01, 0.0001]
+            got = every_width_has_a_rate(w, r)
+            assert got is True, f"For widths {w} and rates {r}, every_width_has_a_rate gives {got}, but 64 trains well at 0.1 and 256 at 0.01. The rate 0.0001 suits neither, and the question does not ask about every rate."
+
+        def test_one_width():
+            """With one width, a rate that suits it suits every width there is."""
+            w, r = [64], [0.1, 0.01]
+            got = one_rate_for_all(w, r)
+            assert got is True, f"For widths {w} and rates {r}, one_rate_for_all gives {got}, but 0.1 trains the only width well. The rate 0.01 does not, and the question does not ask about every rate."
+      reference: |
+        def trains_well(width, rate):
+            return 1 <= width * rate <= 10    # a made-up rule of thumb
+
+        def every_width_has_a_rate(widths, rates):
+            return all(any(trains_well(w, r) for r in rates) for w in widths)
+
+        def one_rate_for_all(widths, rates):
+            return any(all(trains_well(w, r) for w in widths) for r in rates)
+
+        widths = [64, 256, 1024]
+        rates = [0.1, 0.01, 0.001]
+        print(every_width_has_a_rate(widths, rates))
+        print(one_rate_for_all(widths, rates))
+      wrong:
+        - code: |
+            def trains_well(width, rate):
+                return 1 <= width * rate <= 10
+
+            def every_width_has_a_rate(widths, rates):
+                return any(all(trains_well(w, r) for w in widths) for r in rates)
+
+            def one_rate_for_all(widths, rates):
+                return all(any(trains_well(w, r) for r in rates) for w in widths)
+          why: Swaps the two, so each function answers the other's question.
+        - code: |
+            def trains_well(width, rate):
+                return 1 <= width * rate <= 10
+
+            def every_width_has_a_rate(widths, rates):
+                return all(any(trains_well(w, r) for w in widths) for r in rates)
+
+            def one_rate_for_all(widths, rates):
+                return any(all(trains_well(w, r) for w in widths) for r in rates)
+          why: Asks whether every rate trains some width well, with the quantifiers over the wrong lists.
+        - code: |
+            def trains_well(width, rate):
+                return 1 <= width * rate <= 10
+
+            def every_width_has_a_rate(widths, rates):
+                return all(any(trains_well(w, r) for r in rates) for w in widths)
+
+            def one_rate_for_all(widths, rates):
+                return any(all(trains_well(w, r) for r in rates) for w in widths)
+          why: Asks whether some width trains well at every rate, with the quantifiers over the wrong lists.
+        - code: |
+            def trains_well(width, rate):
+                return 1 <= width * rate <= 10
+
+            def every_width_has_a_rate(widths, rates):
+                return all(all(trains_well(w, r) for r in rates) for w in widths)
+
+            def one_rate_for_all(widths, rates):
+                return any(any(trains_well(w, r) for w in widths) for r in rates)
+          why: Uses one quantifier twice in each, asking for every width at every rate, and for any width at any rate.
+    explanation: >-
+      `all(any(trains_well(w, r) for r in rates) for w in widths)` and
+      `any(all(trains_well(w, r) for w in widths) for r in rates)`: the quantifier said first is the
+      outer call, and the inner one runs again for each value of the outer one.
+
+  - id: build-break-empty
+    phase: build
+    kind: breakit
+    concept: M1.7/quantifiers
+    title: No losses at all
+    prompt: Predict what happens after the change, then run both versions to see.
+    answer:
+      type: breakit
+      code: |
+        losses = [0.4, 0.3, 0.2]
+        print(all(loss < 1 for loss in losses), any(loss < 1 for loss in losses))
+      broken: |
+        losses = []
+        print(all(loss < 1 for loss in losses), any(loss < 1 for loss in losses))
+      change: The list of losses is now empty.
+      options:
+        - { id: same, label: 'It still prints `True True`', when: "output.strip() == 'True True'" }
+        - { id: false-false, label: 'It prints `False False`', when: "output.strip() == 'False False'" }
+        - { id: error, label: 'Python stops with an error', when: 'error is not None' }
+        - { id: true-false, label: 'It prints `True False`', when: "output.strip() == 'True False'" }
+    explanation: >-
+      It prints `True False`. `all` is `True` unless it finds a counterexample, and an empty list
+      holds none, so every loss in it is below 1, vacuously. `any` is `True` only if it finds a
+      witness, and an empty list holds none of those either.
+
+  - id: build-break-precedence
+    phase: build
+    kind: breakit
+    concept: M1.7/connectives
+    title: Brackets around and
+    prompt: Predict what happens after the change, then run both versions to see.
+    answer:
+      type: breakit
+      code: |
+        def drop(short, english):
+            return not (short and english)
+
+        print(drop(True, True), drop(True, False), drop(False, True), drop(False, False))
+      broken: |
+        def drop(short, english):
+            return not short and english
+
+        print(drop(True, True), drop(True, False), drop(False, True), drop(False, False))
+      change: The brackets around `short and english` are gone.
+      options:
+        - { id: same, label: 'It still prints `False True True True`', when: "output.strip() == 'False True True True'" }
+        - { id: error, label: 'Python stops with an error', when: 'error is not None' }
+        - { id: long-english, label: 'It prints `False False True False`, dropping only the long emails in English', when: "output.strip() == 'False False True False'" }
+        - { id: short-english, label: 'It prints `True False False False`, dropping only the short emails in English', when: "output.strip() == 'True False False False'" }
+    explanation: >-
+      It prints `False False True False`. Python works out `not` before `and`, so the line now means
+      `(not short) and english`, which is `True` only for an email that is long and in English.
+
+  - id: build-sympy-logic
+    phase: build
+    kind: build
+    concept: M1.7/connectives
+    covers: [M1.7/implication]
+    title: Logic in SymPy
+    prompt: >-
+      Replace each `None`. `converse` and `contrapositive` use `satisfiable` to look for a row of the
+      truth table where $p \Rightarrow q$ differs from its converse and from its contrapositive. With
+      $p$ for "short" and $q$ for "in English", a filter keeps an email that is short and in English,
+      or short and not in English: `short_filter` is that rule, simplified by `simplify_logic`.
+    answer:
+      type: code
+      starter: |
+        from sympy import symbols, And, Or, Not, Implies, Equivalent, satisfiable, simplify_logic
+
+        p, q = symbols("p q")
+
+        # De Morgan's law: False, since no row makes the two sides differ.
+        de_morgan = satisfiable(Not(Equivalent(Not(And(p, q)), Or(Not(p), Not(q)))))
+
+        converse = None        # a row where p => q and q => p differ, or False
+        contrapositive = None  # a row where p => q and its contrapositive differ, or False
+        short_filter = None    # (p and q) or (p and not q), as simply as possible
+
+        print(de_morgan)
+        print(converse)
+        print(contrapositive)
+        print(short_filter)
+      tests: |
+        def test_filled():
+            """converse, contrapositive and short_filter are all filled in."""
+            for name, value in (("converse", converse), ("contrapositive", contrapositive), ("short_filter", short_filter)):
+                assert value is not None, f"Replace the None in {name}."
+
+        def test_converse():
+            """converse is a row of the truth table where p => q and q => p differ."""
+            assert converse is not None, "Replace the None in converse first."
+            assert converse is not False, "converse is False, which says that p => q and q => p agree in every row. Check which two statements the search compares."
+            assert isinstance(converse, dict), f"converse is {converse}, but satisfiable gives either False or a row of the truth table, written like {{p: True, q: True}}."
+            one, other = Implies(p, q).subs(converse), Implies(q, p).subs(converse)
+            assert one != other, f"In the row {converse}, p => q is {one} and q => p is {other}: they agree there. The search should find a row where they differ."
+
+        def test_contrapositive():
+            """contrapositive is False: p => q and its contrapositive agree in every row."""
+            assert contrapositive is not None, "Replace the None in contrapositive first."
+            assert contrapositive is False, f"contrapositive is {contrapositive}, a row where the two differ, but the contrapositive agrees with p => q in every row. Check the statement it is compared with."
+
+        def test_short_filter():
+            """short_filter keeps exactly the emails the filter keeps, in every row of the truth table."""
+            assert short_filter is not None, "Replace the None in short_filter first."
+            for P in (True, False):
+                for Q in (True, False):
+                    keep = (P and Q) or (P and not Q)
+                    got = short_filter.subs({p: P, q: Q})
+                    assert bool(got) == keep, f"With p = {P} and q = {Q}, short_filter is {got}, but the filter gives {keep}."
+
+        def test_short_filter_simplest():
+            """short_filter is as simple as simplify_logic can make it."""
+            assert short_filter is not None, "Replace the None in short_filter first."
+            simpler = simplify_logic(short_filter)
+            assert short_filter == simpler, f"short_filter is {short_filter}, which simplify_logic can still simplify."
+      reference: |
+        from sympy import symbols, And, Or, Not, Implies, Equivalent, satisfiable, simplify_logic
+
+        p, q = symbols("p q")
+
+        # De Morgan's law: False, since no row makes the two sides differ.
+        de_morgan = satisfiable(Not(Equivalent(Not(And(p, q)), Or(Not(p), Not(q)))))
+
+        converse = satisfiable(Not(Equivalent(Implies(p, q), Implies(q, p))))
+        contrapositive = satisfiable(Not(Equivalent(Implies(p, q), Implies(Not(q), Not(p)))))
+        short_filter = simplify_logic(Or(And(p, q), And(p, Not(q))))
+
+        print(de_morgan)
+        print(converse)
+        print(contrapositive)
+        print(short_filter)
+      wrong:
+        - code: |
+            from sympy import symbols, And, Or, Not, Implies, Equivalent, satisfiable, simplify_logic
+
+            p, q = symbols("p q")
+
+            converse = satisfiable(Not(Equivalent(Implies(p, q), Implies(q, p))))
+            contrapositive = satisfiable(Not(Equivalent(Implies(p, q), Implies(Not(p), Not(q)))))
+            short_filter = simplify_logic(Or(And(p, q), And(p, Not(q))))
+          why: Compares $p \Rightarrow q$ with $\neg p \Rightarrow \neg q$, which denies both parts without swapping them, instead of with the contrapositive.
+        - code: |
+            from sympy import symbols, And, Or, Not, Implies, Equivalent, satisfiable, simplify_logic
+
+            p, q = symbols("p q")
+
+            converse = satisfiable(Equivalent(Implies(p, q), Implies(q, p)))
+            contrapositive = satisfiable(Not(Equivalent(Implies(p, q), Implies(Not(q), Not(p)))))
+            short_filter = simplify_logic(Or(And(p, q), And(p, Not(q))))
+          why: Leaves out the `Not`, so the search finds a row where the two agree.
+        - code: |
+            from sympy import symbols, And, Or, Not, Implies, Equivalent, satisfiable, simplify_logic
+
+            p, q = symbols("p q")
+
+            converse = satisfiable(Not(Equivalent(Implies(p, q), Implies(q, p))))
+            contrapositive = satisfiable(Not(Equivalent(Implies(p, q), Implies(Not(q), Not(p)))))
+            short_filter = Or(And(p, q), And(p, Not(q)))
+          why: Writes the filter's rule without simplifying it.
+        - code: |
+            from sympy import symbols, And, Or, Not, Implies, Equivalent, satisfiable, simplify_logic
+
+            p, q = symbols("p q")
+
+            converse = satisfiable(Not(Equivalent(Implies(p, q), Implies(q, p))))
+            contrapositive = satisfiable(Not(Equivalent(Implies(p, q), Implies(Not(q), Not(p)))))
+            short_filter = simplify_logic(Or(And(p, q), And(Not(p), q)))
+          why: Writes the second case as long and in English instead of short and not in English.
+    explanation: >-
+      `satisfiable(Not(Equivalent(Implies(p, q), Implies(q, p))))` finds a row where the claim and
+      its converse differ, `satisfiable(Not(Equivalent(Implies(p, q), Implies(Not(q), Not(p)))))` is
+      `False`, and `simplify_logic(Or(And(p, q), And(p, Not(q))))` is just `p`.
+
+  # Explain --------------------------------------------------------------------
+  - id: explain-claim
+    phase: explain
+    kind: explain
+    concept: M1.7/implication
+    covers: [M1.7/connectives, M1.7/sets, M1.7/quantifiers]
+    title: The four cards, simply
+    prompt: >-
+      Explain to your friend which cards to turn over and why: what the claim promises, the one kind
+      of email that would make it false, why card 3 cannot help, and why card 4 can. Then say what it
+      would take to break the claim for a dataset of a million emails, and why a thousand emails that
+      agree with it do not prove it.
+    answer:
+      type: text
+      rubric:
+        - { id: promise, criterion: 'Says that the claim is false only for an email labelled spam with no link, and holds for every other email, including those not labelled spam.' }
+        - { id: cards, criterion: 'Chooses cards 1 and 4, saying what each could reveal: card 1 might have no link, and card 4 might be labelled spam.' }
+        - { id: others, criterion: 'Explains why cards 2 and 3 cannot break the claim: card 2 is not labelled spam, and card 3 already has a link, whatever its label.' }
+        - { id: contrapositive, criterion: 'Connects card 4 to the contrapositive, "if an email contains no link, then it is not labelled spam", which says the same as the claim.' }
+        - { id: every, criterion: 'Says that one email labelled spam with no link breaks the claim, that a thousand agreeing emails cannot prove it, and that a full check need only look at the emails labelled spam.' }
+      reference: >-
+        The claim is a promise about spam: every email labelled spam has a link. Only one kind of
+        email breaks it, an email labelled spam with no link. An email that is not labelled spam cannot
+        break it, link or no link, because the claim promises nothing about such emails. So turn over
+        card 1, because it is labelled spam and its other side might say "no link". Turn over card 4,
+        because it has no link and its other side might say "labelled spam". That is the
+        contrapositive at work: "if an email has no link, it is not labelled spam" says exactly the
+        same as the claim, so card 4 tests the claim just as card 1 does. Card 3 already has a link,
+        so whatever its label, it agrees with the claim: turning it over can only confirm, never
+        refute. Card 2 is not labelled spam, so the claim says nothing about it. For a million emails,
+        a single email labelled spam with no link makes the claim false; that is a counterexample. A
+        thousand emails that agree say nothing about the other 999,000, any of which could be the
+        counterexample. To settle it, look at every email labelled spam, or equally at every email
+        with no link, and ignore the rest.
+      minWords: 80
+      maxWords: 350

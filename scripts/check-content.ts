@@ -118,8 +118,8 @@ async function checkLesson(code: string, errors: string[], warnings: string[]) {
       }
     }
     // A figure part that waits for an exercise: the ordinary scale, the turned staircase, the limit
-    // marker, typing a number or a text of one's own.
-    for (const m of source.matchAll(/\b(?:linearAfter|turnedAfter|limitAfter|typingAfter)="([a-z0-9-]+)"/g)) {
+    // marker, typing a number or a text of one's own, a quantifier grid's verdicts.
+    for (const m of source.matchAll(/\b(?:linearAfter|turnedAfter|limitAfter|typingAfter|verdictsAfter)="([a-z0-9-]+)"/g)) {
       const ex = byId.get(m[1]!);
       if (!ex) errors.push(`${file} has a figure waiting for ${m[1]}, which does not exist.`);
       else if (ex.phase !== phase) errors.push(`${file} has a figure waiting for ${m[1]}, which is in another phase.`);

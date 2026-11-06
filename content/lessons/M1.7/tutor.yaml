@@ -1,0 +1,242 @@
+misconceptions:
+  - id: exclusive-or
+    belief: '"$P$ or $Q$" means one or the other but not both.'
+    why: >-
+      In mathematics and in every programming language, or is inclusive: "$P$ or $Q$" is true when
+      at least one is true, both included. The exclusive kind is said in full when it is meant.
+    cue: The learner leaves out the short email in English in explore-or, or says a run on the trusted list with two approvals may not start.
+  - id: not-distributes
+    belief: Not ($P$ and $Q$) is (not $P$) and (not $Q$), the not simply passing to each part.
+    why: >-
+      "Short and in English" fails as soon as one part fails, so its denial is (not $P$) or (not $Q$).
+      De Morgan's laws swap and and or as the not passes inside.
+    cue: The learner chooses "neither short nor in English" in explore-drop, or writes `not short and not english` for the stricter filter's drops.
+  - id: confirm-only
+    belief: A claim is tested by looking for cases that agree with it.
+    why: >-
+      Agreeing cases cannot prove a claim about every case, and only a case that could disagree can
+      test it. Card 3 can only agree with the claim, whatever is on its other side.
+    cue: The learner turns over card 3 in the puzzle, or says in the Explain phase that a thousand agreeing emails prove the claim.
+  - id: implication-symmetric
+    belief: $P \Rightarrow Q$ says the same as $Q \Rightarrow P$.
+    why: >-
+      The converse makes a different promise: "if an email contains a link, it is labelled spam" is
+      broken by a newsletter with a link, which the original claim allows.
+    cue: The learner chooses the converse in explore-same-claim, or turns over card 3 to test the claim.
+  - id: false-premise-false
+    belief: When $P$ is false, $P \Rightarrow Q$ is false, or has no truth value.
+    why: >-
+      $P \Rightarrow Q$ is a promise about the cases where $P$ holds, and is broken only when $P$ is
+      true and $Q$ false. When $P$ is false nothing can break it, so it is true, vacuously.
+    cue: The learner marks an email not labelled spam as breaking the claim in explore-break-rule, or answers "neither" when $P$ is false.
+  - id: inverse-equivalent
+    belief: $\neg P \Rightarrow \neg Q$ says the same as $P \Rightarrow Q$.
+    why: >-
+      Denying both parts without swapping them gives the inverse, which is equivalent to the
+      converse, not to the original. Only denying both and swapping them, $\neg Q \Rightarrow \neg P$,
+      keeps the meaning.
+    cue: The learner chooses "if an email is not labelled spam, then it contains no link" in explore-same-claim, or compares with `Implies(Not(p), Not(q))` in build-sympy-logic.
+  - id: not-every-is-none
+    belief: Not every $x$ has $P(x)$ means that no $x$ has it.
+    why: >-
+      "Not every run converged" is true as soon as a single run failed. Its denial is
+      $\exists x : \neg P(x)$, at least one exception, not $\forall x : \neg P(x)$.
+    cue: The learner chooses "no training run converged" in explore-not-every, or the rule "not there is" for the first line of derive-negate-claim.
+  - id: quantifier-order-irrelevant
+    belief: Swapping "for every" and "there is" leaves a claim's meaning unchanged.
+    why: >-
+      $\forall m\ \exists r$ lets each model have a rate of its own, while $\exists r\ \forall m$ asks
+      one rate to suit every model. The grid has the first true and the second false.
+    cue: The learner marks both "every model trains well at some rate" and "some rate trains every model well" true, or swaps `all` and `any` in build-quantifiers.
+  - id: double-count-union
+    belief: $|A \cup B| = |A| + |B|$.
+    why: >-
+      An element in both sets is counted once in $|A|$ and again in $|B|$, so the overlap must be
+      taken away once: $|A \cup B| = |A| + |B| - |A \cap B|$, which equals $|A| + |B|$ only for sets
+      that do not overlap.
+    cue: The learner answers 0 in explore-neither, writes $a + b$ in derive-union, or uses `len(train) + len(test)` in build-split.
+  - id: empty-all-false
+    belief: '`all` over an empty list is `False`, since nothing was checked.'
+    why: >-
+      $\forall x \in \varnothing : P(x)$ has no counterexample, so it is true, vacuously, and `all`
+      follows the rule. `any` needs a witness, so it is `False`.
+    cue: The learner predicts `False False` in build-break-empty.
+  - id: not-binds-loosely
+    belief: '`not a and b` means `not (a and b)`.'
+    why: >-
+      Python works out `not` before `and`, as it works out `*` before `+`, so `not a and b` is
+      `(not a) and b`. Brackets decide the shape of the tree.
+    cue: The learner predicts `False True True True` in build-break-precedence.
+  - id: examples-prove
+    belief: Checking many examples proves a claim about every case.
+    why: >-
+      One counterexample breaks a for-every claim, so examples can only fail to find one. A proof
+      covers every case at once, as the chains of rules in Derive did.
+    cue: The learner says a claim is proved because many emails agree with it, or proves an equivalence by checking one row.
+
+exercises:
+  derive-only-short:
+    rungs:
+      - Which emails make up the $a$ short ones, and which of them does $S \cap E^c$ leave out?
+      - In Explore, the 400 short emails included the 300 that are short and in English.
+      - Try Explore's numbers, $a = 400$ and $c = 300$. How many short emails are not in English?
+      - >-
+        If your answer starts from $a$, the short emails, that part is right, and the trouble is in
+        what you take away: which short emails are not in $S \cap E^c$, and how many are there? If it
+        starts from another count, ask which circle $S \cap E^c$ lies inside.
+      - >-
+        In a class of 30, 12 students play chess, and 5 of them also play the piano. The chess
+        players who do not play the piano are the 12 less the 5 who play both: $12 - 5 = 7$.
+    notes: >-
+      $a$ alone forgets that some short emails are in English. $a - b$ takes away all the English
+      emails, including the long ones, which were never among the short ones. $b - c$ counts the
+      other region, in English but not short. A check at $a = 400$, $b = 700$, $c = 300$, which must
+      give 100, catches each of them.
+  derive-union:
+    rungs:
+      - What are the three regions, and how many emails does each hold?
+      - >-
+        The last step found the short emails that are not in English, and the same reasoning gives
+        the emails in English that are not short.
+      - Try Explore's numbers, $a = 400$, $b = 700$ and $c = 300$, for which the union holds 800. What does each of the three regions hold?
+      - >-
+        If your answer adds the three regions, that is the right plan, and the trouble is in one of
+        them: check each against Explore's numbers. If it adds $a$ and $b$ alone, ask how many times
+        an email in both sets is counted.
+      - >-
+        In a class of 30, 12 play chess, 8 play the piano and 5 play both. The students who play
+        either are $(12 - 5) + 5 + (8 - 5) = 15$, and the same as $12 + 8 - 5$: adding 12 and 8
+        counts the 5 twice.
+    notes: >-
+      $a + b$ counts the overlap twice. $a + b - 2c$ takes it away once too often, leaving it out
+      altogether. $a + b + c$ adds it a third time. A check at Explore's numbers, which must give
+      800, catches each of them.
+  derive-or-number:
+    rungs:
+      - What is $\neg p \land \neg q$ as a number, using the rules for $\neg$ and $\land$?
+      - Just before this exercise, $\neg p$ became $1 - p$ and $p \land q$ became $pq$.
+      - >-
+        Check a row: at $p = 1$ and $q = 0$, $p \lor q$ is true, so your expression must give 1, and
+        at $p = q = 1$ it must give 1 too.
+      - >-
+        If your expression gives 1, 1, 1 and 0 in the four rows, it is right, and only its shape is
+        left: no bracket may remain. If it fails a row, the trouble is in how one of the $\neg$s
+        became a number: check the inner ones and the outer one separately.
+      - >-
+        To write "$p$ and not $q$" as a number: not $q$ is $1 - q$, and and multiplies, so it is
+        $p(1 - q) = p - pq$, which is 1 only at $p = 1$ and $q = 0$.
+    notes: >-
+      $p + q$ gives 2 when both are true, which is not a truth value: the overlap is counted twice, as
+      in the union. $pq$ is and, not or. $1 - pq$ is not ($p$ and $q$). $1 - p - q + pq$ forgets the
+      outer $\neg$: it is $\neg p \land \neg q$ itself. $1 - (1 - p)(1 - q)$ is right but still has
+      its bracket.
+  derive-contrapositive:
+    rungs:
+      - What changes from each line to the next, and which rule allows exactly that change?
+      - Just before this exercise, the truth table showed that $A \Rightarrow B$ agrees with $\neg A \lor B$ in every row.
+      - Look at the first line alone. Which rule turns $P \Rightarrow Q$ into a statement with or?
+      - >-
+        If your rules for the first two lines are right, the trouble is later: in the third line
+        nothing moves and one letter is written in a new way, and in the last line a statement with
+        or becomes an if-then again. If the first line is wrong, compare $P \Rightarrow Q$ with the
+        rules whose left side has an arrow.
+      - >-
+        To show that $\neg(\neg P \land Q)$ is $P \lor \neg Q$: De Morgan's laws carry the not inside,
+        giving $\neg(\neg P) \lor \neg Q$, and the double not gives $P \lor \neg Q$. Each line uses
+        exactly one rule.
+    notes: >-
+      Choosing De Morgan's laws for the second line mistakes a swap for a not moving inside. Choosing
+      Swap the order for the third line misses that $Q$ became $\neg(\neg Q)$. Choosing Double not for
+      the last line misses that the whole line was read as an if-then, with $\neg Q$ for $A$ and
+      $\neg P$ for $B$.
+  derive-negate-claim:
+    rungs:
+      - What changes from each line to the next, and which rule allows exactly that change?
+      - In Explore, not for every became there is with a not, and De Morgan's laws carried a not inside a bracket.
+      - >-
+        Think of a single email. What would it take for the claim to fail for that email? Then match
+        each line to the rule that moves the not one step further in.
+      - >-
+        If your rule for the first line moves the not past the quantifier, that is right, and the
+        trouble is in what follows: in each later line, find the not that moved, changed or vanished,
+        and the rule that did it. If not, look at what happened to the $\forall$ in the first line.
+      - >-
+        To deny $\forall x : P(x) \lor Q(x)$: not for every gives $\exists x : \neg\big(P(x) \lor Q(x)\big)$,
+        and De Morgan's laws give $\exists x : \neg P(x) \land \neg Q(x)$, an $x$ with neither.
+    notes: >-
+      Not there is for the first line confuses the two quantifier rules: the $\forall$ becomes an
+      $\exists$, so the rule is the one for not for every. De Morgan's laws for the second line miss
+      that the arrow became an or. Double not for the third line misses that the not passed into the
+      bracket and turned or into and.
+  build-split:
+    rungs:
+      - Which set operation gives the ids in both sets, which gives the ids in one set but not the other, and which gives every id in either?
+      - At the start of this phase, `A | B`, `A & B` and `A - B` were the union, the intersection and the difference, and `len` counted the elements.
+      - >-
+        Work out the script's sets by hand: the training ids are 101 to 106, and the test ids are 105
+        to 108. Which ids are leaks, which test ids are new, and how many different ids are there?
+      - >-
+        If `leaked` and `unseen` pass, the set operations are right, and the trouble is in the count:
+        an id in both sets must be counted once. If `unseen` fails, check which set the difference
+        starts from.
+      - >-
+        To find the words that are in exactly one of two sets of words, `a` and `b`, take the words
+        in either and remove the words in both: `(a | b) - (a & b)`. Each phrase of the question
+        became one operation.
+    notes: >-
+      `len(train) + len(test)` counts the ids in both sets twice, and fails test_distinct and
+      test_large. `train - test` is the difference the wrong way round, the training ids not in the
+      test set. `train | test` for the leaks gives every id. `len(train & test)` counts only the
+      leaks.
+  build-quantifiers:
+    rungs:
+      - Which quantifier does each function's comment say first, and which second?
+      - >-
+        In this phase, `all(... for w in widths)` was $\forall$ over the widths, and `any` was
+        $\exists$. In Explore, the order of two quantifiers decided what a claim said.
+      - >-
+        Try one width first: for the width 64, what is `any(trains_well(64, r) for r in rates)`? Then
+        ask what must hold for every width.
+      - >-
+        If `every_width_has_a_rate` passes, the pattern is right, and the trouble is in
+        `one_rate_for_all`: read its comment again, and check which list the outer `for` runs
+        through. If neither passes, check that the quantifier said first in each comment is the outer
+        call.
+      - >-
+        To check that every row of a table, a list of lists, holds a zero, write
+        `all(any(x == 0 for x in row) for row in table)`: the outer `all` runs over the rows, and for
+        each row the inner `any` looks for a zero.
+    notes: >-
+      Swapping the two functions fails test_script. `all(any(...) for r in rates)` with the inner
+      `for` over the widths asks whether every rate suits some width, and fails
+      test_rate_that_suits_no_width. `any(all(...) for w in widths)` with the inner `for` over the
+      rates asks whether some width suits every rate, and fails test_one_width. Two `all`s or two
+      `any`s fail test_script.
+  build-sympy-logic:
+    rungs:
+      - What question does each `None` ask, and which SymPy function answers it?
+      - >-
+        Just before this exercise, `satisfiable(Not(Equivalent(a, b)))` gave `False` exactly when `a`
+        and `b` are equivalent, and the starter's `de_morgan` line uses it.
+      - Fill in `contrapositive` first and print it. Is it `False`, as Explore said it must be?
+      - >-
+        If `contrapositive` passes, the pattern is right, and the trouble is in another line: for
+        `converse`, check what `satisfiable` is asked to find, and for `short_filter`, check that the
+        rule you simplify keeps both of the filter's cases. If `contrapositive` fails, compare the
+        statement it is set against with the definition of the contrapositive.
+      - >-
+        To ask whether $p \lor q$ and $q \lor p$ can differ, write
+        `satisfiable(Not(Equivalent(Or(p, q), Or(q, p))))`, which gives `False`: they agree in every
+        row. And `simplify_logic(And(p, Or(p, q)))` gives `p`.
+    notes: >-
+      Comparing with `Implies(Not(p), Not(q))` tests the inverse, which differs from $p \Rightarrow q$,
+      so `contrapositive` is a row instead of `False`. Leaving out the `Not` around `Equivalent` finds
+      a row where the two agree. The filter's rule typed in without `simplify_logic` is right in
+      every row but fails test_short_filter_simplest.
+
+novice:
+  - Why is "if $P$ then $Q$" true when $P$ is false? It feels as if it should be unknown.
+  - Why do cards 2 and 3 not matter, when they are part of the data too?
+  - If a thousand emails agree with the claim, is that not good evidence for it?
+  - What is the difference between a claim and its converse, in everyday words?
+  - Why does the order of "for every" and "there is" matter, when the words are the same?

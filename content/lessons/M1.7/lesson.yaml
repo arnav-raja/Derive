@@ -1,0 +1,99 @@
+code: M1.7
+title: Logic, sets and quantifiers
+course: M1
+status: draft
+summary: >-
+  A spam filter's labelling guide makes a claim about its data, and four records lie face down.
+  Which must you turn over to test the claim? Saying exactly what a claim says, and what would
+  make it false: not, and, or and if-then, sets and their pictures, and the words "for every" and
+  "there is".
+sittings: 2
+minutes:
+  puzzle: 10
+  recall: 10
+  explore: 45
+  derive: 40
+  build: 50
+  explain: 25
+concepts:
+  taught:
+    - id: M1.7/connectives
+      name: Not, and and or
+      summary: >-
+        A statement is true or false. Not turns it round, $P$ and $Q$ needs both, and $P$ or $Q$
+        needs at least one, both included. Two statements are equivalent when they agree in every
+        row of the truth table, and De Morgan's laws carry not inside a bracket, swapping and and
+        or: not ($P$ and $Q$) is (not $P$) or (not $Q$).
+      usedBy: [M1.8, M4.2]
+    - id: M1.7/implication
+      name: If and then
+      summary: >-
+        $P \Rightarrow Q$ is false only when $P$ is true and $Q$ is false, so it promises nothing
+        when $P$ is false. Its contrapositive, $\neg Q \Rightarrow \neg P$, says the same thing,
+        while its converse, $Q \Rightarrow P$, need not, and $P \Leftrightarrow Q$ claims both
+        directions.
+      usedBy: [M1.8, M3.2, M9.7]
+    - id: M1.7/sets
+      name: Sets
+      summary: >-
+        A set is a collection of elements, listed or described by a rule. Union, intersection and
+        complement are or, and and not for sets, a Venn diagram shows every case at once, and
+        $A \subseteq B$ says that every element of $A$ is in $B$. For finite sets,
+        $|A \cup B| = |A| + |B| - |A \cap B|$.
+      usedBy: [M1.10, M4.2, M10.2]
+    - id: M1.7/quantifiers
+      name: For every and there is
+      summary: >-
+        $\forall x : P(x)$ says that $P(x)$ holds for every $x$, and $\exists x : P(x)$ that it
+        holds for at least one. One counterexample breaks a for-every claim and one witness proves
+        a there-is claim. Not for every is there is with not, and the order of two quantifiers
+        changes what they say.
+      usedBy: [M1.8, M3.2, M5.1]
+  used:
+    - M1.2/equivalence
+    - M1.2/solving-equations
+    - M1.2/expression-trees
+    - M1.3/function-as-mapping
+    - M1.3/injective-surjective
+links:
+  requires:
+    - lesson: M1.2
+      bridge: >-
+        M1.2 called two expressions equivalent when they agree for every value of their letters, and
+        settled the question with a counterexample or a chain of rules. Statements work the same
+        way: two are equivalent when they agree in every case, and a chain of rules or a single
+        counterexample settles it.
+    - lesson: M1.3
+      bridge: >-
+        A function whose outputs are true and false picks out a set: the inputs where it says true.
+        M1.3's one-to-one and onto were claims that begin "for every", which this lesson learns to
+        read and to deny, and its `def` is how the Build phase writes such functions.
+  anotherViewOf:
+    - lesson: E1.2
+      bridge: >-
+        E1.2's conditions are this lesson's statements, worked out by Python: its `and`, `or` and
+        `not` follow the same truth tables, and a condition that is never true picks out an empty
+        set.
+  foreshadows:
+    - lesson: M1.8
+      bridge: >-
+        Implications, contrapositives and the denials of for-every claims are the raw material of
+        proof. M1.8 proves claims directly, by the contrapositive, and by contradiction.
+    - lesson: M1.10
+      bridge: >-
+        The size of a union, $|A \cup B| = |A| + |B| - |A \cap B|$, is the first rule of counting.
+        M1.10 builds permutations, combinations and the binomial theorem on it.
+    - lesson: M4.2
+      bridge: >-
+        Probability measures sets of outcomes. M4.2's events are sets, "A or B" is their union, and
+        this lesson's count of a union becomes the probability of a union.
+    - lesson: M3.2
+      bridge: >-
+        A limit is defined with two quantifiers in a fixed order: for every tolerance there is a
+        point beyond which the values stay within it. Swapping them changes the meaning, as this
+        lesson's grid of models and learning rates showed.
+    - lesson: M9.7
+      bridge: >-
+        A hypothesis test reasons with if-then: if the model were no better than chance, results
+        this good would be rare. M9.7 shows what such an argument can and cannot conclude.
+skills: []

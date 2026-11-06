@@ -1,0 +1,69 @@
+Explore found its rules from truth tables, pictures and cases. Now derive them for every set and every statement, count a union in two ways, and pin down exactly what would break the puzzle's claim. This phase writes not, and and or as $\neg$, $\land$ and $\lor$, and $=$ between two equivalent statements, as M1.2 wrote it between two equivalent expressions.
+
+## Counting a union
+
+The 1,000 emails gave $400 + 700 - 300 = 800$ that are short or in English. To see why that always works, split the union into regions that do not overlap. For a finite set $A$, $|A|$ is its number of elements. Let $a = |S|$, $b = |E|$ and $c = |S \cap E|$.
+
+<Exercise id="derive-only-short" />
+
+<Reveal for="derive-only-short">
+
+The union $S \cup E$ is made of three regions that do not overlap: short but not in English, short and in English, and in English but not short.
+
+<Exercise id="derive-union" />
+
+</Reveal>
+
+<Reveal for="derive-union">
+
+So for any two finite sets,
+
+$$
+|A \cup B| = |A| + |B| - |A \cap B|.
+$$
+
+Adding $|A|$ and $|B|$ counts each element of the overlap twice, and taking away $|A \cap B|$ once puts that right. This is the simplest case of *inclusion and exclusion*, a way of counting unions that M1.10 and M4.2 extend. For sets that do not overlap, $A \cap B = \varnothing$, and the count of the union is just $|A| + |B|$.
+
+## Truth as a number
+
+Now count the same union a second way, by arithmetic on truth values. Write 1 for true and 0 for false. Then $\neg p$ is $1 - p$, which turns 1 into 0 and 0 into 1, and $p \land q$ is $pq$, since a product of 0s and 1s is 1 only when both are 1. Check both against the truth table.
+
+<Exercise id="derive-or-number" />
+
+</Reveal>
+
+<Reveal for="derive-or-number">
+
+So $p \lor q$ is $p + q - pq$, the same shape as the count of a union, and that is no accident. Give each email $x$ two numbers: $s(x)$ is 1 if the email is short and 0 if not, and $e(x)$ is 1 if it is in English and 0 if not. A number that is 1 on a set and 0 off it is the set's *indicator*. Then $s(x) + e(x) - s(x)e(x)$ is the indicator of $S \cup E$, by the rule just derived. Add each of the three terms up over all the emails. The $s(x)$ add up to $|S|$, the $e(x)$ to $|E|$, and the products $s(x)e(x)$, which are 1 only for emails in both, to $|S \cap E|$, while the indicator of the union adds up to $|S \cup E|$. So
+
+$$
+|S \cup E| = |S| + |E| - |S \cap E|
+$$
+
+again, this time by algebra rather than by a picture. Machine learning uses indicators everywhere. A classifier's error rate on a test set, for example, is the average of the indicator of its mistakes: 1 for each wrong answer, 0 for each right one.
+
+## The contrapositive, by the rules
+
+Explore checked the contrapositive case by case. A chain of equivalent statements proves it for every $P$ and $Q$ at once. One more rule is needed, which the truth table confirms: $A \Rightarrow B$ agrees with $\neg A \lor B$ in every row, since both are false only when $A$ is true and $B$ is false.
+
+<Exercise id="derive-contrapositive" />
+
+</Reveal>
+
+<Reveal for="derive-contrapositive">
+
+Each step replaced a statement with an equivalent one, so the first and the last are equivalent, whatever $P$ and $Q$ are. M1.8 turns this into a method of proof: to prove "if $P$ then $Q$", it is enough to prove "if not $Q$ then not $P$", which is sometimes far easier.
+
+## What breaks a claim about every email
+
+Explore said that one counterexample breaks a for-every claim. The rules say exactly what that counterexample must be, for any claim of the puzzle's shape, $\forall x : P(x) \Rightarrow Q(x)$.
+
+<Exercise id="derive-negate-claim" />
+
+</Reveal>
+
+<Reveal for="derive-negate-claim">
+
+So the claim is false exactly when there is an email labelled spam with no link, which is why only cards 1 and 4 could matter. M1.3's one-to-one has this shape too: $f$ is one-to-one when $\forall a\ \forall b : f(a) = f(b) \Rightarrow a = b$. Its denial is $\exists a\ \exists b : f(a) = f(b) \land a \neq b$, two different inputs with the same output, such as $-3$ and $3$ for the square. The same steps deny any claim of this shape. "Every model that passed the tests is safe to deploy" is false exactly when some model passed the tests and is not safe, and a search for that one model, not more models that passed and are safe, is what puts the claim to the test.
+
+</Reveal>

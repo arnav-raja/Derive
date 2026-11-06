@@ -1,7 +1,7 @@
 # Status
 
 Updated 6 November 2026, at Arnav's "Pause" of 11:45 UTC. On "Pause" or "Resume", follow
-CLAUDE.md and carry on from "Resume here".
+CLAUDE.md and carry on from "Resume here" (phase 1) and "Phase 2: resume here" (phase 2).
 
 ## Where things stand
 
@@ -10,6 +10,11 @@ lessons) is under way: all 12 lessons are written (M1.1 to M1.6 and E1.1 to E1.6
 end-to-end tests and performance budgets are written, pass, and run in CI. Production runs the
 latest commit, and `/api/health` is fine. What is left of phase 1: the tutor leak tests, which
 wait on Arnav's yes, and then setting the lessons to `ready` so that he sees them.
+
+Phase 2 (the full learning loop, and the lessons after the first slice) began on 6 November in
+its own thread. M1.7 Logic, sets and quantifiers is written, as a `draft`, with two new figure
+components, the set diagram and the quantifier grid. Nothing of phase 2 is visible in
+production yet: drafts show only with `DERIVE_SHOW_DRAFTS=1`.
 
 ### Done
 
@@ -280,6 +285,51 @@ in `derive-resume/review/prompts/`; change the lesson and the paths in them for 
    and, if Arnav says yes on its card, remove the test address (the row that is not Arnav's)
    from `private.allowed_emails`.
 
+### Phase 2: resume here
+
+Phase 2 of the plan, word for word: "Platform work: Map, Notebook and concept map, explain-back
+and viva modes, the "This confused me" button, automatic revision flags, and the remaining
+figure components. Lessons ready: all of stage 1 and the start of stage 2. Gate to move on:
+stage 1 done at a steady pace, with recall at 85% or better." Lessons stay 4 to 6 weeks ahead
+of Arnav. Leave `src/lib/supabase/proxy.ts` and the 12 phase 1 lessons' status to the phase 1
+steps above.
+
+Done so far:
+
+- M1.7 Logic, sets and quantifiers, at `draft`: all six phases, 24 exercises (a puzzle on which
+  cards test "if spam, then a link", 5 recall, 7 explore predictions, 3 derivation steps and 2
+  proofs of rules, 3 builds and 2 break-its, and the explain-back), tutor notes with 12
+  misconceptions, and checks.json. It now requires M1.3 as well as M1.2 (predicates are M1.3's
+  functions with true or false outputs, and the Build phase uses `def`), synced into
+  curriculum.json. `npm run check` and `npm run check:exercises -- M1.7` pass, and the SymPy
+  logic functions (`satisfiable`, `simplify_logic`) run in the browser's Pyodide.
+- Two figure components, with unit tests: `SetDiagram` (two sets in a rectangle; four regions
+  shaded from the picture or a list; it asks for sets written with ∪, ∩ and ᶜ in turn, says what
+  is wrong with a shading, and points out when two sets are the same region, De Morgan's laws)
+  and `QuantifierGrid` (a grid of ticks with four statements; `verdictsAfter="<exercise>"`
+  keeps the verdicts, the evidence cells and editing closed until that exercise is done, and
+  check-content checks the exercise exists in the same phase).
+- M1.7 walked through all six phases in local mode (every exercise, wrong and right answers,
+  both figures, the reveals and the re-teach), and its figures checked in both themes at 1,100
+  and 390 px: no horizontal overflow and no page errors.
+
+Next, in order:
+
+1. Review M1.7 as the earlier lessons were: an independent reviewer and a simulated learner,
+   with the briefs in `derive-resume/review/prompts/` changed from E1.6 to M1.7 (ancestors M1.1
+   to M1.3; the two new figures). Apply what they find, walk the changed parts again, set M1.7 to
+   `review`, add it to the end-to-end tests' learners and budgets if they do not pick it up on
+   their own (`e2e/learners.ts`, `e2e/performance.spec.ts`), run `npm run test:e2e`, and push.
+2. E1.7 Classes and objects (requires E1.3 and E1.4); check whether ProgramTrace can show an
+   object's attributes, and extend it if not.
+3. The phase 2 features: the "This confused me" button (records the exact step as a notebook
+   entry of kind `confused`; `NOTEBOOK_KINDS` already has it), automatic revision flags, the Map
+   coloured by mastery with what unlocks next, the concept map, the novice explain-back mode
+   (`noviceQuestion` in `src/lib/tutor/grade.ts` already picks an authored question) and the
+   course viva (the tutor's `examiner` mode).
+4. The rest of stage 1, M1.8 to M1.12 and E1.8 to E1.12, then the start of stage 2, each with
+   both reviews, adding the remaining figure components as the lessons need them.
+
 ### Working notes
 
 - Local walk-through: `DERIVE_LOCAL_STORE=1 DERIVE_SHOW_DRAFTS=1 npx next dev -p 3100`, driven
@@ -292,6 +342,18 @@ in `derive-resume/review/prompts/`; change the lesson and the paths in them for 
   only one new lesson starts per day, so a walk of M1.2 needs M1.1's concepts set provisional and
   M1.1's start dated the day before. Choices are now visually hidden inputs inside their labels,
   so a walk checks them with `check({ force: true })`.
+- Walking M1.7: `derive-resume/store-before-M1.7-walk.json` is the store after the E1.6 walk with
+  E1.4, E1.5 and E1.6 started before Monday 2 November, E1.6's concepts provisional and every
+  card's due date moved to 20 November, so that M1.7 can begin on 6 November. Copy it to
+  `.derive-local/store.json`. `walk-m17.cjs` walks the phases (`node walk-m17.cjs overview
+  puzzle recall explore derive build explain`), `m17figs.cjs` takes the figures in both themes
+  at both widths, and `store-after-M1.7-walk.json` is the store after the walk. The scripts name
+  `/home/user/Derive` as the repository; change that if the clone is elsewhere.
+- In development, a build page whose code is wider than its box logs a hydration warning:
+  `ScrollStops`, in the root layout, gives the `<pre>` a tab stop before that part of the page
+  has hydrated. It happens on E1.6's build page too, changes nothing a learner sees, and does
+  not appear in production builds; deferring `updateScrollStops` until hydration ends would
+  silence it.
 - Turbopack's development server sometimes keeps an old module after an edit (a page shows the
   previous version, or a new Store method is "not a function"). Restart it when a change does not
   show.
