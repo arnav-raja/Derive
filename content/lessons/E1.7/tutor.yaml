@@ -99,18 +99,38 @@ misconceptions:
       a class that defines `__eq__` alone has none, so its objects cannot go in a set at all.
     cue: The learner chooses `same` or `all` in build-break-hash.
 
+  - id: no-compare-without-eq
+    belief: Python cannot compare two objects whose class has no `__eq__`.
+    why: >-
+      `==` falls back on asking whether the two names refer to one object, as `is` does, so it
+      gives `True` or `False` and never an error.
+    cue: The learner chooses `error` in the puzzle.
+  - id: ne-ignores-eq
+    belief: '`!=` still asks whether two objects are different objects, whatever `__eq__` says.'
+    why: >-
+      Without a `__ne__` of its own, `a != b` is the opposite of `a == b`, so `__eq__` decides it.
+    cue: The learner chooses `ne` in explore-eq.
+  - id: operands-swapped
+    belief: In `a + b * c`, the product becomes `self` in the call of `__add__`.
+    why: >-
+      The object on the left of `+`, here `a`, is always `self`, and the product, worked out first,
+      is the argument.
+    cue: The learner chooses `self-wrong` in explore-call-order.
+
 exercises:
   derive-lookup-proof:
     rungs:
       - For each line, what does it read or assign, and on which object or class?
       - "Explore: reading an attribute looks among the object's own attributes, then in its class, while assigning `obj.name = v` always gives the object an attribute of its own."
-      - Take only the first call of `log`. Which attributes does `a`'s run have of its own before line 6 runs, and which after?
+      - Take only the first call of `log`. Which attributes does `a`'s run have of its own before `self.count = self.count + 1` runs, and which after?
       - >-
-        If the lines about `self.count` cite a rule about reading, check which side of line 6 each
-        line is about: its right side reads, and its left side assigns. If a line about
-        `self.losses` cites assigning, look at whether `self.losses` is ever on the left of `=`. If
-        the last line cites a rule about reading, ask what changed the list, and through which
-        names the change is seen.
+        If the first and third lines cite rules for reading, they are right: both are about the right
+        side of `self.count = self.count + 1`, which reads. Then, if the second or fourth line cites a
+        rule for reading, look at which side of that line it is about, since the left side assigns.
+        If the first line cites Own first, ask whether the run has a `count` of its own before the
+        first call. If a line about `self.losses` cites Assigning, look at whether `self.losses` is
+        ever on the left of `=`. If the last line cites a rule for reading, ask what changed the
+        list, and through which names the change is seen.
       - >-
         Suppose a class has `size = 1` in its body, and a method runs `self.size = self.size * 2`
         twice on one object. The first read finds the class's 1, since the object has no `size` of
@@ -127,10 +147,11 @@ exercises:
       - "E1.1: `abs(a - b)` is the distance between `a` and `b`. This `__eq__` calls two configs equal when their learning rates are at most $t$ apart."
       - Take $t = 1$ and $y = 0$. Which values may $x$ take, and which may $z$? How far apart can such an $x$ and such a $z$ be?
       - >-
-        If your answer is $t$, look for an $x$ and a $z$, each within $t$ of $y$, that are more than
-        $t$ apart. If your answer is larger than $2t$, try to place $x$ and $z$ that far apart while
-        each stays within $t$ of $y$. If it has $t$ squared in it, check whether any step multiplies
-        two distances.
+        If your answer is written in $t$ alone, the form is right, since only $t$ limits the
+        distances. Then, if it is $t$ or less, look for an $x$ and a $z$, each within $t$ of $y$,
+        that are more than $t$ apart. If it is larger than any distance you can reach, try to place
+        $x$ and $z$ that far apart while each stays within $t$ of $y$. If it has $t$ squared in it,
+        check whether any step multiplies two distances.
       - >-
         Three runs' losses $p$, $q$ and $r$, where $p$ is within 0.5 of $q$ and $q$ is within 0.3 of
         $r$: going from $p$ to $r$ by way of $q$ covers at most $0.5 + 0.3 = 0.8$, and $p = q + 0.5$
@@ -145,9 +166,10 @@ exercises:
       - "Explore: each call of `Num`'s `__add__` or `__mul__` made one new `Num`, and the calls followed the expression's tree."
       - Take $n = 1$, so the loop makes one pass, `total = total + w[0] * x[0]`. How many new values does it make? Then try $n = 2$.
       - >-
-        If your expression gives 2 for $n = 1$, check it at $n = 3$ by counting too. If it gives 1
-        for $n = 1$, look at whether the product and the sum each make a value. If it gives 3 for
-        $n = 1$, look at whether the starting `Value(0)` is made inside the loop or before it.
+        If your expression gives 2 for $n = 1$, that count is right: check it at $n = 3$ by counting
+        too. If it gives 1 for $n = 1$, count the operators in `total + w[i] * x[i]`, and how many new
+        values each makes. If it gives 3 for $n = 1$, ask where `total` first gets its value, inside
+        the loop or before it.
       - >-
         A loop `for i in range(n): total = total + w[i] * x[i] * x[i]` makes three new values on each
         pass, two products and a sum, so $3n$ in all.
@@ -177,13 +199,17 @@ exercises:
       - "Explore: a method changes its object only through `self`, and an object keeps its attributes from one call to the next. E1.4's `log` used `None` to stand for a value not given yet."
       - Work through the losses `[1.0, 3.0, 2.0]` with patience 2 by hand, writing down the best loss and the count after each one.
       - >-
-        If test_script fails but test_patience_one passes, look at whether the count is kept on
-        `self`, so that it lasts from one call to the next. If test_against_the_best fails, look at
-        what each loss is compared with. If test_equal_is_no_best fails, look at the comparison that
-        decides a new best. If test_count_starts_again fails, look at what happens to the count at a
-        new best. If test_two_watchers fails, look for anything kept in the class rather than on
-        each object. If Python says that a name is not defined in `step`, look at which of
-        `__init__`'s names were kept on `self`.
+        If test_improving passes, a falling loss is already seen as a new best each time. If it
+        fails, look at what the best starts as, and at whether anything is kept in the class rather
+        than on each object. Otherwise, if test_patience_one gives False where it expects True, look
+        at the comparison that decides when the count has reached the patience. If test_script and
+        test_count_starts_again never give True, look at whether the count is kept on `self`, so that
+        it lasts from one call to the next. If they give True too soon, or just after a new best,
+        look at what a new best should start again. If test_script and test_against_the_best never
+        give True but test_count_starts_again passes, look at what each loss is compared with. If
+        only test_equal_is_no_best fails, look at the comparison that decides a new best, and if only
+        test_two_watchers fails, look for anything kept in the class. If Python says that a name is
+        not defined in `step`, look at which of `__init__`'s names were kept on `self`.
       - >-
         A class `Peak` whose method `see(x)` says whether `x` is the largest so far: `__init__` sets
         `self.top = None`, and `see` does `if self.top is None or x > self.top:` with
@@ -194,65 +220,84 @@ exercises:
       late means `<=` for a new best. A count that never starts again means nothing resets it at a
       new best. Agreement on rising runs but not on [1.0, 3.0, 2.0] means each loss is compared with
       the one before it. Stopping one loss late means `>`. A `NameError` for `patience` means it was
-      never kept on `self`. Never seeing a new best means the best started at 0.
+      never kept on `self`. Never seeing a new best means the best started at 0. RecursionError means that a method ended up calling itself, again and again, until Python stopped it: look for `self(...)`, `str(self)`, `repr(self)` or `self + other` inside the method.
   build-sequential:
     rungs:
       - What does a model have to keep, and what does a call of it do with each layer in turn?
       - "Explore: `g(f(5))` runs `f` first, and an object with `__call__` can be called like a function. E1.4: assignment never copies, and `list(a)` makes a copy."
       - Work through `Sequential([AddOne(), Double(), AddOne()])(1)` by hand. What should the value be after each layer?
       - >-
-        If test_order passes but test_three fails, check that each layer is given what the layer
-        before it gave. If test_order gets 12 and 11 the wrong way round, look at the order in which
-        the loop takes the layers. If test_empty fails, follow `Sequential([])(7)` through your
-        `__call__`. If test_own_copy fails, look at whether `self.layers` is the caller's list or a
-        copy of it. If test_separate fails, look for a list kept in the class's body.
+        If only test_own_copy fails, the model already applies its layers rightly: look at whether
+        `self.layers` is the caller's list or a copy of it. If only test_empty fails, a model with
+        layers already works: follow `Sequential([])(7)` through your `__call__`. If test_order gives
+        12 where it expects 11, each layer is applied, but look at the order in which the loop takes
+        them. If it gives 10, the first layer is applied rightly: look at where the loop's `return`
+        is. If it gives 6, each layer is called: look at what each one is given, the input or what
+        the layer before it gave. If the results grow from one test to the next, such as 24 and then
+        67, or RecursionError appears from test_nested on, look for a list kept in the class's body.
+        If the script itself stops with RecursionError, look at what `__call__` calls on each pass.
       - >-
         A class `Pipeline` that applies functions in turn and keeps each result: `__init__` keeps
         `self.steps = list(steps)`, and `run(self, s)` sets `seen = []`, then for each step does
         `s = step(s)` and `seen.append(s)`, and returns `seen`. With the steps `[abs, str]`,
         `run(-3)` gives `[3, '3']`.
     notes: >-
-      11 from both orders in test_order, or 7 where 5 is expected, means each layer is applied to
-      the input itself. 12 and 11 swapped means the layers are applied from the last. 10 from
-      test_own_copy's second half means the caller's list was kept. 11 and 11 in test_separate means
-      a list in the class's body. `None` from an empty model means the result starts as `None`.
+      6 where test_order expects 11, or 2 where test_three expects 5, means each layer is applied
+      to the input itself. 12 where test_order expects 11 means the layers are applied from the
+      last, and 10 means a `return` inside the loop. 11 where test_own_copy expects 10 means the
+      caller's list was kept. Results that grow from test to test, such as 24 and then 67, with
+      RecursionError from test_nested on, mean a list in the class's body that every model appends
+      to. `None` from an empty model means the result starts as `None`. RecursionError in the script
+      itself means `__call__` calls `self(x)`. RecursionError means that a method ended up calling itself, again and again, until Python stopped it: look for `self(...)`, `str(self)`, `repr(self)` or `self + other` inside the method.
   build-value:
     rungs:
       - What does each method have to make, and what must it leave alone?
       - "Explore: `Num`'s `__add__` returned a new `Num`, and `__repr__` returns a str. E1.4: a default value is made once, so `log` made its new list in the body."
       - Work through `c = a * b + a`, with `a = Value(2)` and `b = Value(3)`, by hand. Which values are made, and what are the parents of each?
       - >-
-        If test_no_parents fails with "one and the same list", look at where the empty list is
-        made. If test_parents fails, check that the list holds `self` and `other` themselves, left
-        one first. If test_inputs_unchanged or test_new_object fails, look for anything assigned
-        through `self` in `__add__` or `__mul__`. If test_repr fails, or `print` stops with an error,
-        look at what `__repr__` returns.
+        If test_add, test_mul and test_chain pass, the numbers are right, and what is left is what
+        each value keeps. Then, if test_no_parents says "one and the same list", look at when the
+        empty list is made. If test_parents fails, look at which objects the list holds, and in which
+        order. If test_inputs_unchanged or test_new_object fails, look for anything assigned through
+        `self` or `other` in `__add__` or `__mul__`. If test_repr fails, or `print` stops with an
+        error, look at what `__repr__` returns, and if it stops with RecursionError, at what
+        `__repr__` itself calls.
       - >-
-        A class `Pair` holding `left` and `right`, whose `__repr__` returns
-        `"Pair(" + str(self.left) + ", " + str(self.right) + ")"`, and whose method `swapped(self)`
-        returns `Pair(self.right, self.left)`: a new pair, which leaves the old one as it was.
+        A class `Pair` keeps `left`, `right` and a list `notes`. Its
+        `__init__(self, left, right, notes=None)` starts with `if notes is None:` and `notes = []`,
+        so that each pair made without notes gets a new list of its own, and then keeps all three on
+        `self`. Its `swapped(self)` returns `Pair(self.right, self.left)`, a new pair, and its
+        `__repr__` returns `"Pair(" + str(self.left) + ", " + str(self.right) + ")"`. So with
+        `p = Pair(1, 2)` and `q = p.swapped()`, `print(p, q, p.notes is q.notes)` prints
+        `Pair(1, 2) Pair(2, 1) False`: `p` is as it was, and each pair has a list of its own.
     notes: >-
       A shared parents list means `parents=[]`. Parents that are equal but not the same objects
       mean copies were made. `a` changed after `a + b` means `__add__` assigns through `self`.
-      `TypeError: __repr__ returned non-string` means `__repr__` prints instead of returning.
-      Parents in the wrong order mean `[other, self]`.
+      `TypeError: __str__ returned non-string (type NoneType)` from `print` or `str`, or
+      `__repr__ returned non-string` from a list's printout, means `__repr__` prints instead of
+      returning. RecursionError from `print` means `__repr__` calls `str(self)` or `repr(self)`.
+      Parents in the wrong order mean `[other, self]`. RecursionError means that a method ended up calling itself, again and again, until Python stopped it: look for `self(...)`, `str(self)`, `repr(self)` or `self + other` inside the method.
   debug-vec-add:
     rungs:
       - Which lines of `__add__` change `u`, and which object does it return?
       - "Explore: each call of `Num`'s `+` made a new `Num` and left its inputs as they were."
       - Run `u + v` by hand with the starter. What are `u.x` and `u.y` after each line of `__add__`, and which object comes back?
       - >-
-        If test_sum passes but test_unchanged fails, `__add__` still assigns through `self` or
-        `other`, perhaps under another name. If test_new_object fails, look at what `__add__`
-        returns. If test_sum fails, check each coordinate's sum.
+        If test_sum passes, the coordinates are added rightly. Then, if test_unchanged fails,
+        `__add__` still assigns through `self` or `other`, perhaps under a second name for one of
+        them, and if test_new_object fails, look at which object `__add__` returns. If test_sum gives
+        `Vec(1, 2)`, the left vector itself came back: look at where the sums go, and what is
+        returned. If it gives one coordinate wrong, check that coordinate's sum.
       - >-
-        A `Money` class with an `amount`, whose `__mul__(self, k)` should give a new sum of money:
-        `return Money(self.amount * k)` leaves `self` alone, while `self.amount = self.amount * k`
-        followed by `return self` changes the money it was called on.
+        A `Money` class with an `amount`, whose `__mul__(self, k)` should give a new sum of money.
+        With `m = Money(10)` and `n = m * 3`: written as `self.amount = self.amount * k` and then
+        `return self`, it leaves `m.amount` at 30 and `n is m` `True`, so the money it was called on
+        has changed. Written as `return Money(self.amount * k)`, `m.amount` is still 10, `n.amount`
+        is 30, and `n is m` is `False`.
     notes: >-
       `u` still changed after the fix means `w = self` or another second name for an input. `v`
       changed means the sums were assigned through `other`. A wrong y means `other.x` in the y sum.
-      An unchanged but wrong sum means the sums went into local names and `self` was returned.
+      An unchanged but wrong sum means the sums went into local names and `self` was returned. RecursionError means that a method ended up calling itself, again and again, until Python stopped it: look for `self(...)`, `str(self)`, `repr(self)` or `self + other` inside the method.
 
 novice:
   - Why does `__init__` have two underscores on each side of its name?

@@ -3738,7 +3738,8 @@
       "course": "E1",
       "requires": [
         "E1.4",
-        "E1.5"
+        "E1.5",
+        "E1.7"
       ],
       "buildsOn": [],
       "leadsTo": [

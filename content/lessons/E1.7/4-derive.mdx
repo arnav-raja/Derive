@@ -1,4 +1,4 @@
-Explore found the rules Python follows when it reads an attribute, compares two objects and works out an operator. Now reason from them: prove what a program prints, find what a tolerance does to `==`, and count, then weigh, the objects that an expression leaves behind.
+The Explore phase found the rules Python follows when it reads an attribute, compares two objects and works out an operator. Now reason from them: prove what a program prints, find what a tolerance does to `==`, and count, then weigh, the objects that an expression leaves behind.
 
 ## Reading and assigning, line by line
 
@@ -26,7 +26,7 @@ It prints `2 0 [0.9, 0.7]`: the count grows on `a` alone, while the list grows f
 
 <Reveal for="derive-lookup-proof">
 
-The two lines of `log` look alike, but line 6 assigns through `self`, which always gives the object an attribute of its own, while line 7 changes, in place, a list that it found through `self`. So a class's body is the place for values that every instance may share and none changes, such as `Double`'s `name` in Explore, while anything that each instance changes belongs in `__init__`, as `self.losses = []`. A count of every run's calls, kept for the whole class, has to be assigned through the class itself, as in `Run.count = Run.count + 1`.
+The two lines of `log` look alike, but `self.count = self.count + 1` assigns through `self`, which always gives the object an attribute of its own, while `self.losses.append(loss)` changes, in place, a list that it found through `self`. So a class's body is the place for values that every instance may share and none changes, such as `Double`'s `name` in the Explore phase, while anything that each instance changes belongs in `__init__`, as `self.losses = []`. A count of every run's calls, kept for the whole class, has to be assigned through the class itself, as in `Run.count = Run.count + 1`.
 
 ## Equal within a tolerance
 
@@ -45,11 +45,11 @@ Equality of numbers passes along a chain: if $x = y$ and $y = z$, then $x = z$. 
 
 <Reveal for="derive-tolerance">
 
-The largest distance can be reached. With $y = 0.1$, $x = 0.1 - t$ and $z = 0.1 + t$, `a == b` and `b == c` are `True`, yet $x$ and $z$ are $2t$ apart, more than $t$, so `a == c` is `False`. This `==` does not pass along a chain, and the search notices: whether a config is skipped can depend on which configs were tried before it. Take three configs at the learning rates $0.1$, $0.1 + 0.8t$ and $0.1 + 1.6t$. Tried in that order, the second is skipped as equal to the first, and the third, $1.6t$ from the first, is trained: two configs. Tried with the middle one first, it makes both of the others equal to a config already tried: one config. Settings that people write, such as 0.01, give the same float every time they are written, so plain `==` suits them, and a tolerance belongs where a computed float is checked, as in E1.1's tests.
+So this `==` does not pass along a chain: with $y = 0.1$, $x = 0.1 - t$ and $z = 0.1 + t$, `a == b` and `b == c` are `True`, yet `a == c` is `False`. The search notices: whether a config is skipped can depend on which configs were tried before it. Take three configs at the learning rates $0.1$, $0.1 + 0.8t$ and $0.1 + 1.6t$. Tried in that order, the second is skipped as equal to the first, and the third, $1.6t$ from the first, is trained: two configs. Tried with the middle one first, it makes both of the others equal to a config already tried: one config. Settings that people write, such as 0.01, give the same float every time they are written, so plain `==` suits them, and a tolerance belongs where a computed float is checked, as in E1.1's tests.
 
 ## The objects an expression leaves
 
-Explore's `Num` made a new object for every `+` and `*`. Suppose that each object made by a class like it also keeps a list of the two values it was made from, its *parents*. Call the class `Value`: `Value(2) * Value(3)` gives a new value holding 6, whose `parents` is a list of the two values that were multiplied, and `Value(0)` is a value with no parents. Build writes this class, the beginning of the autograd engine that L3.4 builds.
+The Explore phase's `Num` made a new object for every `+` and `*`. Suppose that each object made by a class like it also keeps a list of the two values it was made from, its *parents*. Call the class `Value`: `Value(2) * Value(3)` gives a new value holding 6, whose `parents` is a list of the two values that were multiplied, and `Value(0)` is a value with no parents. The Build phase writes this class, the beginning of the autograd engine that L3.4 builds.
 
 A neuron works out a weighted sum of its inputs, $w_1 x_1 + w_2 x_2 + \dots + w_n x_n$. With the weights and the inputs kept as `Value`s in two lists, `w` and `x`, each of length `n`, a loop can build the sum:
 
@@ -77,6 +77,6 @@ On the 64-bit machines that train models, a `Value` made by `+` or `*` takes abo
 
 <Reveal for="derive-memory">
 
-That is close to 3,000 GB for a single token, and the weights themselves, as `Value`s, would take more than 1,000 GB besides. Kept as plain numbers of 2 bytes each, side by side in memory as a list's slots are, the same weights take $7 \times 10^9 \times 2 = 1.4 \times 10^{10}$ bytes, 14 GB, as M1.1 found: a hundredth of the memory, since each number's 200 bytes became 2. That is why numerical code never keeps one number in each object. NumPy's arrays and PyTorch's tensors are objects too, but each holds a whole block of plain numbers, and a tensor's `+` and `*` work on all of them at once. So the graph that PyTorch keeps has one node for each operation on a whole tensor, not one for each number. E2.1 looks at how an array lays out its numbers.
+The weights themselves, as `Value`s, would take more than 1,000 GB besides. Kept as plain numbers of 2 bytes each, side by side in one block of memory, the same weights take $7 \times 10^9 \times 2 = 1.4 \times 10^{10}$ bytes, 14 GB, as M1.1 found: about a hundredth of the memory. That is why numerical code never keeps one number in each object. NumPy's arrays and PyTorch's tensors are objects too, but each holds a whole block of plain numbers, and a tensor's `+` and `*` work on all of them at once. So the graph that PyTorch keeps has one node for each operation on a whole tensor, not one for each number. E2.1 looks at how an array lays out its numbers.
 
 </Reveal>

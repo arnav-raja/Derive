@@ -75,7 +75,7 @@
         },
         {
           "name": "test_patience_one",
-          "description": "With patience 1, the first loss after a new best that is no new best stops the run.",
+          "description": "With patience 1, the first loss that is not a new best stops the run.",
           "passed": true,
           "message": null
         },
@@ -225,7 +225,7 @@
         },
         {
           "name": "test_given_parents",
-          "description": "parents passed in are kept as they are.",
+          "description": "parents passed in are kept, in order.",
           "passed": true,
           "message": null
         },
@@ -281,7 +281,7 @@
           "name": "test_script",
           "description": "The script prints Vec(1, 2) Vec(3, 4) Vec(4, 6).",
           "passed": false,
-          "message": "The script printed 'Vec(4, 6) Vec(3, 4) Vec(4, 6)\\n', not Vec(1, 2) Vec(3, 4) Vec(4, 6)."
+          "message": "The script printed Vec(4, 6) Vec(3, 4) Vec(4, 6), not Vec(1, 2) Vec(3, 4) Vec(4, 6)."
         }
       ],
       "error": null,

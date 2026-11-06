@@ -55,20 +55,26 @@ def _guarded_limit():
         real(before)
 
 
-# Calls of objects' __call__ methods that may be in progress at once. Each such call runs through
-# more of Pyodide's C code than a plain call does, so a few hundred of them, one inside another,
-# overflow the JavaScript stack before Python's own limit is reached (in Node at about 750, and
-# sooner in Chromium's worker, whose stack is smaller), and Pyodide stops for good. A runaway is
-# stopped here instead, with the RecursionError that Python gives for any other recursion that
-# runs out of room.
+# Calls of special methods, such as __call__, __repr__, __eq__ and __add__, that may be in
+# progress at once. Python reaches each of them through more of Pyodide's C code than a plain call,
+# so a few hundred of them, one inside another, overflow the JavaScript stack before Python's own
+# limit is reached, and Pyodide stops for good. In Chromium's worker that happens between 300 and
+# 400 calls deep for __call__, and between 500 and 600 for __repr__, __eq__ and __add__; Firefox
+# and Safari are untested. A runaway is stopped here instead, with the RecursionError that Python
+# gives for any other recursion that runs out of room.
 _CALL_LIMIT = 200
 
 
+def _is_special(name):
+    """Whether a function's name is a special method's, such as __call__ or __repr__."""
+    return len(name) > 4 and name.startswith("__") and name.endswith("__")
+
+
 def _calls_in_progress(frame):
-    """How many calls of a __call__ method are in progress, the one starting at frame included."""
+    """How many calls of special methods are in progress, the one starting at frame included."""
     n = 0
     while frame is not None:
-        if frame.f_code.co_name == "__call__":
+        if _is_special(frame.f_code.co_name):
             n += 1
         frame = frame.f_back
     return n
@@ -88,8 +94,10 @@ def _counting_tracer(limit):
 
     def tracer(frame, event, arg):
         if frame.f_code.co_filename in (LEARNER_FILE, TESTS_FILE):
-            if frame.f_code.co_name == "__call__" and _calls_in_progress(frame) > _CALL_LIMIT:
-                raise RecursionError("maximum recursion depth exceeded while calling a Python object")
+            name = frame.f_code.co_name
+            if _is_special(name) and _calls_in_progress(frame) > _CALL_LIMIT:
+                suffix = " while calling a Python object" if name == "__call__" else ""
+                raise RecursionError("maximum recursion depth exceeded" + suffix)
             return local
         return None
 
@@ -367,6 +375,23 @@ def _is_object(value):
     )
 
 
+def _readable_attrs(value):
+    """The attributes that reading value.name finds, as Python looks them up: an object's own
+    first, then its class's and its bases'. For a class, its own and its bases'. Methods and
+    special names are left out, since a question asks only for data, such as self.losses."""
+    found = dict(vars(value)) if not isinstance(value, type) else {}
+    for c in (value if isinstance(value, type) else type(value)).__mro__:
+        if c is object:
+            continue
+        for a, x in vars(c).items():
+            if a in found or (a.startswith("__") and a.endswith("__")) or callable(x):
+                continue
+            if isinstance(x, (staticmethod, classmethod, property)):
+                continue
+            found[a] = x
+    return found
+
+
 def _holds_object(value, depth=0, seen=None):
     """Whether a list, tuple, dict or set holds such an object anywhere inside it."""
     if _is_object(value):
@@ -542,8 +567,14 @@ def _trace(payload):
                 # by comparing fingerprints of the whole value.
                 entry["digests"] = {k: digest(v) for k, v in names if k in refs}
             # An object's attributes one by one, so that a question can ask for one, such as
-            # self.count.
-            attrs = {k: {a: _cut(shown(x, False), 80) for a, x in vars(v).items()} for k, v in names if _is_object(v)}
+            # self.count, with those it finds in its class, such as self.losses for a list
+            # kept in the class, and a class's own, such as Run.losses.
+            attrs = {
+                k: {a: _cut(shown(x, False), 80) for a, x in _readable_attrs(v).items()}
+                for k, v in names
+                if _is_object(v) or (isinstance(v, type) and getattr(v, "__module__", None) == "__main__")
+            }
+            attrs = {k: a for k, a in attrs.items() if a}
             if attrs:
                 entry["attrs"] = attrs
             stack.append(entry)

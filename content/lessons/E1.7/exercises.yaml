@@ -130,7 +130,7 @@ exercises:
     phase: explore
     kind: predict
     concept: E1.7/classes-and-instances
-    title: An attribute for one config
+    title: A new attribute
     prompt: What does the program print?
     answer:
       type: choice
@@ -185,13 +185,13 @@ exercises:
             correct: [right]
           explanation: >-
             Each call of `Box` runs `__init__`, which prints its line, and then gives back the new
-            object, whatever `__init__` returns, so `a.size` is 2 and `b.size` is 5.
+            object, so `a.size` is 2 and `b.size` is 5.
 
   - id: explore-alias-object
     phase: explore
     kind: predict
     concept: E1.7/classes-and-instances
-    title: Three names, two configs
+    title: Three names
     placement: true
     prompt: What does the program print?
     answer:
@@ -642,13 +642,13 @@ exercises:
         - { id: class, name: Then the class, label: 'When an object has no attribute of that name, reading `obj.name` takes its class''s.' }
       start: '\texttt{a} \text{ and } \texttt{b} \text{ refer to two new runs, with no attributes of their own.}'
       lines:
-        - math: '\text{In the first call, } \texttt{self.count} \text{ on the right of line 6 is the class''s } \texttt{count}\text{, 0}'
+        - math: '\text{In the first call, } \texttt{self.count} \text{ on the right of } \texttt{self.count = self.count + 1} \text{ is the class''s } \texttt{count}\text{, 0}'
           rule: class
-        - math: '\text{Line 6 gives the run that } \texttt{a} \text{ refers to a } \texttt{count} \text{ of its own, 1, and the class''s } \texttt{count} \text{ stays 0}'
+        - math: '\text{That line gives the run that } \texttt{a} \text{ refers to a } \texttt{count} \text{ of its own, 1, and the class''s } \texttt{count} \text{ stays 0}'
           rule: assign
         - math: '\text{In the second call, } \texttt{self.count} \text{ is that run''s own } \texttt{count}\text{, 1}'
           rule: own
-        - math: '\text{So line 6 makes the run''s own } \texttt{count} \text{ 2, and } \texttt{Run.count} \text{ is still 0}'
+        - math: '\text{So the same line makes the run''s own } \texttt{count} \text{ 2, and } \texttt{Run.count} \text{ is still 0}'
           rule: assign
         - math: '\text{In both calls, } \texttt{self.losses} \text{ is the class''s list, since the run has no } \texttt{losses} \text{ of its own}'
           rule: class
@@ -656,7 +656,7 @@ exercises:
           rule: in-place
     explanation: >-
       The first read of `self.count` finds nothing on the run and falls back to the class's 0. The
-      assignment on line 6 then gives the run a `count` of its own, which every later read finds
+      assignment `self.count = self.count + 1` then gives the run a `count` of its own, which every later read finds
       first, while the class's `count` is never assigned. `self.losses` is never assigned at all, so
       every read finds the class's one list, and both appends change it. No class here is built on
       another, so the rule about a base is not needed.
@@ -760,7 +760,7 @@ exercises:
             assert got == [False, False, False, True, False], f"With patience 2 and the losses [1.0, 0.8, 0.9, 0.85, 0.7], step gave {got}, not [False, False, False, True, False]. 0.9 and 0.85 are two losses in a row after the best, 0.8, and 0.7 is a new best."
 
         def test_patience_one():
-            """With patience 1, the first loss after a new best that is no new best stops the run."""
+            """With patience 1, the first loss that is not a new best stops the run."""
             got = answers(1, [3.0, 2.0, 2.5])
             assert got == [False, False, True], f"With patience 1 and the losses [3.0, 2.0, 2.5], step gave {got}, not [False, False, True]."
 
@@ -791,8 +791,8 @@ exercises:
 
         def test_large_first():
             """The first loss is a new best, however large it is."""
-            got = answers(1, [5000000.0, 6000000.0])
-            assert got == [False, True], f"With patience 1 and the losses [5000000.0, 6000000.0], step gave {got}, not [False, True]: the first loss is always a new best."
+            got = answers(1, [1e300, 2e300])
+            assert got == [False, True], f"With patience 1 and the losses 1e300, a 1 with 300 zeros after it, and then 2e300, step gave {got}, not [False, True]: the first loss is always a new best, however large."
 
         def test_two_watchers():
             """Two watchers keep their own best losses and their own counts."""
@@ -1256,7 +1256,7 @@ exercises:
     title: A value that remembers
     prompt: >-
       Write `Value`, whose objects hold a number and remember the values they were made from, as in
-      Derive. The tests make values, add and multiply them, and look at what each result keeps and
+      the Derive phase. The tests make values, add and multiply them, and look at what each result keeps and
       what each input is left as.
     answer:
       type: code
@@ -1303,8 +1303,10 @@ exercises:
             a = Value(2)
             b = Value(3)
             for c in [a + b, a * b]:
+                assert isinstance(c.parents, list), f"The parents of a + b and of a * b are {c.parents!r}, which is not a list."
                 assert len(c.parents) == 2, f"A result of a + b or a * b has {len(c.parents)} parents, not 2."
-                assert c.parents[0] is a and c.parents[1] is b, "The parents of a + b and of a * b should be a list of a and then b themselves, not copies of them."
+                assert not (c.parents[0] is b and c.parents[1] is a), "The parents of a + b and of a * b are b and then a: the left one, a, should come first."
+                assert c.parents[0] is a and c.parents[1] is b, "The parents of a + b and of a * b should be a and b themselves, not new values that hold the same numbers."
 
         def test_new_object():
             """+ and * make a new value."""
@@ -1317,6 +1319,7 @@ exercises:
             """+ and * leave the values they combine as they were."""
             a = Value(2)
             b = Value(3)
+            assert a.parents == [] and b.parents == [], f"Before any + or *, Value(2).parents is {a.parents!r} and Value(3).parents is {b.parents!r}, not [] and []. This is a fault in __init__, not in + or *: see the test that a value made without parents has an empty list of its own."
             a + b
             a * b
             assert a.data == 2 and b.data == 3, f"After a + b and a * b with a = Value(2) and b = Value(3), a.data is {a.data!r} and b.data is {b.data!r}, not 2 and 3."
@@ -1330,10 +1333,10 @@ exercises:
             assert x.parents is not y.parents, "Value(1).parents and Value(2).parents are one and the same list. A default value is made once, when the def line runs, and shared by every call, as E1.4 found."
 
         def test_given_parents():
-            """parents passed in are kept as they are."""
-            p = [Value(1)]
+            """parents passed in are kept, in order."""
+            p = [Value(1), Value(2)]
             v = Value(5, p)
-            assert v.data == 5 and v.parents is p, "Value(5, p) should hold 5 and keep the list p itself as its parents."
+            assert v.data == 5 and len(v.parents) == 2 and v.parents[0] is p[0] and v.parents[1] is p[1], "Value(5, p) should hold 5, with the values in p, themselves and in order, as its parents."
 
         def test_chain():
             """a * b + a, worked out in the order of its tree."""
@@ -1485,6 +1488,23 @@ exercises:
                 def __repr__(self):
                     return "Value(" + str(self.data) + ")"
           why: Adds in `__mul__`.
+        - code: |
+            class Value:
+                def __init__(self, data, parents=None):
+                    if parents is None:
+                        parents = []
+                    self.data = data
+                    self.parents = parents
+
+                def __add__(self, other):
+                    return Value(self.data + other.data, [self, other])
+
+                def __mul__(self, other):
+                    return Value(self.data * other.data, [self, other])
+
+                def __repr__(self):
+                    return "Value(" + repr(self) + ")"
+          why: Calls repr(self) inside __repr__, which calls __repr__ again without end.
     explanation: >-
       `parents=None` with `if parents is None: parents = []` in the body gives each value made
       without parents a new list, as E1.4's `log` did. `__add__` and `__mul__` each return a new
@@ -1562,7 +1582,8 @@ exercises:
         # output is everything your program printed.
         def test_script():
             """The script prints Vec(1, 2) Vec(3, 4) Vec(4, 6)."""
-            assert "Vec(1, 2) Vec(3, 4) Vec(4, 6)" in output, f"The script printed {output!r}, not Vec(1, 2) Vec(3, 4) Vec(4, 6)."
+            printed = output.strip()
+            assert "Vec(1, 2) Vec(3, 4) Vec(4, 6)" in output, f"The script printed {printed or 'nothing'}, not Vec(1, 2) Vec(3, 4) Vec(4, 6)."
       reference: |
         class Vec:
             """A vector in the plane, with coordinates x and y."""

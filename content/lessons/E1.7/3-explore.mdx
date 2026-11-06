@@ -17,7 +17,7 @@ The line `class Config:` begins the class, and the lines indented below it are i
 
 An object made by a class is an *instance* of the class, so after `a = Config(0.01, 32)`, `a` refers to an instance of `Config`. A name written after an object and a dot, as in `self.lr`, is an *attribute* of that object: a name kept in the object itself. The line `self.lr = lr` gives the new object an attribute `lr` and makes it refer to the value of the parameter `lr`, 0.01. The parameter is a local name of the call, gone when the call ends, as in E1.3, but the attribute stays with the object. Outside the class, the object is reached through a name for it, so `a.lr` reads its attribute and `a.lr = 0.1` sets it.
 
-`__init__` has no `return`, so by E1.3 its call gives `None`. That does no harm, since the value of `Config(0.01, 32)` is not what `__init__` returns: it is the object that Python made in the first step, before `__init__` ran. The job of `__init__` is only to give that object its attributes.
+`__init__` has no `return`, so by E1.3 its call gives `None`. That does no harm, since the value of `Config(0.01, 32)` is not what `__init__` returns: it is the object that Python made in the first step, before `__init__` ran. The job of `__init__` is only to give that object its attributes. A class with no `__init__` skips the second step, so calling it makes an object with no attributes of its own, and the call takes no arguments.
 
 ```python
 a = Config(0.01, 32)
@@ -30,18 +30,16 @@ print(a.momentum, b.momentum)
 
 <Reveal for="explore-own-attributes">
 
-Each instance keeps attributes of its own, and assigning an attribute that an object does not have yet gives it one, to that object alone. Reading an attribute that an object does not have stops Python with `AttributeError`, as a missing key stops a dict lookup with `KeyError`. So a misspelt name that is read, such as `a.Lr`, is caught at once, while a misspelt assignment, `a.Lr = 0.1`, quietly gives the object a new attribute and leaves `a.lr` as it was.
+Each instance keeps attributes of its own, and assigning an attribute that an object does not have yet gives it one, to that object alone. Reading an attribute that Python cannot find stops it with `AttributeError`, as a missing key stops a dict lookup with `KeyError`. So a misspelt name that is read, such as `a.Lr`, is caught at once, while a misspelt assignment, `a.Lr = 0.1`, quietly gives the object a new attribute and leaves `a.lr` as it was.
 
-Step through the making of two configs in the figure. While a call of `__init__` runs, the figure lists its names apart from the main program's, as in E1.3, and it gives each object a label of its own, such as Config 1, as E1.4's figures labelled lists.
+Step through the making of two configs in the figure. While a call of `__init__` runs, the figure lists its names apart from the main program's, as in E1.3, and it gives each object a label of its own, such as Config 1, as E1.4's figures labelled lists. It stops once to ask you first.
 
 <ProgramTrace
   title="Making two configs"
-  description="The program makes the class `Config`, then makes `a` refer to a new config with learning rate 0.01 and batch size 32, makes `b` refer to another with 0.1 and 64, and prints the learning rate of each. The name `Config` refers to the class, shown with its method `__init__`. Each call of the class runs `__init__`, whose names the figure lists apart from the main program's, with `self` referring to the new object. Beside each object the figure shows its label, Config 1 or Config 2, and its attributes, such as lr=0.01, batch=32, appear one at a time as `__init__` gives them."
+  description="The program makes the class `Config`, then two configs, `a` and `b`, from the arguments of two calls of the class, and prints the learning rate of each. The name `Config` refers to the class, shown with its method `__init__`. Each call of the class runs `__init__`, whose names the figure lists apart from the main program's, with `self` referring to the new object. Beside each object the figure shows its label, Config 1 or Config 2, and its attributes appear one at a time as `__init__` gives them."
   code={"class Config:\n    def __init__(self, lr, batch):\n        self.lr = lr\n        self.batch = batch\n\na = Config(0.01, 32)\nb = Config(0.1, 64)\nprint(a.lr, b.lr)"}
-  predict={[{ line: 3, variable: "self.lr", pass: 2, prompt: "Line 3 is about to run for the second time, in the call that line 7 starts. Once it has run, what will `self.lr` be?" }]}
+  predict={[{ line: 3, variable: "a.lr", pass: 2, prompt: "Line 3 is about to run for the second time, in the call that line 7 starts, with `lr` referring to 0.1. Once it has run, what will `a.lr` be?" }]}
 />
-
-The `self` of each call refers to the object being made, Config 1 in the first call and Config 2 in the second, so one `__init__` serves every config. When a call ends, its `self`, `lr` and `batch` are gone, and the object it made, with its attributes, is what `a` or `b` refers to.
 
 ## Names for objects
 
@@ -61,7 +59,9 @@ print(a.lr, c.lr)
 
 <Reveal for="explore-alias-object">
 
-Names refer to objects as they refer to lists, and assignment never copies. After `b = a`, the two names refer to one object, so setting its `lr` through `b` shows through `a`, and `a is b` is `True`. `c` was made by a call of its own, so it is another object with equal settings, and `a is c` is `False`, as with the puzzle's two configs. For the same reason, a function given an object can change its attributes, and the caller sees the change, as with E1.4's lists.
+Names refer to objects as they refer to lists, so here `a is b` is `True`, and `a is c` is `False`, as with the puzzle's two configs. A function given an object can change its attributes in the same way, and the caller sees the change, as with E1.4's lists.
+
+The figure "Making two configs" showed the same thing from the inside. The `self` of each call referred to the object being made, Config 1 in the first call and Config 2 in the second, so one `__init__` serves every config. When a call ended, its `self`, `lr` and `batch` were gone, and the object it made, with its attributes, was what `a` or `b` referred to.
 
 ## Methods
 
@@ -86,16 +86,16 @@ m.add(5)
 print(m.mean())
 ```
 
-`m.add(3)` calls the class's `add`, with `self` referring to the object that `m` refers to, and `loss` referring to 3. It is the same call as `Meter.add(m, 3)`: Python finds `add` in the class of `m`'s object, and passes the object itself as the first argument. That is why every method has `self` as its first parameter, and why a call made through an object writes one argument fewer. The name `self` is only a custom, but every Python programmer keeps to it.
+`m.add(3)` calls the class's `add`, with `self` referring to the object that `m` refers to, and `loss` referring to 3. It is the same call as `Meter.add(m, 3)`: Python finds `add` in the class of `m`'s object, and passes the object itself as the first argument. That is why every method has `self` as its first parameter, and why a call made through an object writes one argument fewer. The name `self` is only a custom, but every Python programmer keeps to it. Step through the figure. It stops once to ask you first.
 
 <ProgramTrace
   title="Inside a method"
-  description="The program makes the class `Meter`, makes `m` refer to a new meter, whose `__init__` gives it a total and a count of 0, calls `add` through `m` twice, with the losses 3 and 5, and prints the mean. While a method runs, the figure lists its names apart from the main program's. Its `self` refers to the same object as `m`, so both show the label Meter 1, and when a line of the method changes an attribute through `self`, `m` shows the change too."
+  description="The program makes the class `Meter`, makes `m` refer to a new meter, whose `__init__` gives it a total and a count of 0, calls `add` through `m` twice, with the losses 3 and 5, and prints the mean. While a method runs, the figure lists its names apart from the main program's. Its `self` refers to the same object as `m`, so both show the label Meter 1."
   code={"class Meter:\n    def __init__(self):\n        self.total = 0\n        self.count = 0\n\n    def add(self, loss):\n        self.total = self.total + loss\n        self.count = self.count + 1\n\n    def mean(self):\n        return self.total / self.count\n\nm = Meter()\nm.add(3)\nm.add(5)\nprint(m.mean())"}
   predict={[{ line: 7, variable: "self.total", pass: 2, prompt: "Line 7 is about to run in the second call of `add`, with `loss` referring to 5. Once it has run, what will `self.total` be?" }]}
 />
 
-While a call of `add` runs, its `self` and the main program's `m` are two names for one object, so a change made through `self` is a change to `m`'s meter. `loss` is a local name, gone when the call returns, but the attributes stay in the object from one call to the next, and `mean` finds them there. Here is the class with `add` written without `self.` on the left of its lines:
+Here is the class with `add` written without `self.` on the left of its lines:
 
 ```python
 class Meter:
@@ -118,6 +118,8 @@ print(m.total, m.count)
 </Reveal>
 
 <Reveal for="explore-forgot-self">
+
+In the figure "Inside a method", while a call of `add` ran, its `self` and the main program's `m` were two names for one object, so a change made through `self` was a change to `m`'s meter. `loss` was a local name, gone when the call returned, but the attributes stayed in the object from one call to the next, so `total` was still 3 when the second call began, and `mean` found them there.
 
 A method changes its object only through `self`. A name that it assigns without `self.` is local to the call, as E1.3's local names are, however much it looks like an attribute. A method that forgets this changes nothing and stops with no error, so the mistake shows only in the numbers. An object keeps its attributes from one call to the next, and that is how a meter, a model or an optimiser carries its state through training.
 
@@ -146,7 +148,7 @@ b = Config(0.01, 32)
 
 <Reveal for="explore-eq">
 
-With `__eq__`, the search's `tried` works: a config equal to one already tried is found, and skipped. No method changes what `is` asks. Python works out `a != b` as the opposite of `a == b`, unless the class has a method `__ne__` of its own, which it seldom needs.
+With `__eq__`, the search's `tried` works: a config equal to one already tried is found, and skipped. No method changes what `is` asks, and `!=` stays the opposite of `==` unless the class has a method `__ne__` of its own, which it seldom needs.
 
 ## What print shows
 
@@ -157,11 +159,11 @@ With `__eq__`, the search's `tried` works: a config equal to one already tried i
         return "Config(" + str(self.lr) + ", " + str(self.batch) + ")"
 ```
 
-Written in the body of `Config`, it makes `print(a)` show `Config(0.01, 32)`. A list shows each of its items with `__repr__`, so `print([a, b])` shows `[Config(0.01, 32), Config(0.01, 32)]`. The custom is to make `__repr__` look like the call that would make an equal object, so that a printout reads like code. (A class can also have a `__str__`, which `print` uses in place of `__repr__` when there is one, but `__repr__` alone serves both.)
+Written in the body of `Config`, it makes `print(a)` show `Config(0.01, 32)`, and `str(a)` give that text as a str. A list shows each of its items with `__repr__`, so `print([a, b])` shows `[Config(0.01, 32), Config(0.01, 32)]`. The custom is to make `__repr__` look like the call that would make an equal object, so that a printout reads like code. (A class can also have a `__str__`, which `print` and `str` use in place of `__repr__` when there is one, but `__repr__` alone serves them and lists alike.) `__repr__` must return its str, not print it. One that prints returns `None`, and then `print(a)` stops with `TypeError: __str__ returned non-string (type NoneType)`. The error names `__str__` because, for a class without a `__str__` of its own, the `__str__` that `print` asks for is Python's own, which calls `__repr__`.
 
 ## Operators are methods
 
-`==` is not the only operator a class can take over. Python works out `a + b` as the call `a.__add__(b)`, and `a * b` as `a.__mul__(b)`, with the object on the left as `self` each time. An expression with several operators keeps E1.1's tree, worked out from the leaves, and each operator becomes one call when its turn comes. Here is a class whose `+` and `*` print a line when they are called:
+`==` is not the only operator a class can take over. Python works out `a + b` as the call `a.__add__(b)`, and `a * b` as `a.__mul__(b)`, with the object on the left as `self` each time. Here is a class whose `+` and `*` print a line when they are called:
 
 ```python
 class Num:
@@ -189,7 +191,7 @@ print(d.v)
 
 <Reveal for="explore-call-order">
 
-The calls follow the tree, not the order in which the operators are written: `*` is lower in the tree, so it is called first, and its result, a new `Num`, becomes the right side of `+`. Each call made a new `Num` and left `a`, `b` and `c` as they were, as `+` and `*` on numbers do. A PyTorch tensor's `+` and `*` work this way, which is why `y = w * x + b` on tensors reads just as it does on numbers.
+The calls follow the expression's tree, not the order in which the operators are written, and each call made a new `Num` and left `a`, `b` and `c` as they were, as `+` and `*` on numbers do. A PyTorch tensor's `+` and `*` work this way, which is why `y = w * x + b` on tensors reads just as it does on numbers.
 
 The object on the left decides: `a * 2` calls `a.__mul__(2)`, whose `other.v` would fail, since an int has no attribute `v`. And `2 * a` first tries the int's own `*`, which knows nothing of `Num`, so Python stops with `TypeError: unsupported operand type(s) for *: 'int' and 'Num'`, unless `Num` has a method `__rmul__`, which Python tries next, with the object on the right as `self`.
 
@@ -225,11 +227,31 @@ Step through it. The figure shows the class's own attributes beside the name `Ru
   code={"class Run:\n    losses = []\n\n    def log(self, loss):\n        self.losses.append(loss)\n\na = Run()\nb = Run()\na.log(0.9)\nb.log(0.7)\nprint(a.losses)"}
 />
 
-Neither run has an attribute `losses` of its own. Reading `self.losses` looks first among the object's own attributes, finds none, and then looks in its class, where it finds the class's list: one list for every run, which `append` changes in place. Assigning is different. `self.losses = []`, in an `__init__`, would give each run a list of its own, since assigning `obj.name = v` always gives the object an attribute of its own, and never changes the class's. So reading an attribute looks in the object, then in its class, while assigning one changes only the object.
+Assigning is different. `self.losses = []`, in an `__init__`, would give each run a list of its own, since assigning `obj.name = v` always gives the object an attribute of its own, and never changes the class's. So reading an attribute looks in the object, then in its class, while assigning one changes only the object.
 
 ## A class built on another
 
-A class can be built on another. `class Double(Layer):` makes `Double` a *subclass* of `Layer`, which is its *base*, and reading an attribute looks in the object, then in its class, then in its class's base, and takes the first it finds. So a `Double` has every method of `Layer`, unless `Double` has one of the same name, which then comes first. One more special method: Python works out `f(x)`, for an object `f` that is not a function, as the call `f.__call__(x)`, so an object can be called like a function.
+A class can be built on another. `class Sub(Base):` makes `Sub` a *subclass* of `Base`, which is its *base*, and reading an attribute looks in the object, then in its class, then in its class's base, and takes the first it finds. So a subclass has every method of its base, unless it has one of the same name, which then comes first:
+
+```python
+class Base:
+    def greet(self):
+        return "hello"
+
+    def kind(self):
+        return "base"
+
+class Sub(Base):
+    def kind(self):
+        return "sub"
+
+s = Sub()
+print(s.greet(), s.kind())
+```
+
+This prints `hello sub`: `greet` is found in `Base`, and `kind` in `Sub`, before the one in `Base`.
+
+One more special method: Python works out `f(x)`, for an object `f` that is not a function, as the call `f.__call__(x)`, so an object can be called like a function. Here a base class `Layer` has a `__call__`, and two subclasses each have a name and a method `forward` of their own:
 
 ```python
 class Layer:
@@ -260,13 +282,13 @@ print(g(f(5)))
 
 <Reveal for="explore-layers">
 
-Inside `Layer`'s `__call__`, `self` refers to a `Double` or an `AddOne`, so `self.name` and `self.forward` are looked up from the object's own class, not from `Layer`, where the method was written. That is how one `__call__` serves every kind of layer, each with its own `forward`. Every layer of a PyTorch model is built in just this way, on a base class called `Module`, whose `__call__` does some bookkeeping and then runs the layer's own `forward`. And `g(f(5))` runs `f` first, as M1.3's composition does: a list of layers applied in turn is a composition of them, which Build turns into a class.
+Inside `Layer`'s `__call__`, `self` refers to a `Double` or an `AddOne`, so `self.name` and `self.forward` are looked up from the object's own class, not from `Layer`, where the method was written. That is how one `__call__` serves every kind of layer, each with its own `forward`. Every layer of a PyTorch model is built in just this way, on a base class called `Module`, whose `__call__` does some bookkeeping and then runs the layer's own `forward`. And `g(f(5))` runs `f` first, as M1.3's composition does: a list of layers applied in turn is a composition of them, which the Build phase turns into a class.
 
 ## The names
 
 <Definition term="Class and instance">
 
-A *class* is a new type of value. Calling it, as in `Config(0.01, 32)`, makes a new object of that type, an *instance*, runs the class's `__init__` with `self` referring to the new object, and gives back the object, whatever `__init__` returns. An *attribute* is a name kept in an object: `a.lr` reads it and `a.lr = 0.1` sets it, each instance keeps attributes of its own, and reading one an object does not have stops Python with `AttributeError`. Names refer to objects as they refer to lists, so after `b = a` a change made through `b` shows through `a`.
+A *class* is a new type of value. Calling it, as in `Config(0.01, 32)`, makes a new object of that type, an *instance*, runs the class's `__init__` with `self` referring to the new object, and gives back the object. `__init__` itself must return `None`, and returning anything else stops Python with `TypeError`. An *attribute* is a name kept in an object: `a.lr` reads it and `a.lr = 0.1` sets it, each instance keeps attributes of its own, and reading one that neither the object nor its class has stops Python with `AttributeError`. Names refer to objects as they refer to lists, so after `b = a` a change made through `b` shows through `a`.
 
 </Definition>
 
