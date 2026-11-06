@@ -14,6 +14,7 @@ export const CLIENT_MODULES: Record<string, () => Promise<unknown>> = {
   "src/components/figures/set-diagram.tsx": () => import("@/components/figures/set-diagram"),
   "src/components/figures/staircase.tsx": () => import("@/components/figures/staircase"),
   "src/components/figures/text-bytes.tsx": () => import("@/components/figures/text-bytes"),
+  "src/components/figures/tile-grid.tsx": () => import("@/components/figures/tile-grid"),
   "src/components/lesson/symbol-highlighter.tsx": () => import("@/components/lesson/symbol-highlighter"),
   "src/components/lesson/workspace.tsx": () => import("@/components/lesson/workspace"),
   "src/components/shell/account-menu.tsx": () => import("@/components/shell/account-menu"),
