@@ -75,9 +75,11 @@ jobs:
           name: derive-api
           path: supabase/functions/derive-api/
 
+      # Pinned, so that a new release cannot change how the deploy behaves.
+      # Version 3 asks before every hosted change; --yes answers it here.
       - uses: supabase/setup-cli@v1
         with:
-          version: latest
+          version: 3.0.0
 
       - name: Deploy derive-api
         env:
@@ -89,7 +91,7 @@ jobs:
           fi
           # The function checks the learner's session itself, so that the browser's
           # preflight requests, which carry none, are answered.
-          supabase functions deploy derive-api --project-ref "$SUPABASE_PROJECT" --no-verify-jwt --use-api
+          supabase functions deploy derive-api --remote="$SUPABASE_PROJECT" --no-verify-jwt --use-api --yes
 
       - name: Check the new server answers
         run: |
