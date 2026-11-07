@@ -17,8 +17,12 @@ Hosting moved off Vercel on 6 November, at Arnav's word ("Use GitHub. Use GitHub
 GitHub Pages. Don't use Vercel."), in its own thread ("Move Derive hosting to GitHub Pages"):
 GitHub Actions builds the site for GitHub Pages at https://arnav-raja.github.io/Derive/ and
 deploys Derive's server, tutor included, to the Supabase Edge Function `derive-api` (see
-"Hosting" below and the Stack section of CLAUDE.md). The Vercel project stays up until the new
-site works end to end, and is removed only when Arnav says so.
+"Hosting" below and the Stack section of CLAUDE.md). It went live on 7 November (commit
+`74db8cb`): the pages, the sign-in page and Derive's own 404 load with no console errors in a
+real browser, and the server reports 23 lessons ready and a tutor key that reaches both Claude
+models. Signed-in pages and the tutor's answers wait on Arnav signing in once at the new
+address. The Vercel project still builds from main, but nothing uses it; it is removed only
+when Arnav says so.
 
 Phase 2 (the full learning loop, and the lessons after the first slice) began on 6 November in
 its own thread. M1.7 Logic, sets and quantifiers is live (`ready`): written, reviewed by both
@@ -842,14 +846,24 @@ Next, in order:
   processor slowed four times. That commit's `src/app/fonts/katex.ts` was therefore dropped
   here, since lesson pages are rendered by the server and its fonts never reached the browser.
 - The server: `src/server/handler.ts`, bundled by `scripts/build-api.ts` with every lesson file
-  and every written phase's compiled MDX packed in (about 3.3 MB, under Supabase's 20 MB). It runs
+  and every written phase's compiled MDX packed in (4.31 MB on 7 November, under Supabase's 20 MB). It runs
   as the Edge Function `derive-api` in Mumbai (`x-region: ap-south-1`), verifies the learner's
   session itself, and answers only https://arnav-raja.github.io (`DERIVE_ALLOWED_ORIGINS`
   changes that). Locally the same handler runs in `.derive-build/server.mjs`.
 - Sign-in runs in the browser with Supabase Auth (`src/lib/auth-client.ts`); the session is
   sent as a bearer token with every call.
-- `.github/workflows/publish.yml` builds both, deploys the server, checks its health route
-  reports the new commit, then publishes the site.
+- `.github/workflows/publish.yml` builds both, starts the built server the way Supabase runs it
+  (`scripts/smoke-edge.mjs`, under Deno 2.1.4), deploys it with the Supabase CLI pinned at
+  3.0.0, checks its health route reports the new commit, then publishes the site.
+- Supabase's Edge Runtime differs from Node in two ways that broke the first deploys on
+  7 November, and the smoke test now stands in for both: environment variables cannot be set
+  (the edge build fixes `DERIVE_DEPLOYED` and `DERIVE_LOCAL_STORE` instead), and the working
+  directory is "", so packed content is looked up by relative paths
+  (`src/server/edge/content-fs.ts`). The smoke test also checks the health route reports
+  written and ready lessons.
+- `derive-probe` is a small public Edge Function used to check the Anthropic key from outside:
+  it reports whether the key reaches the tutor's two models, and nothing else. It can be
+  deleted at any time.
 
 ## Waiting on Arnav
 
@@ -857,7 +871,9 @@ Next, in order:
   Actions, the Edge Function has its `ANTHROPIC_API_KEY`, and the repository has
   `SUPABASE_ACCESS_TOKEN` (a token named "Derive publish", limited to the derive project's Edge
   Functions, that never expires; it can be revoked at https://supabase.com/dashboard/account/tokens).
-- Saying the Vercel project can be deleted, once the GitHub Pages site and its tutor work.
+- Signing in once at https://arnav-raja.github.io/Derive/ (the same account), which is the only
+  way to see the signed-in pages and the tutor's answers on the new site.
+- Saying the Vercel project can be deleted (asked on 7 November).
 
 - Confirming the Supabase tool's prompt to delete the test sign-up address (he said yes to the
   removal on 6 November; the first prompt timed out). Sign-up is closed anyway once the one
