@@ -3766,7 +3766,9 @@
       "title": "Iterators, generators and streaming data",
       "course": "E1",
       "requires": [
-        "E1.4"
+        "E1.4",
+        "E1.6",
+        "E1.7"
       ],
       "buildsOn": [],
       "leadsTo": [

@@ -1,0 +1,61 @@
+This lesson builds on E1.2's loops and invariants, E1.4's lists, E1.6's files and E1.7's special methods. Five quick questions check that they are ready. Answer from memory, without running anything. A miss opens a short re-teach straight away.
+
+<Exercise id="recall-range" />
+
+<Reteach for="recall-range">
+
+<Callback lesson="E1.2">
+
+`range(a, b)` runs from `a` up to `b - 1`, which is `b - a` values. So `for i in range(3, 10):` runs its block for 3, 4, 5, 6, 7, 8 and 9: seven passes. `range(10)` alone starts at 0 and gives 10 values.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-invariant" />
+
+<Reteach for="recall-invariant">
+
+<Callback lesson="E1.2">
+
+An invariant of a loop is a statement that is true before the loop starts and that every pass keeps true, so it holds at every check of the loop's test, and after the loop. When the loop stops, the invariant and the reason it stopped are true together, and together they say what the loop computed. A running total's invariant is "`total` is the sum of the items seen so far".
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-alias" />
+
+<Reteach for="recall-alias">
+
+<Callback lesson="E1.4">
+
+Assignment never copies. After `b = a`, both names refer to one list, so `b.append(3)` changes the list that `a` refers to as well, and `print(a)` shows `[1, 2, 3]`. `b = list(a)` would have made a new list with the same values, a copy, and `b = b + [3]` makes a new list too, leaving `a` alone.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-newline" />
+
+<Reteach for="recall-newline">
+
+<Callback lesson="E1.6">
+
+`for line in f` gives each line of the file with the newline that ends it, so the line `cat` arrives as `"cat\n"`, four characters long. `line.strip()` takes the spaces and newlines off both ends and gives `"cat"`.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-special" />
+
+<Reteach for="recall-special">
+
+<Callback lesson="E1.7">
+
+Python turns its own syntax into calls of methods with two underscores on each side. `m + 1` calls `m.__add__(1)`, `m == n` calls `m.__eq__(n)`, and `print(m)` shows what `m.__repr__()` returns. A class that defines such a method decides what the syntax does with its objects.
+
+</Callback>
+
+</Reteach>

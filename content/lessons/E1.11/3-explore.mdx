@@ -1,0 +1,245 @@
+## What a loop asks for
+
+Python can hand out a list's items one at a time without a loop. `iter(xs)` gives an *iterator* over the list `xs`: an object that gives the next item each time `next` is called on it, and remembers which items it has already given.
+
+```python
+xs = ["cat", "dog", "bird"]
+it = iter(xs)
+print(next(it))
+print(next(it))
+```
+
+This prints `cat` and then `dog`.
+
+<Exercise id="explore-past-the-end" />
+
+<Reveal for="explore-past-the-end">
+
+The error is `StopIteration`, and it is how an iterator says that it has nothing left. A `for` loop is built from these two calls. It calls `iter` once on what it is given, then calls `next` before every pass, and when `next` raises `StopIteration` the loop ends quietly, with no error shown. `next(it, default)` gives `default` instead of raising, so for a list that holds no `None`, this `while` loop does what `for x in xs: print(x)` does:
+
+```python
+it = iter(xs)
+x = next(it, None)
+while x is not None:
+    print(x)
+    x = next(it, None)
+```
+
+A `None` in the list would stop this loop early, as if the list ended there. The Build phase meets a sign of the end that no stream can hold.
+
+## Iterables and iterators
+
+A list is *iterable*: `iter` can be called on it. What happens when it is called twice?
+
+```python
+xs = [1, 2, 3]
+a = iter(xs)
+b = iter(xs)
+print(next(a), next(a), next(b))
+```
+
+<Exercise id="explore-two-iterators" />
+
+</Reveal>
+
+<Reveal for="explore-two-iterators">
+
+So two loops over one list each see every item: each loop's `iter` makes a new iterator that starts at the first item. An iterator can be looped over too, but `iter` of an iterator gives back the iterator itself: after `a = iter(xs)`, `iter(a) is a` is `True`. So a loop over an iterator carries on from wherever it stands, and once the iterator is used up, a loop over it runs no passes at all.
+
+An open file is its own iterator: `iter(f) is f`. That is the puzzle's bug. Both epochs' loops took their lines from one place in the file, and the first used it up. Lists, strings, dictionaries and ranges are iterables that make a fresh iterator for every loop; a file is an iterator, good for one loop. Opening the file again in each epoch would give every epoch all three examples.
+
+## Generators
+
+An iterator can be written by hand as a class, which the Build phase does. Python also has a shorter way. A function with `yield` in its body is a *generator function*, and `yield n` hands `n` to whoever asked for the next value.
+
+```python
+def countdown(n):
+    print("start")
+    while n > 0:
+        yield n
+        n = n - 1
+    print("lift-off")
+
+
+g = countdown(3)
+print("made")
+print(next(g))
+print(next(g))
+```
+
+<Exercise id="explore-yield" />
+
+</Reveal>
+
+<Reveal for="explore-yield">
+
+So calling a generator function gives back a *generator*, which is an iterator, and runs none of the body yet. Each `next` runs the body from where it last stopped up to the next `yield`, hands out that value and pauses there, with its local names as they were. A third `next` would give 1, and a fourth would run on past the loop, print `lift-off` and raise `StopIteration`, so `for x in countdown(3): print(x)` prints `start`, 3, 2, 1 and `lift-off` and then ends. A generator makes each value only when it is asked for.
+
+A *generator expression* makes a generator in one line. `(x * x for x in range(4))` gives the squares 0, 1, 4 and 9, one at a time, and `(x for x in xs if x > 0)` gives only the items of `xs` that are above 0. In general, `(expression for name in iterable if test)` takes the items of the iterable one at a time, skips those for which the test is false, and hands out the expression's value for each of the rest; the `if test` part may be left out. `list(...)` and `sum(...)` take every value an iterable gives, until it is used up, into a new list or a total.
+
+```python
+squares = (x * x for x in range(4))
+print(sum(squares))
+print(sum(squares))
+```
+
+The first line it prints is `14`.
+
+<Exercise id="explore-sum-twice" />
+
+</Reveal>
+
+<Reveal for="explore-sum-twice">
+
+A list of the same squares, `[0, 1, 4, 9]`, would give 14 both times, since each `sum` makes a fresh iterator over it. But a list holds all its values at once, and a generator holds only where it has got to: on the 64-bit machines that train models, the generator above takes about 200 bytes, and so would one that counted to a billion. The Derive phase works out what the list would take.
+
+## An endless stream
+
+Since a generator makes each value only when it is asked for, its body may loop for ever:
+
+```python
+def naturals():
+    n = 0
+    while True:
+        yield n
+        n = n + 1
+```
+
+`while True` never stops by itself, which in E1.2 was a bug, but here the body runs only as far as `next` asks. A generator expression can take from it:
+
+```python
+evens = (n for n in naturals() if n % 2 == 0)
+print(next(evens), next(evens), next(evens))
+```
+
+This prints `0 2 4`.
+
+<Exercise id="explore-pulled" />
+
+</Reveal>
+
+<Reveal for="explore-pulled">
+
+## Pipelines
+
+Generators can feed one another. Each stage below loops over the stage before it and yields what it passes on.
+
+```python
+def read(words):
+    for w in words:
+        print("read", w)
+        yield w
+
+
+def long_only(words):
+    for w in words:
+        if len(w) > 3:
+            yield w
+
+
+for w in long_only(read(["ant", "bison", "cat", "dingo"])):
+    print("got", w)
+```
+
+<Exercise id="explore-pipeline" />
+
+</Reveal>
+
+<Reveal for="explore-pipeline">
+
+Step through it, and watch each word travel the whole pipeline before the next is read. A generator that has yielded a word waits among the paused generators, with its names kept, until it is asked for the next one. Here the list is named `animals`, so that the last lines fit on a phone:
+
+<ProgramTrace
+  title="One word at a time"
+  description="The program makes the generator functions read and long_only, chains them over a list of four animals, and loops over the chain, printing each word that comes out. Each step of the figure shows the line about to run, the names as they stand, with each call's names listed apart from the main program's, each generator paused at a yield with the names it keeps, and what has been printed so far."
+  code={"def read(words):\n    for w in words:\n        print(\"read\", w)\n        yield w\n\n\ndef long_only(words):\n    for w in words:\n        if len(w) > 3:\n            yield w\n\n\nanimals = [\"ant\", \"bison\", \"cat\", \"dingo\"]\nfor w in long_only(read(animals)):\n    print(\"got\", w)"}
+/>
+
+At any moment the pipeline holds one word for each stage, however long the list. Give `read` an open file instead of a list, and it holds one line of the file at a time, so a pipeline like this can clean and filter a file of terabytes in the memory of a few lines. `long_only(read(animals))` is M1.3's $g(f(x))$ with `read` as $f$: each stage's output is the next stage's input, and the order of the stages matters. The asking runs the other way: the loop asks `long_only` first, and `long_only` asks `read`.
+
+## Batches
+
+Training takes its examples in *batches*, a few at a time, so a stream has to be cut into lists of one size. A generator can do it:
+
+```python
+def batches(items, size):
+    batch = []
+    for x in items:
+        batch.append(x)
+        if len(batch) == size:
+            yield batch
+            batch = []
+    if len(batch) > 0:
+        yield batch
+
+
+print(list(batches(range(7), 3)))
+```
+
+<Exercise id="explore-batches" />
+
+</Reveal>
+
+<Reveal for="explore-batches">
+
+The Derive phase proves that `batches` loses no item and repeats none, for any stream and any size. Training often drops a short last batch instead, so that every batch has the same size.
+
+## Shuffling a stream
+
+Training also wants its examples in a random order, and a large file of them is often sorted, by source or by date. Shuffling a list needs the whole list in memory. A stream is shuffled with a *buffer* instead: hold $k$ items, and as each new item arrives, hand out one of the $k$ chosen at random and put the new item in its place; when the stream ends, hand out what is left, in a random order. After `import random`, `random.randrange(k)` gives a whole number from 0 to $k - 1$ chosen at random, and `random.shuffle(xs)` puts the items of the list `xs` in a random order.
+
+```python
+import random
+
+
+def shuffled(items, k):
+    buffer = []
+    for x in items:
+        if len(buffer) < k:
+            buffer.append(x)
+        else:
+            i = random.randrange(k)
+            yield buffer[i]
+            buffer[i] = x
+    random.shuffle(buffer)
+    for x in buffer:
+        yield x
+```
+
+A file of 100,000 examples is sorted by topic, and its first 10,000 are about cooking. It is shuffled with a buffer of 1,000, and the shuffled stream is cut into batches of 32.
+
+<Exercise id="explore-first-batch" />
+
+</Reveal>
+
+<Reveal for="explore-first-batch">
+
+So a buffer much smaller than the data mixes it only locally: an item can come out only after it has arrived, and it arrives late if it sits late in the file, however the buffer chooses. So pipelines that stream their data often shuffle twice: first the order in which they read their files, and then the items, with a buffer. The Derive phase finds exactly how far forward a buffer can move an item. The figure shuffles a stream of 36 items in three topics with a buffer whose size you choose.
+
+<ShuffleBuffer
+  title="A shuffle buffer"
+  description="A stream of 36 items in order, 12 about each of three topics, A, B and C, drawn as a grid of 3 rows of 12, one row for each topic. Below it, the same items in the order a shuffle buffer hands them out, also in rows of 12. A slider sets the buffer's size from 1 to 36, at first 4, and a button shuffles again with new random choices. A sentence says how many items of each topic the first row of the output holds."
+  size={4}
+/>
+
+## The names
+
+<Definition term="Iterator">
+
+An object that hands out values one at a time, each time `next` is called on it, remembers where it is, and raises `StopIteration` when it has nothing left. `iter` of an iterator is the iterator itself, so it is used up after one loop over it. A list, a string, a dictionary or a range is *iterable*: `iter` makes a new iterator over it, starting at the beginning, for every loop. An open file is an iterator.
+
+</Definition>
+
+<Definition term="Generator">
+
+What a function with `yield` in its body gives back when it is called. It is an iterator: each `next` runs the body from where it last paused to the next `yield`, hands out that value and pauses again. A generator expression, such as `(x * x for x in xs)`, makes one in a line.
+
+</Definition>
+
+<Definition term="Pipeline and shuffle buffer">
+
+A pipeline is a chain of generators, each looping over the one before, which pass one item at a time through every stage. A shuffle buffer holds $k$ items of a stream and hands out one at random as each new item arrives, so that a stream too large to hold can be shuffled, but only locally.
+
+</Definition>
+
+</Reveal>

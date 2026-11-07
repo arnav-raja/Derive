@@ -25,7 +25,7 @@ concepts:
         string never changes. Its methods, such as `upper`, `replace`, `strip` and `split`, give
         back new values and leave the string as it was. Strings compare one character at a time, by
         the numbers behind the characters, so `"Z" < "a"` and `"10" < "9"`.
-      usedBy: [L4.2, E1.12]
+      usedBy: [L4.2, E1.12, E1.11]
     - id: E1.6/unicode-and-bytes
       name: Code points and UTF-8
       summary: >-
@@ -45,7 +45,7 @@ concepts:
         its block ends. `read` gives the whole text, and `readlines` and `for line in f` give its
         lines, each with the newline that ends it. Bytes decoded with the wrong encoding either stop
         Python with `UnicodeDecodeError` or, worse, give the wrong characters without a word.
-      usedBy: [E1.12, E2.8, E9.2]
+      usedBy: [E1.12, E2.8, E9.2, E1.11]
     - id: E1.6/parsing-and-formatting
       name: Parsing and formatting
       summary: >-
@@ -54,7 +54,7 @@ concepts:
         separators, and `int` and `float` turn fields into numbers. Formatting turns values back
         into text: an f-string puts the value of each expression in braces into the string, and a
         format such as `:,` or `:.3f` changes how a number is written, never the number.
-      usedBy: [E1.12, E2.8, E9.2]
+      usedBy: [E1.12, E2.8, E9.2, E1.11]
   used:
     - E1.1/values-and-types
     - E1.1/variables-as-names

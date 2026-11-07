@@ -33,7 +33,7 @@ concepts:
       summary: >-
         Feeding the output of one function into another makes a new function, and the order in which
         the two are applied usually matters.
-      usedBy: [M3.4, M2.7, E1.3, M1.11]
+      usedBy: [M3.4, M2.7, E1.3, M1.11, E1.11]
     - id: M1.3/inverse-functions
       name: Inverse functions
       summary: >-

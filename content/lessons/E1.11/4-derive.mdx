@@ -1,0 +1,51 @@
+The Explore phase watched generators hand out values only when asked. Now count what a request costs, prove that `batches` neither loses an item nor repeats one, find how far a shuffle buffer can move an item, and weigh a list against a stream.
+
+## Work done on demand
+
+The Explore phase took the first three even numbers from `naturals()` and found that it had handed out 5 numbers. In general, take the first $k$ multiples of $m$, for whole numbers $k$ and $m$ that are at least 1, by calling `next(multiples)` $k$ times on
+
+```python
+multiples = (n for n in naturals() if n % m == 0)
+```
+
+<Exercise id="derive-pulled" />
+
+<Reveal for="derive-pulled">
+
+Nothing after the $k$th multiple is made, however long the stream: a pipeline does the work for what is taken, and no more. The cost falls on the stages before a filter. A filter that keeps one item in a thousand pulls about $32 \times 1{,}000 = 32{,}000$ items through every stage before it to fill a batch of 32, and exactly $31 \times 1{,}000 + 1 = 31{,}001$ when, like `multiples`, it keeps the first item and every thousandth after it.
+
+## Batches lose nothing
+
+Is `batches` right for every stream and every `size` of at least 1? A loop invariant settles it, as in E1.2. The statement $P$ below is about the moment before each check of the loop, when the next item is about to be asked for, and after the loop ends.
+
+<Exercise id="derive-batches-proof" />
+
+</Reveal>
+
+<Reveal for="derive-batches-proof">
+
+Line 2 is the one that is easy to miss: the proof needs `batch = []` to make a new list, and a run of `batches` whose batches are used at once would never show it failing. The Build phase comes back to it.
+
+## How far a buffer moves an item
+
+Number the items of the stream from 0, in the order they arrive, and the items that `shuffled` hands out from 0 too, in the order they leave. With a buffer of $k$, nothing is handed out until the buffer is full. Then item $k$ arrives, and output 0 is chosen from the buffer; item $k + 1$ arrives, and output 1 is chosen; and so on. So output $j$ is chosen when item $k + j$ arrives, from the items in the buffer, all of which arrived before it.
+
+<Exercise id="derive-earliest" />
+
+</Reveal>
+
+<Reveal for="derive-earliest">
+
+So a buffer of $k$ moves an item forward by at most $k - 1$ places. It can move an item back by any number of places, since the random choice may pass over it again and again. With a buffer of 1,000, the item at place 50,000 cannot come out before place 49,001, however the choices fall, which is why the Explore phase's sorted file stays nearly sorted. In the figure, with a buffer of 13, C1, the item at place 24, can come out no earlier than place 12, the first place of the second row, however often you shuffle.
+
+## What a list costs
+
+<Exercise id="derive-list-memory" />
+
+</Reveal>
+
+<Reveal for="derive-list-memory">
+
+The generator expression `(x * x for x in range(10**8))` gives the same squares, one at a time, in about 200 bytes: a twenty-millionth of the room. A stream of the 15 trillion tokens of the puzzle's Llama 3 needs no more memory than a stream of 15, which is why training on data that large reads it through generators and pipelines rather than into one list.
+
+</Reveal>

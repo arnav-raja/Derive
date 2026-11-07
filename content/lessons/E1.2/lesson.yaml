@@ -33,14 +33,14 @@ concepts:
         check where the test is False, so each pass must move it towards False. A for loop runs
         its block once for each value of a range, and range(a, b) runs from a up to b - 1, which is
         b - a values.
-      usedBy: [E1.3, E1.4, M4.1]
+      usedBy: [E1.3, E1.4, M4.1, E1.11]
     - id: E1.2/loop-invariants
       name: Loop invariants
       summary: >-
         An invariant of a loop is a statement that is true before the loop starts and that every
         pass keeps true, so it holds at every check. When the loop stops, the invariant and the
         failed test are true together, and together they say exactly what the loop computed.
-      usedBy: [E1.10, E1.9]
+      usedBy: [E1.10, E1.9, E1.11]
     - id: E1.2/accumulator-pattern
       name: Accumulators
       summary: >-

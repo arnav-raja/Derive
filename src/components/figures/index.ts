@@ -12,6 +12,7 @@ export { ProgramTrace } from "./program-trace";
 export { QuantifierGrid } from "./quantifier-grid";
 export { ScaleLine } from "./scale-line";
 export { SetDiagram } from "./set-diagram";
+export { ShuffleBuffer } from "./shuffle-buffer";
 export { Staircase } from "./staircase";
 export { TextBytes } from "./text-bytes";
 export { TieLists } from "./tie-lists";

@@ -1,0 +1,21 @@
+The test of understanding is explaining it simply to someone who was not there. Your friend knows Python's loops, lists and files. Their training script runs three epochs over a file of examples, reading it with `for line in f`, and the log says that the second and third epochs saw no examples at all. To be safe, they now plan to read the whole file, 50 GB of it, into a list first, and loop over the list.
+
+<Exercise id="explain-streams" />
+
+## Where this leads
+
+A `for` loop asks for an iterator and calls `next` until there is nothing left. Everything in this lesson, from the used-up file to the shuffle buffer, followed from that one protocol and from generators that make each value only when it is asked for.
+
+<Foreshadow lesson="E5.5">
+
+PyTorch's `DataLoader` is an iterable, not an iterator: each `for` over it makes a fresh iterator, so every epoch sees all the data. E5.5 opens it up, with datasets that hand out one example at a time, batches put together from them, and worker processes that prepare the next batches while the current one trains.
+
+</Foreshadow>
+
+<Foreshadow lesson="E9.1">
+
+A training set starts as a crawl of the web, far too large for any machine's memory. E9.1 follows a token's path through a pipeline of stages like this lesson's: extracting the text, filtering it, tokenising it, packing the tokens into sequences of one length, and shuffling them with buffers on the way to a training batch.
+
+</Foreshadow>
+
+<MixedCheck />

@@ -25,7 +25,7 @@ concepts:
         value, runs the body and ends at the first return it reaches, whose value becomes the value
         of the call. A function that ends without return gives None, and printing a value is not
         returning it.
-      usedBy: [E1.4, E1.5, E1.7, L1.1]
+      usedBy: [E1.4, E1.5, E1.7, L1.1, E1.11]
     - id: E1.3/scope
       name: Local and global names
       summary: >-

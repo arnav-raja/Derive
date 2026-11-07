@@ -1,0 +1,274 @@
+{
+  "version": 1,
+  "expressions": {
+    "derive-earliest": {
+      "source": "c271381174161678",
+      "points": [
+        {
+          "p": "8",
+          "k": "2"
+        },
+        {
+          "p": "1",
+          "k": "2"
+        },
+        {
+          "p": "1",
+          "k": "4"
+        },
+        {
+          "p": "5",
+          "k": "4"
+        },
+        {
+          "p": "6",
+          "k": "4"
+        },
+        {
+          "p": "8",
+          "k": "9"
+        }
+      ],
+      "values": [
+        "7.0000000000000000000",
+        "0",
+        "-2.0000000000000000000",
+        "2.0000000000000000000",
+        "3.0000000000000000000",
+        "0"
+      ]
+    },
+    "derive-earliest#1": {
+      "source": "983e81ab740d1339",
+      "points": [
+        {
+          "k": "1"
+        },
+        {
+          "k": "6"
+        },
+        {
+          "k": "9"
+        },
+        {
+          "k": "8"
+        },
+        {
+          "k": "4"
+        },
+        {
+          "k": "5"
+        }
+      ],
+      "values": [
+        "0",
+        "5.0000000000000000000",
+        "8.0000000000000000000",
+        "7.0000000000000000000",
+        "3.0000000000000000000",
+        "4.0000000000000000000"
+      ]
+    },
+    "derive-pulled": {
+      "source": "1b5f25aa6a23e7a7",
+      "points": [
+        {
+          "k": "2",
+          "m": "4"
+        },
+        {
+          "k": "8",
+          "m": "8"
+        },
+        {
+          "k": "9",
+          "m": "1"
+        },
+        {
+          "k": "3",
+          "m": "7"
+        },
+        {
+          "k": "9",
+          "m": "3"
+        },
+        {
+          "k": "3",
+          "m": "9"
+        }
+      ],
+      "values": [
+        "5.0000000000000000000",
+        "57.000000000000000000",
+        "9.0000000000000000000",
+        "15.000000000000000000",
+        "25.000000000000000000",
+        "19.000000000000000000"
+      ]
+    }
+  },
+  "runs": {
+    "build-countdown": {
+      "tests": [
+        {
+          "name": "test_three",
+          "description": "Countdown(3) gives 3, 2 and 1.",
+          "passed": false,
+          "message": "The first values of Countdown(3) are [2, 1, 0], not [3, 2, 1]."
+        },
+        {
+          "name": "test_zero_and_one",
+          "description": "Countdown(0) and Countdown(-2) give nothing, and Countdown(1) gives 1.",
+          "passed": false,
+          "message": "Countdown(1) gave [0], not [1]."
+        },
+        {
+          "name": "test_for_loop",
+          "description": "A for loop over Countdown(100) adds up to 5,050.",
+          "passed": false,
+          "message": "A for loop over Countdown(100) added up to 4,950, not 5,050 = 100 + 99 + ... + 1."
+        },
+        {
+          "name": "test_used_up",
+          "description": "An iterator is used up after one loop over it, and stays used up.",
+          "passed": false,
+          "message": "The first loop over Countdown(4) gave [3, 2, 1, 0], not [4, 3, 2, 1]."
+        },
+        {
+          "name": "test_iter_is_self",
+          "description": "iter of a Countdown is the Countdown itself.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": "2 1 0 end\nend\n"
+    },
+    "build-interleave": {
+      "tests": [
+        {
+          "name": "test_example",
+          "description": "Lists and strings of different lengths take turns.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_no_streams",
+          "description": "With no streams, interleave gives nothing.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_one_pass_streams",
+          "description": "Generators, which can be read only once, take turns too.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_endless",
+          "description": "An endless stream goes on after the others are used up.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_none_is_a_value",
+          "description": "A stream that holds None is not taken to be used up.",
+          "passed": false,
+          "message": "interleave([[None, 1], [2]]) gave [2], not [None, 2, 1]."
+        },
+        {
+          "name": "test_everything_once",
+          "description": "Every item of every stream comes out once, each stream's items in their order.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": "1\na\n2\nb\n3\nend\n"
+    },
+    "build-pack": {
+      "tests": [
+        {
+          "name": "test_example",
+          "description": "The three documents of the example make three lists of 4.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_leftovers_dropped",
+          "description": "Tokens too few to fill a list are dropped, end tokens included.",
+          "passed": false,
+          "message": "pack([[1, 2, 3]], 3, 0) gave [[1, 2, 3], [0]], not [[1, 2, 3]]: the end token left over after it is too few to fill a list."
+        },
+        {
+          "name": "test_long_documents",
+          "description": "A document longer than a list is split across lists.",
+          "passed": false,
+          "message": "pack([[10, 11, 12, 13, 14, 15, 16, 17, 18, 19]], 4, 0) gave [[10, 11, 12, 13], [14, 15, 16, 17], [18, 19, 0]], not [[10, 11, 12, 13], [14, 15, 16, 17]]."
+        },
+        {
+          "name": "test_empty_documents",
+          "description": "An empty document still adds its end token.",
+          "passed": false,
+          "message": "pack([[], [], [7], []], 2, 0) gave [[0, 0], [7, 0], [0]], not [[0, 0], [7, 0]]."
+        },
+        {
+          "name": "test_lengths_and_order",
+          "description": "Every list has `length` tokens, and the lists, end to end, are the start of the stream of tokens.",
+          "passed": false,
+          "message": "With length 2, pack gave the list [-1], whose length is 1."
+        },
+        {
+          "name": "test_new_lists",
+          "description": "Each list handed out is a list of its own, which later tokens never change.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_endless_stream",
+          "description": "pack works on an endless stream of documents, taking each document only when it needs its tokens.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": ""
+    },
+    "debug-epochs": {
+      "tests": [
+        {
+          "name": "test_train",
+          "description": "Three epochs over train.txt each see its 4 examples.",
+          "passed": false,
+          "message": "seen_per_epoch(\"train.txt\", 3) gave [4, 0, 0], not [4, 4, 4]."
+        },
+        {
+          "name": "test_other_files",
+          "description": "Every epoch sees every line, for files of 0, 1 and 7 lines and 1, 2 and 5 epochs.",
+          "passed": false,
+          "message": "With a file of 1 line and 2 epochs, seen_per_epoch gave [1, 0], not [1, 1]."
+        },
+        {
+          "name": "test_no_epochs",
+          "description": "Zero epochs give an empty list.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_streams_each_epoch",
+          "description": "Each epoch opens the file afresh, rather than carrying on from a stream or a list made earlier.",
+          "passed": false,
+          "message": "Over three epochs, seen_per_epoch opened train.txt once, not once in each epoch: each epoch should open the file afresh, rather than carry on from a stream or a list made earlier."
+        },
+        {
+          "name": "test_one_line_at_a_time",
+          "description": "Each epoch counts the lines as they stream past, never holding all of them at once.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": ""
+    }
+  }
+}

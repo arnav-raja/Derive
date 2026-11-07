@@ -1,0 +1,1526 @@
+exercises:
+  # Puzzle ---------------------------------------------------------------------
+  - id: puzzle-epochs
+    phase: puzzle
+    kind: predict
+    concept: E1.11/iterators
+    title: The second epoch
+    prompt: What is the second line that the script prints?
+    answer:
+      type: choice
+      options:
+        - { id: again, label: '`epoch 1 saw 3`' }
+        - { id: last-line, label: '`epoch 1 saw 1`' }
+        - { id: right, label: '`epoch 1 saw 0`' }
+        - { id: closed, label: 'No second line: it stops with an error, since the file has been read to its end' }
+      correct: [right]
+    explanation: >-
+      An open file keeps a place in its text, like a bookmark, and every line read moves the place
+      on. The first epoch's loop read to the end and left the place there, so the second loop asked
+      for a line, got none, and ended at once: `seen` stayed 0. The file is still open, so there is
+      no error; it is simply used up. It does not read `bird` again either, since the place is
+      after the last line, not on it.
+
+  # Recall ---------------------------------------------------------------------
+  - id: recall-range
+    phase: recall
+    kind: recall
+    concept: E1.2/loops
+    prompt: How many times does the block of `for i in range(3, 10):` run?
+    answer: { type: number, value: 7, tolerance: { abs: 0 } }
+    explanation: >-
+      `range(3, 10)` gives 3, 4, 5, 6, 7, 8 and 9, which is $10 - 3 = 7$ values: it stops before
+      10.
+
+  - id: recall-invariant
+    phase: recall
+    kind: recall
+    concept: E1.2/loop-invariants
+    prompt: What makes a statement an invariant of a loop?
+    answer:
+      type: choice
+      options:
+        - { id: after, label: 'It is true once the loop has ended, whatever happened inside it' }
+        - { id: test, label: 'It is the test that the loop checks before every pass' }
+        - { id: right, label: 'It is true before the loop starts, and every pass keeps it true' }
+        - { id: changes, label: 'It changes on every pass, moving the loop towards its end' }
+      correct: [right]
+    explanation: >-
+      True before the first pass and kept by every pass, so it holds at every check and after the
+      loop, where it joins the reason the loop stopped to say what the loop computed. A statement
+      true only at the end proves nothing about how it got there, and what moves a loop towards
+      its end is a falling count, not an invariant.
+
+  - id: recall-alias
+    phase: recall
+    kind: recall
+    concept: E1.4/aliasing-and-mutation
+    prompt: |-
+      What does this print?
+
+      ```python
+      a = [1, 2]
+      b = a
+      b.append(3)
+      print(a)
+      ```
+    answer:
+      type: choice
+      options:
+        - { id: copy, label: '`[1, 2]`' }
+        - { id: right, label: '`[1, 2, 3]`' }
+        - { id: twice, label: '`[1, 2, 3, 3]`' }
+        - { id: error, label: 'It stops with an error' }
+      correct: [right]
+    explanation: >-
+      `b = a` makes `b` a second name for the same list, so appending through `b` changes the list
+      that `a` names too.
+
+  - id: recall-newline
+    phase: recall
+    kind: recall
+    concept: E1.6/files
+    prompt: >-
+      A file holds three lines, `cat`, `dog` and `bird`, each ending with a newline. A program
+      opens it as `f` and runs `for line in f: print(len(line))`. What is the first number it
+      prints?
+    answer: { type: number, value: 4, tolerance: { abs: 0 } }
+    explanation: >-
+      Each line arrives with the newline that ends it, so the first is `"cat\n"`, four characters.
+      `line.strip()` would give `"cat"`.
+
+  - id: recall-special
+    phase: recall
+    kind: recall
+    concept: E1.7/special-methods
+    prompt: '`m` is an object of a class you wrote. Which call does Python make to work out `m + 1`?'
+    answer:
+      type: choice
+      options:
+        - { id: right, label: '`m.__add__(1)`' }
+        - { id: plain, label: '`m.add(1)`' }
+        - { id: other, label: '`(1).__add__(m)`' }
+        - { id: init, label: '`m.__init__(1)`' }
+      correct: [right]
+    explanation: >-
+      `+` calls the left operand's `__add__` with the right operand, as `==` calls `__eq__`.
+      `__init__` runs only when an object is made.
+
+  # Explore --------------------------------------------------------------------
+  - id: explore-past-the-end
+    phase: explore
+    kind: predict
+    concept: E1.11/iterators
+    title: Past the end
+    prompt: After those two lines, `print(next(it))` runs twice more. What happens?
+    answer:
+      type: choice
+      options:
+        - { id: wrap, label: 'It prints `bird`, then `cat`, starting over' }
+        - { id: none, label: 'It prints `bird`, then `None`' }
+        - { id: right, label: 'It prints `bird`, then stops with an error' }
+        - { id: stay, label: 'It prints `bird`, and then `bird` again' }
+      correct: [right]
+    explanation: >-
+      The third call gives `bird`, the last item, and the fourth finds nothing left and raises an
+      error, which stops the program. An iterator never starts over and never makes up a value: it
+      either has a next item or says that it has none.
+    placement: true
+    review:
+      variants:
+        - prompt: After `it = iter("ab")`, what does the first `next(it)` give?
+          answer:
+            type: choice
+            options:
+              - { id: whole, label: '`"ab"`' }
+              - { id: right, label: '`"a"`' }
+              - { id: last, label: '`"b"`' }
+              - { id: error, label: 'An error, since a string is not a list' }
+            correct: [right]
+          explanation: >-
+            A string is iterable, and its iterator hands out its characters one at a time, as a
+            `for` loop over a string does.
+        - prompt: After `it = iter([7])`, what is `next(it, 0) + next(it, 0)`?
+          answer: { type: number, value: 7, tolerance: { abs: 0 } }
+          explanation: >-
+            The first call gives 7, the only item. The second finds nothing left and gives its
+            default, 0, instead of raising, so the sum is 7.
+
+  - id: explore-two-iterators
+    phase: explore
+    kind: predict
+    concept: E1.11/iterators
+    title: Two at once
+    prompt: What does it print?
+    answer:
+      type: choice
+      options:
+        - { id: right, label: '`1 2 1`' }
+        - { id: shared, label: '`1 2 3`' }
+        - { id: same, label: '`1 2 2`' }
+        - { id: error, label: 'It stops with an error, since a list has one iterator at a time' }
+      correct: [right]
+    explanation: >-
+      `a` and `b` are two iterators over one list, each with a place of its own. `a` gives 1 and
+      then 2; `b` has not been asked before, so it gives 1.
+    review:
+      variants:
+        - prompt: |-
+            What does this print?
+
+            ```python
+            xs = [1, 2, 3]
+            a = iter(xs)
+            b = a
+            print(next(a), next(b))
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: two, label: '`1 1`' }
+              - { id: right, label: '`1 2`' }
+              - { id: error, label: 'It stops with an error' }
+              - { id: three, label: '`2 3`' }
+            correct: [right]
+          explanation: >-
+            `b = a` makes `b` a second name for the same iterator, as it would for a list, so the
+            second call carries on from where the first left off.
+        - prompt: |-
+            What does this print?
+
+            ```python
+            a = iter([4, 5, 6])
+            next(a)
+            print(list(a))
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: all, label: '`[4, 5, 6]`' }
+              - { id: empty, label: '`[]`' }
+              - { id: right, label: '`[5, 6]`' }
+              - { id: four, label: '`[4]`' }
+            correct: [right]
+          explanation: >-
+            `list` takes what the iterator has left. The first `next` used up 4, so 5 and 6
+            remain.
+        - prompt: |-
+            What does this print?
+
+            ```python
+            class Repeatable:
+                def __init__(self, n):
+                    self.n = n
+
+                def __iter__(self):
+                    n = self.n
+                    while n > 0:
+                        yield n
+                        n = n - 1
+
+
+            r = Repeatable(3)
+            print(list(r), list(r))
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: used, label: '`[3, 2, 1] []`' }
+              - { id: error, label: 'It stops with an error, since `__next__` is missing' }
+              - { id: right, label: '`[3, 2, 1] [3, 2, 1]`' }
+              - { id: one, label: '`[3] [2]`' }
+            correct: [right]
+          explanation: >-
+            Each `list` calls `iter(r)`, which calls `__iter__`, and an `__iter__` written with
+            `yield` gives a new generator, starting from the top, on every call. `r` itself never
+            changes, so the second `list` sees every value again.
+
+  - id: explore-yield
+    phase: explore
+    kind: predict
+    concept: E1.11/generators
+    title: When the body runs
+    prompt: What does the program print, line by line?
+    answer:
+      type: choice
+      options:
+        - { id: eager, label: '`start`, `made`, `3`, `2`' }
+        - { id: right, label: '`made`, `start`, `3`, `2`' }
+        - { id: whole, label: '`start`, `lift-off`, `made`, `3`, `2`' }
+        - { id: restart, label: '`made`, `start`, `3`, `start`, `2`' }
+      correct: [right]
+    explanation: >-
+      Calling a generator function runs none of its body, so `made` comes first. The first `next`
+      runs the body from the top, printing `start`, as far as `yield n`, and hands out 3. The second
+      carries on from that `yield`, with `n` still 3, makes it 2 and hands out 2. `lift-off` would
+      come only with a fourth `next`.
+    placement: true
+    review:
+      variants:
+        - prompt: |-
+            What does this print?
+
+            ```python
+            def two():
+                yield "a"
+                yield "b"
+
+
+            g = two()
+            print(next(g), next(g), next(g, "none"))
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: again, label: '`a b a`' }
+              - { id: error, label: 'It stops with an error after `a b`' }
+              - { id: last, label: '`a b b`' }
+              - { id: right, label: '`a b none`' }
+            correct: [right]
+          explanation: >-
+            After `yield "b"` the body ends, so the third `next` finds nothing more and gives its
+            default, `"none"`.
+        - prompt: |-
+            How many times does this print `hi`?
+
+            ```python
+            def f():
+                print("hi")
+                yield 1
+
+
+            g = f()
+            h = f()
+            next(g)
+            ```
+          answer: { type: number, value: 1, tolerance: { abs: 0 } }
+          explanation: >-
+            Each call of `f` makes a generator and runs none of the body. Only `g` is asked for a
+            value, so only its body runs, once, as far as its `yield`.
+
+  - id: explore-sum-twice
+    phase: explore
+    kind: predict
+    concept: E1.11/generators
+    title: Summing twice
+    prompt: What is the second number it prints?
+    answer: { type: number, value: 0, tolerance: { abs: 0 } }
+    explanation: >-
+      The first `sum` took every value the generator had and left it used up, so the second took
+      none, and the sum of no numbers is 0.
+    review:
+      variants:
+        - prompt: |-
+            What does this print?
+
+            ```python
+            g = (x for x in [3, 4])
+            print(list(g), list(g))
+            ```
+          answer:
+            type: choice
+            options:
+              - { id: twice, label: '`[3, 4] [3, 4]`' }
+              - { id: right, label: '`[3, 4] []`' }
+              - { id: split, label: '`[3] [4]`' }
+              - { id: none, label: '`[] []`' }
+            correct: [right]
+          explanation: >-
+            The first `list` uses the generator up; the second finds nothing left.
+        - prompt: After `g = (x + 1 for x in range(3))`, what is `next(g) + sum(g)`?
+          answer: { type: number, value: 6, tolerance: { abs: 0 } }
+          explanation: >-
+            The generator gives 1, 2 and 3. `next` takes the 1, and `sum` takes what is left, 2 and
+            3, so the total is $1 + 5 = 6$.
+
+  - id: explore-pulled
+    phase: explore
+    kind: predict
+    concept: E1.11/streaming-pipelines
+    title: How much was made
+    prompt: >-
+      How many numbers has `naturals()` handed out by the time the line has printed? Count every
+      value it yielded, kept or not.
+    answer: { type: number, value: 5, tolerance: { abs: 0 } }
+    explanation: >-
+      `naturals()` hands out 0, 1, 2, 3 and 4. The filter keeps 0, 2 and 4 and drops 1 and 3, and
+      the third `next` stops asking as soon as it has 4, so nothing beyond 4 is ever made.
+    review:
+      variants:
+        - prompt: >-
+            With `odds = (n for n in naturals() if n % 2 == 1)`, three calls of `next(odds)` give
+            1, 3 and 5. How many numbers has `naturals()` handed out by then?
+          answer: { type: number, value: 6, tolerance: { abs: 0 } }
+          explanation: >-
+            0, 1, 2, 3, 4 and 5: six numbers, the last of them the third odd one.
+        - prompt: >-
+            With `tens = (n for n in naturals() if n % 10 == 0)`, two calls of `next(tens)` give 0
+            and 10. How many numbers has `naturals()` handed out by then?
+          answer: { type: number, value: 11, tolerance: { abs: 0 } }
+          explanation: >-
+            0 to 10, which is 11 numbers: the filter looks at each and keeps 0 and 10.
+
+  - id: explore-pipeline
+    phase: explore
+    kind: predict
+    concept: E1.11/streaming-pipelines
+    title: Two stages
+    prompt: In what order are the lines printed?
+    answer:
+      type: choice
+      options:
+        - { id: lists, label: '`read ant`, `read bison`, `read cat`, `read dingo`, `got bison`, `got dingo`' }
+        - { id: skip, label: '`read bison`, `got bison`, `read dingo`, `got dingo`' }
+        - { id: right, label: '`read ant`, `read bison`, `got bison`, `read cat`, `read dingo`, `got dingo`' }
+        - { id: outer, label: '`got bison`, `got dingo`, `read ant`, `read bison`, `read cat`, `read dingo`' }
+      correct: [right]
+    explanation: >-
+      A generator does its work only when it is asked for a value. The loop asks `long_only`, which
+      asks `read`: `ant` is read and dropped, `bison` is read and passed straight on, and
+      `got bison` is printed before `cat` is read. Every word is read, but each only when it is
+      needed.
+    placement: true
+    review:
+      variants:
+        - prompt: |-
+            How many lines beginning `read` does this print?
+
+            ```python
+            def read(words):
+                for w in words:
+                    print("read", w)
+                    yield w
+
+
+            three = (w for w in read(["ox", "yak", "emu"]) if len(w) == 3)
+            print("first", next(three))
+            ```
+          answer: { type: number, value: 2, tolerance: { abs: 0 } }
+          explanation: >-
+            `ox` is read and dropped, `yak` is read and kept, and `next` asks for nothing more, so
+            `emu` is never read.
+        - prompt: >-
+            The stages swap places, and the loop becomes
+            `for w in read(long_only(["ant", "bison", "cat", "dingo"])): print("got", w)`. Which
+            words does `read` print?
+          answer:
+            type: choice
+            options:
+              - { id: all, label: 'All four, in order' }
+              - { id: right, label: '`bison` and `dingo`' }
+              - { id: short, label: '`ant` and `cat`' }
+              - { id: none, label: 'None of them' }
+            correct: [right]
+          explanation: >-
+            Now `long_only` comes first and `read` sees only the words it passes on, so the order
+            of the stages changes what each stage sees, as the order of two functions in a
+            composition does.
+
+  - id: explore-batches
+    phase: explore
+    kind: predict
+    concept: E1.11/batches-and-shuffle-buffers
+    title: Seven items in threes
+    prompt: What does it print?
+    answer:
+      type: choice
+      options:
+        - { id: drop, label: '`[[0, 1, 2], [3, 4, 5]]`' }
+        - { id: wrap, label: '`[[0, 1, 2], [3, 4, 5], [6, 0, 1]]`' }
+        - { id: empty, label: '`[[0, 1, 2], [3, 4, 5], [6], []]`' }
+        - { id: right, label: '`[[0, 1, 2], [3, 4, 5], [6]]`' }
+      correct: [right]
+    explanation: >-
+      Two full batches are handed out inside the loop. When the stream ends, `batch` holds `[6]`,
+      which is not empty, so the last `if` hands it out too. The stream is not read again from the
+      start, and no empty batch is made.
+    review:
+      variants:
+        - prompt: What does `print(list(batches(range(6), 3)))` print?
+          answer:
+            type: choice
+            options:
+              - { id: empty, label: '`[[0, 1, 2], [3, 4, 5], []]`' }
+              - { id: one, label: '`[[0, 1, 2]]`' }
+              - { id: flat, label: '`[0, 1, 2, 3, 4, 5]`' }
+              - { id: right, label: '`[[0, 1, 2], [3, 4, 5]]`' }
+            correct: [right]
+          explanation: >-
+            Both batches fill exactly, so `batch` is empty when the loop ends and the last `if`
+            hands out nothing more.
+        - prompt: How many batches does `batches(range(100), 32)` hand out?
+          answer: { type: number, value: 4, tolerance: { abs: 0 } }
+          explanation: >-
+            Three full batches take 96 items, and the 4 left over make a fourth, short batch.
+
+  - id: explore-first-batch
+    phase: explore
+    kind: predict
+    concept: E1.11/batches-and-shuffle-buffers
+    title: The first batch
+    prompt: Which examples can the first batch of 32 hold?
+    answer:
+      type: choice
+      options:
+        - { id: any, label: 'Any of the 100,000 examples, each as likely as the rest' }
+        - { id: right, label: 'Only cooking examples, from the first 1,031 to arrive' }
+        - { id: first, label: 'Exactly the first 32 examples, in a random order' }
+        - { id: mixed, label: 'Some of every topic, though mostly cooking examples' }
+      correct: [right]
+    explanation: >-
+      The buffer hands out its first item when the 1,001st arrives, choosing among the first
+      1,000, and its 32nd when the 1,032nd arrives, choosing among the first 1,031. All of those are
+      about cooking. Within them the choice is random, so the batch is not simply the first 32.
+    placement: true
+    review:
+      variants:
+        - prompt: >-
+            The same file of 100,000 is shuffled with a buffer of 100,000. Which examples can the
+            first batch of 32 hold?
+          answer:
+            type: choice
+            options:
+              - { id: cooking, label: 'Only cooking examples' }
+              - { id: first, label: 'Only the first 1,031' }
+              - { id: right, label: 'Any of the 100,000' }
+              - { id: last, label: 'Only the last 32' }
+            correct: [right]
+          explanation: >-
+            The buffer never fills before the stream ends, so all 100,000 are held and then
+            shuffled with `random.shuffle`: a full shuffle, in which any example can come first.
+        - prompt: >-
+            `shuffled` runs with a buffer of 10. How many items have arrived from the stream when
+            it hands out its first item?
+          answer: { type: number, value: 11, tolerance: { abs: 0 } }
+          explanation: >-
+            The first 10 fill the buffer, and the first item is handed out when the 11th arrives,
+            to take its place.
+
+  # Derive ---------------------------------------------------------------------
+  - id: derive-pulled
+    phase: derive
+    kind: step
+    concept: E1.11/streaming-pipelines
+    title: What a request costs
+    prompt: >-
+      How many numbers has `naturals()` handed out once the $k$th multiple of $m$ has come out of
+      `multiples`?
+    answer:
+      type: expression
+      symbols:
+        - { name: k, positive: true, integer: true }
+        - { name: m, positive: true, integer: true }
+      lhs: '\text{numbers} ='
+      reference: (k - 1)*m + 1
+      accept: ['k*m - m + 1', 'm*(k - 1) + 1', '1 + m*k - m']
+      reject: ['k*m', 'k*m + 1', '(k + 1)*m', 'k*(m - 1) + 1', '(k - 1)*m', 'k*m - 1', 'k + m', '(k - 1)*m + 2']
+    explanation: >-
+      The multiples of $m$ are $0, m, 2m, \dots$, so the $k$th is $(k - 1)m$, and `naturals()` has
+      handed out every number from 0 up to it: $(k - 1)m + 1$ numbers. For $k = 3$ and $m = 2$
+      that is 5, as the Explore phase found.
+    review:
+      variants:
+        - prompt: >-
+            How many numbers does `naturals()` hand out to give the first 5 multiples of 3 through
+            `(n for n in naturals() if n % 3 == 0)`?
+          answer: { type: number, value: 13, tolerance: { abs: 0 } }
+          explanation: >-
+            The 5th multiple of 3 is 12, and the numbers from 0 to 12 are 13 numbers.
+        - prompt: >-
+            With `big = (n * n for n in naturals() if n * n > 50)`, how many numbers has
+            `naturals()` handed out when `next(big)` gives its first value?
+          answer: { type: number, value: 9, tolerance: { abs: 0 } }
+          explanation: >-
+            The first square above 50 is $8^2 = 64$, so `naturals()` has handed out 0 to 8, which
+            is 9 numbers.
+
+  - id: derive-batches-proof
+    phase: derive
+    kind: proof
+    concept: E1.11/batches-and-shuffle-buffers
+    title: Nothing lost, nothing repeated
+    prompt: >-
+      Here is a proof, by a loop invariant, that `batches` hands out every item of any stream
+      once, in order, in batches of `size` but perhaps a shorter last one, and never an empty
+      batch. Each line follows from the lines above it. Choose the rule that justifies each line.
+      A rule may be used more than once or not at all.
+    answer:
+      type: steps
+      rules:
+        - { id: invariant, name: Loop invariant, label: 'A statement that holds at the first check of a loop, and that every pass keeps true, still holds once the loop has stopped.' }
+        - { id: last, name: The leftover batch, label: 'Once the loop is over, `if len(batch) > 0: yield batch` yields `batch` only if it is not empty.' }
+        - { id: alias, name: A new list, label: '`batch = []` makes `batch` refer to a new list, and leaves the list it referred to before as it was.' }
+        - { id: start, name: The set-up, label: '`batch = []` runs first, and until the loop runs, nothing is taken from `items` and nothing is yielded.' }
+        - { id: wait, name: Generators wait, label: 'A generator runs none of its body until it is asked for a value.' }
+        - { id: full, name: The size test, label: 'The `if` inside the loop yields `batch` exactly when `len(batch) == size`, and then runs `batch = []`.' }
+        - { id: end, name: How a loop stops, label: 'A `for` loop stops only when `next` on its iterator raises `StopIteration`, that is, when nothing is left.' }
+        - { id: append, name: Appending, label: '`batch.append(x)` makes `batch` one item longer, with `x` as its last item.' }
+      start: 'P\text{: the batches handed out so far, followed by } \texttt{batch}\text{, hold the items read so far, in order; each batch handed out holds } \texttt{size} \text{ items; and } \texttt{batch} \text{ holds fewer than } \texttt{size}\text{.}'
+      lines:
+        - math: 'P \text{ holds before the first check: nothing has been read or handed out, and } \texttt{batch} \text{ is empty.}'
+          rule: start
+        - math: '\text{Appending to } \texttt{batch} \text{ never changes a batch already handed out, so what } P \text{ says of those batches stays true through a pass.}'
+          rule: alias
+        - math: '\text{A pass reads the next item and puts it at the end of } \texttt{batch}\text{, so the batches and } \texttt{batch} \text{ still hold the items read so far, in order.}'
+          rule: append
+        - math: '\text{If } \texttt{batch} \text{ now holds } \texttt{size} \text{ items, it is handed out full and } \texttt{batch} \text{ starts again empty; if not, it still holds fewer than } \texttt{size}\text{. Either way } P \text{ holds.}'
+          rule: full
+        - math: 'P \text{ holds after the loop ends.}'
+          rule: invariant
+        - math: '\text{By then every item has been read, so the batches handed out and } \texttt{batch} \text{ hold all the items, in order.}'
+          rule: end
+        - math: '\text{So every item is handed out once, in order, in batches of } \texttt{size} \text{ but perhaps a shorter last one, and never an empty batch.}'
+          rule: last
+    explanation: >-
+      $P$ holds before the loop because nothing has happened yet. Each batch handed out is a list
+      that no later append touches, since `batch = []` made `batch` refer to a new one, so $P$
+      stays true of it. A pass appends one item, which keeps the items in order, and then either
+      hands out a full batch and starts a new list, or leaves `batch` short of `size`. The
+      invariant rule carries $P$ to the end of the loop, when every item has been read, and the
+      final `if` hands out the rest only if there is any. That generators wait is true, but this
+      proof does not need it.
+    review:
+      variants:
+        - prompt: >-
+            In the proof that `batches` hands out every item once, which fact would fail if
+            `batch = []` were replaced by `batch.clear()`?
+          answer:
+            type: choice
+            options:
+              - { id: start, label: '$P$ holds before the first check' }
+              - { id: right, label: 'A batch already handed out never changes' }
+              - { id: end, label: 'Every item has been read when the loop ends' }
+              - { id: last, label: 'The last batch is never empty' }
+            correct: [right]
+          explanation: >-
+            `clear` empties the very list that was handed out, so the next appends change it, and
+            every batch handed out is the same list.
+        - prompt: Which of these is an invariant of the loop in `batches`, true before every check?
+          answer:
+            type: choice
+            options:
+              - { id: empty, label: '`batch` is empty' }
+              - { id: right, label: '`batch` holds fewer than `size` items' }
+              - { id: read, label: '`batch` holds every item read so far' }
+              - { id: equal, label: '`len(batch) == size`' }
+            correct: [right]
+          explanation: >-
+            A full `batch` is handed out at once and replaced by an empty list, so before each
+            check it holds fewer than `size` items. It need not be empty: after 4 items with a
+            size of 3, it holds 1, and it holds only the items read since the last batch was
+            handed out.
+
+  - id: derive-earliest
+    phase: derive
+    kind: step
+    concept: E1.11/batches-and-shuffle-buffers
+    title: The furthest forward
+    prompt: >-
+      With a buffer of $k$, at which output place, at the earliest, can the item at place $p$ of
+      the stream come out, for $p$ at least $k$?
+    answer:
+      type: expression
+      symbols:
+        - { name: p, positive: true, integer: true }
+        - { name: k, positive: true, integer: true }
+      lhs: '\text{earliest place} ='
+      reference: p - k + 1
+      accept: ['p - (k - 1)', '1 + p - k']
+      reject: ['p - k', 'p - k - 1', 'p + k - 1', 'p - k + 2', 'k - 1', 'p', 'p - 1', 'p + 1 - 2*k']
+    explanation: >-
+      Output $j$ is chosen from items that arrived before item $k + j$, so item $p$ can be chosen
+      only when $p < k + j$, that is when $j \ge p - k + 1$. It arrives as output $p - k$ is chosen,
+      one too late for it.
+    review:
+      variants:
+        - prompt: >-
+            With a buffer of 100, what is the earliest output place at which the item at place
+            1,000 of the stream can come out? Places are counted from 0.
+          answer: { type: number, value: 901, tolerance: { abs: 0 } }
+          explanation: >-
+            $1{,}000 - 100 + 1 = 901$: the item arrives as output 900 is chosen, too late for it.
+        - prompt: With a buffer of $k$, by at most how many places can an item move forward?
+          answer:
+            type: expression
+            symbols:
+              - { name: k, positive: true, integer: true }
+            lhs: '\text{places} ='
+            reference: k - 1
+            accept: ['-1 + k']
+            reject: ['k', 'k + 1', 'k - 2', '2*k']
+          explanation: >-
+            From place $p$ to place $p - k + 1$ at the earliest, which is $k - 1$ places forward.
+
+  - id: derive-list-memory
+    phase: derive
+    kind: estimate
+    concept: E1.11/generators
+    covers: [E1.11/streaming-pipelines]
+    title: What a list costs
+    prompt: >-
+      A program keeps the squares of the whole numbers from 0 to 99,999,999 in a list, made by
+      appending. On the 64-bit machines that train models, each slot of a list takes 8 bytes, and
+      almost every one of these squares is an int that takes 32 bytes. Without a calculator, about
+      how many gigabytes does the list take? A gigabyte is $10^9$ bytes.
+    answer: { type: number, value: 4, tolerance: { factor: 1.2 }, unit: GB }
+    explanation: >-
+      $10^8$ squares at $8 + 32 = 40$ bytes each make $4 \times 10^9$ bytes, 4 GB, and a little
+      more, since a list built by appending keeps some spare slots for the next appends.
+    review:
+      variants:
+        - prompt: >-
+            A list holds 10 million floats, each taking 24 bytes, in slots of 8 bytes. About how
+            many megabytes does it take? A megabyte is $10^6$ bytes.
+          answer: { type: number, value: 320, tolerance: { rel: 0.1 }, unit: MB }
+          explanation: >-
+            $10^7 \times (24 + 8) = 3.2 \times 10^8$ bytes, 320 MB.
+        - prompt: >-
+            The list is replaced by `sum(x * x for x in range(10**8))`. How many of the squares
+            are held in memory at any one time?
+          answer: { type: number, value: 1, tolerance: { abs: 0 } }
+          explanation: >-
+            The generator makes each square when `sum` asks for it, and `sum` adds it to its total
+            before asking for the next, so one square at a time.
+
+  # Build ----------------------------------------------------------------------
+  - id: build-countdown
+    phase: build
+    kind: build
+    concept: E1.11/iterators
+    title: An iterator by hand
+    prompt: >-
+      Finish the class `Countdown`, an iterator over the whole numbers from `n` down to 1, so that
+      `list(Countdown(3))` is `[3, 2, 1]`. Its `__iter__` is written. Its `__next__`, as it
+      stands, ends every loop at once; make it give the numbers.
+    answer:
+      type: code
+      starter: |
+        class Countdown:
+            """An iterator over the whole numbers from n down to 1."""
+
+            def __init__(self, n):
+                self.n = n
+
+            def __iter__(self):
+                return self
+
+            def __next__(self):
+                """The next number down, or raise StopIteration when there is none."""
+                raise StopIteration
+
+
+        c = Countdown(3)
+        print(next(c, "end"), next(c, "end"), next(c, "end"), next(c, "end"))   # should be 3 2 1 end
+        print(next(c, "end"))   # should be end, since c is used up
+      tests: |
+        def take(it, k):
+            """The first k values of the iterator it, or fewer if it runs out."""
+            done = object()
+            out = []
+            for _ in range(k):
+                x = next(it, done)
+                if x is done:
+                    break
+                out.append(x)
+            return out
+
+
+        def test_three():
+            """Countdown(3) gives 3, 2 and 1."""
+            got = take(Countdown(3), 10)
+            assert got == [3, 2, 1], f"The first values of Countdown(3) are {got}, not [3, 2, 1]."
+
+
+        def test_zero_and_one():
+            """Countdown(0) and Countdown(-2) give nothing, and Countdown(1) gives 1."""
+            got = take(Countdown(0), 10)
+            assert got == [], f"Countdown(0) gave {got}, not []: there is no whole number from 0 down to 1."
+            got = take(Countdown(-2), 10)
+            assert got == [], f"Countdown(-2) gave {got}, not []: there is no whole number from -2 down to 1."
+            got = take(Countdown(1), 10)
+            assert got == [1], f"Countdown(1) gave {got}, not [1]."
+
+
+        def test_for_loop():
+            """A for loop over Countdown(100) adds up to 5,050."""
+            total = 0
+            steps = 0
+            for x in Countdown(100):
+                total = total + x
+                steps = steps + 1
+                if steps > 200:
+                    break
+            assert steps <= 100, "A for loop over Countdown(100) ran more than 100 passes: __next__ should raise StopIteration after it gives 1."
+            assert total == 5050, f"A for loop over Countdown(100) added up to {total:,}, not 5,050 = 100 + 99 + ... + 1."
+
+
+        def test_used_up():
+            """An iterator is used up after one loop over it, and stays used up."""
+            c = Countdown(4)
+            first = take(c, 10)
+            again = take(c, 10)
+            assert first == [4, 3, 2, 1], f"The first loop over Countdown(4) gave {first}, not [4, 3, 2, 1]."
+            assert again == [], f"A second loop over the same Countdown(4) gave {again}, not []: an iterator is used up after one loop over it."
+            assert next(c, "none") == "none", "After it is used up, next on a Countdown should keep raising StopIteration."
+
+
+        def test_iter_is_self():
+            """iter of a Countdown is the Countdown itself."""
+            c = Countdown(2)
+            assert iter(c) is c, "iter(c) should give back c itself: an iterator's __iter__ returns self."
+      reference: |
+        class Countdown:
+            """An iterator over the whole numbers from n down to 1."""
+
+            def __init__(self, n):
+                self.n = n
+
+            def __iter__(self):
+                return self
+
+            def __next__(self):
+                """The next number down, or raise StopIteration when there is none."""
+                if self.n <= 0:
+                    raise StopIteration
+                value = self.n
+                self.n = self.n - 1
+                return value
+
+
+        c = Countdown(3)
+        print(next(c, "end"), next(c, "end"), next(c, "end"), next(c, "end"))
+        print(next(c, "end"))
+      wrong:
+        - code: |
+            class Countdown:
+                def __init__(self, n):
+                    self.n = n
+
+                def __iter__(self):
+                    return self
+
+                def __next__(self):
+                    self.n = self.n - 1
+                    if self.n < 0:
+                        raise StopIteration
+                    return self.n
+
+            c = Countdown(3)
+            print(next(c, "end"), next(c, "end"), next(c, "end"), next(c, "end"))
+            print(next(c, "end"))
+          why: >-
+            Counts down one too early: it takes 1 off before handing out the value, so
+            `Countdown(3)` gives 2, 1 and 0.
+        - code: |
+            class Countdown:
+                def __init__(self, n):
+                    self.n = n
+
+                def __iter__(self):
+                    return self
+
+                def __next__(self):
+                    value = self.n
+                    self.n = self.n - 1
+                    return value
+
+            c = Countdown(3)
+            print(next(c, "end"), next(c, "end"), next(c, "end"), next(c, "end"))
+            print(next(c, "end"))
+          why: >-
+            Never raises `StopIteration`, so it counts on through 0 and the negative numbers for
+            ever, and a `for` loop over it never ends.
+        - code: |
+            class Countdown:
+                def __init__(self, n):
+                    self.n = n
+
+                def __iter__(self):
+                    return Countdown(self.n)
+
+                def __next__(self):
+                    if self.n <= 0:
+                        raise StopIteration
+                    self.n = self.n - 1
+                    return self.n + 1
+
+            c = Countdown(3)
+            print(next(c, "end"), next(c, "end"), next(c, "end"), next(c, "end"))
+            print(next(c, "end"))
+          why: >-
+            `__iter__` makes a new `Countdown` instead of giving back `self`, so `iter(c)` is not `c`,
+            and a second `for` loop over a fresh object starts again, which is not what an iterator
+            does.
+
+  - id: debug-epochs
+    phase: build
+    kind: debug
+    concept: E1.11/streaming-pipelines
+    covers: [E1.11/iterators]
+    title: The epochs' counts
+    prompt: >-
+      `seen_per_epoch(path, epochs)` should give a list of how many examples each epoch sees, with
+      every epoch opening the file afresh and streaming it one line at a time, never holding all
+      its lines at once. `train.txt` has 4 examples, so `seen_per_epoch("train.txt", 3)` should be
+      `[4, 4, 4]`. Run it, find the bug and fix it.
+    answer:
+      type: code
+      files:
+        train.txt: |
+          the cat sat
+          the dog ran
+          a bird sang
+          fish swim
+      starter: |
+        def examples(path):
+            """The lines of the file at path, without their newlines, one at a time."""
+            with open(path, encoding="utf-8") as f:
+                for line in f:
+                    yield line.strip()
+
+
+        def seen_per_epoch(path, epochs):
+            """A list of how many examples each of the epochs sees."""
+            data = examples(path)
+            counts = []
+            for epoch in range(epochs):
+                seen = 0
+                for x in data:
+                    seen = seen + 1
+                counts.append(seen)
+            return counts
+
+
+        print(seen_per_epoch("train.txt", 3))   # should be [4, 4, 4]
+      tests: |
+        def write(path, n):
+            with open(path, "w", encoding="utf-8") as f:
+                for i in range(n):
+                    f.write(f"example {i}\n")
+
+
+        def test_train():
+            """Three epochs over train.txt each see its 4 examples."""
+            got = seen_per_epoch("train.txt", 3)
+            assert got == [4, 4, 4], f'seen_per_epoch("train.txt", 3) gave {got}, not [4, 4, 4].'
+
+
+        def test_other_files():
+            """Every epoch sees every line, for files of 0, 1 and 7 lines and 1, 2 and 5 epochs."""
+            for n in [0, 1, 7]:
+                write("other.txt", n)
+                for epochs in [1, 2, 5]:
+                    got = seen_per_epoch("other.txt", epochs)
+                    lines = "line" if n == 1 else "lines"
+                    times = "epoch" if epochs == 1 else "epochs"
+                    assert got == [n] * epochs, f"With a file of {n} {lines} and {epochs} {times}, seen_per_epoch gave {got}, not {[n] * epochs}."
+
+
+        def test_no_epochs():
+            """Zero epochs give an empty list."""
+            got = seen_per_epoch("train.txt", 0)
+            assert got == [], f'seen_per_epoch("train.txt", 0) gave {got}, not [].'
+
+
+        def test_streams_each_epoch():
+            """Each epoch opens the file afresh, rather than carrying on from a stream or a list made earlier."""
+            names = seen_per_epoch.__globals__
+            opened = []
+
+            def counting_open(*args, **kwargs):
+                opened.append(args)
+                return open(*args, **kwargs)
+
+            names["open"] = counting_open
+            try:
+                seen_per_epoch("train.txt", 3)
+            finally:
+                names.pop("open")
+            times = {0: "never", 1: "once"}.get(len(opened), f"{len(opened)} times")
+            assert len(opened) >= 3, f"Over three epochs, seen_per_epoch opened train.txt {times}, not once in each epoch: each epoch should open the file afresh, rather than carry on from a stream or a list made earlier."
+
+
+        def test_one_line_at_a_time():
+            """Each epoch counts the lines as they stream past, never holding all of them at once."""
+            names = seen_per_epoch.__globals__
+            if "examples" not in names:
+                return
+            original = names["examples"]
+            alive = [0, 0]
+
+            class Line(str):
+                """A line that counts how many lines are held at once."""
+
+                def __del__(self):
+                    alive[0] = alive[0] - 1
+
+            def held(*args, **kwargs):
+                for x in original(*args, **kwargs):
+                    line = Line(x)
+                    alive[0] = alive[0] + 1
+                    alive[1] = max(alive[1], alive[0])
+                    yield line
+
+            names["examples"] = held
+            try:
+                seen_per_epoch("train.txt", 3)
+            finally:
+                names["examples"] = original
+            most = alive[1]
+            assert most <= 2, f"seen_per_epoch held {most} lines of train.txt at once: count each line as it streams past, without keeping the lines in a list."
+      reference: |
+        def examples(path):
+            """The lines of the file at path, without their newlines, one at a time."""
+            with open(path, encoding="utf-8") as f:
+                for line in f:
+                    yield line.strip()
+
+
+        def seen_per_epoch(path, epochs):
+            """A list of how many examples each of the epochs sees."""
+            counts = []
+            for epoch in range(epochs):
+                seen = 0
+                for x in examples(path):
+                    seen = seen + 1
+                counts.append(seen)
+            return counts
+
+
+        print(seen_per_epoch("train.txt", 3))
+      wrong:
+        - code: |
+            def examples(path):
+                with open(path, encoding="utf-8") as f:
+                    for line in f:
+                        yield line.strip()
+
+
+            def seen_per_epoch(path, epochs):
+                data = examples(path)
+                counts = []
+                for epoch in range(epochs):
+                    seen = 0
+                    for x in data:
+                        seen = seen + 1
+                    counts.append(seen)
+                return counts
+          why: >-
+            The bug left in: the generator is made once, before the epochs, so the first epoch uses
+            it up and the later epochs see nothing, giving `[4, 0, 0]`.
+        - code: |
+            def examples(path):
+                with open(path, encoding="utf-8") as f:
+                    for line in f:
+                        yield line.strip()
+
+
+            def seen_per_epoch(path, epochs):
+                data = examples(path)
+                counts = []
+                seen = 0
+                for epoch in range(epochs):
+                    for x in data:
+                        seen = seen + 1
+                    counts.append(seen)
+                return counts
+          why: >-
+            Moves `seen = 0` out of the loop, so the count carries over and the used-up stream hides
+            behind it: the list looks right for train.txt, `[4, 4, 4]`, but only the first epoch read
+            the file.
+        - code: |
+            def examples(path):
+                with open(path, encoding="utf-8") as f:
+                    for line in f:
+                        yield line.strip()
+
+
+            def seen_per_epoch(path, epochs):
+                data = list(examples(path))
+                counts = []
+                for epoch in range(epochs):
+                    seen = 0
+                    for x in data:
+                        seen = seen + 1
+                    counts.append(seen)
+                return counts
+          why: >-
+            Reads every line into a list once. The counts are right, but the whole file is held in
+            memory and read only once, which is what streaming avoids.
+        - code: |
+            def examples(path):
+                with open(path, encoding="utf-8") as f:
+                    for line in f:
+                        yield line.strip()
+
+
+            def seen_per_epoch(path, epochs):
+                counts = []
+                for epoch in range(epochs):
+                    counts.append(len(list(examples(path))))
+                return counts
+          why: >-
+            Opens the file afresh in each epoch, but `list` holds all of its lines at once before
+            they are counted, which the prompt rules out.
+
+  - id: build-pack
+    phase: build
+    kind: build
+    concept: E1.11/generators
+    covers: [E1.11/streaming-pipelines, E1.11/batches-and-shuffle-buffers]
+    title: Packing documents
+    prompt: >-
+      Write the generator function `pack(docs, length, end)`. `docs` is an iterable of documents,
+      each a list of token ids. `pack` yields lists of exactly `length` tokens, taken in order from
+      the documents with the token `end` after each document, and drops the tokens left over at the
+      end, too few to fill a list. It must work on an endless stream of documents, holding only the
+      list it is filling.
+    answer:
+      type: code
+      starter: |
+        def pack(docs, length, end):
+            """Lists of exactly `length` tokens, from the documents in order, with `end` after each."""
+            yield []
+
+
+        docs = [[1, 2, 3], [4, 5], [6, 7, 8, 9]]
+        for seq in pack(docs, 4, 0):
+            print(seq)
+        # should print [1, 2, 3, 0], then [4, 5, 0, 6], then [7, 8, 9, 0]
+      tests: |
+        def stream(docs, end):
+            """Every token of the documents in order, with end after each document."""
+            out = []
+            for d in docs:
+                out = out + d + [end]
+            return out
+
+
+        def take(it, k):
+            done = object()
+            out = []
+            for _ in range(k):
+                x = next(it, done)
+                if x is done:
+                    break
+                out.append(x)
+            return out
+
+
+        def test_example():
+            """The three documents of the example make three lists of 4."""
+            got = list(pack([[1, 2, 3], [4, 5], [6, 7, 8, 9]], 4, 0))
+            want = [[1, 2, 3, 0], [4, 5, 0, 6], [7, 8, 9, 0]]
+            assert got == want, f"pack([[1, 2, 3], [4, 5], [6, 7, 8, 9]], 4, 0) gave {got}, not {want}."
+
+
+        def test_leftovers_dropped():
+            """Tokens too few to fill a list are dropped, end tokens included."""
+            got = list(pack([[1, 2, 3]], 3, 0))
+            why = ": the end token left over after it is too few to fill a list" if len(got) > 1 else ""
+            assert got == [[1, 2, 3]], f"pack([[1, 2, 3]], 3, 0) gave {got}, not [[1, 2, 3]]{why}."
+            got = list(pack([[1]], 4, 0))
+            assert got == [], f"pack([[1]], 4, 0) gave {got}, not []: two tokens cannot fill a list of 4."
+
+
+        def test_long_documents():
+            """A document longer than a list is split across lists."""
+            doc = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+            got = list(pack([doc], 4, 0))
+            want = [[10, 11, 12, 13], [14, 15, 16, 17]]
+            assert got == want, f"pack([{doc}], 4, 0) gave {got}, not {want}."
+
+
+        def test_empty_documents():
+            """An empty document still adds its end token."""
+            got = list(pack([[], [], [7], []], 2, 0))
+            want = [[0, 0], [7, 0]]
+            assert got == want, f"pack([[], [], [7], []], 2, 0) gave {got}, not {want}."
+
+
+        def test_lengths_and_order():
+            """Every list has `length` tokens, and the lists, end to end, are the start of the stream of tokens."""
+            docs = [[3, 1, 4], [1, 5, 9, 2, 6], [5], [], [3, 5, 8, 9, 7, 9], [3, 2]]
+            whole = stream(docs, -1)
+            for length in [1, 2, 3, 5, 8, 30]:
+                got = list(pack(docs, length, -1))
+                for seq in got:
+                    assert len(seq) == length, f"With length {length}, pack gave the list {seq}, whose length is {len(seq)}."
+                joined = []
+                for seq in got:
+                    joined = joined + seq
+                want = whole[: len(whole) // length * length]
+                assert joined == want, f"With length {length}, the lists end to end are {joined}, not the stream of tokens {want}, cut to a whole number of lists."
+
+
+        def test_new_lists():
+            """Each list handed out is a list of its own, which later tokens never change."""
+            got = []
+            copies = []
+            for seq in pack([[1, 2], [3, 4], [5, 6]], 3, 0):
+                got.append(seq)
+                copies.append(list(seq))
+            assert got == copies, f"Kept in a list, the lists from pack([[1, 2], [3, 4], [5, 6]], 3, 0) are {got}, though they were {copies} when handed out: make a new list for each one, rather than emptying the one just handed out."
+
+
+        def test_endless_stream():
+            """pack works on an endless stream of documents, taking each document only when it needs its tokens."""
+
+            def documents():
+                n = 0
+                while True:
+                    n = n + 1
+                    assert n <= 1000, "pack asked an endless stream for more than 1,000 documents to fill three lists of 3 tokens: it should take each document only when it needs its tokens."
+                    yield [n, n]
+
+            got = take(pack(documents(), 3, 0), 3)
+            want = [[1, 1, 0], [2, 2, 0], [3, 3, 0]]
+            assert got == want, f"The first three lists from an endless stream of documents [1, 1], [2, 2], ... were {got}, not {want}."
+      reference: |
+        def pack(docs, length, end):
+            """Lists of exactly `length` tokens, from the documents in order, with `end` after each."""
+            seq = []
+            for doc in docs:
+                for token in doc + [end]:
+                    seq.append(token)
+                    if len(seq) == length:
+                        yield seq
+                        seq = []
+
+
+        docs = [[1, 2, 3], [4, 5], [6, 7, 8, 9]]
+        for seq in pack(docs, 4, 0):
+            print(seq)
+      wrong:
+        - code: |
+            def pack(docs, length, end):
+                seq = []
+                for doc in docs:
+                    for token in doc + [end]:
+                        seq.append(token)
+                        if len(seq) == length:
+                            yield seq
+                            seq = []
+                if len(seq) > 0:
+                    yield seq
+          why: >-
+            Keeps the leftover tokens as a short last list, so `pack([[1, 2, 3]], 3, 0)` gives
+            `[[1, 2, 3], [0]]`.
+        - code: |
+            def pack(docs, length, end):
+                seq = []
+                for doc in docs:
+                    for token in doc:
+                        seq.append(token)
+                        if len(seq) == length:
+                            yield seq
+                            seq = []
+          why: >-
+            Leaves out the end token, so nothing marks where one document stops and the next begins.
+        - code: |
+            def pack(docs, length, end):
+                tokens = []
+                for doc in docs:
+                    tokens = tokens + doc + [end]
+                i = 0
+                while i + length <= len(tokens):
+                    yield tokens[i : i + length]
+                    i = i + length
+          why: >-
+            Collects every token before handing out the first list, so it holds the whole stream and
+            never gets started on an endless one.
+        - code: |
+            def pack(docs, length, end):
+                seq = []
+                for doc in docs:
+                    for token in doc + [end]:
+                        seq.append(token)
+                        if len(seq) == length:
+                            yield seq
+                            seq.clear()
+          why: >-
+            Empties the same list instead of making a new one, so every list handed out is one list,
+            and a program that keeps them sees each replaced by the next.
+
+  - id: build-interleave
+    phase: build
+    kind: build
+    concept: E1.11/streaming-pipelines
+    covers: [E1.11/iterators]
+    title: Mixing streams
+    prompt: >-
+      Write the generator function `interleave(streams)`. `streams` is a list of iterables:
+      lists, strings, files or generators. `interleave` yields the first item of each in turn,
+      then the second of each, and so on, leaving a stream out once it is used up, until all of
+      them are. It must work when a stream is endless, and when a stream holds `None`.
+    answer:
+      type: code
+      starter: |
+        def interleave(streams):
+            """One item from each stream in turn, leaving out streams that are used up, until all are."""
+            yield None
+
+
+        mixed = interleave([[1, 2, 3], "ab", []])
+        for _ in range(6):
+            print(next(mixed, "end"))   # should be 1, a, 2, b, 3, then end
+      tests: |
+        class Nothing:
+            """A value that no stream in these tests holds, to mark that a stream has run dry."""
+
+
+        def take(it, k):
+            out = []
+            for _ in range(k):
+                x = next(it, Nothing)
+                if x is Nothing:
+                    break
+                out.append(x)
+            return out
+
+
+        def test_example():
+            """Lists and strings of different lengths take turns."""
+            got = take(interleave([[1, 2, 3], "ab", []]), 20)
+            assert got == [1, "a", 2, "b", 3], f'interleave([[1, 2, 3], "ab", []]) gave {got}, not [1, \'a\', 2, \'b\', 3].'
+
+
+        def test_no_streams():
+            """With no streams, interleave gives nothing."""
+            got = take(interleave([]), 5)
+            assert got == [], f"interleave([]) gave {got}, not []."
+
+
+        def test_one_pass_streams():
+            """Generators, which can be read only once, take turns too."""
+
+            def letters():
+                yield "x"
+                yield "y"
+                yield "z"
+
+            def one():
+                yield 1
+
+            got = take(interleave([letters(), one(), letters()]), 20)
+            want = ["x", 1, "x", "y", "y", "z", "z"]
+            assert got == want, f"With the generators x y z, 1, and x y z, interleave gave {got}, not {want}."
+
+
+        def test_endless():
+            """An endless stream goes on after the others are used up."""
+
+            def naturals():
+                n = 0
+                while True:
+                    assert n < 1000, "interleave asked an endless stream for more than 1,000 items to hand out six: it should take each item only when it hands it out."
+                    yield n
+                    n = n + 1
+
+            got = take(interleave([naturals(), "xy"]), 6)
+            want = [0, "x", 1, "y", 2, 3]
+            assert got == want, f'The first six items of interleave([naturals(), "xy"]) were {got}, not {want}.'
+
+
+        def test_none_is_a_value():
+            """A stream that holds None is not taken to be used up."""
+            got = take(interleave([[None, 1], [2]]), 10)
+            assert got == [None, 2, 1], f"interleave([[None, 1], [2]]) gave {got}, not [None, 2, 1]."
+
+
+        def test_everything_once():
+            """Every item of every stream comes out once, each stream's items in their order."""
+            streams = [list(range(5)), list(range(10, 12)), [], list(range(20, 27))]
+            got = take(interleave(streams), 100)
+            assert len(got) == 14, f"The streams hold 14 items, but interleave gave {len(got)}: {got}."
+            for s in streams:
+                mine = [x for x in got if x in s]
+                assert mine == s, f"The stream {s} came out as {mine}."
+      reference: |
+        def interleave(streams):
+            """One item from each stream in turn, leaving out streams that are used up, until all are."""
+            done = object()
+            its = []
+            for s in streams:
+                its.append(iter(s))
+            while len(its) > 0:
+                still = []
+                for it in its:
+                    x = next(it, done)
+                    if x is not done:
+                        yield x
+                        still.append(it)
+                its = still
+
+
+        mixed = interleave([[1, 2, 3], "ab", []])
+        for _ in range(6):
+            print(next(mixed, "end"))
+      wrong:
+        - code: |
+            def interleave(streams):
+                its = []
+                for s in streams:
+                    its.append(iter(s))
+                while len(its) > 0:
+                    still = []
+                    for it in its:
+                        x = next(it, None)
+                        if x is not None:
+                            yield x
+                            still.append(it)
+                    its = still
+
+
+            mixed = interleave([[1, 2, 3], "ab", []])
+            for _ in range(6):
+                print(next(mixed, "end"))
+          why: >-
+            Uses `None` as the sign that a stream is used up, so a stream that holds `None` is
+            dropped at that point and its later items are lost.
+        - code: |
+            def interleave(streams):
+                done = object()
+                its = []
+                for s in streams:
+                    its.append(iter(s))
+                while True:
+                    for it in its:
+                        x = next(it, done)
+                        if x is done:
+                            return
+                        yield x
+
+
+            mixed = interleave([[1, 2, 3], "ab", []])
+            for _ in range(6):
+                print(next(mixed, "end"))
+          why: >-
+            Stops as soon as any stream is used up, as `zip` does, so the longer streams lose their
+            last items, and an empty stream stops everything at once.
+        - code: |
+            def interleave(streams):
+                done = object()
+                live = list(streams)
+                while len(live) > 0:
+                    still = []
+                    for s in live:
+                        x = next(iter(s), done)
+                        if x is not done:
+                            yield x
+                            still.append(s)
+                    live = still
+
+
+            mixed = interleave([[1, 2, 3], "ab", []])
+            for _ in range(6):
+                print(next(mixed, "end"))
+          why: >-
+            Calls `iter` afresh on every turn, which makes a new iterator over a list or string each
+            time, so it hands out the first item again and again, `1 a 1 a ...`, and never ends.
+
+  - id: breakit-clear
+    phase: build
+    kind: breakit
+    concept: E1.11/batches-and-shuffle-buffers
+    title: Emptying the batch
+    prompt: Predict what the changed program prints, then run both.
+    answer:
+      type: breakit
+      code: |
+        def batches(items, size):
+            batch = []
+            for x in items:
+                batch.append(x)
+                if len(batch) == size:
+                    yield batch
+                    batch = []
+            if len(batch) > 0:
+                yield batch
+
+
+        result = list(batches(range(7), 3))
+        print(result)
+      broken: |
+        def batches(items, size):
+            batch = []
+            for x in items:
+                batch.append(x)
+                if len(batch) == size:
+                    yield batch
+                    batch.clear()
+            if len(batch) > 0:
+                yield batch
+
+
+        result = list(batches(range(7), 3))
+        print(result)
+      change: '`batch = []` becomes `batch.clear()`, which empties the list that `batch` names instead of making a new one.'
+      options:
+        - { id: same, label: 'It prints `[[0, 1, 2], [3, 4, 5], [6]]`, as before', when: 'result == [[0, 1, 2], [3, 4, 5], [6]]' }
+        - { id: emptied, label: 'It prints `[[], [], [6]]`', when: 'result == [[], [], [6]]' }
+        - { id: right, label: 'It prints `[[6], [6], [6]]`', when: 'result == [[6], [6], [6]]' }
+        - { id: error, label: 'It stops with an error', when: 'error is not None' }
+    explanation: >-
+      `list` keeps every batch it is handed, and each is the one list that `batch` names. After the
+      first batch is handed out, `clear` empties that list, the next items go into it, and it is
+      handed out again; at the end it holds `[6]`. So `result` holds the same list three times, and
+      all three show `[6]`.
+
+  # Explain --------------------------------------------------------------------
+  - id: explain-streams
+    phase: explain
+    kind: explain
+    concept: E1.11/iterators
+    covers: [E1.11/generators, E1.11/streaming-pipelines, E1.11/batches-and-shuffle-buffers]
+    title: Streams, simply
+    prompt: >-
+      Explain to your friend what a `for` loop asks of the thing it loops over, why the second and
+      third epochs saw nothing while a loop over a list never has that trouble, and how to mend the
+      script while still reading one line at a time. Then explain why a list of the whole file is a
+      bad idea at 50 GB, what a generator does instead, and how a pipeline of generators, such as
+      one that reads, cleans and batches the examples, keeps memory small. Give an example for
+      each.
+    answer:
+      type: text
+      rubric:
+        - { id: protocol, criterion: 'Says what a `for` loop asks for: an iterator from `iter`, and `next` before each pass, until `StopIteration` says that nothing is left.' }
+        - { id: used-up, criterion: 'Says why the later epochs saw nothing: an open file is its own iterator, used up after one loop over it, while a list makes a fresh iterator for every loop, with an example.' }
+        - { id: fix, criterion: 'Gives a mend that streams the file afresh in each epoch, such as opening it, or calling a generator function, inside the epoch loop.' }
+        - { id: memory, criterion: 'Says why a list of the whole file is a bad idea at 50 GB: it holds every line at once, which is more than the memory of most machines.' }
+        - { id: generator, criterion: 'Says what a generator does: it makes each value only when it is asked for, pausing at `yield`, so it holds one value at a time, with an example.' }
+        - { id: pipeline, criterion: 'Explains that a pipeline of generators passes one item at a time through every stage, so that memory holds about one item for each stage however long the file, with an example.' }
+      reference: >-
+        A `for` loop does not look at a list or a file directly. It calls `iter` on it once, to get
+        an iterator, an object that hands out one value each time `next` is called on it and
+        remembers where it is, and it calls `next` before every pass until the iterator raises
+        `StopIteration`, its way of saying that nothing is left. A list makes a new iterator,
+        starting at the first item, every time a loop asks, so looping over a list twice sees every
+        item twice. An open file is different: it is its own iterator, with one place in the text,
+        like a bookmark. The first epoch's loop read to the end and left the bookmark there, so the
+        second and third loops asked for a line, got none, and ended at once, without an error. With
+        a file of `cat`, `dog` and `bird`, the epochs see 3, 0 and 0. The mend is to open the file
+        afresh inside the epoch loop, or to write a generator function, `def examples(path):` with
+        `for line in f: yield line.strip()` inside a `with open(...)`, and call it inside the epoch
+        loop, so that each epoch gets a new stream. A list of the whole file would also count
+        right, but it holds all 50 GB at once, more memory than most machines have, and far more
+        than the job needs. A generator makes each value only when it is asked for: calling the
+        function runs none of its body, and each `next` runs it to the next `yield`, hands out that
+        value and pauses there. So it holds one line at a time, a few hundred bytes, however long
+        the file. Generators can be chained into a pipeline: `read` yields lines, `clean` loops over
+        `read` and yields stripped lines without blanks, and `batches` loops over `clean` and
+        yields lists of 32. The training loop asks `batches` for a batch, `batches` asks `clean`,
+        `clean` asks `read`, and one line at a time flows through all the stages, so memory holds
+        about one line for each stage and the batch being filled, whether the file is 50 KB or
+        50 GB.
+      minWords: 120
+      maxWords: 550
+    explanation: >-
+      A strong answer says that a `for` loop calls `iter` once and then `next` before every pass
+      until `StopIteration`; that a list makes a fresh iterator for every loop while an open file is
+      its own iterator, used up by the first epoch, so the later epochs see nothing; that opening
+      the file, or calling a generator function, inside the epoch loop mends it; that a list of 50
+      GB holds everything at once; that a generator makes each value only when asked, pausing at
+      `yield`; and that a pipeline of generators passes one item at a time through every stage, so
+      memory holds about one item per stage.
+

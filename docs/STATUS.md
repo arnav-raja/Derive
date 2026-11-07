@@ -1,6 +1,6 @@
 # Status
 
-Updated 7 November 2026 at about 05:20 UTC, when M1.11 went live. On "Pause" or "Resume",
+Updated 7 November 2026 at about 06:05 UTC, when E1.11 went live. On "Pause" or "Resume",
 follow CLAUDE.md and carry on from "Resume here" (phase 1) and "Phase 2: resume here" (phase 2).
 
 ## Where things stand
@@ -26,9 +26,9 @@ reviewed by both, every finding applied, walked and tested end to end. M1.8 Proo
 too, on the same terms, and so are E1.8 Debugging as an experiment, M1.9 Proof II:
 induction and recursion, E1.9 Testing and property-based testing, and M1.10 Counting:
 permutations, combinations and the binomial theorem, E1.10 Algorithms: sorting, searching
-and hashing, and M1.11 Angles, trigonometry and rotation. E1.11 Iterators, generators and
-streaming data is next (written, checked and under review), then M1.12 Complex numbers and
-Euler's formula (its two figures built and tested, its phases being written).
+and hashing, M1.11 Angles, trigonometry and rotation, and E1.11 Iterators, generators and
+streaming data. M1.12 Complex numbers and Euler's formula is next (written and checked; its
+simulated learner is done and its independent review was running), then E1.12.
 
 ### Done
 
@@ -649,26 +649,60 @@ Done so far:
   negative one, such as `cos^-1(x)`, with a message that says to write `1/cos(x)` for one over
   the cosine; `check:exercises` passes on every lesson with it.
 
+- E1.11 Iterators, generators and streaming data, live (`ready`) since 7 November: all six
+  phases and 24 exercises (a puzzle on how many examples a second epoch sees when both read one
+  open file, 5 recall, 8 explore predictions, two expression steps, a proof by a loop invariant
+  that `batches` loses and repeats nothing, an estimate of a list's memory, 3 builds, a debug
+  and a break-it, and the explain-back), the `ShuffleBuffer` figure, a step-through of a
+  two-stage pipeline, tutor notes with 21 misconceptions, and checks.json (49 items). It
+  requires E1.4, E1.6 and E1.7, applies M1.3 (a pipeline is a composition), and leads to E5.5
+  and E9.1, with its generators used in E4.5 and E9.5 too. Reviewed by both (the simulated learner, 24 of 24 right with 16 findings;
+  the independent reviewer, 2 blockers, 15 should-fix findings and 13 nits; in
+  `derive-resume/review/E1.11-*.md`), and every finding applied: the proof's second review
+  question had two right answers and now has one; the step-through shows a generator yield,
+  pause and resume (below) instead of returning and being called again; debug-epochs' tests now
+  fail a program that holds every line or reads the file once, and pass every right one; the
+  filter cost is exact (32,000 items about, 31,001 exactly, for `multiples`); the Build phase
+  explains its tests, `assert`, `break` and the step limit before they are used; the `None`
+  caveat of `next(it, None)` and the shape of a generator expression are stated; three Reveals
+  no longer repeat their cards; tolerances, option orders and placement items corrected; and
+  rungs, notes and a new misconception (taking `b = a` for a copy of an iterator) rewritten.
+  `check:exercises` passes all 49 items; the lesson was walked in all six phases with the
+  mixed check and no page errors other than the grader's 503 in local mode (store
+  `derive-resume/e111walk/store-before-E1.11-walk.json`; the store after it is
+  `store-after-E1.11-walk.json`); and its end-to-end tests pass at all three widths, with the
+  performance budget.
+- Engine changes with E1.11: the step-through follows generators. `harness.py`'s trace numbers
+  each call (`id`), flags a generator's frames, records a step where a generator hands out a
+  value (`yielded`) or ends (`ended`), marks a frame that carries on after a `yield`
+  (`resumed`), lists the generators paused at a `yield` with their names (`paused`), and drops
+  memory addresses from the values it shows; every other lesson's trace is unchanged.
+  `trace-frames.ts` says "yields ... and pauses", "resumes ... after its `yield`", "starts" for
+  a generator's first run, "ends, so the `next` that asked it raises `StopIteration`", and
+  "waiting for ... to give its next value", with unit tests, and `ProgramTrace` shows a "Paused
+  generators" list. `ShuffleBuffer` shuffles 36 items in three topics with a buffer of 1 to 36
+  and says how many of each topic the first output row holds; its words come from `shuffle.ts`,
+  with unit tests.
+
 Next, in order:
 
-1. E1.11 Iterators, generators and streaming data: written and checked in its own worktree,
-   with its tutor notes and the `ShuffleBuffer` figure (the lesson is in
-   `derive-resume/e111-draft/lesson/`, the figure in `figures/`, and the edits to other lessons'
-   `usedBy` and the figure registrations in `shared.patch`, made against ec5db9b); its simulated
-   learner is done (16 findings, in
-   `derive-resume/review/E1.11-learner-findings.md`) and its independent review was running.
-   Apply both, move it into the main tree, walk it and release it. It requires E1.4, E1.6 and
-   E1.7. Then M1.12 Complex numbers and Euler's formula: its plan is
-   `derive-resume/m112-draft/plan.md`, its lesson.yaml and its two figure components
-   (`ComplexPlane`, with a product mode and a powers mode, and `EulerSteps`, the chain of $n$
-   small turns $\left(1 + \frac{i\theta}{n}\right)^k$ against the circle, with their words in
-   `complex.ts` and its unit tests) are in `derive-resume/m112-draft/`; still to write are the
-   six phases, the exercises and the tutor notes, and the harness's `close` must learn to
-   compare complex numbers (it calls `float`). Then E1.12, then the start of stage 2, each
-   written, checked, reviewed by both and walked before it goes live, adding the remaining
-   figure components as the lessons need them. The phase 2 features (item 3) come first once
-   the hosting pull request has landed. The E1.7 reviewer suggests E1.7 as a requirement of
-   E3.4, if its configuration is a class.
+1. M1.12 Complex numbers and Euler's formula: written and checked in a worktree at 3df9a23,
+   with its tutor notes and two figure components, `ComplexPlane`
+   (a product mode and a powers mode) and `EulerSteps` (the chain of $n$ small turns against the
+   circle), whose words are in `complex.ts` with unit tests; the lesson and figures are backed
+   up in `derive-resume/m112-draft/` (`lesson/`, `figures/`, and `shared.patch` for the
+   registrations, other lessons' `usedBy` and the harness's `close`, which compares complex
+   numbers). Its simulated learner is done (23 of 23 right, 20 findings, in
+   `derive-resume/review/M1.12-learner-findings.md`) and its independent review was running.
+   Apply both on top of main (apply `shared.patch` with `git apply --3way`; in `harness.py` keep
+   E1.11's `import opcode` and `import re` and trace changes beside M1.12's `import cmath` and
+   complex `close`), check, test end to end, walk it (move E1.11's start in the walk store back a
+   day so that the pace governor lets M1.12 start) and release it. It requires M1.5 and
+   M1.11. Then E1.12 Project: a tested text-statistics tool (requires E1.6 and E1.9; leads to
+   L4.1), then the start of stage 2, each written, checked, reviewed by both and walked before
+   it goes live, adding the remaining figure components as the lessons need them. The phase 2
+   features (item 3) come first once the hosting pull request has landed. The E1.7 reviewer
+   suggests E1.7 as a requirement of E3.4, if its configuration is a class.
 2. When the hosting pull request lands: pages move to `src/server/app/` (a new page needs a line
    in `src/server/routes.ts` and a static shell in `src/app/`, copied from
    `src/app/today/page.tsx`); server components cannot use state or effects; client components

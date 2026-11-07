@@ -1,0 +1,121 @@
+code: E1.11
+title: Iterators, generators and streaming data
+course: E1
+status: ready
+summary: >-
+  A script trains for two epochs on a file of three examples, reading it with `for line in f`.
+  How many examples does the second epoch see? What a `for` loop asks of the thing it loops over,
+  iterators and generators, pipelines that stream data far larger than memory, and the batches
+  and shuffle buffers that training cuts from a stream.
+sittings: 2
+minutes:
+  puzzle: 10
+  recall: 10
+  explore: 50
+  derive: 35
+  build: 60
+  explain: 25
+concepts:
+  taught:
+    - id: E1.11/iterators
+      name: Iterables and iterators
+      summary: >-
+        A `for` loop calls `iter` once on what it is given, to get an *iterator*, and then calls
+        `next` on the iterator before every pass, until `next` raises `StopIteration`. An iterator
+        hands out its values one at a time and remembers where it is, so it is used up after one
+        loop over it, and `iter` of an iterator is the iterator itself. A list, a string, a
+        dictionary and a range are *iterables* that make a new iterator, starting at the
+        beginning, for every loop, while a file is its own iterator, so a second loop over an open
+        file sees nothing. `next(it, default)` gives `default` instead of raising, and a class
+        becomes an iterator by defining `__iter__`, which returns the object itself, and
+        `__next__`. A class whose `__iter__` is written with `yield` is an iterable: each loop gets
+        a fresh generator, so it can be looped over again and again.
+      usedBy: [E5.5, E9.1]
+    - id: E1.11/generators
+      name: Generators
+      summary: >-
+        A function with `yield` in its body is a generator function. Calling it runs none of the
+        body and gives back a *generator*, an iterator; each `next` runs the body from where it
+        last stopped to the next `yield`, hands out that value and pauses there, keeping its local
+        names, and when the body ends `next` raises `StopIteration`. A generator expression,
+        `(x * x for x in xs if x > 0)`, is a generator in one line. Values are made only when they
+        are asked for, so a generator can be endless, and it holds one value at a time instead of
+        a list of all of them.
+      usedBy: [E5.5, E9.1, E9.5, E4.5]
+    - id: E1.11/streaming-pipelines
+      name: Streaming pipelines
+      summary: >-
+        Generators chained so that each stage loops over the stage before it pass one item at a
+        time through every stage before the next item is read. Memory holds about one item for
+        each stage, however long the stream, and work is done only for what is asked for: the
+        first $k$ multiples of $m$ taken from an endless count pull $(k - 1)m + 1$ numbers from
+        it. A pipeline can read, clean, filter and pack a file of terabytes in the memory of a
+        few lines.
+      usedBy: [E9.1, E9.2, E9.5]
+    - id: E1.11/batches-and-shuffle-buffers
+      name: Batches and shuffle buffers
+      summary: >-
+        A stream is cut into batches by collecting items in a list and handing it out when it is
+        full; a loop invariant proves that every item comes out once, in order, and that only the
+        last batch can be short, and the list must be a new one for each batch, or every batch
+        handed out is the same list. A stream too large to hold is shuffled with a buffer of $k$
+        items: each new item takes the place of one handed out at random. The item at place $i$
+        can come out no earlier than place $i - k + 1$, so a buffer much smaller than the data
+        mixes it only locally, and data sorted by topic stays nearly sorted.
+      usedBy: [E5.5, E9.1, E9.5]
+  used:
+    - E1.7/classes-and-instances
+    - E1.7/methods-and-self
+    - E1.7/special-methods
+    - E1.6/files
+    - E1.6/strings-as-sequences
+    - E1.6/parsing-and-formatting
+    - E1.4/lists
+    - E1.4/aliasing-and-mutation
+    - E1.4/cost-of-operations
+    - E1.3/defining-functions
+    - E1.2/loops
+    - E1.2/loop-invariants
+    - M1.3/composition
+links:
+  requires:
+    - lesson: E1.4
+      bridge: >-
+        E1.4 looped over lists, made copies with `list(a)`, and found that a list is a row of
+        slots side by side in memory, each referring to a value. This lesson asks what a `for` loop
+        wants from a list, and finds a way to loop over values that are never all held at once.
+    - lesson: E1.6
+      bridge: >-
+        E1.6 read a file with `for line in f`, one line at a time, without ever holding the whole
+        of it. This lesson looks at what makes that work, and at why a second such loop over the
+        same open file sees nothing.
+    - lesson: E1.7
+      bridge: >-
+        E1.7's special methods let Python's own syntax call a class's methods, as `a + b` calls
+        `__add__`. A `for` loop calls two more, `__iter__` and `__next__`, so a class of your own
+        can be looped over.
+  applies:
+    - lesson: E1.2
+      bridge: >-
+        E1.2's `for` loop over a range turns out to be a `while` loop that calls `next` until the
+        values run out, and its loop invariants prove that cutting a stream into batches loses no
+        item and repeats none.
+    - lesson: M1.3
+      bridge: >-
+        A pipeline of generators is a composition, as in M1.3: each stage's output is the next
+        stage's input, and the order of the stages matters: `read` after `long_only` sees only the
+        long words, while `read` before it sees them all.
+  foreshadows:
+    - lesson: E5.5
+      bridge: >-
+        PyTorch's `DataLoader` is an iterable, not an iterator: each `for` over it makes a fresh
+        iterator, so every epoch sees all the data. E5.5 opens it up, with datasets that hand out
+        one example at a time, batches collated from them, and worker processes that prepare the
+        next batches while the current one trains.
+    - lesson: E9.1
+      bridge: >-
+        A training set starts as a crawl of the web, far too large for any machine's memory. E9.1
+        follows a token's path through a pipeline of stages like this lesson's: extracting text,
+        filtering it, tokenising it, packing the tokens into sequences of a fixed length, and
+        shuffling them with buffers on the way to a training batch.
+skills: []

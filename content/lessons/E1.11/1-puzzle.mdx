@@ -1,0 +1,25 @@
+A training run usually goes over its data more than once, and each time through the data is called an *epoch*. Here is a script that trains for two epochs on a file of three examples, one to a line. It writes the file first, then reads it the way E1.6 did, with `for line in f`, and counts the examples that each epoch sees. The training itself is left out.
+
+```python
+with open("train.txt", "w", encoding="utf-8") as f:
+    f.write("cat\ndog\nbird\n")
+
+with open("train.txt", encoding="utf-8") as f:
+    for epoch in range(2):
+        seen = 0
+        for line in f:
+            seen = seen + 1
+        print("epoch", epoch, "saw", seen)
+```
+
+The first line it prints is `epoch 0 saw 3`.
+
+<Exercise id="puzzle-epochs" />
+
+<Reveal for="puzzle-epochs">
+
+Nothing warned that anything was wrong. A model trained by such a loop sees its data once while the log claims two epochs, and it is simply a little worse than it should be, which is the hardest kind of bug to notice. A list would not do this: two loops over a list each see every item. The difference lies in what a `for` loop asks of the thing it loops over, which is where this lesson starts. Libraries that feed data to training guard against the bug: PyTorch's `DataLoader`, for one, starts every epoch afresh.
+
+Why read a file a line at a time at all? Because training data is far larger than memory. Meta trained Llama 3, in 2024, on more than 15 trillion *tokens*, the words and pieces of words that a language model reads, tens of terabytes of text, while a machine that trains models has a few terabytes of memory. The data has to stream past, a little at a time, through a pipeline of steps that read it, clean it, cut it into batches and shuffle it. This lesson builds such pipelines from Python's iterators and generators.
+
+</Reveal>

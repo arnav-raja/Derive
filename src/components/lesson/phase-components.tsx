@@ -21,6 +21,7 @@ import {
   QuantifierGrid,
   ScaleLine,
   SetDiagram,
+  ShuffleBuffer,
   Staircase,
   TextBytes,
   TieLists,
@@ -329,5 +330,6 @@ export function phaseComponents(ctx: PhaseContext): MDXComponents {
     UnitCircle,
     VectorPlane,
     FourTriangles,
+    ShuffleBuffer,
   };
 }
