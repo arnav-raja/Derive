@@ -1,6 +1,6 @@
 # Status
 
-Updated 6 November 2026 at about 23:10 UTC, when E1.9 went live. On "Pause" or "Resume",
+Updated 7 November 2026 at about 01:50 UTC, when M1.10 went live. On "Pause" or "Resume",
 follow CLAUDE.md and carry on from "Resume here" (phase 1) and "Phase 2: resume here" (phase 2).
 
 ## Where things stand
@@ -26,8 +26,9 @@ reviewers, every finding applied, walked again and tested end to end, with two n
 components, the set diagram and the quantifier grid. E1.7 Classes and objects is live too,
 reviewed by both, every finding applied, walked and tested end to end. M1.8 Proof I is live
 too, on the same terms, and so are E1.8 Debugging as an experiment, M1.9 Proof II:
-induction and recursion, and E1.9 Testing and property-based testing. M1.10 Counting:
-permutations, combinations and the binomial theorem is next.
+induction and recursion, E1.9 Testing and property-based testing, and M1.10 Counting:
+permutations, combinations and the binomial theorem. E1.10 Algorithms: sorting, searching and
+hashing is next.
 
 ### Done
 
@@ -518,11 +519,56 @@ Done so far:
   set by its name, as `<function test_one>`, instead of `repr` with its memory address
   (`_is_function` in the harness); every other lesson's traces are unchanged (checked by tracing
   all 18 figures with the old and new harness).
+- M1.10 Counting: permutations, combinations and the binomial theorem, live (`ready`) since
+  7 November: all six phases and 27 exercises (a puzzle on how long a script takes to fit one
+  model for every set of 30 features, 5 recall, 8 explore predictions, two proofs of rules, three
+  expression steps, a written double counting proof and an estimate, 3 builds, a break-it and a
+  debug, and the explain-back), a scale line, two new figure components (ordered choices of
+  letters, and Pascal's triangle), tutor notes with 21 misconceptions, and checks.json (51
+  items). It requires M1.9, is another view of E1.4 (its comparisons are the $\binom{n}{2}$
+  pairs), applies M1.7, and foreshadows M4.1 and M4.5. Reviewed by both (the simulated learner,
+  27 of 27 right with 16 findings; the independent reviewer, 2 blockers, 10 should-fix findings
+  and nits; in `derive-resume/review/M1.10-*.md`), and every finding applied: explore-with-last's
+  placement question had two right options, and now asks for $\binom{9}{3}$; the explain-back's
+  prompt asks for everything its rubric needs, and both written answers' rubrics now say what to
+  show without giving the counts; the text before the even-subsets step no longer does the step;
+  derive-orders' lines each conclude what one rule gives; twelve Reveals no longer repeat their
+  cards; the puzzle's figure counts three things and follows the text on forward selection; the
+  items that a title, a heading, the line before or the figure answered no longer are (the first
+  triangle opens on row 6, place 3); the right options are spread over every position; the debug
+  has a new bug that this lesson explains (`left = items[i + 1:]`, which lists each set once:
+  3 pairs and 120 podiums); build-choose's short-way test stops a loop without the shortcut
+  after 1,000 lines with a message that names the shorter way, instead of after two and a half
+  minutes, and its checks say when a count is well short because a `//` ran before its
+  multiplication; the second triangle keeps three-digit numbers apart at phone width; and 19
+  rungs rewritten, with new rungs for the debug. The references, starters and wrong programs, and
+  the reviewer's 56 other programs, were run against the final tests
+  (`derive-resume/m110walk/fixes/`, log `codeprobe.log`): every right one passes, apart from
+  three that do what the prompts rule out (no shortcut, a recursive count, a split by the last
+  item), which fail with a message that says so, and every slip fails with a message that names
+  its cause. `check:exercises`
+  passes all 51 items; the lesson was walked in all six phases with the mixed check and no page
+  errors other than the grader's 503 in local mode (store `store-before-M1.10-walk.json`, the
+  store after the E1.9 walk with E1.9's start moved back a day; the store after it is
+  `store-after-M1.10-walk.json`); and its end-to-end tests pass at all three widths, with the
+  performance budget (the Derive phase is 8,762 elements of 9,200).
+- Engine changes with M1.10: two new figure components. `OrderedChoices` lists every ordered
+  choice of $k$ letters from $n$ (2 to 6 letters), a line for each first letter, and once
+  `groupsAfter` is answered a button groups them by the letters they hold; its words come from
+  `choicesWords` in `choices.ts`, with unit tests. `PascalTriangle` shows rows 0 to $n$ with a
+  picked entry and the two above it, the sum of each row with `sums`, and once `setsAfter` is
+  answered the words add the two entries above and a list shows the sets the entry counts, split
+  by the last feature (rows up to 6); its words come from `entryWords` in `pascal.ts`, with unit
+  tests. The expression checker skips a sample point where a factorial's argument is a negative
+  whole number (where SymPy gives complex infinity), and plain text writes $\binom{a}{b}$ as
+  C(a, b) for screen readers. The content check knows `tilesAfter`, `groupsAfter` and
+  `setsAfter`.
 
 Next, in order:
 
-1. M1.10 Counting: permutations, combinations and the binomial theorem (first design notes in
-   `derive-resume/m110plan.md`), then E1.10, M1.11, E1.11, M1.12 and E1.12, then the start of
+1. E1.10 Algorithms: sorting, searching and hashing (first design notes in
+   `derive-resume/e110plan.md`, and drafts of its lesson.yaml and puzzle in
+   `derive-resume/e110-draft/`), then M1.11, E1.11, M1.12 and E1.12, then the start of
    stage 2, each written, checked, reviewed by both and walked
    before it goes live, adding the remaining figure components as the lessons need them. The phase 2 features (item 3) come first once the
    hosting pull request has landed. E1.9 picks up E1.8's preview: tests that run on every change,
@@ -551,6 +597,10 @@ Next, in order:
    request changes the file: the comment above `TraceFrame` in `src/lib/python/client.ts` says
    that `refs` holds tags only for a list, dict or set, though it holds them for objects of the
    program's classes too.
+6. From the M1.10 review: the staircase, partial-sums and scale-line figures set `aria-pressed`
+   on a button whose words also change, so a screen reader hears the new words as "pressed".
+   Give each a fixed label with `aria-pressed` and the primary style when pressed, as
+   `OrderedChoices` now does.
 
 ### Working notes
 
@@ -577,6 +627,11 @@ Next, in order:
   store after the second walk. The M1.7 scripts name `/home/claude/derive` as the repository;
   change that if the clone is elsewhere. Probe scripts that load Pyodide in Node must run from
   the repository's folder, since it finds Pyodide from there.
+- Walking M1.10: `derive-resume/m110walk/` holds `walk-m110.cjs` (`node walk-m110.cjs overview
+  puzzle recall explore derive build explain`), `mixed.cjs` for the mixed check and the finish,
+  and `peek.cjs` to print a card's end. Copy `store-before-M1.10-walk.json` to a store folder as
+  `store.json` and start the production build on it at port 3100. A break-it's right option has
+  no `correct` list; the walk names it by its id.
 - Walking E1.7: copy `derive-resume/store-before-E1.7-walk.json` into a store folder with
   `prep-store.py <snapshot> <folder>/store.json M1.7=<yesterday>`, so that a new lesson can
   begin today, start the production build on it as above, and run `walk-e17.cjs` and

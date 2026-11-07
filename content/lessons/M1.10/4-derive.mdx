@@ -1,0 +1,95 @@
+The Explore phase counted choices made in steps, orders, sets and the terms of $(a + b)^n$. Now prove that $n$ things have $n!$ orders, write $\binom{n}{k}$ with factorials, prove Pascal's rule a second way, prove the binomial theorem by induction, count the subsets of even size, prove a count by counting it twice, and estimate how many teams of experts a model can call on.
+
+## Orders, by induction
+
+M1.6 counted the orders of $n$ things with the product rule and an "and so on", and M1.9 promised a proof by induction on $n$. The step rests on one idea. Number the things from 1 to $k + 1$, and take thing $k + 1$ out of an order of all of them. What is left is an order of things 1 to $k$, and thing $k + 1$ was in one of $k + 1$ places: before the first of the others, between two of them, or after the last. Putting it back in that place gives the order back, so each order of all $k + 1$ things goes with exactly one pair, an order of things 1 to $k$ and a place, and each such pair with exactly one order.
+
+<Exercise id="derive-orders" />
+
+<Reveal for="derive-orders">
+
+The proof makes M1.6's "and so on" exact. The same idea, putting the last thing into each place of each order of the rest, is also a way to list every order, one per pair, with none missed and none repeated.
+
+## Choosing, with factorials
+
+The Explore phase found $\binom{10}{3} = \frac{10 \times 9 \times 8}{3!}$: the ordered choices, divided by the orders of each set. In general there are $\frac{n!}{(n - k)!}$ ordered choices of $k$ things from $n$, and each set of $k$ things turns up among them once for each of its $k!$ orders.
+
+<Exercise id="derive-choose" />
+
+</Reveal>
+
+<Reveal for="derive-choose">
+
+So $\binom{n}{k} = \frac{n!}{k!\,(n - k)!}$ for every $k$ from 0 to $n$. At $k = 0$ and $k = n$ it gives $\frac{n!}{0!\,n!} = 1$, the 1 at each end of the row: $0! = 1$ at work again. Putting $n - k$ in place of $k$ swaps the two factorials underneath, since $n - (n - k) = k$, which proves $\binom{n}{k} = \binom{n}{n - k}$ a second way. As a way of working a count out, though, the formula is wasteful: $\binom{100}{3}$ needs only $\frac{100 \times 99 \times 98}{6} = 161{,}700$, but the formula builds $100!$, a number with 158 digits, only to divide almost all of it away again. The Build phase works the count out a better way.
+
+## Pascal's rule, by algebra
+
+The Explore phase proved Pascal's rule by counting: the sets that hold the last thing, and those that do not. The formula gives a second proof. For $1 \le k \le n - 1$, write both counts with factorials, and use $k! = k \times (k - 1)!$ and $(n - k)! = (n - k) \times (n - 1 - k)!$ to put them over the same bottom, $k!\,(n - k)!$:
+
+$$
+\binom{n - 1}{k - 1} + \binom{n - 1}{k} = \frac{(n - 1)!}{(k - 1)!\,(n - k)!} + \frac{(n - 1)!}{k!\,(n - 1 - k)!} = \frac{(n - 1)! \times k + (n - 1)! \times (n - k)}{k!\,(n - k)!}.
+$$
+
+<Exercise id="derive-pascal-top" />
+
+</Reveal>
+
+<Reveal for="derive-pascal-top">
+
+Two proofs of one rule check each other. The counting proof shows where the rule comes from, and the algebra confirms it without any picture of what is being counted.
+
+## The binomial theorem, by induction
+
+The Explore phase found the binomial theorem by counting the ways to take $b$ from $k$ of the $n$ brackets. Induction proves it again, with Pascal's rule in the step. Count $\binom{n}{k}$ as 0 when $k < 0$ or $k > n$, since there is no way to choose $-1$ things, or more things than there are. Then Pascal's rule holds at the ends of each row too, for every $k$ from 0 to $n$: $\binom{n}{0} = 0 + 1$ and $\binom{n}{n} = 1 + 0$. The proof also shifts the counter of a sum, as M1.6 did: $\sum_{j=0}^{k} c_j = \sum_{j=1}^{k+1} c_{j-1}$, the same terms with the counter running one higher. The proof writes the theorem's counter as $j$, since $k$ is the number the step starts from.
+
+<Exercise id="derive-binomial" />
+
+</Reveal>
+
+<Reveal for="derive-binomial">
+
+Every line of the step is algebra except one: Pascal's rule, which is where the counting enters. The induction carries the triangle's rule into the brackets, one power at a time.
+
+## Even and odd
+
+With $a = b = 1$, the theorem gives $\sum_{j=0}^{n} \binom{n}{j} = 2^n$. With $a = 1$ and $b = -1$, every term with an odd $j$ changes sign, and the left side is $(1 - 1)^n = 0$ for every $n \ge 1$:
+
+$$
+\binom{n}{0} - \binom{n}{1} + \binom{n}{2} - \binom{n}{3} + \dots = 0.
+$$
+
+In this sum, the subsets with an even number of elements are counted with a plus sign, and those with an odd number with a minus sign. Row 4: $1 - 4 + 6 - 4 + 1 = 0$.
+
+<Exercise id="derive-even-sets" />
+
+</Reveal>
+
+<Reveal for="derive-even-sets">
+
+So a set of $n$ things has as many subsets with an even number of elements as with an odd number, $2^{n-1}$ of each, the empty set among the even ones. Row 4 has $1 + 6 + 1 = 8$ and $4 + 4 = 8$, and 5 things have $1 + 10 + 5 = 16$ and $5 + 10 + 1 = 16$.
+
+## Counting twice
+
+A team of $k$ people, one of them its captain, is to be chosen from $n$ people. Counting the possible teams in two orders gives two expressions, and since they count the same thing, they must be equal.
+
+<Exercise id="derive-captain" />
+
+</Reveal>
+
+<Reveal for="derive-captain">
+
+A proof that counts one collection in two ways is a *double counting* proof. Its strength is that it says why an identity holds, where the algebra only confirms it. This one returns in the probability course, where it gives the average number of successes in $n$ trials.
+
+## Teams of experts
+
+Some large language models split the feed-forward part of a layer into many *experts*, smaller networks of the same shape, and a part of the model called the router picks a few of them to work on each token. In one such layer there are 64 experts, and the router picks 8 of them for each token, with no order among the 8.
+
+<Exercise id="derive-experts" />
+
+</Reveal>
+
+<Reveal for="derive-experts">
+
+That is more than four billion sets of experts. If the order of the 8 mattered, there would be $8!$ times as many, about $1.8 \times 10^{14}$.
+
+</Reveal>

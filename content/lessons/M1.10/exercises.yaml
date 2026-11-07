@@ -1,0 +1,1370 @@
+exercises:
+  # Puzzle ---------------------------------------------------------------------
+  - id: puzzle-feature-sets
+    phase: puzzle
+    kind: predict
+    concept: M1.10/counting-rules
+    title: Every set of 30 features
+    prompt: >-
+      A script fits one model for every set of features that can be made from 30 candidates, from
+      no features at all up to all 30, at one second a fit. About how long does it run?
+    answer:
+      type: choice
+      options:
+        - { id: pairs, label: 'About 7 minutes' }
+        - { id: square, label: 'About 15 minutes' }
+        - { id: years, label: 'About 34 years' }
+        - { id: universe, label: 'Far longer than the universe has existed' }
+      correct: [years]
+    explanation: >-
+      Each of the 30 features is in a set or out of it, 2 choices each, so there are
+      $2^{30} = 1{,}073{,}741{,}824$ sets, and that many seconds is about 34 years. About 7 minutes
+      is the 435 pairs of features, about 15 minutes is every pair taken in both orders,
+      $30 \times 29 = 870$ fits, and far longer than the universe has existed is what every order of
+      all 30 would take.
+
+  # Recall ---------------------------------------------------------------------
+  - id: recall-factorials
+    phase: recall
+    kind: recall
+    concept: M1.6/product-notation
+    prompt: What is $\dfrac{8!}{6!}$?
+    answer: { type: number, value: 56, tolerance: { abs: 0 } }
+    explanation: >-
+      Every factor from 6 down to 1 is on both the top and the bottom, so they cancel, and
+      $\frac{8!}{6!} = 8 \times 7 = 56$.
+
+  - id: recall-union
+    phase: recall
+    kind: recall
+    concept: M1.7/sets
+    prompt: Of 40 images in a dataset, 25 show a cat, 18 show a dog, and 10 show both. How many show a cat or a dog, or both?
+    answer: { type: number, value: 33, tolerance: { abs: 0 } }
+    explanation: >-
+      $|A \cup B| = |A| + |B| - |A \cap B| = 25 + 18 - 10 = 33$. Adding 25 and 18 counts the 10
+      images that show both twice, so they are taken away once. The other 7 images show neither.
+
+  - id: recall-pairs-sum
+    phase: recall
+    kind: recall
+    concept: M1.6/arithmetic-series
+    prompt: What is $1 + 2 + 3 + \dots + 29$?
+    answer: { type: number, value: 435, tolerance: { abs: 0 } }
+    explanation: >-
+      $\frac{n(n + 1)}{2}$ with $n = 29$ gives $\frac{29 \times 30}{2} = 435$. Pairing gives the
+      same: $1 + 29$, $2 + 28$ and so on make 14 pairs of 30, which is 420, and the middle term,
+      15, is left over.
+
+  - id: recall-induction-step
+    phase: recall
+    kind: recall
+    concept: M1.9/induction
+    prompt: A proof by induction of a claim $P(n)$, for every whole number $n \ge 0$, has proved $P(0)$. What else must it prove?
+    answer:
+      type: choice
+      options:
+        - { id: step, label: 'That for every $k \ge 0$, if $P(k)$ is true, then $P(k + 1)$ is true' }
+        - { id: one-more, label: 'That $P(1)$ is true as well, so that the chain has started' }
+        - { id: backwards, label: 'That for every $k \ge 1$, if $P(k)$ is true, then $P(k - 1)$ is true' }
+        - { id: every, label: 'That $P(n)$ is true for every $n \ge 0$, using $P(0)$' }
+      correct: [step]
+    explanation: >-
+      The inductive step: for every $k \ge 0$, $P(k)$ gives $P(k + 1)$. Then $P(0)$ gives $P(1)$,
+      which gives $P(2)$, and so on for every $n$. One more case proves only one more case, a step
+      that runs backwards carries nothing forward from $P(0)$, and assuming $P(n)$ for every $n$
+      assumes the claim itself.
+
+  - id: recall-cube
+    phase: recall
+    kind: recall
+    concept: M1.2/equivalence
+    prompt: Which of these is equal to $(a + b)^3$ for all numbers $a$ and $b$?
+    answer:
+      type: choice
+      options:
+        - { id: cubes, label: '$a^3 + b^3$' }
+        - { id: twos, label: '$a^3 + 2a^2 b + 2ab^2 + b^3$' }
+        - { id: ones, label: '$a^3 + a^2 b + ab^2 + b^3$' }
+        - { id: right, label: '$a^3 + 3a^2 b + 3ab^2 + b^3$' }
+      correct: [right]
+    explanation: >-
+      $(a + b)^3 = (a + b)(a^2 + 2ab + b^2) = a^3 + 2a^2 b + ab^2 + a^2 b + 2ab^2 + b^3$, which
+      collects to $a^3 + 3a^2 b + 3ab^2 + b^3$. A check at $a = b = 1$: $2^3 = 8$, and
+      $1 + 3 + 3 + 1 = 8$, while the other choices add up to 2, 6 and 4.
+
+  # Explore --------------------------------------------------------------------
+  - id: explore-grid-search
+    phase: explore
+    kind: predict
+    concept: M1.10/counting-rules
+    title: A grid search
+    prompt: >-
+      A grid search trains one model for every way of picking one of 5 learning rates, one of 4
+      batch sizes and one of 3 numbers of layers. How many models does it train?
+    answer: { type: number, value: 60, tolerance: { abs: 0 } }
+    explanation: >-
+      Each of the 5 learning rates goes with each of the 4 batch sizes, making 20 pairs, and each
+      pair goes with each of the 3 numbers of layers: $5 \times 4 \times 3 = 60$.
+    placement: true
+    review:
+      variants:
+        - prompt: A password is 2 capital letters, each from A to Z, followed by 3 digits, each from 0 to 9. How many different passwords are there?
+          answer: { type: number, value: 676000, tolerance: { abs: 0 } }
+          explanation: >-
+            Five steps: 26 choices for each letter and 10 for each digit, whatever came before, so
+            $26 \times 26 \times 10 \times 10 \times 10 = 676{,}000$.
+        - prompt: >-
+            A choice is made in 4 steps, with 3 options at each step, but which 3 options a step
+            offers depends on what was chosen before it. In how many ways can the choice be made?
+          answer:
+            type: choice
+            options:
+              - { id: sum, label: '12, three options at each of 4 steps' }
+              - { id: product, label: '81, by the product rule' }
+              - { id: unknown, label: 'It cannot be known without the list of options at each step' }
+              - { id: power, label: '64, four options at each of 3 steps' }
+            correct: [product]
+          explanation: >-
+            The product rule needs only the number of options at each step to stay the same
+            whatever came before, not the options themselves, so $3 \times 3 \times 3 \times 3 = 81$.
+            Adding the options would count the steps, not the ways to make all of them.
+        - prompt: A search tries one optimiser at 6 learning rates, and a second optimiser at the same 6 rates, each with 3 strengths of momentum. How many models does it train?
+          answer: { type: number, value: 24, tolerance: { abs: 0 } }
+          explanation: >-
+            Two cases that cannot happen together, so they add: 6 runs with the first optimiser,
+            and $6 \times 3 = 18$ with the second, by the product rule, which makes $6 + 18 = 24$.
+
+  - id: explore-at-least-one
+    phase: explore
+    kind: predict
+    concept: M1.10/counting-rules
+    title: Codes with a 0
+    prompt: How many of the 10,000 codes of 4 digits, from 0000 to 9999, have at least one 0?
+    answer: { type: number, value: 3439, tolerance: { abs: 0 } }
+    explanation: >-
+      The codes with no 0 have 9 choices for each digit, $9^4 = 6{,}561$ of them, so
+      $10{,}000 - 6{,}561 = 3{,}439$ have at least one 0. Four places for the 0 times 1,000 for the
+      rest gives 4,000, which counts a code once for every 0 it has: 0012 twice, and 0000 four
+      times.
+    review:
+      variants:
+        - prompt: How many strings of 5 bits, each 0 or 1, have at least one 1?
+          answer: { type: number, value: 31, tolerance: { abs: 0 } }
+          explanation: >-
+            There are $2^5 = 32$ strings, and only one, 00000, has no 1, so 31 have at least one.
+        - prompt: How many codes of 3 digits, each from 0 to 9, have at least two digits the same?
+          answer: { type: number, value: 280, tolerance: { abs: 0 } }
+          explanation: >-
+            Count the codes whose digits are all different instead: $10 \times 9 \times 8 = 720$.
+            The other $1{,}000 - 720 = 280$ codes have at least two digits the same.
+        - prompt: >-
+            Each 4-digit code with a 0 is counted once for each of the sets "0 in place 1", "0 in
+            place 2", "0 in place 3" and "0 in place 4" that it is in. How many times is the code
+            0705 counted?
+          answer: { type: number, value: 2, tolerance: { abs: 0 } }
+          explanation: >-
+            0705 has a 0 in place 1 and another in place 3, so it is in two of the four sets and is
+            counted twice. That is why adding the four sets, 4,000 codes, overcounts the 3,439 codes
+            with at least one 0.
+
+  - id: explore-podium
+    phase: explore
+    kind: predict
+    concept: M1.10/permutations
+    title: Gold, silver and bronze
+    prompt: Ten models are tested on a benchmark. In how many different ways can gold, silver and bronze go to three of them?
+    answer: { type: number, value: 720, tolerance: { abs: 0 } }
+    explanation: >-
+      Any of the 10 can take gold, any of the 9 others silver, and any of the 8 left bronze:
+      $10 \times 9 \times 8 = 720$. Which 8 are left depends on who took gold and silver, but there
+      are always 8, which is all the product rule needs.
+    placement: true
+    review:
+      variants:
+        - prompt: In how many different orders can 5 different jobs be run, one after another?
+          answer: { type: number, value: 120, tolerance: { abs: 0 } }
+          explanation: >-
+            Any of the 5 first, any of the 4 left second, and so on: $5! = 120$.
+        - prompt: Why is $0!$ taken to be 1?
+          answer:
+            type: choice
+            options:
+              - { id: zero, label: 'It is really 0, but calling it 1 avoids dividing by 0 in $\frac{n!}{(n - k)!}$ at $k = n$' }
+              - { id: fits, label: 'There is one way to put nothing in order, and it keeps $\frac{n!}{(n - k)!}$ right at $k = n$' }
+              - { id: habit, label: 'It is a convention with no reason behind it, kept because textbooks have always used it' }
+            correct: [fits]
+          explanation: >-
+            There is exactly one order of nothing, the empty order, and $0! = 1$ makes
+            $\frac{n!}{(n - n)!} = n!$, the orders of all $n$ things, and keeps
+            $(n + 1)! = (n + 1) \times n!$ true at $n = 0$.
+        - prompt: A playlist plays 4 different songs, chosen from 8, one after another. How many different playlists are there?
+          answer: { type: number, value: 1680, tolerance: { abs: 0 } }
+          explanation: >-
+            Order matters, so it is an ordered choice of 4 from 8: $8 \times 7 \times 6 \times 5 = 1{,}680$,
+            which is $\frac{8!}{4!}$.
+
+  - id: explore-sets-of-three
+    phase: explore
+    kind: predict
+    concept: M1.10/combinations
+    title: Sets of three features
+    prompt: How many different sets of 3 features can be chosen from 10, if a set has no order?
+    answer: { type: number, value: 120, tolerance: { abs: 0 } }
+    explanation: >-
+      The 720 ordered choices of 3 from 10 count each set once for each of its $3! = 6$ orders, so
+      there are $\frac{720}{6} = 120$ sets.
+    placement: true
+    review:
+      variants:
+        - prompt: How many different pairs can be made from 8 models, if a pair has no order?
+          answer: { type: number, value: 28, tolerance: { abs: 0 } }
+          explanation: >-
+            $8 \times 7 = 56$ ordered pairs, and each pair is counted in both of its orders, so
+            $\binom{8}{2} = \frac{56}{2} = 28$.
+        - prompt: How many sets of 4 features can be chosen from 6?
+          answer: { type: number, value: 15, tolerance: { abs: 0 } }
+          explanation: >-
+            $\binom{6}{4} = \frac{6 \times 5 \times 4 \times 3}{4!} = \frac{360}{24} = 15$, or
+            $\binom{6}{2} = 15$, by choosing the 2 left out.
+        - prompt: The 720 podiums of 3 from 10 models are divided by 6 to count the sets of 3. Why 6?
+          answer:
+            type: choice
+            options:
+              - { id: half, label: 'Each set appears twice, once each way round, and 3 sets of 2 make 6' }
+              - { id: members, label: 'A set of 3 can be split into 6 smaller sets' }
+              - { id: left, label: 'There are 6 ways to choose which 7 models are left out' }
+              - { id: orders, label: 'Each set of 3 is one podium in each of its $3! = 6$ orders' }
+            correct: [orders]
+          explanation: >-
+            Each set of 3 models makes one podium for each order of its three members, and 3 things
+            have $3 \times 2 \times 1 = 6$ orders, so every set is counted 6 times among the 720.
+
+  - id: explore-leave-out
+    phase: explore
+    kind: predict
+    concept: M1.10/combinations
+    title: Twenty-eight of thirty
+    prompt: In how many ways can 28 of 30 features be chosen, with no order?
+    answer: { type: number, value: 435, tolerance: { abs: 0 } }
+    explanation: >-
+      Choosing the 28 to keep is the same as choosing the 2 to leave out, so
+      $\binom{30}{28} = \binom{30}{2} = \frac{30 \times 29}{2} = 435$.
+    review:
+      variants:
+        - prompt: What is $\binom{20}{18}$?
+          answer: { type: number, value: 190, tolerance: { abs: 0 } }
+          explanation: >-
+            Choosing 18 is choosing the 2 left out: $\binom{20}{2} = \frac{20 \times 19}{2} = 190$.
+        - prompt: What is $\binom{100}{99}$?
+          answer: { type: number, value: 100, tolerance: { abs: 0 } }
+          explanation: >-
+            Choosing 99 of 100 is choosing the 1 left out, in 100 ways.
+        - prompt: Why is $\binom{n}{k}$ equal to $\binom{n}{n - k}$?
+          answer:
+            type: choice
+            options:
+              - { id: formula, label: 'Because $n - k$ and $k$ add up to $n$, and that is all a count depends on' }
+              - { id: symmetric, label: 'Because every row of numbers is the same read backwards, which needs no reason' }
+              - { id: pairing, label: 'Each set of $k$ chosen goes with exactly one set of $n - k$ left out' }
+            correct: [pairing]
+          explanation: >-
+            Sending each set of $k$ to the $n - k$ it leaves out pairs the two collections off one
+            to one, with nothing left over, so they are the same size. The triangle's rows read the
+            same backwards because of this, not the other way round.
+
+  - id: explore-with-last
+    phase: explore
+    kind: predict
+    concept: M1.10/combinations
+    title: With the last feature, or without
+    prompt: Of the 10 ways to choose 2 of the 5 features numbered 1 to 5, how many include feature 5?
+    answer: { type: number, value: 4, tolerance: { abs: 0 } }
+    explanation: >-
+      A set of 2 with feature 5 has one more feature, any of the other 4: $\binom{4}{1} = 4$. The
+      other $\binom{4}{2} = 6$ sets take both features from features 1 to 4, and $4 + 6 = 10$, the
+      two entries above $\binom{5}{2}$ in the triangle.
+    placement: true
+    review:
+      variants:
+        - prompt: Of the $\binom{6}{2} = 15$ ways to choose 2 of 6 features, numbered 1 to 6, how many leave feature 6 out?
+          answer: { type: number, value: 10, tolerance: { abs: 0 } }
+          explanation: >-
+            They choose both features from features 1 to 5: $\binom{5}{2} = 10$. The other
+            $\binom{5}{1} = 5$ sets hold feature 6.
+        - prompt: Row 6 of Pascal's triangle is 1, 6, 15, 20, 15, 6, 1. What is $\binom{7}{3}$?
+          answer: { type: number, value: 35, tolerance: { abs: 0 } }
+          explanation: >-
+            By Pascal's rule, $\binom{7}{3} = \binom{6}{2} + \binom{6}{3} = 15 + 20 = 35$.
+        - prompt: Which of these is equal to $\binom{9}{3}$?
+          answer:
+            type: choice
+            options:
+              - { id: rule, label: '$\binom{8}{2} + \binom{8}{3}$' }
+              - { id: same-k, label: '$\binom{8}{3} + \binom{8}{4}$' }
+              - { id: double, label: '$2 \times \binom{8}{3}$' }
+              - { id: mixed, label: '$\binom{9}{2} + \binom{8}{3}$' }
+            correct: [rule]
+          explanation: >-
+            The sets of 3 from 9 either hold the last thing, with 2 more from the other 8, or leave
+            it out, with all 3 from the other 8: $\binom{8}{2} + \binom{8}{3} = 28 + 56 = 84$. The
+            pair one place to the right, $\binom{8}{3} + \binom{8}{4} = 126$, is $\binom{9}{4}$.
+
+  - id: explore-row-sum
+    phase: explore
+    kind: predict
+    concept: M1.10/combinations
+    title: A whole row
+    prompt: What do the numbers in row 10 of Pascal's triangle add up to?
+    answer: { type: number, value: 1024, tolerance: { abs: 0 } }
+    explanation: >-
+      Row 10 counts the subsets of 10 things of each size, so together it counts all of them, and
+      each of the 10 things is in or out, so there are $2^{10} = 1{,}024$.
+    review:
+      variants:
+        - prompt: How many subsets does a set of 8 things have, with the empty set and the whole set included?
+          answer: { type: number, value: 256, tolerance: { abs: 0 } }
+          explanation: >-
+            Each of the 8 things is in or out of a subset, 2 choices each: $2^8 = 256$.
+        - prompt: How many strings of 6 digits, each 0 or 1, have exactly 2 ones?
+          answer: { type: number, value: 15, tolerance: { abs: 0 } }
+          explanation: >-
+            A string is fixed by the places of its 2 ones, a set of 2 of the 6 places:
+            $\binom{6}{2} = 15$.
+        - prompt: A row of Pascal's triangle adds up to 4,096. Which row is it?
+          answer: { type: number, value: 12, tolerance: { abs: 0 } }
+          explanation: >-
+            Row $n$ adds up to $2^n$, and $2^{12} = 4{,}096$, so it is row 12.
+
+  - id: explore-coefficient
+    phase: explore
+    kind: predict
+    concept: M1.10/binomial-theorem
+    title: The number in front
+    prompt: When $(a + b)^5$ is multiplied out and like terms are collected, what number is in front of $a^2 b^3$?
+    answer: { type: number, value: 10, tolerance: { abs: 0 } }
+    explanation: >-
+      Each product takes $a$ or $b$ from each of the 5 brackets, and a product equal to $a^2 b^3$
+      takes $b$ from 3 of them. There are $\binom{5}{3} = 10$ ways to choose those 3 brackets.
+    placement: true
+    review:
+      variants:
+        - prompt: When $(x + y)^6$ is multiplied out, what number is in front of $x^4 y^2$?
+          answer: { type: number, value: 15, tolerance: { abs: 0 } }
+          explanation: >-
+            Choose the 2 brackets that give $y$: $\binom{6}{2} = 15$.
+        - prompt: When $(1 + x)^4$ is multiplied out, what number is in front of $x^2$?
+          answer: { type: number, value: 6, tolerance: { abs: 0 } }
+          explanation: >-
+            $(1 + x)^4 = 1 + 4x + 6x^2 + 4x^3 + x^4$, row 4 of the triangle: $\binom{4}{2} = 6$
+            ways to choose the brackets that give $x$.
+        - prompt: When $(a + b)^7$ is multiplied out, what do the numbers in front of its terms add up to?
+          answer: { type: number, value: 128, tolerance: { abs: 0 } }
+          explanation: >-
+            Put $a = b = 1$: every term becomes its number in front, and $(1 + 1)^7 = 2^7 = 128$.
+
+  # Derive ---------------------------------------------------------------------
+  - id: derive-orders
+    phase: derive
+    kind: proof
+    concept: M1.10/permutations
+    title: Orders, by induction
+    prompt: >-
+      Here is a proof by induction that $n$ different things have exactly $n!$ orders, for every
+      whole number $n \ge 1$. Each line follows from the lines above it. Choose the rule that
+      justifies each line. A rule may be used more than once or not at all.
+    answer:
+      type: steps
+      rules:
+        - { id: product-rule, name: Product rule, label: 'A choice made in two steps, with $a$ options for the first and $b$ for the second whatever the first was, can be made in $ab$ ways.' }
+        - { id: work-out, name: Work it out, label: 'A statement about particular numbers can be checked directly.' }
+        - { id: sum-rule, name: Cases add, label: 'Two cases that cannot happen together can be made in as many ways as the two counts added.' }
+        - { id: one-to-one, name: Pair them off, label: 'Two collections whose members pair off one to one, with nothing left over on either side, have the same number of members.' }
+        - { id: hypothesis, name: Inductive hypothesis, label: 'In the step, $P(k)$ may be assumed, for the one $k$ that the step starts from.' }
+        - { id: divide, name: Divide by the orders, label: 'Dividing the ordered choices of $k$ things by $k!$, the orders of each set, counts the sets.' }
+        - { id: induction, name: Induction, label: 'If $P(1)$ is true, and $P(k)$ gives $P(k + 1)$ for every $k \ge 1$, then $P(n)$ is true for every $n \ge 1$.' }
+        - { id: factorial, name: Factorials, label: '$m \times (m - 1)! = m!$ for every whole number $m \ge 1$, since both are the product of the whole numbers from 1 to $m$.' }
+      start: 'P(n):\ n \text{ different things have exactly } n! \text{ orders}'
+      lines:
+        - math: 'P(1):\ \text{one thing has 1 order, and } 1! = 1'
+          rule: work-out
+        - math: '\text{There are as many orders of things 1 to } k + 1 \text{ as pairs (an order of things 1 to } k\text{, one of } k + 1 \text{ places for thing } k + 1\text{)}'
+          rule: one-to-one
+        - math: '\text{Things 1 to } k \text{ have } k! \text{ orders, if } P(k) \text{ is true}'
+          rule: hypothesis
+        - math: '\text{There are } (k + 1) \times k! \text{ such pairs}'
+          rule: product-rule
+        - math: '\text{So there are } (k + 1) \times k! = (k + 1)! \text{ orders of } k + 1 \text{ things, which is } P(k + 1)'
+          rule: factorial
+        - math: 'P(n) \text{ is true for every whole number } n \ge 1'
+          rule: induction
+    explanation: >-
+      Line 1 is the base case, worked out. Taking thing $k + 1$ out of an order, and putting it back
+      in its place, pairs the orders of $k + 1$ things one to one with the pairs of an order of $k$
+      things and a place, so the two collections are the same size. The hypothesis counts the
+      orders of $k$ things, and the product rule counts the pairs, since every order has $k + 1$
+      places whatever it is. $(k + 1) \times k!$ is $(k + 1)!$, and induction gives every $n$.
+      Cases add and dividing by the orders are never needed.
+
+  - id: derive-choose
+    phase: derive
+    kind: step
+    concept: M1.10/combinations
+    title: Choosing, with factorials
+    prompt: >-
+      Each set of $k$ things turns up $k!$ times among the $\frac{n!}{(n - k)!}$ ordered choices of
+      $k$ things from $n$. Write $\binom{n}{k}$ in terms of $n$ and $k$, with factorials. Type
+      $n!$ as `n!`, and put a `*` between two factorials that multiply.
+    answer:
+      type: expression
+      symbols:
+        - { name: n, integer: true, positive: true }
+        - { name: k, integer: true, positive: true }
+      lhs: '\binom{n}{k} ='
+      reference: factorial(n)/(factorial(k)*factorial(n - k))
+      accept: ['n!/(k!*(n-k)!)', 'n!/(k!(n-k)!)', 'n!/((n-k)!*k!)', 'n!/k!/(n-k)!', '(n!/(n-k)!)/k!', 'factorial(n)/(factorial(k)*factorial(n-k))']
+      reject: ['n!/(n-k)!', 'n!/k!', 'n!*k!/(n-k)!', 'n!/(k!*(n-k))', '(n-k)!/(n!*k!)', 'n!/(k!*n!)', 'k!/(n!*(n-k)!)', '(n-k)!*k!/n!']
+      form:
+        forbid: ['binomial(n, k)', 'binomial(n, n - k)']
+        message: That is the count itself, written another way. Write it with factorials only.
+    explanation: >-
+      Dividing the ordered choices by the $k!$ orders of each set:
+      $\binom{n}{k} = \frac{n!}{(n - k)!} \div k! = \frac{n!}{k!\,(n - k)!}$.
+
+  - id: derive-pascal-top
+    phase: derive
+    kind: step
+    concept: M1.10/combinations
+    title: Pascal's rule, by algebra
+    prompt: >-
+      Write the top, $(n - 1)! \times k + (n - 1)! \times (n - k)$, as a single factorial. Type
+      $n!$ as `n!`.
+    answer:
+      type: expression
+      symbols:
+        - { name: n, integer: true, positive: true }
+        - { name: k, integer: true, positive: true }
+      lhs: '(n - 1)! \times k + (n - 1)! \times (n - k) ='
+      reference: factorial(n)
+      accept: ['n!', 'factorial(n)', '(n)!']
+      reject: ['(n-1)!', '(n+1)!', 'k!*(n-k)!', 'n!*(n-1)!', '(n-1)!*(n-k)', 'k!', '(n-k)!', '(n-1)!*k']
+      form:
+        maxOps: 1
+        message: That is the right value, but not yet as simple as it can be. Simplify what multiplies $(n - 1)!$, and anything inside a factorial, and write what is left as one factorial.
+    explanation: >-
+      $(n - 1)! \times k + (n - 1)! \times (n - k) = (n - 1)! \times (k + n - k) = (n - 1)! \times n = n!$.
+      So the sum is $\frac{n!}{k!\,(n - k)!} = \binom{n}{k}$.
+
+  - id: derive-binomial
+    phase: derive
+    kind: proof
+    concept: M1.10/binomial-theorem
+    covers: [M1.10/combinations]
+    title: The binomial theorem, by induction
+    prompt: >-
+      Here is a proof by induction of the binomial theorem, the statement $P(n)$ below, for every
+      whole number $n \ge 0$, with $\binom{n}{j}$ counted as 0 when $j < 0$ or $j > n$. Each line
+      follows from the lines above it. Choose the rule that justifies each line. A rule may be used
+      more than once or not at all.
+    answer:
+      type: steps
+      rules:
+        - { id: pascal, name: "Pascal's rule", label: '$\binom{k + 1}{j} = \binom{k}{j - 1} + \binom{k}{j}$, for every $j$ from 0 to $k + 1$.' }
+        - { id: every-n, name: True for every n, label: 'The theorem is true for every whole number $n$, so it is true for $n = k + 1$.' }
+        - { id: shift, name: Shift the counter, label: 'A sum keeps its value when its counter runs one higher and each term is written with $j - 1$ in place of $j$.' }
+        - { id: work-out, name: Work it out, label: 'A statement about particular numbers can be checked directly, using $x^0 = 1$ and $\binom{0}{0} = 1$.' }
+        - { id: induction, name: Induction, label: 'If $P(0)$ is true, and $P(k)$ gives $P(k + 1)$ for every $k \ge 0$, then $P(n)$ is true for every $n \ge 0$.' }
+        - { id: hypothesis, name: Inductive hypothesis, label: 'In the step, $P(k)$ may be assumed, for the one $k$ that the step starts from.' }
+        - { id: multiply-out, name: Multiply out, label: 'Multiplying a sum by $a + b$ multiplies each of its terms by $a$ and by $b$, and adds the results.' }
+        - { id: powers, name: Powers, label: '$x^{k + 1} = x \times x^k$, by the rules for powers.' }
+        - { id: join, name: Add term by term, label: 'Two sums over the same counter add term by term, and a term whose number in front is 0 may be put in or left out.' }
+        - { id: symmetry, name: Choosing what is left out, label: '$\binom{k}{j} = \binom{k}{k - j}$, since choosing $j$ things is choosing the $k - j$ left out.' }
+      start: 'P(n):\ (a + b)^n = \sum_{j=0}^{n} \binom{n}{j} a^{n-j} b^j'
+      lines:
+        - math: 'P(0):\ (a + b)^0 = 1 \text{ and } \binom{0}{0} a^0 b^0 = 1'
+          rule: work-out
+        - math: '(a + b)^{k+1} = (a + b)(a + b)^k'
+          rule: powers
+        - math: '= (a + b) \sum_{j=0}^{k} \binom{k}{j} a^{k-j} b^j \text{, if } P(k) \text{ is true}'
+          rule: hypothesis
+        - math: '= \sum_{j=0}^{k} \binom{k}{j} a^{k+1-j} b^j + \sum_{j=0}^{k} \binom{k}{j} a^{k-j} b^{j+1}'
+          rule: multiply-out
+        - math: '= \sum_{j=0}^{k} \binom{k}{j} a^{k+1-j} b^j + \sum_{j=1}^{k+1} \binom{k}{j-1} a^{k+1-j} b^j'
+          rule: shift
+        - math: '= \sum_{j=0}^{k+1} \left( \binom{k}{j} + \binom{k}{j-1} \right) a^{k+1-j} b^j'
+          rule: join
+        - math: '= \sum_{j=0}^{k+1} \binom{k+1}{j} a^{k+1-j} b^j \text{, which is } P(k + 1)'
+          rule: pascal
+        - math: 'P(n) \text{ is true for every whole number } n \ge 0'
+          rule: induction
+    explanation: >-
+      Line 1 is the base case, worked out. The step writes $(a + b)^{k+1}$ as $(a + b)$ times
+      $(a + b)^k$, uses the hypothesis for $(a + b)^k$, and multiplies out, which raises the power
+      of $a$ in the first sum and of $b$ in the second. Shifting the second sum's counter makes
+      both sums' terms $a^{k+1-j} b^j$, and the two sums join term by term, since the terms they
+      lack, at $j = k + 1$ in the first and $j = 0$ in the second, have 0 in front. Pascal's rule
+      turns each bracket into $\binom{k+1}{j}$, which is $P(k + 1)$, and induction gives every $n$.
+      "True for every n" is never needed, and would assume the theorem being proved.
+
+  - id: derive-even-sets
+    phase: derive
+    kind: step
+    concept: M1.10/binomial-theorem
+    title: Even and odd
+    prompt: >-
+      Write $E(n)$ for the number of subsets of $n$ things that have an even number of elements,
+      the empty set included. Write $E(n)$ in terms of $n$, for any whole number $n \ge 1$.
+    answer:
+      type: expression
+      symbols:
+        - { name: n, integer: true, positive: true }
+      lhs: 'E(n) ='
+      reference: 2**(n - 1)
+      accept: ['2^(n-1)', '2**n/2', '2^n/2', '(2^n)/2', '2^(n - 1)', '1/2*2^n']
+      reject: ['2^n', 'n/2', '2^(n-2)', '2^n - 1', 'n*2^(n-1)', '2^(n+1)', '2^(n-1) + 1', 'n', '2^n/n']
+    explanation: >-
+      All the subsets: $\sum_j \binom{n}{j} = 2^n$. Even sizes take odd sizes away:
+      $\sum_j (-1)^j \binom{n}{j} = 0$. Adding the two counts every even subset twice and every
+      odd one not at all, so $2E(n) = 2^n$, and $E(n) = 2^{n-1}$.
+
+  - id: derive-captain
+    phase: derive
+    kind: proof
+    concept: M1.10/combinations
+    covers: [M1.10/counting-rules]
+    title: Counting twice
+    prompt: >-
+      Prove that $k\binom{n}{k} = n\binom{n - 1}{k - 1}$ for whole numbers $1 \le k \le n$, by
+      counting the ways to choose a team of $k$ people from $n$, with one of the $k$ as its
+      captain, in two different orders. Say why the two counts must be equal. Then check the
+      identity with the formula $\binom{n}{k} = \frac{n!}{k!\,(n - k)!}$.
+    answer:
+      type: text
+      rubric:
+        - { id: members-first, criterion: 'Counts the teams with a captain by choosing the members first and then the captain, and names the rule that gives the count. A table with a row for each team and a mark for each of its possible captains, counted row by row, also does.' }
+        - { id: captain-first, criterion: 'Counts them by choosing the captain first and then the rest of the team, saying how many people are left to choose from. Counting the same marks person by person also does.' }
+        - { id: same-thing, criterion: 'Says why the two counts must be equal.' }
+        - { id: algebra, criterion: 'Checks the identity with the formula $\binom{n}{k} = \frac{n!}{k!\,(n - k)!}$, by any correct algebra that shows both sides equal.' }
+      reference: >-
+        Count the teams of $k$ people with a captain, chosen from $n$ people. First way: choose the
+        $k$ members, in $\binom{n}{k}$ ways, and then choose the captain from among those $k$, in
+        $k$ ways whatever the team is, so by the product rule there are $k\binom{n}{k}$ teams with a
+        captain. Second way: choose the captain first, from all $n$ people, in $n$ ways, and then
+        the other $k - 1$ members from the $n - 1$ people who are left, in $\binom{n - 1}{k - 1}$
+        ways whatever the captain was, so there are $n\binom{n - 1}{k - 1}$. Each team with a
+        captain is counted exactly once in each way, since the first way finds it from its members
+        and its captain, and the second from its captain and its other members. Both count the same
+        collection, so $k\binom{n}{k} = n\binom{n - 1}{k - 1}$. Check with factorials:
+        $k\binom{n}{k} = \frac{k \times n!}{k!\,(n - k)!} = \frac{n!}{(k - 1)!\,(n - k)!}$, since
+        $k! = k \times (k - 1)!$, and
+        $n\binom{n - 1}{k - 1} = \frac{n \times (n - 1)!}{(k - 1)!\,(n - k)!} = \frac{n!}{(k - 1)!\,(n - k)!}$,
+        since $(n - 1) - (k - 1) = n - k$ and $n \times (n - 1)! = n!$. For example, with $n = 5$
+        and $k = 2$: $2 \times 10 = 20 = 5 \times 4$.
+      minWords: 50
+      maxWords: 300
+    explanation: >-
+      Members first: $\binom{n}{k}$ teams, each with $k$ choices of captain, which makes
+      $k\binom{n}{k}$. Captain first: $n$ choices, then $\binom{n - 1}{k - 1}$ ways to fill the
+      rest of the team, which makes $n\binom{n - 1}{k - 1}$. Both count every team with a captain
+      exactly once, so they are equal, and with factorials both sides are
+      $\frac{n!}{(k - 1)!\,(n - k)!}$.
+
+  - id: derive-experts
+    phase: derive
+    kind: estimate
+    concept: M1.10/combinations
+    title: Teams of experts
+    prompt: >-
+      A layer has 64 experts, and the router picks a set of 8 of them for each token. Estimate how
+      many different sets of 8 it can pick. An answer within a factor of 3 is accepted.
+    answer: { type: number, value: 4426165368, tolerance: { factor: 3 } }
+    explanation: >-
+      $\binom{64}{8} = \frac{64 \times 63 \times \dots \times 57}{8!}$. The top is about
+      $60^8 \approx 1.7 \times 10^{14}$, and $8! = 40{,}320$, about $4 \times 10^4$, so the count is
+      about $4 \times 10^9$. The exact value is 4,426,165,368.
+
+  # Build ----------------------------------------------------------------------
+  - id: build-choose
+    phase: build
+    kind: build
+    concept: M1.10/combinations
+    title: Choosing, exactly
+    prompt: >-
+      Replace the `pass` in `choose`, so that `choose(n, k)` gives $\binom{n}{k}$ exactly, as an
+      `int`, by a loop that multiplies and divides by whole numbers. When $k$ is more than half of
+      $n$, have it choose the $n - k$ left out instead, so that the loop is short. The tests try
+      `choose(1000000, 999998)`.
+    answer:
+      type: code
+      maxSteps: 200000
+      starter: |
+        def choose(n, k):
+            """The number of ways to choose k things from n different things, with no order,
+            worked out exactly with whole numbers. n and k are whole numbers, 0 or more."""
+            if k > n:
+                return 0
+            count = 1
+            for i in range(k):
+                pass
+            return count
+
+        print(choose(5, 2))
+        print(choose(10, 3))
+        print(choose(100, 50))
+      tests: |
+        def grouped(v):
+            """A whole number with its digits grouped in threes, or anything else as Python shows it."""
+            return f"{v:,}" if type(v) is int else repr(v)
+
+        def small(got, want):
+            """A hint when a count comes out well short, as it does when a // runs before its multiplication."""
+            if type(got) is int and got > 1 and got * 100 < want * 99:
+                return " That is too small. If each pass divides with //, does it multiply first? count *= a // b works out a // b first, and rounds it down."
+            return ""
+
+        def test_five_two():
+            """choose(5, 2) is 10, as the Explore phase counted."""
+            got = choose(5, 2)
+            assert got == 10, f"choose(5, 2) gives {grouped(got)}, not 10."
+
+        def test_whole():
+            """choose gives an int, a whole number, not a float."""
+            got = choose(10, 3)
+            assert type(got) is int, f"choose(10, 3) gives {got!r}, a {type(got).__name__}, not an int. The / operator always gives a float, while // keeps whole numbers whole."
+
+        def test_triangle():
+            """choose(n, k) is right for every n from 0 to 12 and every k from 0 to n, checked against Pascal's triangle."""
+            row = [1]
+            for n in range(13):
+                for k in range(n + 1):
+                    got = choose(n, k)
+                    assert got == row[k], f"choose({n}, {k}) gives {grouped(got)}, not {row[k]:,}." + small(got, row[k])
+                row = [1] + [row[i] + row[i + 1] for i in range(n)] + [1]
+
+        def test_too_many():
+            """choose(n, k) is 0 when k is more than n, since there is no way to choose more things than there are."""
+            for n, k in ((3, 5), (0, 1), (10, 11)):
+                got = choose(n, k)
+                assert got == 0, f"choose({n}, {k}) gives {grouped(got)}, not 0."
+
+        def test_large():
+            """choose(100, 50) is 100,891,344,545,564,193,334,812,497,256, exactly."""
+            got = choose(100, 50)
+            want = math.comb(100, 50)
+            assert got == want, f"choose(100, 50) gives {grouped(got)}, not {want:,}." + small(got, want)
+
+        def test_library():
+            """choose(n, k) agrees with Python's math.comb(n, k) for every n up to 60 and every k from 0 to n."""
+            for n in range(61):
+                for k in range(n + 1):
+                    got = choose(n, k)
+                    want = math.comb(n, k)
+                    assert got == want, f"choose({n}, {k}) gives {grouped(got)}, not {want:,}." + small(got, want)
+
+        def test_short_way():
+            """choose(n, k) with n = 1,000,000 and k = 999,998 is 499,999,500,000, found by choosing the 2 left out, in 2 passes of the loop rather than 999,998."""
+            import sys
+            outer = sys.gettrace()
+            ran = [0]
+
+            class TooLong(Exception):
+                pass
+
+            def tracer(frame, event, arg):
+                local = outer(frame, event, arg) if outer else None
+                if frame.f_code is not choose.__code__:
+                    return local
+                def counting(frame, event, arg):
+                    nonlocal local
+                    if local is not None:
+                        local = local(frame, event, arg)
+                    if event == "line":
+                        ran[0] += 1
+                        if ran[0] > 1000:
+                            raise TooLong
+                    return counting
+                return counting
+
+            sys.settrace(tracer)
+            try:
+                got = choose(1000000, 999998)
+            except TooLong:
+                got = None
+            finally:
+                sys.settrace(outer)
+            assert got is not None, "choose(1000000, 999998) was still running after 1,000 lines. When k is more than half of n, choose the n - k left out instead: 2 passes of the loop, not 999,998."
+            assert got == 499999500000, f"choose(1000000, 999998) gives {grouped(got)}, not 499,999,500,000."
+
+        def test_own_work():
+            """choose works the count out itself, without Python's own counting functions: math.comb, math.perm (which counts ordered choices) or math.factorial."""
+            used = sorted(set(choose.__code__.co_names) & {"comb", "perm", "factorial"})
+            assert not used, f"choose uses {', '.join(used)}. Work the count out with a loop that multiplies and divides by whole numbers."
+      reference: |
+        def choose(n, k):
+            """The number of ways to choose k things from n different things, with no order,
+            worked out exactly with whole numbers. n and k are whole numbers, 0 or more."""
+            if k > n:
+                return 0
+            if k > n - k:
+                k = n - k
+            count = 1
+            for i in range(k):
+                count = count * (n - i) // (i + 1)
+            return count
+
+        print(choose(5, 2))
+        print(choose(10, 3))
+        print(choose(100, 50))
+      wrong:
+        - code: |
+            def choose(n, k):
+                if k > n:
+                    return 0
+                if k > n - k:
+                    k = n - k
+                count = 1
+                for i in range(k):
+                    count = count * (n - i) / (i + 1)
+                return count
+          why: Divides with `/`, which gives a float, so `choose(10, 3)` is `120.0`, and `choose(100, 50)` is wrong from its 17th digit.
+        - code: |
+            def choose(n, k):
+                if k > n:
+                    return 0
+                if k > n - k:
+                    k = n - k
+                count = 1
+                for i in range(k):
+                    count = count // (i + 1) * (n - i)
+                return count
+          why: Divides before it multiplies, so a division can leave a remainder that `//` throws away, and `choose(5, 2)` gives 8.
+        - code: |
+            def choose(n, k):
+                if k > n:
+                    return 0
+                count = 1
+                for i in range(k):
+                    count = count * (n - i) // (i + 1)
+                return count
+          why: Never takes the shorter way round, so `choose(1000000, 999998)` would run a loop of 999,998 passes, and the test stops it.
+        - code: |
+            def choose(n, k):
+                if k > n:
+                    return 0
+                if k > n - k:
+                    k = n - k
+                count = 1
+                for i in range(1, k + 1):
+                    count = count * (n - i) // i
+                return count
+          why: Starts the factors on top at $n - 1$, so it counts choices from $n - 1$ things, and `choose(5, 2)` gives 6.
+        - code: |
+            def choose(n, k):
+                if k > n:
+                    return 0
+                if k > n - k:
+                    k = n - k
+                count = 1
+                for i in range(k):
+                    count *= (n - i) // (i + 1)
+                return count
+          why: >-
+            Works out `(n - i) // (i + 1)` before it multiplies, so a remainder is thrown away:
+            `choose(5, 2)` gives 10 by luck, but `choose(4, 2)` gives 4.
+    explanation: >-
+      After $i$ passes the loop holds $\binom{n}{i}$, and the next pass multiplies by $n - i$ and
+      divides by $i + 1$, which gives $\binom{n}{i + 1}$, a whole number, so `//` loses nothing.
+      Swapping $k$ for $n - k$ when it is larger keeps the loop to at most $\frac{n}{2}$ passes.
+
+  - id: build-pascal
+    phase: build
+    kind: build
+    concept: M1.10/combinations
+    title: The triangle, row by row
+    prompt: >-
+      Replace the `pass` in each function. `next_row(row)` should give the row of Pascal's triangle
+      below `row`, as a new list, and leave `row` as it was. `triangle(n)` should give rows 0 to
+      $n$, each a list of its own, building each row from the one before it with `next_row`.
+    answer:
+      type: code
+      starter: |
+        def next_row(row):
+            """The row of Pascal's triangle below row, as a new list; row is left as it was.
+            The new row starts and ends with 1, and each entry between is the sum of the
+            two entries above it."""
+            new = [1]
+            pass
+            return new
+
+        def triangle(n):
+            """Rows 0 to n of Pascal's triangle: a list of n + 1 rows, each a list of its own,
+            starting with row 0, which is [1]."""
+            rows = [[1]]
+            pass
+            return rows
+
+        for row in triangle(5):
+            print(row)
+      tests: |
+        def grouped(v):
+            """A whole number with its digits grouped in threes, or anything else as Python shows it."""
+            return f"{v:,}" if type(v) is int else repr(v)
+
+        def shown(v):
+            """v as Python shows it, cut short after 80 characters."""
+            s = repr(v)
+            return s if len(s) <= 80 else s[:79] + "…"
+
+        def entries(count):
+            """count entries, in words: 1 entry, 2 entries."""
+            return f"{count:,} entry" if count == 1 else f"{count:,} entries"
+
+        def rows_up_to(n):
+            """Rows 0 to n, in words: 1 row, row 0 alone; 2 rows, rows 0 to 1."""
+            return "1 row, row 0 alone" if n == 0 else f"{n + 1:,} rows, rows 0 to {n}"
+
+        def test_next():
+            """next_row gives the row below: [1] gives [1, 1], [1, 1] gives [1, 2, 1], and [1, 3, 3, 1] gives [1, 4, 6, 4, 1]."""
+            for row, want in (([1], [1, 1]), ([1, 1], [1, 2, 1]), ([1, 2, 1], [1, 3, 3, 1]), ([1, 3, 3, 1], [1, 4, 6, 4, 1])):
+                got = next_row(list(row))
+                assert got == want, f"next_row({row}) gives {shown(got)}, not {want}."
+
+        def test_unchanged():
+            """next_row leaves the row it is given as it was."""
+            row = [1, 3, 3, 1]
+            next_row(row)
+            assert row == [1, 3, 3, 1], f"After next_row(row) with row = [1, 3, 3, 1], row has become {shown(row)}. Build the new row as a new list, and only read from row."
+
+        def test_rows():
+            """triangle(n) gives rows 0 to n, which is n + 1 rows, and row i has i + 1 entries."""
+            for n in (0, 1, 5):
+                got = triangle(n)
+                assert isinstance(got, list) and len(got) == n + 1, f"triangle({n}) gives {shown(got)}, which is not a list of {rows_up_to(n)}."
+                for i in range(n + 1):
+                    assert isinstance(got[i], list) and len(got[i]) == i + 1, f"Row {i} of triangle({n}) is {shown(got[i])}, not a list of {entries(i + 1)}."
+
+        def test_counts():
+            """Row n, place k of triangle(30) is math.comb(n, k), for every n up to 30 and every k from 0 to n."""
+            rows = triangle(30)
+            assert len(rows) == 31, f"triangle(30) gives {len(rows):,} {'row' if len(rows) == 1 else 'rows'}, not 31, rows 0 to 30."
+            for n in range(31):
+                assert len(rows[n]) == n + 1, f"Row {n} of triangle(30) has {entries(len(rows[n]))}, not {n + 1}."
+                for k in range(n + 1):
+                    got = rows[n][k]
+                    want = math.comb(n, k)
+                    assert got == want, f"Row {n}, place {k} of triangle(30) is {grouped(got)}, not {want:,}."
+
+        def test_sums():
+            """Row n of triangle(20) adds up to 2 to the power n, for every n up to 20."""
+            rows = triangle(20)
+            for n in range(min(len(rows), 21)):
+                got = sum(rows[n])
+                assert got == 2 ** n, f"Row {n} of triangle(20) adds up to {grouped(got)}, not {2 ** n:,}."
+
+        def test_separate():
+            """The rows of triangle(5) are separate lists, so changing one leaves the others as they were."""
+            rows = triangle(5)
+            shape = [len(r) for r in rows] if isinstance(rows, list) and all(isinstance(r, list) for r in rows) else None
+            assert shape == [1, 2, 3, 4, 5, 6], f"triangle(5) gives {shown(rows)}, not rows 0 to 5, so this test cannot change row 2 yet."
+            rows[2][1] = 99
+            for i in (0, 1, 3, 4, 5):
+                assert 99 not in rows[i], f"Changing row 2 of triangle(5) changed row {i} too: it became {shown(rows[i])}. Each row should be a list of its own."
+      reference: |
+        def next_row(row):
+            """The row of Pascal's triangle below row, as a new list; row is left as it was.
+            The new row starts and ends with 1, and each entry between is the sum of the
+            two entries above it."""
+            new = [1]
+            for i in range(len(row) - 1):
+                new.append(row[i] + row[i + 1])
+            new.append(1)
+            return new
+
+        def triangle(n):
+            """Rows 0 to n of Pascal's triangle: a list of n + 1 rows, each a list of its own,
+            starting with row 0, which is [1]."""
+            rows = [[1]]
+            for i in range(n):
+                rows.append(next_row(rows[i]))
+            return rows
+
+        for row in triangle(5):
+            print(row)
+      wrong:
+        - code: |
+            def next_row(row):
+                new = row
+                for i in range(len(row) - 1, 0, -1):
+                    new[i] = row[i] + row[i - 1]
+                new.append(1)
+                return new
+
+            def triangle(n):
+                rows = [[1]]
+                for i in range(n):
+                    rows.append(next_row(rows[i]))
+                return rows
+          why: >-
+            Makes `new` a second name for `row`, the same list, so the caller's row is changed, and
+            `triangle(5)` ends up holding one list six times over, which by then is row 5.
+        - code: |
+            def next_row(row):
+                new = [1]
+                for i in range(len(row) - 1):
+                    new.append(row[i] + row[i + 1])
+                return new
+
+            def triangle(n):
+                rows = [[1]]
+                for i in range(n):
+                    rows.append(next_row(rows[i]))
+                return rows
+          why: Leaves off the 1 at the end of the new row, so every row is `[1]`.
+        - code: |
+            def next_row(row):
+                new = [1]
+                for i in range(len(row) - 1):
+                    new.append(row[i] + row[i + 1])
+                new.append(1)
+                return new
+
+            def triangle(n):
+                rows = [[1]]
+                for i in range(n - 1):
+                    rows.append(next_row(rows[i]))
+                return rows
+          why: Builds one row too few, so `triangle(5)` stops at row 4.
+        - code: |
+            def next_row(row):
+                new = []
+                for i in range(len(row)):
+                    new.append(row[i - 1] + row[i])
+                new.append(1)
+                return new
+
+            def triangle(n):
+                rows = [[1]]
+                for i in range(n):
+                    rows.append(next_row(rows[i]))
+                return rows
+          why: >-
+            Adds `row[i - 1]` to `row[i]` from `i = 0`, where `row[-1]` is the last entry, not one
+            before the first, so `[1]` gives `[2, 1]`.
+    explanation: >-
+      The new row starts with 1, then has the sum of each pair of neighbours in the old row,
+      `row[i]` and `row[i + 1]`, and ends with 1. A row of $m$ entries has $m - 1$ pairs of
+      neighbours, so the new row has $m + 1$ entries. `triangle` starts from `[[1]]` and adds
+      `next_row` of the last row $n$ times, so it holds rows 0 to $n$, and since `next_row` makes a
+      new list each time, every row is a list of its own.
+
+  - id: build-choices
+    phase: build
+    kind: build
+    concept: M1.10/combinations
+    title: Every choice, listed
+    prompt: >-
+      Replace the `pass` in `choices`, so that `choices(items, k)` gives every set of `k` of the
+      items, each as a list, by Pascal's rule: first the sets that hold the first item, then the
+      sets that leave it out. Begin with the two base cases, choosing nothing and choosing more
+      items than there are.
+    answer:
+      type: code
+      starter: |
+        def choices(items, k):
+            """Every set of k of the items, each a list that keeps the items in their order
+            in items, with the sets that hold items[0] before the sets that leave it out.
+            items is a list of different things, and k is a whole number, 0 or more."""
+            pass
+
+        print(choices(["a", "b", "c", "d"], 2))
+        print(choices(["a", "b", "c", "d"], 3))
+      tests: |
+        import itertools
+
+        def shown(v):
+            """v as Python shows it, cut short after 80 characters."""
+            s = repr(v)
+            return s if len(s) <= 80 else s[:79] + "…"
+
+        def sets(count):
+            """count sets, in words: 1 set, 2 sets."""
+            return f"{count:,} set" if count == 1 else f"{count:,} sets"
+
+        def test_filled():
+            """choices gives a list, not None."""
+            got = choices(["a", "b"], 1)
+            assert isinstance(got, list), f"choices(['a', 'b'], 1) gives {shown(got)}, not a list."
+
+        def test_pairs():
+            """choices(["a", "b", "c", "d"], 2) gives the 6 pairs in this order: ["a", "b"], ["a", "c"], ["a", "d"], ["b", "c"], ["b", "d"] and ["c", "d"]."""
+            want = [["a", "b"], ["a", "c"], ["a", "d"], ["b", "c"], ["b", "d"], ["c", "d"]]
+            got = choices(["a", "b", "c", "d"], 2)
+            if isinstance(got, list) and got != want and sorted(map(repr, got)) == sorted(map(repr, want)):
+                assert False, f"choices(['a', 'b', 'c', 'd'], 2) gives the right 6 pairs, but in the order {shown(got)}. The sets that hold the first item come first."
+            assert got == want, f"choices(['a', 'b', 'c', 'd'], 2) gives {shown(got)}, not the 6 pairs from ['a', 'b'] to ['c', 'd']."
+
+        def test_ends():
+            """Choosing 0 items gives one set, the empty one; choosing all of them gives one set, all of them; and choosing more items than there are gives no sets."""
+            for items, k, want in (([1, 2, 3], 0, [[]]), ([], 0, [[]]), ([1, 2, 3], 3, [[1, 2, 3]]), ([1, 2, 3], 4, []), ([], 1, [])):
+                got = choices(items, k)
+                assert got == want, f"choices({items}, {k}) gives {shown(got)}, not {want}."
+
+        def test_counts():
+            """A list of n items has math.comb(n, k) sets of k items, for every n up to 10 and every k from 0 to n + 1."""
+            for n in range(11):
+                items = list(range(n))
+                for k in range(n + 2):
+                    got = choices(items, k)
+                    want = math.comb(n, k)
+                    assert isinstance(got, list), f"choices(list(range({n})), {k}) gives {shown(got)}, not a list."
+                    assert len(got) == want, f"choices(list(range({n})), {k}) gives {sets(len(got))}, not {want:,}."
+
+        def test_library():
+            """choices(items, k) agrees with Python's itertools.combinations(items, k), set for set and in the same order, for lists of up to 8 items and every k."""
+            for n in range(9):
+                items = list("abcdefgh"[:n])
+                for k in range(n + 2):
+                    got = choices(items, k)
+                    want = [list(c) for c in itertools.combinations(items, k)]
+                    assert got == want, f"choices({items}, {k}) gives {shown(got)}, not {shown(want)}."
+
+        def test_all_subsets():
+            """A list of 10 items has 1,024 sets of every size together, 2 to the power 10, and none comes twice."""
+            items = list(range(10))
+            seen = set()
+            total = 0
+            for k in range(11):
+                got = choices(items, k)
+                assert isinstance(got, list), f"choices(list(range(10)), {k}) gives {shown(got)}, not a list."
+                for s in got:
+                    seen.add(repr(s))
+                    total += 1
+            assert total == 1024, f"choices gives {total:,} sets of the 10 items across every k from 0 to 10, not 1,024."
+            assert len(seen) == 1024, f"choices gives {total - len(seen):,} of its sets more than once."
+
+        def test_unchanged():
+            """choices leaves the list it is given as it was."""
+            items = ["a", "b", "c", "d"]
+            choices(items, 2)
+            assert items == ["a", "b", "c", "d"], f"After choices(items, 2) with items = ['a', 'b', 'c', 'd'], items has become {items}. Leave items as it was, and pass the calls new lists."
+      reference: |
+        def choices(items, k):
+            """Every set of k of the items, each a list that keeps the items in their order
+            in items, with the sets that hold items[0] before the sets that leave it out.
+            items is a list of different things, and k is a whole number, 0 or more."""
+            if k == 0:
+                return [[]]
+            if k > len(items):
+                return []
+            rest = items[1:]
+            with_first = []
+            for chosen in choices(rest, k - 1):
+                with_first.append([items[0]] + chosen)
+            return with_first + choices(rest, k)
+
+        print(choices(["a", "b", "c", "d"], 2))
+        print(choices(["a", "b", "c", "d"], 3))
+      wrong:
+        - code: |
+            def choices(items, k):
+                if k == 0:
+                    return []
+                if k > len(items):
+                    return []
+                rest = items[1:]
+                with_first = []
+                for chosen in choices(rest, k - 1):
+                    with_first.append([items[0]] + chosen)
+                return with_first + choices(rest, k)
+          why: Says that there is no way to choose nothing, so no set is ever started, and every call gives `[]`.
+        - code: |
+            def choices(items, k):
+                if k == 0:
+                    return [[]]
+                if k > len(items):
+                    return []
+                rest = items[1:]
+                with_first = []
+                for chosen in choices(rest, k - 1):
+                    with_first.append([items[0]] + chosen)
+                return with_first + choices(rest, k - 1)
+          why: >-
+            Chooses only $k - 1$ from the rest when the first item is left out, so it gives sets of
+            fewer than $k$ items too: `choices(['a', 'b', 'c', 'd'], 2)` gives
+            `[['a', 'b'], ['a'], ['b'], []]`.
+        - code: |
+            def choices(items, k):
+                if k == 0:
+                    return [[]]
+                if k > len(items):
+                    return []
+                rest = items[1:]
+                with_first = []
+                for chosen in choices(rest, k - 1):
+                    with_first.append([items[0]] + chosen)
+                return with_first
+          why: Leaves out the sets without the first item, so `choices(['a', 'b', 'c', 'd'], 2)` gives only `[['a', 'b']]`.
+        - code: |
+            def choices(items, k):
+                if k == 0:
+                    return [[]]
+                if k > len(items):
+                    return []
+                rest = items[1:]
+                with_first = []
+                for chosen in choices(rest, k):
+                    with_first.append([items[0]] + chosen)
+                return with_first + choices(rest, k - 1)
+          why: >-
+            Swaps $k$ and $k - 1$ in the two calls, so the sets come out with the wrong numbers of
+            items: `choices([1, 2, 3], 3)` gives `[[]]`, not `[[1, 2, 3]]`.
+    explanation: >-
+      The base cases come first: `[[]]`, one set with nothing in it, when $k = 0$, and `[]`, no sets,
+      when $k$ is more than the number of items. Otherwise the sets that hold the first item are
+      that item put in front of each set of $k - 1$ from the rest, and the sets that leave it out are
+      the sets of $k$ from the rest. Between them they give
+      $\binom{n - 1}{k - 1} + \binom{n - 1}{k} = \binom{n}{k}$ sets, by Pascal's rule.
+
+  - id: breakit-float-choose
+    phase: build
+    kind: breakit
+    concept: M1.10/combinations
+    title: A count in floats
+    prompt: Predict what happens after the change, then run both versions to see.
+    answer:
+      type: breakit
+      code: |
+        import math
+
+        def choose(n, k):
+            """n choose k, from the factorial formula."""
+            return math.factorial(n) // (math.factorial(k) * math.factorial(n - k))
+
+        count = choose(100, 50)
+        print(count)
+        print(count == math.comb(100, 50))
+      broken: |
+        import math
+
+        def choose(n, k):
+            """n choose k, from the factorial formula."""
+            return math.factorial(n) / (math.factorial(k) * math.factorial(n - k))
+
+        count = choose(100, 50)
+        print(count)
+        print(count == math.comb(100, 50))
+      change: '`choose` divides with `/` instead of `//`.'
+      options:
+        - { id: same, label: 'It prints the same two lines', when: "error is None and type(count) is int and count == base['count']" }
+        - { id: close, label: 'It prints a float close to the count, then `False`', when: "error is None and type(count) is float and count != base['count']" }
+        - { id: dot-zero, label: 'It prints the same count with `.0` on the end, then `True`', when: "error is None and type(count) is float and count == base['count']" }
+        - { id: overflow, label: 'Python stops with an error: the factorials are too big for a float', when: 'error is not None' }
+    explanation: >-
+      It prints `1.008913445455642e+29`, then `False`. `/` always gives a float, and a float keeps
+      about 16 significant figures, while $\binom{100}{50}$ has 30 digits, so the float nearest to
+      the count is wrong from its 16th digit on. There is no error: Python divides two ints with
+      `/` by finding the quotient exactly and rounding it to the nearest float, and a number near
+      $10^{29}$ is well inside the range of floats. Counts are whole numbers, and `//` keeps them
+      exact.
+
+  - id: debug-arrangements
+    phase: build
+    kind: debug
+    concept: M1.10/permutations
+    title: Every podium
+    prompt: >-
+      `arrangements(items, k)` should give every ordered choice of `k` of the items, but it prints
+      3 pairs and 120. Find the line that is wrong, and say why it gives those counts, then mend
+      it; once the tests pass, the answer says whether you were right.
+    answer:
+      type: code
+      starter: |
+        def arrangements(items, k):
+            """Every ordered choice of k of the items, each a list in the order its places
+            are filled. items is a list of different things, and k is a whole number, 0 or more."""
+            if k == 0:
+                return [[]]
+            result = []
+            for i in range(len(items)):
+                left = items[i + 1:]
+                for tail in arrangements(left, k - 1):
+                    result.append([items[i]] + tail)
+            return result
+
+        print(arrangements(["a", "b", "c"], 2))
+        print(len(arrangements(list(range(10)), 3)))
+      tests: |
+        import itertools
+
+        def shown(v):
+            """v as Python shows it, cut short after 80 characters."""
+            s = repr(v)
+            return s if len(s) <= 80 else s[:79] + "…"
+
+        def counted(count, one, many):
+            """count things, in words: 1 choice, 2 choices."""
+            return f"{count:,} {one if count == 1 else many}"
+
+        def test_pairs():
+            """arrangements(["a", "b", "c"], 2) gives the 6 ordered pairs: ["a", "b"], ["a", "c"], ["b", "a"], ["b", "c"], ["c", "a"] and ["c", "b"]."""
+            want = [["a", "b"], ["a", "c"], ["b", "a"], ["b", "c"], ["c", "a"], ["c", "b"]]
+            got = arrangements(["a", "b", "c"], 2)
+            if isinstance(got, list) and got != want and sorted(map(repr, got)) == sorted(map(repr, want)):
+                assert False, f"arrangements(['a', 'b', 'c'], 2) gives the right 6 pairs, but in the order {shown(got)}. The choices that start with the first item come first."
+            assert got == want, f"arrangements(['a', 'b', 'c'], 2) gives {shown(got)}, not the 6 ordered pairs."
+
+        def test_podiums():
+            """There are 720 podiums of 3 from 10 models, 10 × 9 × 8, each with 3 different models, and none comes twice."""
+            got = arrangements(list(range(10)), 3)
+            assert len(got) == 720, f"arrangements of 3 from 10 items gives {counted(len(got), 'choice', 'choices')}, not 720."
+            for p in got:
+                assert len(p) == 3 and len(set(p)) == 3, f"arrangements of 3 from 10 items gives {p}, which is not 3 different items."
+            assert len(set(map(tuple, got))) == 720, "arrangements of 3 from 10 items gives some podiums more than once."
+
+        def test_orders():
+            """4 items have 4! = 24 orders, and arrangements(items, 4) gives every one of them."""
+            got = arrangements([1, 2, 3, 4], 4)
+            assert len(got) == 24, f"arrangements([1, 2, 3, 4], 4) gives {counted(len(got), 'order', 'orders')}, not 24."
+            assert len(set(map(tuple, got))) == 24, "arrangements([1, 2, 3, 4], 4) gives some orders more than once."
+
+        def test_too_many():
+            """There is no way to choose more items than there are, so arrangements(items, k) is [] when k is more than the number of items."""
+            for items, k in (([1, 2], 3), ([], 1), (["a"], 2)):
+                got = arrangements(items, k)
+                assert got == [], f"arrangements({items}, {k}) gives {shown(got)}, not []."
+
+        def test_library():
+            """arrangements(items, k) agrees with Python's itertools.permutations(items, k), choice for choice and in the same order, for lists of up to 6 items and every k from 0 to 7."""
+            cases = [(n, k) for n in range(7) for k in range(1, 8)] + [(n, 0) for n in range(7)]
+            for n, k in cases:
+                items = list(range(n))
+                got = arrangements(items, k)
+                want = [list(p) for p in itertools.permutations(items, k)]
+                assert got == want, f"arrangements({items}, {k}) gives {shown(got)}, not {shown(want)}."
+      reference: |
+        def arrangements(items, k):
+            """Every ordered choice of k of the items, each a list in the order its places
+            are filled. items is a list of different things, and k is a whole number, 0 or more."""
+            if k == 0:
+                return [[]]
+            result = []
+            for i in range(len(items)):
+                left = items[:i] + items[i + 1:]
+                for tail in arrangements(left, k - 1):
+                    result.append([items[i]] + tail)
+            return result
+
+        print(arrangements(["a", "b", "c"], 2))
+        print(len(arrangements(list(range(10)), 3)))
+      wrong:
+        - code: |
+            def arrangements(items, k):
+                if k == 0:
+                    return [[]]
+                result = []
+                for i in range(len(items)):
+                    left = items[i + 1:]
+                    for tail in arrangements(left, k - 1):
+                        result.append([items[i]] + tail)
+                return result
+          why: >-
+            The original, which fills the other places only from the items after `items[i]`, so it
+            gives each set once, in the order of the list, and not its other orders: 3 pairs, and
+            120 podiums.
+        - code: |
+            def arrangements(items, k):
+                if k == 0:
+                    return []
+                result = []
+                for i in range(len(items)):
+                    left = items[:i] + items[i + 1:]
+                    for tail in arrangements(left, k - 1):
+                        result.append([items[i]] + tail)
+                return result
+          why: Says that there is no way to choose 0 items, so no choice is ever started and every call gives `[]`.
+        - code: |
+            def arrangements(items, k):
+                if k == 0:
+                    return [[]]
+                result = []
+                for i in range(len(items)):
+                    left = items[1:]
+                    for tail in arrangements(left, k - 1):
+                        result.append([items[i]] + tail)
+                return result
+          why: Always leaves out the first item, not the one just placed, so an item can come twice, as in `['b', 'b']`.
+        - code: |
+            def arrangements(items, k):
+                if k == 0:
+                    return [[]]
+                result = []
+                for i in range(len(items)):
+                    left = items[:i] + items[i + 1:]
+                    for tail in arrangements(left, k - 1):
+                        result.append([items[i]])
+                return result
+          why: Drops the places that the call below filled, so every choice holds a single item.
+    explanation: >-
+      The line `left = items[i + 1:]` fills the other places only from the items after `items[i]`,
+      so a choice can only move forward through the list: `['a', 'b']` is made, but `['b', 'a']`
+      never is. So each set comes once, in the order of the list, and not in its other orders:
+      $\binom{3}{2} = 3$ pairs, and $\binom{10}{3} = 120$ podiums, the 720 divided by the
+      $3! = 6$ orders of each set. The other places can be filled from every item but `items[i]`,
+      which is `items[:i] + items[i + 1:]`.
+
+  # Explain --------------------------------------------------------------------
+  - id: explain-counting
+    phase: explain
+    kind: explain
+    concept: M1.10/combinations
+    covers: [M1.10/counting-rules, M1.10/permutations, M1.10/binomial-theorem]
+    title: Sets of features, simply
+    prompt: >-
+      Explain to your friend why $10 \times 9 \times 8$ counts each set of 3 features more than
+      once, how many times, and how many sets there really are. Then explain why choosing 3
+      features to try gives as many sets as choosing 7, why Pascal's rule holds and how it builds
+      the counts row by row, why 10 features have $2^{10}$ sets of every size in all, and why the
+      same counts are the numbers in front of the terms of $(a + b)^n$ multiplied out. Give an
+      example for each.
+    answer:
+      type: text
+      rubric:
+        - { id: ordered, criterion: 'Says what $10 \times 9 \times 8$ counts, and which rule gives that count.' }
+        - { id: overcount, criterion: 'Says how many times $10 \times 9 \times 8$ counts each set of 3 features, and why, and how many sets there are.' }
+        - { id: symmetry, criterion: 'Says why choosing 3 features to try gives as many sets as choosing 7.' }
+        - { id: pascal, criterion: 'Says why Pascal''s rule holds and how it builds each row of the triangle from the row above, with an example.' }
+        - { id: subsets, criterion: 'Says why 10 features have $2^{10}$ sets of every size in all.' }
+        - { id: binomial, criterion: 'Says why the numbers in front of the terms of $(a + b)^n$ multiplied out are the same counts, with an example.' }
+      reference: >-
+        Your 720 counts something real, but not sets. The product rule says that if a first step can
+        be done in 10 ways, then a second in 9 ways whatever the first was, then a third in 8, the
+        three steps together can be done in $10 \times 9 \times 8 = 720$ ways. So 720 counts the ways
+        to pick a first feature, a second and a third: ordered choices, like podiums. A set has no
+        order, though. The set of size, age and location turns up as size, then age, then location;
+        as size, then location, then age; and so on, once for each order of its 3 features. Three
+        things have $3 \times 2 \times 1 = 3! = 6$ orders, by the product rule again, so every set
+        is counted 6 times, and there are $\frac{720}{6} = 120$ sets. In general there are
+        $\binom{n}{k} = \frac{n(n - 1) \cdots (n - k + 1)}{k!}$ sets of $k$ things from $n$.
+        Choosing the 3 to try is the same as choosing the 7 to leave out, since each choice fixes
+        the other, so there are $\binom{10}{7} = 120$ sets of 7 as well. The counts can also be
+        built without any division. Fix one feature, say age. A set of 3 either holds age, with 2
+        more from the other 9, in $\binom{9}{2} = 36$ ways, or leaves it out, with all 3 from the
+        other 9, in $\binom{9}{3} = 84$ ways. No set is both, so $\binom{10}{3} = 36 + 84 = 120$.
+        That is Pascal's rule: each count is the sum of two in the row above, which builds the
+        triangle row by row from the 1 at the top. Now count the sets of every size at once: each
+        of the 10 features is either in or out, 2 choices each, so there are $2^{10} = 1{,}024$
+        sets, from the empty set to all ten, and row 10 of the triangle adds up to 1,024. Finally,
+        multiplying out $(a + b)^3 = (a + b)(a + b)(a + b)$ takes $a$ or $b$ from each bracket. The
+        products with $b$ from exactly one bracket are $baa$, $aba$ and $aab$, one for each choice of
+        that bracket, so $a^2 b$ comes $\binom{3}{1} = 3$ times, and
+        $(a + b)^3 = a^3 + 3a^2 b + 3ab^2 + b^3$, with row 3 of the triangle in front of the terms.
+        In general the number in front of $a^{n - k} b^k$ is $\binom{n}{k}$, which is the binomial
+        theorem.
+      minWords: 120
+      maxWords: 500
+    explanation: >-
+      A strong answer shows that 720 counts ordered choices, by the product rule, and that each set
+      of 3 turns up once for each of its $3! = 6$ orders, so there are 120 sets. It pairs the 3
+      chosen with the 7 left out, so $\binom{10}{3} = \binom{10}{7}$; splits the sets by one
+      feature, $36 + 84 = 120$, which is Pascal's rule; counts all $2^{10} = 1{,}024$ sets by in or
+      out for each feature; and finds $\binom{n}{k}$ in front of $a^{n - k} b^k$ by counting the
+      brackets that give $b$.

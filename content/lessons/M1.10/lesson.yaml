@@ -1,0 +1,112 @@
+code: M1.10
+title: "Counting: permutations, combinations and the binomial theorem"
+course: M1
+status: ready
+summary: >-
+  A script fits one model for every set of features that can be made from 30, from none of them to
+  all 30, at one second a fit. How long does it run? Choices made in steps and in cases, orders and
+  ordered choices, choices with no order and Pascal's triangle, and the binomial theorem, proved by
+  counting and again by induction.
+sittings: 2
+minutes:
+  puzzle: 10
+  recall: 10
+  explore: 45
+  derive: 40
+  build: 55
+  explain: 25
+concepts:
+  taught:
+    - id: M1.10/counting-rules
+      name: Counting by steps and by cases
+      summary: >-
+        A choice made in steps, where each step has the same number of options whatever was chosen
+        before it, can be made in as many ways as the product of those numbers: 5 learning rates,
+        4 batch sizes and 3 depths make 60 runs. Cases that cannot happen together add. Cases that
+        overlap must not simply be added, since a code with two 0s would be counted twice, and it
+        is often quicker to count what is not wanted and take it away: $10^4 - 9^4 = 3{,}439$ codes
+        of 4 digits have at least one 0.
+      usedBy: [M4.1, L4.1]
+    - id: M1.10/permutations
+      name: Permutations
+      summary: >-
+        An ordered choice of $k$ things from $n$ different things, such as a podium of 3 from 10
+        models, can be made in $n(n - 1) \cdots (n - k + 1) = \frac{n!}{(n - k)!}$ ways, 720 for the
+        podium. With $k = n$ these are the $n!$ orders of all $n$ things, which needs $0! = 1$, the
+        one order of nothing. That $n$ things have $n!$ orders is proved by induction: taking out
+        the last thing leaves an order of the rest and one of the places it sat in.
+      usedBy: [M4.1, E2.5]
+    - id: M1.10/combinations
+      name: Combinations
+      summary: >-
+        A choice of $k$ things from $n$ with no order is a subset, and there are
+        $\binom{n}{k} = \frac{n!}{k!\,(n - k)!}$ of them: the ordered choices, divided by the $k!$
+        orders of each set, so $\binom{10}{3} = \frac{720}{6} = 120$. Choosing $k$ is choosing the
+        $n - k$ left out, so $\binom{n}{k} = \binom{n}{n - k}$. Pascal's rule,
+        $\binom{n}{k} = \binom{n - 1}{k - 1} + \binom{n - 1}{k}$, splits the sets by whether they
+        hold the last thing, and builds Pascal's triangle. A set of $n$ things has $2^n$ subsets.
+      usedBy: [M4.1, M4.5]
+    - id: M1.10/binomial-theorem
+      name: The binomial theorem
+      summary: >-
+        $(a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k$. Multiplying out takes $a$ or $b$
+        from each bracket, and $\binom{n}{k}$ of the $2^n$ products take $b$ from exactly $k$
+        brackets. Induction proves it again, with Pascal's rule in the step. With $a = b = 1$ it
+        counts all $2^n$ subsets, and with $a = 1$ and $b = -1$ it shows that a set has as many
+        subsets with an even number of elements as with an odd number.
+      usedBy: [M4.5, M4.6]
+  used:
+    - M1.9/induction
+    - M1.8/proof
+    - M1.8/direct-proof
+    - M1.7/sets
+    - M1.6/product-notation
+    - M1.6/arithmetic-series
+    - M1.6/sigma-notation
+    - M1.3/injective-surjective
+    - M1.2/equivalence
+    - M1.2/exponent-rules
+    - M1.1/powers-of-ten
+    - M1.1/fermi-estimation
+    - E1.5/base-and-recursive-case
+    - E1.5/recursive-structures
+    - E1.4/lists
+    - E1.4/aliasing-and-mutation
+    - E1.4/cost-of-operations
+    - E1.3/defining-functions
+    - E1.2/loops
+    - E1.2/loop-invariants
+    - E1.1/floats-are-approximate
+links:
+  requires:
+    - lesson: M1.9
+      bridge: >-
+        M1.9 proved claims about every whole number with a base case and a step. Counting makes
+        such claims: $n$ things have $n!$ orders, and $(a + b)^n$ multiplies out by the binomial
+        theorem. This lesson proves both by induction on $n$, and the binomial theorem's step
+        uses Pascal's rule.
+  anotherViewOf:
+    - lesson: E1.4
+      bridge: >-
+        E1.4 counted the comparisons that checking each of $n$ different documents against those
+        kept makes, $\frac{n(n - 1)}{2}$, by adding $0 + 1 + \dots + (n - 1)$. They are the pairs of
+        documents, $\binom{n}{2}$: the $n(n - 1)$ ordered pairs, with each pair counted once in each
+        order.
+  applies:
+    - lesson: M1.7
+      bridge: >-
+        M1.7's sets are what this lesson counts: a combination is a subset, a set of $n$ things has
+        $2^n$ subsets, and when two cases overlap, $|A \cup B| = |A| + |B| - |A \cap B|$ stops the
+        elements they share from being counted twice.
+  foreshadows:
+    - lesson: M4.1
+      bridge: >-
+        When every outcome is equally likely, a probability is the number of outcomes wanted over
+        the number of all of them. M4.1 counts them with this lesson's rules, and checks the counts
+        against simulation.
+    - lesson: M4.5
+      bridge: >-
+        $k$ successes in $n$ independent trials can happen in $\binom{n}{k}$ ways, each with chance
+        $p^k (1 - p)^{n - k}$. M4.5 calls this count of successes a binomial random variable, and
+        the binomial theorem shows that its chances add up to 1.
+skills: []
