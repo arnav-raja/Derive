@@ -21,8 +21,8 @@ deploys Derive's server, tutor included, to the Supabase Edge Function `derive-a
 "Hosting" below and the Stack section of CLAUDE.md). It went live on 7 November (commit
 `74db8cb`): the pages, the sign-in page and Derive's own 404 load with no console errors in a
 real browser, and the server reports 23 lessons ready and a tutor key that reaches both Claude
-models. Signed-in pages and the tutor's answers wait on Arnav signing in once at the new
-address. The Vercel project "derive" was deleted on 7 November at Arnav's word, so pushes to
+models. Arnav signed in on 7 November; after the lesson phase fix (`a23f989`) his page loads
+and actions all answered without an error. The Vercel project "derive" was deleted on 7 November at Arnav's word, so pushes to
 main deploy only through GitHub Actions.
 
 Phase 2 (the full learning loop, and the lessons after the first slice) began on 6 November in
@@ -926,7 +926,13 @@ Next, in order:
   (the edge build fixes `DERIVE_DEPLOYED` and `DERIVE_LOCAL_STORE` instead), and the working
   directory is "", so packed content is looked up by relative paths
   (`src/server/edge/content-fs.ts`). The smoke test also checks the health route reports
-  written and ready lessons.
+  written and ready lessons, and that it loads a compiled lesson phase (`lessons.phases`).
+- The deployed server has no MDX compiler: it runs the phases compiled into its bundle, which
+  `mdx.tsx` must import as `@/lib/content/mdx-precompiled` for the edge build to swap them in.
+  A relative import broke every lesson phase on the live site on 7 November until `a23f989`;
+  the edge build now fails if the swap does not hold.
+- The tutor's daily spending is no longer shown anywhere (Arnav, 7 November: remove "Tutor
+  today $0.00 of $2.00"); the daily limit still holds on the server.
 - `derive-probe` is a small public Edge Function used to check the Anthropic key from outside:
   it reports whether the key reaches the tutor's two models, and nothing else. It can be
   deleted at any time.
@@ -937,8 +943,6 @@ Next, in order:
   Actions, the Edge Function has its `ANTHROPIC_API_KEY`, and the repository has
   `SUPABASE_ACCESS_TOKEN` (a token named "Derive publish", limited to the derive project's Edge
   Functions, that never expires; it can be revoked at https://supabase.com/dashboard/account/tokens).
-- Signing in once at https://arnav-raja.github.io/Derive/ (the same account), which is the only
-  way to see the signed-in pages and the tutor's answers on the new site.
 
 - Confirming the Supabase tool's prompt to delete the test sign-up address (he said yes to the
   removal on 6 November; the first prompt timed out). Sign-up is closed anyway once the one
