@@ -1,8 +1,9 @@
 /*
  * Starts the built Edge Function bundle under Deno the way Supabase's Edge
  * Runtime runs it, and checks that it answers, before the Publish workflow
- * deploys it. The runtime refuses to change environment variables, so this
- * refuses too; it serves no port, and makes no request beyond this process.
+ * deploys it. As on the runtime, environment variables cannot be changed and
+ * the working directory is "" (so path.relative is unreliable). It serves no
+ * port, and makes no request beyond this process.
  *
  *   deno run --allow-env --allow-read scripts/smoke-edge.mjs
  */
@@ -16,6 +17,9 @@ const refuse = () => {
 };
 Deno.env.set = refuse;
 Deno.env.delete = refuse;
+const { default: process } = await import("node:process");
+Deno.cwd = () => "";
+process.cwd = () => "";
 
 let handler = null;
 Deno.serve = (h) => {
@@ -54,6 +58,7 @@ async function call(method, route, body) {
 const checks = [
   ["the browser's preflight", () => call("OPTIONS", "/page"), (r) => r.status === 204 && r.cors === origin],
   ["the health route", () => call("GET", "/api/health"), (r) => r.status === 200 && r.json?.ok === true && r.json?.localMode === false],
+  ["the lessons packed in", () => call("GET", "/api/health"), (r) => r.json?.lessons?.written > 0 && r.json?.lessons?.ready > 0],
   ["a page", () => call("POST", "/page", { path: "/", search: "" }), (r) => r.status === 200 && r.json?.kind === "redirect"],
   ["a lesson without a session", () => call("POST", "/page", { path: "/lessons/M1.1", search: "" }), (r) => r.status === 200 && r.json?.kind === "redirect"],
   ["an unknown page", () => call("POST", "/page", { path: "/no/such/page", search: "" }), (r) => r.status === 200 && r.json?.kind === "not-found"],

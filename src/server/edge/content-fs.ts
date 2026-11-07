@@ -8,8 +8,21 @@ import { packedFile, packedKeys } from "./pack";
  * calls the content loaders make are here.
  */
 
+/**
+ * A path's key in the pack, relative to the repository root. On Supabase the
+ * working directory is "", so the content loaders' paths are already relative
+ * ("content/lessons"), and path.relative("", ...) would drop their first
+ * letter; only an absolute path is made relative to the working directory.
+ */
 function keyOf(p: unknown): string {
-  return path.relative(process.cwd(), path.resolve(String(p))).split(path.sep).join("/");
+  const full = path.normalize(String(p));
+  const root = process.cwd();
+  const rel = root && path.isAbsolute(full) ? path.relative(root, full) : full;
+  return rel
+    .split(path.sep)
+    .join("/")
+    .replace(/^\.(\/|$)/, "")
+    .replace(/\/+$/, "");
 }
 
 let dirs: Set<string> | null = null;
