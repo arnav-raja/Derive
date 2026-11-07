@@ -1,0 +1,69 @@
+The Explore phase tried the tool's parts on *Alice*, and the Derive phase proved what they do. Now build the tool: a tokeniser that is right in any script, a sentence counter mended, a property-based test that hunts for bugs in tokenisers, and the next-word table that wrote the puzzle's loop. Then break the word counts with an accent.
+
+Each exercise here that asks for code has tests of its own, in the tab `tests.py`. Each test's first line says in words what it checks, and a test stops with its message when an `assert` finds its statement false. Your own program runs first, and then the tests, which call your functions on texts of their own. You need not read their code, which uses some Python that this lesson does not teach.
+
+## A tokeniser for any script
+
+The Explore phase's tokeniser keeps only what `isalpha` calls a letter, so it cuts नमस्ते at its marks, leaves out digits, and splits "don't" in two. `unicodedata.category(ch)` names the category of the character `ch`, and its first letter, `unicodedata.category(ch)[0]`, is `L` for a letter, `M` for a mark and `N` for a digit or another number, such as ½, in every script. Inside a string, `\u` and four hexadecimal digits stand for the character with that number, so the tests write an e followed by U+0301, an accent that is a mark, as `"é"`.
+
+<Exercise id="build-tokens" />
+
+<Reveal for="build-tokens">
+
+The script now prints `["don't", 'panic', 'said', 'the', 'rabbit', 'at', 'five', "o'clock"]` and `['नमस्ते', 'दुनिया', '2026']`. The tokenisers of OpenAI's language models start in the same place: before any other step, they cut the text into runs of characters by a pattern, a regular expression that says which characters make up a run. The patterns written for GPT-2, and for GPT-4 after it, keep runs of letters and runs of digits but no marks, so they cut नमस्ते at its marks, as `isalpha` did, and "don't" into "don" and "'t". The pattern written for GPT-4o adds marks to its runs of letters, and keeps both words whole.
+
+## Counting sentences
+
+The Explore phase's rule for sentences: a `.`, `!` or `?` ends one when the next character is whitespace or a closing quotation mark `'`, or when the text ends there. `ch.isspace()` is `True` when the character `ch` is whitespace: a space, a tab or a newline.
+
+<Exercise id="debug-sentences" />
+
+</Reveal>
+
+<Reveal for="debug-sentences">
+
+One hypothesis that fits: the loop never reaches the last character, so a full stop there goes uncounted. Its prediction: printing `i` and `text[i]` on every pass shows `0 I` up to `19 n`, and never `20 .`, the last full stop. That is what the observation shows. Adding a space to the end of the text before the loop mends it too, since then no `.`, `!` or `?` is the last character. The join property catches the bug as well: "Hi." and "Yo." each counted 0, while "Hi. Yo." counted 1, so the counts of the two texts did not add up to the count of the two joined.
+
+## A property-based test for tokenisers
+
+The Derive phase began from E1.9's property, that the word counts of two texts joined with a space add up. Here is its strongest form: the words of `a + " " + b` are the words of `a` followed by the words of `b`. The script makes its random texts from a few characters: two Latin letters, a Devanagari letter and a vowel sign, an apostrophe, a space, a full stop and a digit. `random.choice(xs)` gives one item of the list `xs`, chosen at random, each as likely as the others.
+
+<Exercise id="build-property" />
+
+</Reveal>
+
+<Reveal for="build-property">
+
+For the Explore phase's tokeniser the script prints `None`, and for the same tokeniser without its last `if` it prints `('न', '')`: alone, "न" loses its only word, since the text ends inside it, but followed by a space it keeps it. The tests try a subtler bug. A tokeniser that checks the character before an apostrophe with `text[i - 1]` looks, at `i = 0`, at `text[-1]`, the last character of the text, so whether it keeps an apostrophe at the start of a text depends on how the text ends. `find_bug` turns up pairs such as `('', "'a")`, which no one would think to write as a test.
+
+The property holds for the Explore phase's tokeniser, though that tokeniser is wrong: it cuts नमस्ते at its first mark and drops the second, whether the word stands alone or not. A property says one thing that must always be true, and a tool that is wrong in the same way everywhere keeps it. So a tool needs both kinds of test: examples, such as नमस्ते, that say exactly what is right, and properties, which try thousands of inputs that nobody thought of.
+
+## The next-word table
+
+The puzzle's writer has three parts, each a function with a contract, as in E1.3: one counts which word follows which, one chooses the likeliest next word, and one writes. The script reads a short story from the file `story.txt`, which is in lower case with no punctuation, so `split` is enough to cut it into words.
+
+<Exercise id="build-next" />
+
+</Reveal>
+
+<Reveal for="build-next">
+
+The script prints `{'off': 2, 'nothing': 2}` for the words after "said", and writes "the queen said nothing at all", where it stops, since nothing follows "all" in the story. The tie went to "nothing" only because it comes first in alphabetical order. Had ties gone to whichever word the dict met first, what the writer wrote would depend on the order of the story's lines, and no test could say what it should be. On *Alice* the same three functions write the puzzle's loop.
+
+The Explore phase's figure also drew each next word at random, in proportion to its count. `random.choices(words, weights)[0]` does that: it draws one item of the list `words`, each with a chance in proportion to the number at the same place in the list `weights`.
+
+## Break it: two ways to type é
+
+é can be typed as one code point, U+00E9, or as two, an e followed by U+0301, an accent that is a mark, as some keyboards and programs type it; in Python the second is `"é"`, as the tokeniser's tests wrote it. On screen the two look the same, and Unicode counts them as the same text. `unicodedata.normalize("NFC", text)` puts a text in one standard form, called NFC, in which every way of typing é becomes the single code point U+00E9. A few characters go the other way: NFC writes क़ as क followed by the mark ़, however it was typed. This word count puts each word in NFC before it counts it. Take that step out.
+
+<Exercise id="breakit-nfc" />
+
+</Reveal>
+
+<Reveal for="breakit-nfc">
+
+A tool should put the whole text in NFC once, as it reads it, before it cuts it into words: `text = unicodedata.normalize("NFC", text)`. Text gathered from the web comes in both forms, and cleaning it for a language model includes this step. NFC joins only what Unicode counts as the same text, though: a Latin a and a Cyrillic а look alike, and stay different.
+
+Put together, the parts are the tool: `text = unicodedata.normalize("NFC", text)` as the text is read, then `words = tokens(text)`; `top_words(word_counts(words), 10)` for the commonest words; `count_sentences(text)`; and `generate(next_counts(words), "the", 8)`. On *Alice* it finds 26,688 words, 2,630 of them different, and 1,585 sentences, ranks "the", "and" and "to" first, and writes "the queen and the queen and the queen". Each part keeps its contract and its tests, so any one of them can be rewritten without touching the rest, as E1.3 found.
+
+</Reveal>

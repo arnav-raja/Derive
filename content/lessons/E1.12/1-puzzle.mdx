@@ -1,0 +1,19 @@
+Lewis Carroll's *Alice's Adventures in Wonderland* runs to 26,688 words. A program reads it and counts, for every word, which words come straight after it and how often. After "the", for instance, "queen" comes 65 times, "king" 60 times, and "gryphon" and "mock" 53 times each, more than any other words.
+
+Then the program writes. It starts with "the", and again and again it adds the word that most often follows the last word it wrote.
+
+<Exercise id="puzzle-greedy" />
+
+<Reveal for="puzzle-greedy">
+
+It writes
+
+> the queen and the queen and the queen and the queen and ...
+
+After "the" the commonest next word is "queen"; after "queen" it is "and", 7 of the 68 times that "queen" is followed by anything; and after "and" it is "the", 82 times in 872. So "the" comes round again, and the three words repeat for ever. It had to happen sooner or later, and the Derive phase proves it. Here it took three words.
+
+A language model writes the same way, one *token*, a word or a piece of a word, at a time, each chosen from what came before, and a model that always takes its single likeliest token can fall into a loop like this one. That is why chatbots choose at random among the likely tokens instead, and why the next-word counts, crude as they are, are the place where language models begin.
+
+This lesson builds the tool that made the counts, as a small project: a function that cuts text into words in any script, others that count words and sentences, rank the words and tabulate which word comes next, and the tests that keep all of it right.
+
+</Reveal>

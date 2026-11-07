@@ -1,0 +1,339 @@
+{
+  "version": 1,
+  "expressions": {
+    "derive-join": {
+      "source": "322ccdf581bf764d",
+      "points": [
+        {
+          "n": "2",
+          "m": "9"
+        },
+        {
+          "n": "7",
+          "m": "7"
+        },
+        {
+          "n": "6",
+          "m": "9"
+        },
+        {
+          "n": "8",
+          "m": "2"
+        },
+        {
+          "n": "5",
+          "m": "7"
+        },
+        {
+          "n": "1",
+          "m": "2"
+        }
+      ],
+      "values": [
+        "10.000000000000000000",
+        "13.000000000000000000",
+        "14.000000000000000000",
+        "9.0000000000000000000",
+        "11.000000000000000000",
+        "2.0000000000000000000"
+      ]
+    },
+    "derive-once": {
+      "source": "13bb048cefb0288c",
+      "points": [
+        {
+          "C": "11"
+        },
+        {
+          "C": "11/2"
+        },
+        {
+          "C": "5"
+        },
+        {
+          "C": "1"
+        },
+        {
+          "C": "6/7"
+        },
+        {
+          "C": "29"
+        }
+      ],
+      "values": [
+        "5.5000000000000000000",
+        "2.7500000000000000000",
+        "2.5000000000000000000",
+        "0.50000000000000000000",
+        "0.42857142857142857143",
+        "14.500000000000000000"
+      ]
+    }
+  },
+  "runs": {
+    "build-next": {
+      "tests": [
+        {
+          "name": "test_counts_example",
+          "description": "For \"the cat sat the cat ran\", the table counts \"cat\" twice after \"the\".",
+          "passed": false,
+          "message": "next_counts(['the', 'cat', 'sat', 'the', 'cat', 'ran']) is {'the': {'cat': 2}, 'cat': {'ran': 1}, 'sat': {'the': 1}}, not {'the': {'cat': 2}, 'cat': {'sat': 1, 'ran': 1}, 'sat': {'the': 1}}."
+        },
+        {
+          "name": "test_counts_edges",
+          "description": "An empty list and a list of one word have no neighbouring pairs, so nothing follows anything.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_counts_add_up",
+          "description": "A list of n words has n - 1 neighbouring pairs, so the counts add up to n - 1.",
+          "passed": false,
+          "message": "The counts of next_counts(['the', 'queen', 'and', 'the', 'king']) add up to 3, not 4."
+        },
+        {
+          "name": "test_counts_join",
+          "description": "The table of two lists joined is the two tables added up, plus 1 for the pair where they meet.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_counts_leave_words",
+          "description": "next_counts leaves the list it is given as it was.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_most_likely",
+          "description": "After \"said\", Alice's counts give \"the\", 210 times in 462.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_ties",
+          "description": "A tie goes to the word first in alphabetical order, wherever it is in the dict.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_nothing_follows",
+          "description": "For a word that nothing follows, most_likely gives None.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_generate_puzzle",
+          "description": "With Alice's counts after \"the\", \"queen\" and \"and\", generate writes the puzzle's loop.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_generate_stops",
+          "description": "generate stops early at a word that nothing follows.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_generate_lengths",
+          "description": "generate gives exactly n words when it can, for n from 1 to 6.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_story",
+          "description": "The story in story.txt gives \"the queen said nothing at all\".",
+          "passed": false,
+          "message": "generate(next_counts(words), 'the', 10) is ['the', 'cat', 'said', 'nothing', 'at', 'all'], not ['the', 'queen', 'said', 'nothing', 'at', 'all']."
+        }
+      ],
+      "error": null,
+      "output": "{'nothing': 1}\n['the', 'cat', 'said', 'nothing', 'at', 'all']\n"
+    },
+    "build-property": {
+      "tests": [
+        {
+          "name": "test_holds",
+          "description": "joins_right is True for pairs whose words join right.",
+          "passed": false,
+          "message": "joins_right(letters_only, 'The cat', 'sat.') is False, not True: letters_only('The cat sat.') is ['the', 'cat', 'sat'], and letters_only('The cat') + letters_only('sat.') is ['the', 'cat', 'sat']."
+        },
+        {
+          "name": "test_breaks",
+          "description": "joins_right is False when the join loses a word or changes one.",
+          "passed": false,
+          "message": "joins_right(drops_last, 'ab', 'c') is True, not False: drops_last('ab c') is ['ab'], but drops_last('ab') + drops_last('c') is []."
+        },
+        {
+          "name": "test_asks_for_the_joined_text",
+          "description": "joins_right asks the tokeniser it is given for the words of a + ' ' + b, of a and of b.",
+          "passed": false,
+          "message": "joins_right(tokenise, 'ab', 'cd') never asked tokenise for the words of 'ab cd'; it asked for ['abcd', 'ab', 'cd']."
+        },
+        {
+          "name": "test_shrink_a",
+          "description": "For a tokeniser that loses a word at the end, ('ab cd', 'ef') shrinks to ('d', ''): a first, then b.",
+          "passed": false,
+          "message": "shrink_pair(drops_last, 'ab cd', 'ef') is ('ab cd', 'ef'), not ('d', ''). Take the characters of a out from the first: when a removal is kept, the next character moves into its place, so try that place again, and move on only when the removal mends the property."
+        },
+        {
+          "name": "test_shrink_b",
+          "description": "For a tokeniser that skips the first character, ('xy', 'ab') shrinks to ('', 'b').",
+          "passed": false,
+          "message": "shrink_pair(skips_first, 'xy', 'ab') is ('y', 'b'), not ('', 'b')."
+        },
+        {
+          "name": "test_shrink_apostrophe",
+          "description": "For a tokeniser that looks back past the start, ('x', \"'ab\") shrinks to ('', \"'b\").",
+          "passed": false,
+          "message": "shrink_pair(looks_back, 'x', \"'ab\") is ('x', 'b'), not ('', \"'b\")."
+        },
+        {
+          "name": "test_shrink_small_pair",
+          "description": "A pair that is already as small as it can be stays as it is.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_first_pair",
+          "description": "find_bug gives the first pair that breaks the property, shrunk, after making just the texts up to it, a and then b.",
+          "passed": false,
+          "message": "With the texts 'ab ', 'c', 'd', 'e f' and so on, find_bug(drops_last, make, 3) is ('d', ' '), not ('d', ''): the first pair is ('ab ', 'c'), which keeps the property, and the second, ('d', 'e f'), breaks it and shrinks to ('d', '')."
+        },
+        {
+          "name": "test_none",
+          "description": "find_bug gives None when every pair keeps the property, after making 2 texts for each trial.",
+          "passed": false,
+          "message": "find_bug(letters_only, make, 50) is ('b', 'c'), not None, though every pair keeps the property."
+        },
+        {
+          "name": "test_random_texts",
+          "description": "With random texts, it gives None for two wrong tokenisers that keep the property, and a pair for three that break it.",
+          "passed": false,
+          "message": "find_bug(letters_only, random_text, 300) is ('न', 'न'), not None."
+        }
+      ],
+      "error": null,
+      "output": "('b', 'b')\n('न', '.')\n"
+    },
+    "build-tokens": {
+      "tests": [
+        {
+          "name": "test_example",
+          "description": "The Explore phase's text gives its six words, with \"the\" and \"cat\" twice.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_empty_and_one_word",
+          "description": "An empty text has no words, and a text of one word has just that word, in lower case.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_apostrophe_inside",
+          "description": "An apostrophe between two letters stays in its word.",
+          "passed": false,
+          "message": "tokens(\"Don't panic, it's five o'clock: rock'n'roll.\") is ['don', 't', 'panic', 'it', 's', 'five', 'o', 'clock', 'rock', 'n', 'roll'], not [\"don't\", 'panic', \"it's\", 'five', \"o'clock\", \"rock'n'roll\"]."
+        },
+        {
+          "name": "test_quotation_marks",
+          "description": "An apostrophe at the start or the end of a word is a quotation mark, and is left out.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_apostrophe_last",
+          "description": "An apostrophe that is the last character of the text is left out, without looking past the end.",
+          "passed": false,
+          "message": "tokens(\"don't'\") is ['don', 't'], not [\"don't\"]."
+        },
+        {
+          "name": "test_hindi",
+          "description": "A word of Hindi keeps its vowel signs and the sign that joins two consonants, which are marks.",
+          "passed": false,
+          "message": "tokens('नमस्ते') is ['नमस', 'त'], not ['नमस्ते']."
+        },
+        {
+          "name": "test_tamil",
+          "description": "Words of Tamil, with their marks, are whole words.",
+          "passed": false,
+          "message": "tokens('வணக்கம், தமிழ்') is ['வணக', 'கம', 'தம', 'ழ'], not ['வணக்கம்', 'தமிழ்']."
+        },
+        {
+          "name": "test_digits",
+          "description": "Digits, in any script, belong to words: an apostrophe between digits stays, and a full stop between digits ends a word.",
+          "passed": false,
+          "message": "tokens('Chapter 12') is ['chapter'], not ['chapter', '12']."
+        },
+        {
+          "name": "test_capitals",
+          "description": "Capital letters become small ones, accented ones too.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_separate_accent",
+          "description": "An accent typed as a mark after its letter, U+0301, stays in the word.",
+          "passed": false,
+          "message": "tokens('café au lait') is ['cafe', 'au', 'lait'], not ['café', 'au', 'lait']: the accent, U+0301, is a mark and should stay in its word."
+        }
+      ],
+      "error": null,
+      "output": "['don', 't', 'panic', 'said', 'the', 'rabbit', 'at', 'five', 'o', 'clock']\n['नमस', 'त', 'द', 'न', 'य']\n"
+    },
+    "debug-sentences": {
+      "tests": [
+        {
+          "name": "test_example",
+          "description": "'It was late. She ran.' has 2 sentences.",
+          "passed": false,
+          "message": "count_sentences('It was late. She ran.') is 1, not 2."
+        },
+        {
+          "name": "test_empty_and_one_word",
+          "description": "An empty text has no sentences, and nor has a text of one word with no full stop, ! or ? after it.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_not_followed_by_space",
+          "description": "A full stop, ! or ? followed by a letter, a digit or another of them ends nothing.",
+          "passed": false,
+          "message": "count_sentences('It cost 3.50 rupees.') is 0, not 1."
+        },
+        {
+          "name": "test_quotation_mark",
+          "description": "A full stop, ! or ? followed by a closing quotation mark ends a sentence.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_whitespace",
+          "description": "A full stop, ! or ? followed by a newline or a tab ends a sentence, as one followed by a space does.",
+          "passed": false,
+          "message": "count_sentences('One.\\nTwo.') is 1, not 2."
+        },
+        {
+          "name": "test_the_rule",
+          "description": "The rule counts the full stop of Mr. too, so the Explore phase's text gives 3.",
+          "passed": false,
+          "message": "count_sentences('Mr. Brown paid 3.50 rupees. Was it worth it?!') is 2, not 3, which is what the rule gives."
+        },
+        {
+          "name": "test_join",
+          "description": "The sentence counts of two texts joined with a space add up.",
+          "passed": false,
+          "message": "count_sentences('Hi. Yo.') is 1, but count_sentences('Hi.') + count_sentences('Yo.') is 0: the counts of two texts joined with a space should add up."
+        },
+        {
+          "name": "test_end_of_the_text",
+          "description": "A full stop, ! or ? that is the last character of the text ends a sentence.",
+          "passed": false,
+          "message": "count_sentences('Hi!') is 0, not 1."
+        }
+      ],
+      "error": null,
+      "output": "1\n"
+    }
+  }
+}

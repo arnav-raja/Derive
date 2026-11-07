@@ -1,7 +1,8 @@
 # Status
 
-Updated 7 November 2026 at about 07:05 UTC, when M1.12 went live. On "Pause" or "Resume",
-follow CLAUDE.md and carry on from "Resume here" (phase 1) and "Phase 2: resume here" (phase 2).
+Updated 7 November 2026 at about 10:00 UTC, when E1.12 went live and work paused before
+stage 2, at Arnav's word ("Pause before Stage 2."). On "Pause" or "Resume", follow CLAUDE.md and
+carry on from "Resume here" (phase 1) and "Phase 2: resume here" (phase 2).
 
 ## Where things stand
 
@@ -33,8 +34,10 @@ too, on the same terms, and so are E1.8 Debugging as an experiment, M1.9 Proof I
 induction and recursion, E1.9 Testing and property-based testing, and M1.10 Counting:
 permutations, combinations and the binomial theorem, E1.10 Algorithms: sorting, searching
 and hashing, M1.11 Angles, trigonometry and rotation, E1.11 Iterators, generators and
-streaming data, and M1.12 Complex numbers and Euler's formula. E1.12 Project: a tested
-text-statistics tool is next (being written), then stage 2.
+streaming data, M1.12 Complex numbers and Euler's formula, and E1.12 Project: a tested
+text-statistics tool, the last lesson of stage 1, so all of stage 1 is live. On 7 November Arnav
+asked to pause before stage 2: E1.12 was finished, reviewed, walked and released, and work
+stopped before M2.1, whose draft is saved for the resume (see "Next, in order").
 
 ### Done
 
@@ -717,28 +720,77 @@ Done so far:
   words come from `complex.ts`, with unit tests. The harness's `close` compares complex numbers;
   the expression checker reads raised digits (`a²`) as powers, and when the only unknown name in
   an answer is `i`, says that the answer is a real number, so the `i` should be left out.
+- E1.12 Project: a tested text-statistics tool, live (`ready`) since 7 November, the last lesson
+  of stage 1: all six phases and 25 exercises (a puzzle on what always writing the commonest next
+  word of *Alice* does, 5 recall, 9 explore predictions, a proof that the writer must loop with
+  the pigeonhole principle and induction, three expression and estimate steps, 3 builds (a
+  tokeniser for any script, a property-based test for tokenisers that shrinks its failures, and
+  the next-word table), a debug done as an experiment, a break-it on NFC, and the explain-back),
+  tutor notes with 28 misconceptions and 6 novice questions, and checks.json (45 items). It
+  requires E1.6 and E1.9, applies E1.2, E1.3, E1.4 and E1.8, leads to L4.1, and foreshadows
+  L4.1, L4.10 and E9.2. Reviewed by both (the simulated learner, 23 of 24 right with 15 findings;
+  the independent reviewer, no blockers, 13 should-fix findings and nits; in
+  `derive-resume/review/E1.12-*.md`, with what was applied in `E1.12-fix-plan.md`), and every
+  finding applied: the ranks figure moved into the Reveal for the question it answered; a new
+  prediction on `sorted` with `key=by_count`, and tuple unpacking explained; "mark" kept for
+  Unicode marks; keyboards and programs, not phones, type é as two code points, and NFC's
+  exceptions such as क़; the pigeonhole principle and induction bridged from E1.2's loop
+  invariants; the loop claims checked on every start word (each loops within 16 words); the
+  abbreviation example replaced by one a list of abbreviations gets wrong; the debug titled "A
+  sentence goes missing", with a model hypothesis and prediction; the shrink order stated in
+  build-property's prompt, with the reason in its failing test; `most_likely` written with
+  `sorted(..., key=by_count)` and a paragraph that puts the tool together on *Alice*; test
+  descriptions that quote their words; five rungs and four notes rewritten, a new misconception,
+  and E1.8's hypothesis and observation in `used`. `check:exercises` passes all 45 items, and
+  the tutor notes were checked against 28 slip programs and the reviewer's 41 alternatives
+  (`derive-resume/e112walk/probes/`). The lesson was walked in all six phases with the mixed check
+  and no page errors other than the grader's 503 in local mode (store
+  `derive-resume/e112walk/store-before-E1.12-walk-moved.json`; the store after it is
+  `store-after-E1.12-walk.json`); its figures were checked in both themes at 1,100 and 390 px
+  with no text past their edges; and its end-to-end tests pass at all three widths, with the
+  performance budget. Considered and left for later: the reviewer suggests E1.12 as a
+  requirement of L4.2 Tokenisation (Unicode categories and pre-tokenisation are where a
+  byte-pair encoder starts), with L4.2 in the tokenising concept's usedBy and a Foreshadow;
+  decide it when L4.2 is written, since it moves L4.2 in the graph.
+- Engine changes with E1.12: two new figure components. `WordRanks` draws every different word
+  of *Alice* as a dot, across by its rank and up by its count on axes that go up in tens, with
+  the line on which count times rank is 4,000, and a slider (every rank up to 38, then ranks
+  about 4% apart, and the last) whose sentences give the word, its count, count times rank, the
+  ranks of the words that share its count and the share of the book up to it. `NextWords` writes
+  from the next-word counts: bars for up to eight commonest next words, a line for the words not
+  shown, buttons that add the commonest or a random next word (drawn from all of them), and a
+  live sentence that names the word added and says when the text has started to loop. Both read
+  `public/texts/alice.txt` (the book's text, with nothing from Project Gutenberg in it) once per
+  page, through `withBase`, and count it with the lesson's own tokeniser in `words.ts`, with
+  unit tests that check it against the lesson's Python.
 
 Next, in order:
 
-1. E1.12 Project: a tested text-statistics tool (requires E1.6 and E1.9; leads to L4.1):
-   being written in a worktree, with its design notes in `derive-resume/e112-draft/plan.md`.
-   The puzzle, recall, explore, derive and build phases are written, and the build exercises
-   pass their checks; the other exercises, the Explain phase, the tutor notes and two figures
-   (`WordRanks` and `NextWords`, which reads `public/texts/alice.txt`, a path the hosting
-   branch must wrap in `withBase`) are next. Walk it from `store-after-M1.12-walk.json`
-   (move M1.12's start back a day first, and mark M1.12's concepts provisional with
-   `provisional.py`). Then the start of stage 2, each written, checked, reviewed by both and walked before
-   it goes live, adding the remaining figure components as the lessons need them. The phase 2
-   features (item 3) come first once the hosting pull request has landed. The E1.7 reviewer
-   suggests E1.7 as a requirement of E3.4, if its configuration is a class.
-2. When the hosting pull request lands: pages move to `src/server/app/` (a new page needs a line
+1. Paused before stage 2 on 7 November, at Arnav's word ("Pause before Stage 2."). Nothing is
+   in progress. On "Resume", in this order:
+   - The phase 2 features (item 3), which were to come first once the hosting pull request
+     landed; it landed on 7 November.
+   - Then stage 2, from M2.1 Vectors as arrows, lists and data points. Its draft is saved in
+     `derive-resume/m21-draft/`: `m21-draft.bundle` (branch `m21-draft`, one commit on
+     13128b1, from before the move to GitHub Pages; fetch it with
+     `git fetch <path>/m21-draft.bundle m21-draft:m21-draft` and rebase it onto main), the same
+     as `m21-draft.patch`, its plan, and a README with what remains: tutor.yaml, the usedBy
+     entries in M1.1, M1.2 and M1.4, the checks, the end-to-end tests, both reviews, the walk
+     and the release. Then E2.1 (which needs NumPy vendored beside Pyodide), M3.1, E3.1 and
+     M4.1, each written, checked, reviewed by both and walked before it goes live, adding
+     figure components as the lessons need them.
+   - The E1.7 reviewer suggests E1.7 as a requirement of E3.4, if its configuration is a class.
+2. Since the hosting pull request landed (7 November): pages are in `src/server/app/` (a new page needs a line
    in `src/server/routes.ts` and a static shell in `src/app/`, copied from
    `src/app/today/page.tsx`); server components cannot use state or effects; client components
    call server actions through `src/lib/actions.ts` and use `refreshPage()` from
    `src/lib/wire/client.tsx`; `npm run dev` runs the site on 3000 and the server on 3101; walk
    scripts wait for `html[data-page="ready"]`; and `npm run build:api` rewrites
-   `src/generated/client-modules.ts`, which is committed. Tell that thread before changing a
-   route's shape or adding a route.
+   `src/generated/client-modules.ts`, which is committed (a new client figure adds a line to
+   it, and CI fails on a stale copy). A path the browser fetches goes through `withBase` from
+   `src/lib/public-config.ts`, since the site is served under /Derive. A `.next` folder from
+   before the move fails the type check with errors in `.next/types/validator.ts`; delete it
+   once. Tell the hosting thread before changing a route's shape or adding a route.
 3. The phase 2 features: the "This confused me" button (records the exact step as a notebook
    entry of kind `confused`; `NOTEBOOK_KINDS` already has it), automatic revision flags, the Map
    coloured by mastery with what unlocks next, the concept map, the novice explain-back mode
@@ -806,6 +858,20 @@ Next, in order:
   provisional with `derive-resume/provisional.py`, as the app does once an Explain phase is
   submitted without a grade: a lesson opens only when what it requires is mastered or
   provisional.
+- Walking E1.12, the first walk on the GitHub Pages build: `derive-resume/e112walk/` holds
+  `walk-e112.cjs` (`node walk-e112.cjs overview puzzle recall explore derive build explain`),
+  `walk-lib.cjs` (its `settle` now waits for `html[data-page="ready"]`), `mixed.cjs` for the
+  mixed check and the finish, `e112figs.cjs` and `rank1.cjs` for the figures in both themes at
+  1,100 and 390 px, the logs, and `probes/` with the slip programs. Build the site in local mode
+  as the end-to-end tests do (`npx playwright test --grep "E1\.12 "` builds it first, with
+  `NEXT_PUBLIC_DERIVE_LOCAL_STORE=1` and an empty base path), copy
+  `store-before-E1.12-walk-moved.json` to a store folder as `store.json`, and serve it with
+  `DERIVE_LOCAL_STORE=1 DERIVE_LOCAL_DIR=<folder> DERIVE_SHOW_DRAFTS=1 node
+  .derive-build/server.mjs --port 3100 --static out`; stop it with
+  `pkill -f "derive-build/server.mjs"`. That store is `store-after-M1.12-walk.json` with
+  M1.12 started a day earlier and its concepts provisional (`provisional.py`), and then M1.11,
+  E1.11 and M1.12 moved back a week by `prep-store.py`, since three lessons had started that
+  week.
 - Walking E1.7: copy `derive-resume/store-before-E1.7-walk.json` into a store folder with
   `prep-store.py <snapshot> <folder>/store.json M1.7=<yesterday>`, so that a new lesson can
   begin today, start the production build on it as above, and run `walk-e17.cjs` and

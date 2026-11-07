@@ -1,0 +1,194 @@
+## Words, roughly
+
+Every count in the puzzle starts by cutting the text into words. E1.6's `split` is the obvious tool: with nothing in its brackets it cuts at every run of spaces and newlines.
+
+```python
+text = "The cat sat. the CAT ran."
+print(len(set(text.split())))
+```
+
+<Exercise id="explore-split" />
+
+<Reveal for="explore-split">
+
+The text has four different words, but capital letters and full stops make one word look like several. On the whole of *Alice*, `set(text.split())` finds 5,293 different strings, among them `'Alice'`, `'Alice,'`, `'Alice.'` and `'Alice!'`.
+
+A *tokeniser* does better. It lowers the case first with `text.lower()`, which works like E1.6's `upper`, and then keeps the runs of letters. `ch.isalpha()` is `True` when the character `ch` is a letter. Here is a first one, built with E1.2's accumulator: `word` collects letters until something else comes, and then the word is added to the list.
+
+```python
+def tokens(text):
+    """The words of text, in lower case: its runs of letters."""
+    words = []
+    word = ""
+    for ch in text.lower():
+        if ch.isalpha():
+            word = word + ch
+        else:
+            if word != "":
+                words.append(word)
+            word = ""
+    if word != "":
+        words.append(word)
+    return words
+```
+
+The last `if` matters: a text that ends with a letter ends inside a word, and without it that word would be lost. With it, `tokens("The cat sat. the CAT ran.")` is `['the', 'cat', 'sat', 'the', 'cat', 'ran']`, four different words.
+
+<Exercise id="explore-apostrophe" />
+
+</Reveal>
+
+<Reveal for="explore-apostrophe">
+
+An apostrophe that stands between two letters belongs to the word, as in "don't", "o'clock" and "rock'n'roll". One at the start or the end of a word does not, and in *Alice* it is usually a quotation mark: the book puts speech in single quotes, `'Oh dear!'`, typed with the same character. So the tool keeps an apostrophe only when there is a word's character on each side of it. That loses the apostrophe of "the rabbits' ears", which is a price worth knowing.
+
+## Words in other scripts
+
+E1.6 found that `len("नमस्ते")` is 6. Try the tokeniser on it.
+
+<Exercise id="explore-hindi" />
+
+</Reveal>
+
+<Reveal for="explore-hindi">
+
+Unicode puts every character in a *category*, and Python's `unicodedata` module tells you which: after `import unicodedata`, `unicodedata.category(ch)` gives a two-letter name.
+
+| Character | Category | Meaning |
+| --- | --- | --- |
+| `A`, `a`, `न` | `Lu`, `Ll`, `Lo` | a letter: upper case, lower case, or of a script with no case |
+| `्`, `े` | `Mn` | a mark, drawn on or beside the character before it |
+| `7`, `७` | `Nd` | a decimal digit, in any script |
+| `.`, `'`, `!` | `Po` | punctuation |
+| a space | `Zs` | a separator |
+
+A vowel sign or the sign that joins two consonants is a *mark*: it cannot stand alone, and `isalpha` says no to it. The same goes for an accent typed as a separate mark after its letter, as some keyboards and programs type é. The fix is to keep a character whenever its category begins with `L`, `M` or `N`, for a letter, a mark, or a digit or other number. Python's own tool for finding patterns in text, its *regular expressions*, makes the same mistake as `isalpha`, and many tools have shipped with it, so a test with a word in Hindi or Tamil is worth having. The Build phase writes the tokeniser that gets it right. Cut that way, *Alice* is 26,688 words.
+
+## Counting and ranking
+
+E1.4 counted words with a dict, which is the next part of the tool:
+
+```python
+def word_counts(words):
+    """How many times each word appears in the list words."""
+    counts = {}
+    for w in words:
+        counts[w] = counts.get(w, 0) + 1
+    return counts
+```
+
+<Exercise id="explore-vocab" />
+
+</Reveal>
+
+<Reveal for="explore-vocab">
+
+That is half the 5,293 strings that `split` found, and each word is used about 10 times on average, though some are used far more than others. To rank them, the tool sorts the dict's entries. `counts.items()` gives each entry as a pair, a *tuple* `(word, count)`, and `sorted(pairs, key=f)` sorts the pairs by what the function `f` gives for each, as E1.9's test runner passed functions around like any value. Tuples compare item by item, the way E1.6 found strings compare character by character, so `(-1642, "the")` comes before `(-872, "and")` because $-1{,}642 < -872$, and `(-2, "a")` before `(-2, "b")` because the first items are equal and `"a" < "b"`.
+
+```python
+def by_count(pair):
+    """Sort key: larger counts first, and equal counts in alphabetical order."""
+    word, count = pair
+    return (-count, word)
+
+
+def top_words(counts, k):
+    """The k most common words, with their counts, most common first."""
+    return sorted(counts.items(), key=by_count)[:k]
+```
+
+`word, count = pair` *unpacks* the tuple: it names its first item `word` and its second `count`, as `word = pair[0]` and `count = pair[1]` would, since a tuple's items are numbered from 0, as a list's are. So `top_words(counts, 1)[0]` is the commonest pair, and `top_words(counts, 1)[0][0]` is its word. The minus sign puts the larger counts first. The word breaks ties, so that the order depends only on the counts, never on which word the tool happened to meet first, and a test can say exactly what `top_words` should give. Ties go by E1.6's code-point order, which for words of small letters is alphabetical order, with an apostrophe before every letter.
+
+<Exercise id="explore-sort" />
+
+</Reveal>
+
+<Reveal for="explore-sort">
+
+Here are *Alice*'s ten commonest words.
+
+| Rank | Word | Count | | Rank | Word | Count |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | the | 1,642 | | 6 | it | 530 |
+| 2 | and | 872 | | 7 | of | 514 |
+| 3 | to | 729 | | 8 | said | 462 |
+| 4 | a | 632 | | 9 | i | 410 |
+| 5 | she | 541 | | 10 | alice | 386 |
+
+<Exercise id="explore-zipf" />
+
+</Reveal>
+
+<Reveal for="explore-zipf">
+
+Multiply each count by its rank: $1 \times 1{,}642 = 1{,}642$, $10 \times 386 = 3{,}860$, $30 \times 130 = 3{,}900$, $100 \times 48 = 4{,}800$, and the 1,000th word, "paw", gives $1{,}000 \times 3 = 3{,}000$. From rank 10 to rank 500 the product stays between about 3,300 and 4,900, while the counts fall from 386 to 7. George Kingsley Zipf found this pattern in text after text in the 1930s and 1940s, and it is called *Zipf's law*: the word at rank $r$ appears about $\frac{C}{r}$ times, for a number $C$ that depends on the text. It is a pattern found by counting, not a law of nature, and it is only rough at the very top and the very bottom.
+
+<Exercise id="explore-once" />
+
+</Reveal>
+
+<Reveal for="explore-once">
+
+The figure ranks all 2,630 words.
+
+<WordRanks
+  title="Count against rank"
+  description="Each of the 2,630 different words of Alice's Adventures in Wonderland is a dot, placed across by its rank, from 1 to 2,630, and up by how many times it appears, from 1 to 1,642. Both axes are labelled at 1, 10, 100 and 1,000, each ten times the one before. A line shows count times rank equal to 4,000. A slider picks a rank, at first 10, and marks its dot, and sentences give the word at that rank, its count, count times rank, the ranks of any words that share its count, and how much of the book the words up to that rank make up."
+  rank={10}
+/>
+
+On axes that go up in tens, $\frac{C}{r}$ is a straight line that falls one step of ten for each step of ten across, and the dots follow it. The words up to rank 10 are a quarter of the book, and the words up to rank 100 more than half. At the far end the dots lie in flat runs, many words to each small count. The last run, of the words seen once, looks short, because each step of ten across holds ten times as many ranks as the one before; slide to the end to count it. Another 408 words appear twice. The Derive phase shows why Zipf's law makes the share of words seen once so large. So a table of counts, however long the book, knows almost nothing about most words, and every new book brings words it has never seen. Language models meet the same wall, which is one reason they learn what words have in common instead of keeping a table.
+
+## Counting sentences
+
+E1.9 promised a tool that counts sentences too. The obvious rule counts every `.`, `!` and `?`, the characters that end them.
+
+<Exercise id="explore-sentences" />
+
+</Reveal>
+
+<Reveal for="explore-sentences">
+
+A better rule counts a `.`, `!` or `?` only when the next character is whitespace, a closing quotation mark `'`, or nothing at all because the text has ended. A full stop inside "3.50" is followed by a digit, and the `?` of "?!" by the `!`, so neither counts. That gives 3 here, still one too many, because "Mr." passes the test. No rule of this kind is right every time: a list of abbreviations would mend "Mr.", but then miscount "We left at 5 p.m. Then it rained.", where the abbreviation's full stop ends a sentence as well. A good tool says what its rule is, and its tests pin the rule down. On *Alice* the rule finds 1,585 sentences. The Build phase mends a sentence counter that breaks it.
+
+## Which word comes next
+
+The puzzle's counts come from a dict of dicts: `follows[a][b]` is how many times the word `b` comes straight after the word `a`. After "said", *Alice* has "the" 210 times, "alice" 116 times and "to" 39 times, out of 462 times that "said" is followed by a word.
+
+<Exercise id="explore-said" />
+
+</Reveal>
+
+<Reveal for="explore-said">
+
+Right less than half the time, even after "said", one of the easiest words to follow. After "the" the guess "queen" would be right 65 times in 1,642, 4% of the time. Try it in the figure: start from a word, add the commonest next word again and again, or choose each next word at random, in proportion to the counts, the way the tool would draw it out of a bag holding each next word as many times as it was seen.
+
+<NextWords
+  title="Writing from next-word counts"
+  description="The words of Alice's Adventures in Wonderland, counted by which word follows which. A text box takes a starting word, at first the. The figure lists up to eight of the words that most often follow the last word written, each with a bar in proportion to its count, and its count and share beside the bar, and says how many other words follow it. One button adds the commonest next word, another adds a next word chosen at random in proportion to the counts, from all the words that follow, not only those listed, and a third starts again. The words written so far are shown, and a sentence says which word was added and when the text has started to repeat itself."
+  start="the"
+/>
+
+Choosing the commonest word every time falls into a loop from every start in the book, always within its first 16 words, and from all but five starts the loop is the puzzle's "the queen and". Choosing at random never settles into one, but it only ever looks one word back, so its sentences drift from subject to subject: "the other in your tongue hanging out to grow larger than what said the rabbit". Every pair of neighbouring words is one that Carroll wrote; the sentence as a whole is not. A model that looked further back would do better, and that is where language models go next.
+
+## The names
+
+<Definition term="Tokeniser">
+
+A function that cuts text into words, its *tokens*. This lesson's lowers the case, keeps runs of characters whose Unicode category begins with `L`, `M` or `N` (letters, marks, and digits and other numbers), and keeps an apostrophe only between two such characters. `split` alone keeps punctuation and capitals, and `isalpha` alone cuts words of Hindi and other scripts at their marks.
+
+</Definition>
+
+<Definition term="Zipf's law">
+
+In a long text, the word at rank $r$ appears about $\frac{C}{r}$ times, so count times rank stays roughly the same: a few words make up much of the text, and many of its different words appear only once.
+
+</Definition>
+
+<Definition term="Next-word table">
+
+A dict of dicts counting how often each word follows each other word. Always taking the commonest next word repeats itself once a word comes round again; drawing at random in proportion to the counts does not, but each word depends only on the one before.
+
+</Definition>
+
+</Reveal>

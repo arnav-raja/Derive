@@ -1,0 +1,480 @@
+misconceptions:
+  - id: greedy-never-repeats
+    belief: A writer that always adds the likeliest next word writes new text for ever, since a book has so many words to choose from.
+    why: >-
+      The writer looks only at the last word, and the same word is always followed by the same
+      choice. A book has only so many different words, so some word must come round again, and
+      from then on everything repeats. Most of the book's words are never reached at all.
+    cue: >-
+      The learner chooses "A long text that never repeats itself" in puzzle-greedy, or "It writes new
+      sentences for ever" in the second review of explore-said.
+  - id: greedy-stops
+    belief: The writer soon stops, at a word that nothing in the book follows.
+    why: >-
+      Almost every word of a book is followed by some word somewhere, so the writer almost always
+      has a next word. Only a word that appears nowhere but at the very end of the book has nothing
+      after it.
+    cue: The learner chooses "A few words, and then it stops" in puzzle-greedy.
+  - id: greedy-commonest-word
+    belief: The writer writes the commonest word of the whole book again and again.
+    why: >-
+      The writer chooses the commonest word after the last word written, not the commonest word of
+      the book. "the" is rarely followed by "the", so it writes "the" only when the word before it
+      leads there.
+    cue: The learner chooses "the the the ..." in puzzle-greedy.
+  - id: greedy-copies-book
+    belief: The writer writes the book back word for word, since its counts came from the book.
+    why: >-
+      The table keeps only how often each word follows each other word, not where in the book each
+      pair came from, so the writer cannot follow the book's order beyond one word.
+    cue: The learner chooses "It writes the book back word for word" in the second review of explore-said.
+  - id: writer-checks-repeats
+    belief: The writer stops when it reaches a word it has written before.
+    why: >-
+      Nothing in the writer looks back at what it has written. Reaching an old word is exactly what
+      makes it repeat: from that word on, it writes the same words again in the same order.
+    cue: The learner chooses "It stops as soon as it reaches a word that it has written before" in the second review of explore-said.
+  - id: len-counts-shapes
+    belief: '`len` counts the clusters drawn on the screen, so `len("नमस्ते")` is 3.'
+    why: >-
+      `len` counts code points. A vowel sign and the sign that joins two consonants are code points
+      of their own, drawn on or beside the letter before them, so नमस्ते is six code points drawn as
+      three clusters.
+    cue: The learner answers recall-length with 3.
+  - id: len-counts-bytes
+    belief: '`len` counts the bytes a string takes in UTF-8, so `len("नमस्ते")` is 18.'
+    why: >-
+      `len` counts code points. UTF-8 stores each Devanagari code point in three bytes, so नमस्ते
+      takes 18 bytes, but only `len("नमस्ते".encode("utf-8"))` counts them, as E1.6 found.
+    cue: The learner answers recall-length with 18.
+  - id: get-without-default
+    belief: '`counts.get(key, 0)` gives `None`, or stops with a `KeyError`, when the key is missing.'
+    why: >-
+      `get` gives back its second argument when the key is missing, here 0. Only `counts[key]`
+      stops with a `KeyError`, and `get` with no second argument gives `None`.
+    cue: The learner chooses `2 None` or the `KeyError` in recall-counts.
+  - id: split-space-merges
+    belief: '`split(" ")` treats a run of spaces as one gap, as `split()` does.'
+    why: >-
+      `split(" ")` cuts at every single space, so two spaces in a row leave an empty field between
+      them. Only `split()` with nothing in its brackets cuts at runs of whitespace and drops the
+      empty pieces.
+    cue: The learner answers recall-split with 2.
+  - id: seed-more-random
+    belief: '`random.seed` makes the inputs more random, or all different, or small.'
+    why: >-
+      A seed fixes where the generator starts, so every run makes the same inputs. That is what lets
+      a failure found once be made again, looked at and checked after a fix.
+    cue: The learner chooses any answer but the one about making the same inputs in recall-seed.
+  - id: shrink-starts-over
+    belief: Shrinking makes new, smaller random inputs, or cuts the input in half, or tidies it.
+    why: >-
+      Shrinking works on the failing input itself: it takes out one item at a time and keeps each
+      removal only if the property still fails, so what is left still shows the bug.
+    cue: The learner chooses sorting, new random lists or halving in recall-shrink.
+  - id: split-cleans-words
+    belief: '`split` lowers the case or strips punctuation, so "The" and "the", or "sat." and "sat", come out the same.'
+    why: >-
+      `split` only cuts at whitespace and changes nothing else, so every capital and every punctuation
+      character stays in its piece, and a set of the pieces keeps "The", "the" and "the." apart.
+    cue: >-
+      The learner answers explore-split with 4 or fewer, chooses `['stop', 'stop']` or
+      `['Stop', 'stop']` in its first review, or answers its second review with 1 or 2.
+  - id: tokeniser-keeps-apostrophe
+    belief: A tokeniser that keeps runs of letters keeps "don't" whole, or keeps its punctuation.
+    why: >-
+      Keeping runs of letters means that anything else, an apostrophe or a `!`, ends the word. The
+      Explore phase's tokeniser keeps only letters, so "don't" comes out as "don" and "t".
+    cue: >-
+      The learner chooses any answer but `['don', 't', 'panic']` in explore-apostrophe, or keeps
+      "it's" or the digit 5 in its first review.
+  - id: isalpha-every-script
+    belief: '`isalpha` is `True` for every character of a word in any script, so a word of Hindi stays whole.'
+    why: >-
+      `isalpha` is `True` only for letters. A vowel sign and the sign that joins two consonants are
+      marks, of category `Mn` or `Mc`, so a letters-only tokeniser cuts the word at them and drops
+      them.
+    cue: The learner chooses `['नमस्ते']` or `['नमसत']` in explore-hindi.
+  - id: isalpha-latin-only
+    belief: '`isalpha` is `True` only for the letters of the Latin alphabet.'
+    why: >-
+      Python's `isalpha` knows every script's letters: न, म, स and त are letters. Only the marks
+      that change a letter's sound fail it.
+    cue: The learner chooses `[]` in explore-hindi.
+  - id: vocabulary-size
+    belief: A book of 26,688 words uses nearly as many different words, or only a few hundred.
+    why: >-
+      A few common words fill much of any text, "the" alone 1,642 times in *Alice*, so a book
+      repeats its words about 10 times on average, but it still needs thousands of different words
+      for its people, places and things.
+    cue: The learner answers explore-vocab below 1,300 or above 5,300.
+  - id: zipf-same-fall
+    belief: The counts fall by the same factor from rank 10 to rank 100 as from rank 1 to rank 10.
+    why: >-
+      Count times rank stays roughly the same, so the count at rank $r$ is about $\frac{C}{r}$: ten
+      times further down the ranks gives about a tenth of the count. The fall from rank 1 to rank 10
+      is only about 4, since the commonest words sit below the line.
+    cue: >-
+      The learner answers explore-zipf near 90, or chooses $C - r$, $\frac{C}{r^2}$ or "about as
+      often as every other" in its second review.
+  - id: rare-words-rare
+    belief: Words that appear only once are a small share of the different words of a book.
+    why: >-
+      Each of them is a small part of the text, but there are very many of them: under Zipf's law,
+      every rank from about $\frac{C}{2}$ to $C$ holds a word seen once, which is half the
+      different words.
+    cue: >-
+      The learner chooses "Under 5%" or "About 15%" in explore-once, answers its first review far
+      below 2,000, or chooses "Only rank $C$" or "the last tenth" in the second review of
+      derive-once.
+  - id: rare-words-ignorable
+    belief: The words seen once make up almost half the text, or are misprints, or vanish in a longer book.
+    why: >-
+      They are almost half the different words but a small part of the text, 1,143 of *Alice*'s
+      26,688 words. They are real words, and a longer book brings rare words of its own.
+    cue: The learner chooses any answer but the right one in the second review of explore-once.
+  - id: marks-count-sentences
+    belief: A loop that counts every `.`, `!` and `?` counts the sentences.
+    why: >-
+      Every `.`, `!` and `?` is counted wherever it stands: the full stop of "Mr." and of "3.50",
+      and both characters of "?!". So the count can be far more than the number of sentences.
+    cue: The learner answers explore-sentences with 2 or 3.
+  - id: guess-mostly-right
+    belief: The commonest next word is right most of the time, or its share is its count out of the whole book.
+    why: >-
+      The share is the count of the guessed word after "said" out of all the words after "said",
+      $\frac{210}{462}$. Even the commonest next word is right less than half the time, and after
+      most words far less often.
+    cue: >-
+      The learner answers explore-said above 0.6, or near 0.13, which divides 210 by the count of
+      "the".
+  - id: pairs-equal-words
+    belief: A text of $n$ words has $n$ neighbouring pairs.
+    why: >-
+      Every word but the last starts one pair, so $n$ words make $n - 1$ pairs: 2 words make 1 pair,
+      not 2.
+    cue: The learner answers derive-join with $n + m$ or $n + m + 1$, or its first review with 17.
+  - id: join-adds-nothing
+    belief: Joining two texts adds no new pair of words, so the pairs, or the next-word counts, just add up.
+    why: >-
+      The last word of the first text now has a next word, the first word of the second, so the
+      joined text has exactly one pair that neither text had.
+    cue: >-
+      The learner answers derive-join with $n + m - 2$, or chooses "with nothing more and nothing
+      less" or "less 1" in its second review.
+  - id: book-shows-most-pairs
+    belief: A long book shows most of the possible pairs of its words.
+    why: >-
+      With $V$ different words there are $V^2$ possible pairs, and a book of $N$ words shows at most
+      $N - 1$ of them. For *Alice* that is at most 0.4%, and many of the missing pairs are good
+      English.
+    cue: >-
+      The learner answers derive-sparse above 0.05, or chooses any answer but the right one in its
+      second review.
+  - id: look-alike-equal
+    belief: Two strings that look the same on the screen are equal.
+    why: >-
+      A string is its code points, not its look. é typed as one code point and é typed as e and an
+      accent are different strings, so a dict keeps them under two keys until NFC puts both in one
+      form.
+    cue: The learner chooses "It still prints `2`" in breakit-nfc.
+  - id: missing-form-error
+    belief: Without NFC, the dict has no key "café" at all, so looking it up stops with a `KeyError`.
+    why: >-
+      The word typed with the single code point é is still counted under its own key, once. Only
+      the other form is counted apart, under a key that looks the same.
+    cue: The learner chooses the `KeyError` in breakit-nfc.
+  - id: negative-index-error
+    belief: '`text[i - 1]` at `i = 0` stops with an `IndexError`.'
+    why: >-
+      A negative index counts from the end, so `text[-1]` is the last character of the text. A
+      check of the character before an apostrophe written this way quietly looks at the end of the
+      text, which is why `word != ""` is the safer test.
+    cue: >-
+      The learner's `tokens` in build-tokens checks `text[i - 1]` and keeps "'tis" whole, or they
+      cannot see why the looks_back tokeniser of build-property breaks the property.
+  - id: ties-any-order
+    belief: When two words follow a word equally often, it does not matter which of them `most_likely` gives.
+    why: >-
+      A dict keeps its keys in the order they were first added, so a tie that goes to whichever
+      word came first depends on the order of the text. Breaking ties by the word makes the answer
+      depend only on the counts, so a test can say exactly what it should be.
+    cue: The learner's `most_likely` in build-next fails test_ties, or uses `max` with `key=counts.get`.
+exercises:
+  derive-loop:
+    rungs:
+      - >-
+        For each line, what does it conclude? Is that a fact about how many words were written,
+        about which words they can be, about two of them being equal, or about every step after
+        that?
+      - >-
+        The puzzle's writer wrote "the queen and the", and then "queen" again: after "the" it writes
+        the same word every time, since it looks only at the word before. E1.2's invariant held
+        before the loop and every pass kept it, so it held at every check. E1.2 counted the values
+        of `range(a, b)` as $b - a$, since the range stops before $b$.
+      - >-
+        Take a book of just two different words, "a" and "b", so $V = 2$. Write any three words
+        $w_0, w_1, w_2$ of a writer: why must two of them be the same word? And once
+        $w_i = w_j$, what can you say about $w_{i+1}$ and $w_{j+1}$, and then about $w_{i+2}$ and
+        $w_{j+2}$?
+      - >-
+        Choosing each rule by what its line concludes is the right way in. If the first two lines
+        have the same rule, read them again: one says how many words there are, the other which
+        words they can be. If the line that ends "for every $k \ge 0$" has the same rule as the line
+        before it, look at how far that rule reaches: one step on, or every step on.
+      - >-
+        A traffic light changes colour, and the next colour depends only on the colour now. Watch 4
+        colours in a row: with only 3 colours, two of the 4 must be the same. The colour after each
+        of those two is then the same too, and the colour after that, and so on for ever, so the
+        light repeats from the first colour that came round again.
+    notes: >-
+      Counting for line 2 confuses how many words there are with which words they can be, and
+      Only V words for line 1 does the reverse. Counting or Only V words for line 3 misses that the
+      line says two words are equal, which is the pigeonhole step. One word back for line 5 carries
+      only one step; going from one step to every $k$ needs Induction. Pigeonholes for line 4 reads
+      "equal" in the line and not what makes the next words equal. Zipf's law is never needed: the
+      proof uses no counts at all, only that each next word is fixed by the one before it.
+  derive-join:
+    rungs:
+      - >-
+        How many words does `a + " " + b` have, and how many neighbouring pairs does a list of that
+        many words have?
+      - >-
+        The paragraph above the question says that every word of `a + " " + b` is a word of `a` or a
+        word of `b`, since the space ends `a`'s last word and starts nothing. The Explore phase's
+        dict of dicts counts each pair of neighbouring words once.
+      - >-
+        Try $n = 2$ and $m = 3$: write two words for `a` and three for `b`, join them with a space,
+        and count the neighbouring pairs one by one. Then try $n = 1$ and $m = 1$.
+      - >-
+        If your answer starts from the $n + m$ words of the joined text, that part is right. If it
+        is $n + m$, check it at $n = 1$ and $m = 1$: two words, how many pairs? If it is
+        $n + m - 2$, look for a pair in the joined text that is in neither `a` nor `b` alone.
+      - >-
+        A train of 4 coaches has 3 couplings, and a train of 5 coaches has 4. Coupled into one train
+        of 9 coaches, it has 8: the 3 and the 4, and one more where the two trains meet.
+    notes: >-
+      $n + m$ counts a pair for every word, though the last word starts none. $n + m - 2$ adds the
+      pairs inside `a` and inside `b` and forgets the pair across the join. $nm$ counts every
+      possible pairing of a word of `a` with a word of `b`, a different question. $n + m + 1$
+      counts the space as a word. The checker compares values at whole numbers from 1 to 9.
+  derive-once:
+    rungs:
+      - >-
+        Which ranks $r$ make $\frac{C}{r}$ at least 1 but less than 2? Write the two conditions as
+        conditions on $r$ alone.
+      - >-
+        The rule above the question says that the word at rank $r$ appears $\frac{C}{r}$ times
+        rounded down, and E1.2 counted the values of `range(a, b)` as $b - a$, the whole numbers
+        from $a$ up to $b - 1$.
+      - >-
+        Take $C = 10$: work out $\frac{10}{r}$ rounded down for $r = 1, 2, \ldots, 10$, and count
+        the ranks where it is exactly 1. Then try $C = 20$, and compare the two counts with $C$.
+      - >-
+        If you found that the ranks seen once run up to $C$, that part is right. If your answer is
+        $C$, look at rank 1: does every word appear once? If it is $\frac{C}{2} + 1$ or
+        $\frac{C}{2} - 1$, list the ranks for $C = 10$ again: is rank 5 one of them, and is rank 10?
+      - >-
+        A shop gives a free bag with every order of at least 100 rupees but under 200. With orders in
+        whole rupees, the orders that get a bag run from 100 to 199, and there are
+        $199 - 100 + 1 = 100$ of them: find the first and the last that qualify, then count the
+        whole numbers from one to the other.
+    notes: >-
+      $C$ counts every rank, not only those with a count of 1. $\frac{C}{3}$ takes the bound of the
+      ranks with a count of 2, which run from above $\frac{C}{3}$ to $\frac{C}{2}$, for a count, or
+      comes from a slip in the inequality.
+      $\frac{C}{2} - 1$ and $\frac{C}{2} + 1$ miscount the ends: the ranks run from
+      $\frac{C}{2} + 1$ to $C$, which is $\frac{C}{2}$ ranks. $2C$ turns the fraction over. The
+      checker samples positive fractions for $C$, so `C//2` and `floor(C/2)`, though right for every
+      even $C$, are marked different from $\frac{C}{2}$; the prompt asks for no rounding, so point
+      the learner to it.
+  derive-sparse:
+    rungs:
+      - >-
+        At most how many different pairs can the book show, given how many neighbouring pairs it
+        has? And how many pairs of its words are possible?
+      - >-
+        The question gives both numbers. M1.1 estimated a ratio by rounding each number to one or
+        two figures and dividing the powers of ten separately.
+      - >-
+        Try a tiny book first: 5 words, all different, so 4 neighbouring pairs and $5^2 = 25$
+        possible pairs. At most what fraction of the 25 could it show? Then do the same with
+        *Alice*'s numbers, rounded to 27,000 and 7,000,000.
+      - >-
+        If you divided the most pairs the book can show by the number of possible pairs, that is the
+        right frame. If your answer is more than 1, look at whether you divided by $2{,}630$ or by
+        its square. If it is 10 times too large or too small, count the zeros of 7,000,000 again.
+      - >-
+        A class of 40 pupils has $40^2 = 1{,}600$ ordered pairs of pupils. On one day, the class
+        sits at 20 desks of two, so it shows at most 20 of the possible pairs that day:
+        $\frac{20}{1{,}600} \approx 0.01$, about 1%.
+    notes: >-
+      Dividing by 2,630 rather than its square gives about 10, more than 1, which cannot be a
+      fraction of the pairs. $\frac{2{,}630}{6{,}900{,}000}$ divides the wrong count. Answers from
+      0.0026 to 0.0058 pass, since the check allows a factor of 1.5 either way. The 14,734 different
+      pairs that *Alice* really shows come only in the Reveal after the question.
+  build-tokens:
+    rungs:
+      - >-
+        What does your loop need to know about a character to decide whether it belongs to the
+        current word? For an apostrophe, which other characters must it look at, and what if there
+        is no character after it?
+      - >-
+        The Explore phase's table showed that `unicodedata.category(ch)` gives a two-letter name
+        whose first letter is `L`, `M` or `N` for a letter, a mark or a digit. Its tokeniser added
+        a word only when `word` was not empty, and E1.2 put a guard first, so that `and` stops
+        before a part that would fail.
+      - >-
+        Try `tokens("it's 'ok'")` by hand: go through the characters one at a time, and for each
+        apostrophe write down the character before it and the character after it. Which apostrophe
+        belongs to a word? Then try `tokens("it'")`, where the apostrophe is the last character.
+      - >-
+        Going through the text by index, so that you can look at the next character, is the right
+        frame. If test_hindi or test_tamil fails, print `unicodedata.category(ch)` for each
+        character of दुनिया and see which your test leaves out. If test_quotation_marks fails, look
+        at what you check before an apostrophe. If test_apostrophe_last stops with `IndexError`,
+        look at which part of your test of the next character comes first. If a last word goes
+        missing, look at what happens after the loop.
+      - >-
+        A program finds the places where a word is written twice in a row, as in "the the cat". It
+        goes through the list of words by index, so that it can look at the next one, and at each
+        place asks first whether there is a next word, `i + 1 < len(words)`, and only then whether
+        it is the same word: for `["the", "the", "cat"]`, `i = 0` finds "the" twice, `i = 1`
+        compares "the" with "cat", and at `i = 2` the first question is already false, so
+        `words[3]` is never looked at.
+    notes: >-
+      The Explore phase's tokeniser, `isalpha` alone, fails test_apostrophe_inside,
+      test_apostrophe_last, test_hindi, test_tamil, test_digits and test_separate_accent; with the
+      apostrophe rule added, `isalpha` still fails test_hindi, test_tamil, test_digits and
+      test_separate_accent. Keeping categories that begin with `L` or `M` only fails test_digits.
+      Listing `Lu`, `Ll`, `Lo` and `Mn` misses `Mc`, the vowel sign of दुनिया and the Tamil vowel
+      signs, so test_hindi and test_tamil fail. `unicodedata.category(ch) in "LMN"` asks whether a
+      two-letter name is in a three-letter string, which is never true, so every test finds no
+      words. Keeping every apostrophe fails test_quotation_marks and test_apostrophe_last. Not
+      checking that a word has started keeps the apostrophe of "'Oh". Testing `text[i + 1]` before
+      `i + 1 < len(text)` stops with `IndexError` in test_apostrophe_last. `text[i - 1]` at
+      `i = 0` looks at the last character, so "'tis" can keep its quotation mark. Dropping the last
+      `if` loses the last word. Forgetting `lower` fails every test with a capital letter:
+      test_example, test_empty_and_one_word, test_apostrophe_inside, test_quotation_marks,
+      test_apostrophe_last, test_digits and test_capitals.
+  debug-sentences:
+    rungs:
+      - >-
+        Of the two full stops in "It was late. She ran.", which one goes uncounted, and what is
+        different about where it stands?
+      - >-
+        E1.8 debugged by experiment: a hypothesis, the prediction that would follow if it were right,
+        and an observation to test it. E1.2 put a guard first, so that `or` stops before a part that
+        would fail.
+      - >-
+        Print `i` and `text[i]` on every pass for `count_sentences("Hi.")`. Which values of `i` does
+        the loop take, and which character is never looked at?
+      - >-
+        If your hypothesis is about where the loop stops, that is the right place to look. If your
+        mend stops with `IndexError`, look at the order of the parts of your test: which must come
+        first, so that `text[i + 1]` is never reached at the last character? If test_whitespace
+        fails, look at what your test counts as whitespace.
+      - >-
+        A program looks along a row of seats for each seat whose neighbour on the right is empty.
+        The last seat has no neighbour on the right, so for each seat it first asks whether this is
+        the last seat, and only otherwise looks at the neighbour. Asked the other way round, it
+        reaches past the end of the row.
+    notes: >-
+      The bug is `range(len(text) - 1)`, which stops before the last character, so a `.`, `!` or
+      `?` at the very end is never looked at. Looping over `range(len(text))` with no guard stops with
+      `IndexError` on the script's own text, and so does putting `i + 1 == len(text)` after the
+      `text[i + 1]` tests. Counting every `.`, `!` and `?` fails test_not_followed_by_space, test_the_rule
+      and test_end_of_the_text. Testing `== " "` in place of `isspace()` fails test_whitespace. Leaving out
+      the quotation mark fails test_quotation_mark. Counting the end of the text as an end with no
+      `.`, `!` or `?` there fails test_empty_and_one_word, test_quotation_mark and test_join. Adding a space to
+      the end of the text before the loop mends it as well. The tests do not read the two comments.
+  build-property:
+    rungs:
+      - >-
+        For `joins_right`, which three lists of words does it need, and how should they compare when
+        the property holds? For `shrink_pair`, what decides whether a removal is kept, and where
+        does the loop look next after keeping one?
+      - >-
+        E1.9 built `shrink`, which took the items out one at a time and kept each removal after which
+        the property still failed, and `check`, which made random inputs and gave the first that
+        failed, for `shrink` to take down. The Derive phase showed why the words of `a + " " + b` should be the words of `a`
+        followed by the words of `b`.
+      - >-
+        Try `shrink_pair(drops_last, "ab", "c")` by hand, where `drops_last` loses the last word of
+        a text that ends inside a word. Does `("ab", "c")` break the property? Take each character
+        out of `a` in turn, and after each removal ask whether the pair still breaks it.
+      - >-
+        Comparing the joined text's words with the two lists added together is the right frame for
+        `joins_right`. If a shrink test gives a pair that could shrink further, look at what your
+        loop does to its position after a removal it keeps. If test_first_pair says your function
+        made too many texts, or gives the wrong pair, look at when and in what order it makes `a`
+        and `b`, and when it gives its answer.
+      - >-
+        A cake sinks, and the baker wants the least of the recipe that still makes it sink. The dry
+        bowl holds flour, sugar and baking powder; the wet bowl, milk and egg. Working on the dry
+        bowl first, with the wet bowl as it is, the baker leaves out one thing at a time, from the
+        first, keeping a removal only if the cake still sinks, and then tries whatever now stands in
+        that place: without flour it still sinks, so flour stays out and sugar is tried next;
+        without sugar it rises, so sugar goes back; without baking powder it still sinks, so the
+        powder stays out. Then the wet bowl, with the dry bowl as it was left: without milk it rises,
+        so milk goes back; without egg it still sinks, so egg stays out. What is left, sugar and
+        milk, still makes the cake sink, and is far easier to think about than the whole recipe.
+    notes: >-
+      Joining with no space runs two words together and fails nearly every test. Comparing only the
+      numbers of words passes test_holds but fails test_breaks, test_shrink_b, test_shrink_apostrophe
+      and test_random_texts, since the looks_back and skips_first tokenisers change a word without
+      losing one. Moving on after a removal it keeps skips the next character, which test_shrink_a,
+      test_shrink_b, test_first_pair and test_random_texts catch. Shrinking only `a` fails
+      test_shrink_a, test_shrink_b, test_shrink_apostrophe, test_first_pair and test_random_texts.
+      Keeping a removal when the property holds, in place of when it still breaks, keeps the wrong
+      ones: `('ab cd', 'ef')` stays as it is, and `('a', '')` becomes `('', '')`, which keeps the
+      property; six tests fail. Giving the failing pair without shrinking
+      it fails test_first_pair and test_random_texts. Making `b` before `a` gives `('c', '')` in
+      test_first_pair. Going on after a failure gives the last failing pair, `('g', '')`. Testing the
+      script's `tokens` every time, not the `tokenise` it is given, finds nothing.
+  build-next:
+    rungs:
+      - >-
+        For `next_counts`, which pairs of the list does it count? For `most_likely`, how does it
+        choose among a word's counts, ties included? For `generate`, which word does it ask about
+        each time, and what ends the loop?
+      - >-
+        The Explore phase's `word_counts` counted with `counts.get(w, 0) + 1`, and its `top_words`
+        sorted a dict's entries with `by_count`, most common first and ties in alphabetical order.
+        The Derive phase found that a list of $n$ words has $n - 1$ neighbouring pairs.
+      - >-
+        Try `next_counts(["a", "b", "a", "c"])` by hand: list the neighbouring pairs, then build the
+        dict of dicts one pair at a time. Then follow `generate` on your table from `"a"` with
+        `n = 4`: which word does it ask about at each step, and what does it add?
+      - >-
+        If `next_counts` goes through the positions that have a word after them, that is the right
+        frame. If a count goes missing, look at what happens the first time a word is met: is its
+        inner dict made only then? If test_ties fails, look at how you choose among equal counts.
+        If `generate` repeats one word, look at which word it asks about. If it adds `None`, or one
+        word too many, look at what ends the loop.
+      - >-
+        From the words "tea", "tin", "ant" and "tan", a table counts, for each first letter, the
+        last letters of the words that begin with it: `{"t": {"a": 1, "n": 2}, "a": {"t": 1}}`,
+        making the row for "t" when "tea", the first word that begins with it, comes up. The
+        commonest last letter after "t" is "n", with 2; had "a" and "n" had 1 each, the tie would go
+        to "a", first in alphabetical order. A chain from "a" then looks up the row of the letter it
+        reached last: after "a" comes "t", after "t" comes "n", and "n" has no row, so the chain
+        stops at a, t, n.
+    notes: >-
+      Replacing a word's inner dict at each pair keeps only the last word seen after it, which
+      test_counts_example and test_counts_add_up catch. Counting the word before each word fails
+      test_counts_example and test_counts_join. `max(counts, key=counts.get)` or any choice that
+      gives a tie to the word met first fails test_ties, and the story writes "said off with his
+      head". Taking the last of the sorted list gives the least likely word. Asking about `start`
+      every time repeats "queen". Not stopping at `None` adds `None`, and testing `len(text) <= n`
+      writes one word too many. A `next_counts` that makes an empty row for the last word passes the
+      counting tests, which ignore empty rows, but then `most_likely` must give `None` for an empty
+      row, or the script's own `generate` stops with `IndexError` at "all", the story's last word,
+      before any test runs.
+novice:
+  - Why does `split` think "Alice" and "Alice," are two different words?
+  - Why does a word in Hindi fall apart when a program keeps only letters?
+  - How can two words that look exactly the same on the screen be different strings?
+  - Why does a writer that always picks the likeliest next word end up repeating itself?
+  - Why do so many of a book's different words appear only once?
+  - What can a table of word pairs say about a pair it has never seen?

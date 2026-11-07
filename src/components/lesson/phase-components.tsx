@@ -14,6 +14,7 @@ import {
   HashBuckets,
   MappingDiagram,
   MergeLevels,
+  NextWords,
   OrderedChoices,
   PartialSums,
   PascalTriangle,
@@ -28,6 +29,7 @@ import {
   TileGrid,
   UnitCircle,
   VectorPlane,
+  WordRanks,
 } from "@/components/figures";
 import { HintIcon, LockIcon } from "@/components/ui/icons";
 import { loadLesson, type LoadedLesson } from "@/lib/content/lesson";
@@ -333,5 +335,7 @@ export function phaseComponents(ctx: PhaseContext): MDXComponents {
     ShuffleBuffer,
     ComplexPlane,
     EulerSteps,
+    WordRanks,
+    NextWords,
   };
 }

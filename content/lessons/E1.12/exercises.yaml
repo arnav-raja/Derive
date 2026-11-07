@@ -1,0 +1,2955 @@
+exercises:
+  # Puzzle ---------------------------------------------------------------------
+  - id: puzzle-greedy
+    phase: puzzle
+    kind: predict
+    concept: E1.12/next-word-counts
+    title: Always the likeliest word
+    prompt: What does the program write?
+    answer:
+      type: choice
+      options:
+        - { id: wander, label: 'A long text that never repeats itself, since there are so many words to choose from' }
+        - { id: stop, label: 'A few words, and then it stops at a word that nothing in the book follows' }
+        - { id: right, label: 'A few words that repeat in the same order, again and again, for ever' }
+        - { id: same, label: '"the the the ...", since "the" is the commonest word of the whole book' }
+      correct: [right]
+    explanation: >-
+      Each next word depends only on the word before it, so as soon as some word comes round a
+      second time, everything after it repeats. It never stops, since every word it reaches is
+      followed by something somewhere in the book, and "the" is rarely followed by "the".
+
+  # Recall ---------------------------------------------------------------------
+  - id: recall-length
+    phase: recall
+    kind: recall
+    concept: E1.6/unicode-and-bytes
+    prompt: What is `len("नमस्ते")`?
+    answer: { type: number, value: 6, tolerance: { abs: 0 } }
+    explanation: >-
+      Six code points: न, म, स, the sign ् that joins स to the next letter, त, and the vowel sign
+      े. The screen draws them as three clusters, but `len` counts code points.
+
+  - id: recall-counts
+    phase: recall
+    kind: recall
+    concept: E1.4/dicts-and-sets
+    prompt: |-
+      What does this print?
+
+      ```python
+      counts = {}
+      for w in ["to", "be", "or", "not", "to", "be"]:
+          counts[w] = counts.get(w, 0) + 1
+      print(counts["be"], counts.get("is", 0))
+      ```
+    answer:
+      type: choice
+      options:
+        - { id: once, label: '`1 0`' }
+        - { id: none, label: '`2 None`' }
+        - { id: right, label: '`2 0`' }
+        - { id: error, label: 'It stops with a `KeyError`' }
+      correct: [right]
+    explanation: >-
+      `"be"` appears twice, so its count is 2, and `counts.get("is", 0)` gives back the 0 it was
+      handed, since `"is"` is not a key. Only `counts["is"]` would stop with a `KeyError`.
+
+  - id: recall-split
+    phase: recall
+    kind: recall
+    concept: E1.6/parsing-and-formatting
+    prompt: >-
+      The string `"the  cat"` has two spaces between its words. How many items does
+      `"the  cat".split(" ")` give?
+    answer: { type: number, value: 3, tolerance: { abs: 0 } }
+    explanation: >-
+      `split(" ")` cuts at each single space, so between the two spaces it finds an empty field:
+      `['the', '', 'cat']`. `split()` with nothing in its brackets gives `['the', 'cat']`.
+
+  - id: recall-seed
+    phase: recall
+    kind: recall
+    concept: E1.9/properties
+    prompt: Why does a property-based test call `random.seed(1)` before it makes its random inputs?
+    answer:
+      type: choice
+      options:
+        - { id: more, label: 'So that its inputs are more random than they would be without it' }
+        - { id: right, label: 'So that every run makes the same inputs, and a failure can be made again' }
+        - { id: different, label: 'So that no two of the inputs it makes are ever the same as each other' }
+        - { id: small, label: 'So that the inputs it makes are small enough to read when a test fails' }
+      correct: [right]
+    explanation: >-
+      A fixed seed makes the generator give the same sequence on every run, so an input that broke
+      the property comes back the next time, to be looked at, fixed and checked. A different seed
+      tries different inputs.
+
+  - id: recall-shrink
+    phase: recall
+    kind: recall
+    concept: E1.9/shrinking
+    prompt: A property fails on a random list of 40 numbers. What does shrinking the list do?
+    answer:
+      type: choice
+      options:
+        - { id: sort, label: 'It sorts the list and rounds its numbers, so that the failure is easier to read' }
+        - { id: fresh, label: 'It makes new random lists, each shorter than the last, until one of them passes' }
+        - { id: halve, label: 'It keeps only the first half of the list for as long as the property passes on it' }
+        - { id: right, label: 'It takes out one item at a time, keeping each removal while the property still fails' }
+      correct: [right]
+    explanation: >-
+      A removal is kept only if the property still fails, so what is left still shows the bug, and
+      once no single removal fails it is small, often two or three numbers that point at the cause.
+
+  # Explore --------------------------------------------------------------------
+  - id: explore-split
+    phase: explore
+    kind: predict
+    concept: E1.12/tokenising
+    title: Words by split
+    prompt: What does the program print?
+    answer: { type: number, value: 6, tolerance: { abs: 0 } }
+    explanation: >-
+      `split` cuts only at whitespace, so `'The'` and `'the'`, and `'cat'` and `'CAT'`, are
+      different strings, and `'sat.'` and `'ran.'` keep their full stops: six different strings.
+    review:
+      variants:
+        - prompt: What does `"Stop. stop!".split()` give?
+          answer:
+            type: choice
+            options:
+              - { id: lower, label: '`[''stop'', ''stop'']`' }
+              - { id: right, label: '`[''Stop.'', ''stop!'']`' }
+              - { id: letters, label: '`[''Stop'', ''stop'']`' }
+              - { id: spaces, label: '`[''Stop.'', '' '', ''stop!'']`' }
+            correct: [right]
+          explanation: >-
+            `split` cuts at the space and changes nothing else, so the capital, the full stop and the `!` stay:
+            two different strings for one word said twice.
+        - prompt: How many different strings are in `set("a A a. A".split())`?
+          answer: { type: number, value: 3, tolerance: { abs: 0 } }
+          explanation: >-
+            The pieces are `'a'`, `'A'`, `'a.'` and `'A'`, and the set keeps one of each: `'a'`,
+            `'A'` and `'a.'`.
+
+  - id: explore-apostrophe
+    phase: explore
+    kind: predict
+    concept: E1.12/tokenising
+    title: An apostrophe
+    prompt: What does `tokens("Don't panic!")` give?
+    answer:
+      type: choice
+      options:
+        - { id: kept, label: '`["Don''t", ''panic!'']`' }
+        - { id: right, label: '`[''don'', ''t'', ''panic'']`' }
+        - { id: whole, label: '`["don''t", ''panic'']`' }
+        - { id: joined, label: '`[''dont'', ''panic'']`' }
+      correct: [right]
+    explanation: >-
+      The apostrophe is not a letter, so it ends the word `don`, and `t` starts a new one. The `!`
+      ends `panic`, and `lower` has made every letter small.
+    placement: true
+    review:
+      variants:
+        - prompt: >-
+            With the Explore phase's tokeniser, which keeps only runs of letters, what does
+            `tokens("It's 5 o'clock")` give?
+          answer:
+            type: choice
+            options:
+              - { id: right, label: '`[''it'', ''s'', ''o'', ''clock'']`' }
+              - { id: whole, label: '`["it''s", ''5'', "o''clock"]`' }
+              - { id: digits, label: '`[''it'', ''s'', ''5'', ''o'', ''clock'']`' }
+              - { id: words, label: '`["it''s", "o''clock"]`' }
+            correct: [right]
+          explanation: >-
+            Each apostrophe ends a word, and the 5 is not a letter, so it ends nothing and is
+            dropped: four pieces, two of them not words at all.
+        - prompt: When should a tokeniser keep an apostrophe as part of a word?
+          answer:
+            type: choice
+            options:
+              - { id: always, label: 'Always, since it is part of how many English words are spelt' }
+              - { id: never, label: 'Never, since it is a punctuation mark, as a comma or a full stop is' }
+              - { id: right, label: 'Only when a word character stands on each side of it, as in "don''t"' }
+              - { id: end, label: 'Only at the end of a word, where it marks a plural, as in "rabbits''"' }
+            correct: [right]
+          explanation: >-
+            Between two word characters it is part of the word, as in "don't" and "o'clock". At
+            either end it is usually a quotation mark, as in `'Oh dear!'`, so the tool lets it end
+            the word, and loses the apostrophe of "rabbits'".
+
+  - id: explore-hindi
+    phase: explore
+    kind: predict
+    concept: E1.12/tokenising
+    title: A word in Hindi
+    prompt: What does `tokens("नमस्ते")` give?
+    answer:
+      type: choice
+      options:
+        - { id: whole, label: '`[''नमस्ते'']`' }
+        - { id: letters, label: '`[''नमसत'']`' }
+        - { id: right, label: '`[''नमस'', ''त'']`' }
+        - { id: none, label: '`[]`' }
+      correct: [right]
+    explanation: >-
+      `isalpha` is `True` for the four letters न, म, स and त, but not for the sign ् or the vowel
+      sign े. So the word is cut at ्, and the े after त is dropped, as the full stop of "sat." was.
+
+  - id: explore-vocab
+    phase: explore
+    kind: predict
+    concept: E1.12/word-frequencies
+    title: How many different words
+    prompt: >-
+      *Alice* is 26,688 words. How many different words does it use, as
+      `len(word_counts(tokens(text)))` counts them? Make your best guess: one within a factor of 2
+      either way counts.
+    answer: { type: number, value: 2630, tolerance: { factor: 2 } }
+    explanation: >-
+      `split` found 5,293 different strings, and the tokeniser merges many of them, as it merges
+      "Alice", "Alice," and "Alice." into one word, so the answer is well under 5,293. Any guess
+      from 1,315 to 5,260 counts: the point is the size, a few thousand words for a book of 26,688.
+
+  - id: explore-sort
+    phase: explore
+    kind: predict
+    concept: E1.12/word-frequencies
+    title: Sorting with a key
+    prompt: 'What does `sorted({"cat": 2, "bat": 2, "ant": 1, "dog": 3}.items(), key=by_count)` give?'
+    answer:
+      type: choice
+      options:
+        - { id: plain, label: '`[(''ant'', 1), (''bat'', 2), (''cat'', 2), (''dog'', 3)]`' }
+        - { id: dict, label: '`[(''dog'', 3), (''cat'', 2), (''bat'', 2), (''ant'', 1)]`' }
+        - { id: right, label: '`[(''dog'', 3), (''bat'', 2), (''cat'', 2), (''ant'', 1)]`' }
+        - { id: rising, label: '`[(''ant'', 1), (''cat'', 2), (''bat'', 2), (''dog'', 3)]`' }
+      correct: [right]
+    explanation: >-
+      `by_count` turns each pair into `(-count, word)`, and the pairs are sorted by those: `-3`
+      comes first, then the two `-2`s, whose tie goes to `'bat'` before `'cat'`, and `-1` last,
+      whatever order the dict holds them in. With no key, `sorted` would compare the pairs
+      themselves, and so put them in alphabetical order of their words.
+    review:
+      variants:
+        - prompt: 'What does `sorted({"x": 5, "y": 1, "z": 5}.items(), key=by_count)` give?'
+          answer:
+            type: choice
+            options:
+              - { id: dict, label: '`[(''z'', 5), (''x'', 5), (''y'', 1)]`' }
+              - { id: right, label: '`[(''x'', 5), (''z'', 5), (''y'', 1)]`' }
+              - { id: plain, label: '`[(''x'', 5), (''y'', 1), (''z'', 5)]`' }
+              - { id: rising, label: '`[(''y'', 1), (''x'', 5), (''z'', 5)]`' }
+            correct: [right]
+          explanation: >-
+            The keys are `(-5, 'x')`, `(-1, 'y')` and `(-5, 'z')`, so the two counts of 5 come
+            first, `'x'` before `'z'`, and `'y'` last.
+        - prompt: 'What is `by_count(("door", 6))`?'
+          answer:
+            type: choice
+            options:
+              - { id: same, label: '`(''door'', 6)`' }
+              - { id: swapped, label: '`(6, ''door'')`' }
+              - { id: right, label: '`(-6, ''door'')`' }
+              - { id: count, label: '`-6`' }
+            correct: [right]
+          explanation: >-
+            `word, count = pair` gives `word` the value `'door'` and `count` the value 6, and the
+            function gives back the tuple `(-count, word)`, which is `(-6, 'door')`.
+
+  - id: explore-zipf
+    phase: explore
+    kind: predict
+    concept: E1.12/word-frequencies
+    title: The hundredth word
+    prompt: >-
+      The commonest word of *Alice* appears 1,642 times, the 10th commonest 386 times and the 30th
+      commonest 130 times. About how many times does the 100th commonest word appear? A guess within
+      a factor of 1.5 either way counts.
+    answer: { type: number, value: 48, tolerance: { factor: 1.5 } }
+    explanation: >-
+      The 100th is "never", with 48. From rank 10 to rank 30 the count falls to about a third as the
+      rank triples, so ten times further down than rank 10 should give about a tenth: 386 ÷ 10,
+      about 39, is a good guess. Dividing by the fall from rank 1 to rank 10, about 4, gives about
+      90, too many: the commonest word is unusually common.
+    placement: true
+    review:
+      variants:
+        - prompt: >-
+            In a long text the 20th commonest word appears 300 times. If the text follows Zipf's
+            law, about how many times does the 60th commonest word appear?
+          answer: { type: number, value: 100, tolerance: { rel: 0.15 } }
+          explanation: >-
+            Count times rank stays about the same: $20 \times 300 = 6{,}000$, so the 60th appears
+            about $\frac{6{,}000}{60} = 100$ times.
+        - prompt: What does Zipf's law say about the word at rank $r$ in a long text?
+          answer:
+            type: choice
+            options:
+              - { id: right, label: 'It appears about $\frac{C}{r}$ times, so count times rank stays about the same' }
+              - { id: linear, label: 'It appears about $C - r$ times, so each rank falls by the same amount' }
+              - { id: square, label: 'It appears about $\frac{C}{r^2}$ times, so the counts fall ever faster' }
+              - { id: equal, label: 'Every word appears about as often as every other, once the text is long' }
+            correct: [right]
+          explanation: >-
+            The word at rank $r$ appears about $\frac{C}{r}$ times, for a number $C$ that depends on
+            the text: a few words make up much of it, and the counts fall away slowly through the
+            long tail of rare words.
+
+  - id: explore-once
+    phase: explore
+    kind: predict
+    concept: E1.12/word-frequencies
+    title: Words used once
+    prompt: Of the 2,630 different words of *Alice*, about what share appear exactly once?
+    answer:
+      type: choice
+      options:
+        - { id: few, label: 'Under 5%' }
+        - { id: some, label: 'About 15%' }
+        - { id: right, label: 'About 40%' }
+        - { id: most, label: 'About 75%' }
+      correct: [right]
+    explanation: >-
+      1,143 of them, 43%. If count times rank stays near the 3,000 of "paw" at rank 1,000, every
+      word past rank 1,500 appears fewer than 2 times, so once: about 1,130 of the 2,630.
+    review:
+      variants:
+        - prompt: >-
+            A long text follows Zipf's law and has 4,000 different words. About how many of them
+            appear only once?
+          answer: { type: number, value: 2000, tolerance: { rel: 0.25 } }
+          explanation: >-
+            About half of them, 2,000: the words at ranks from about $\frac{C}{2}$ to $C$ each
+            appear once, where $C$, the rank of the last word, is about 4,000.
+        - prompt: >-
+            1,143 of the 2,630 different words of *Alice* appear only once. What does that mean for
+            a tool that learns about words from their counts in the book?
+          answer:
+            type: choice
+            options:
+              - { id: drop, label: 'Little, since the words that appear once make up almost half of the text, and can be dropped' }
+              - { id: longer, label: 'Little, since a book twice as long would show each of those words several times' }
+              - { id: right, label: 'It has seen almost half the words it knows only once, and each new text brings words it has never seen' }
+              - { id: typos, label: 'Little, since words that appear only once are mostly misprints, not real words' }
+            correct: [right]
+          explanation: >-
+            One sighting is too little to learn much about a word, and a longer book does not cure
+            it: it brings new rare words of its own. The words seen once are many different words but
+            a small part of the text, 1,143 of its 26,688 words, about 4%.
+
+  - id: explore-sentences
+    phase: explore
+    kind: predict
+    concept: E1.12/tokenising
+    title: Sentences by their punctuation
+    prompt: |-
+      What does this print?
+
+      ```python
+      text = "Mr. Brown paid 3.50 rupees. Was it worth it?!"
+      count = 0
+      for ch in text:
+          if ch in ".!?":
+              count = count + 1
+      print(count)
+      ```
+    answer: { type: number, value: 5, tolerance: { abs: 0 } }
+    explanation: >-
+      It counts every `.`, `!` and `?`: the full stops of "Mr.", "3.50" and "rupees.", and both
+      characters of "?!", five for two sentences. The full stops of "Mr." and "3.50" end nothing,
+      and "?!" ends one sentence with two characters.
+
+  - id: explore-said
+    phase: explore
+    kind: predict
+    concept: E1.12/next-word-counts
+    title: Guessing the word after "said"
+    prompt: >-
+      A tool reads *Alice* and always guesses "the" for the word after "said". What fraction of its
+      guesses are right? A decimal or a fraction will do.
+    answer: { type: number, value: 0.4545, tolerance: { abs: 0.01 } }
+    explanation: >-
+      "said" is followed by a word 462 times, and 210 of them are "the":
+      $\frac{210}{462} \approx 0.45$.
+    placement: true
+    review:
+      variants:
+        - prompt: >-
+            After "queen", *Alice* has "and" 7 times out of the 68 times that "queen" is followed by
+            a word. What fraction of the time is the guess "and" right after "queen"?
+          answer: { type: number, value: 0.103, tolerance: { abs: 0.005 } }
+          explanation: $\frac{7}{68} \approx 0.10$, about one time in ten, though "and" is the commonest word after "queen".
+        - prompt: >-
+            A writer adds, again and again, the word that most often follows the last word it wrote,
+            from a table of next-word counts. What happens?
+          answer:
+            type: choice
+            options:
+              - { id: new, label: 'It writes new sentences for ever, since the table holds so many pairs' }
+              - { id: stops, label: 'It stops as soon as it reaches a word that it has written before' }
+              - { id: book, label: 'It writes the book back word for word, since the counts came from it' }
+              - { id: right, label: 'It falls into a loop once a word comes round, since each word fixes the next' }
+            correct: [right]
+          explanation: >-
+            The next word depends only on the last one, and there are only so many words, so some
+            word comes round again, and from there everything repeats. Drawing each next word at
+            random, in proportion to the counts, avoids the loop.
+
+  # Derive ---------------------------------------------------------------------
+  - id: derive-loop
+    phase: derive
+    kind: proof
+    concept: E1.12/next-word-counts
+    title: Why the writer repeats
+    prompt: >-
+      The writer starts at a word $w_0$ and writes $w_1, w_2, \ldots$, each the commonest word after
+      the one before, with ties broken by alphabetical order. The book has $V$ different words, and
+      every word the writer reaches is followed by some word in the book, so it never stops. Here
+      is a proof that it repeats a loop of at most $V$ words, which starts within its first $V$
+      words. Each line follows from the lines above it. Choose the rule that justifies each line. A
+      rule may be used more than once or not at all.
+    answer:
+      type: steps
+      rules:
+        - { id: function, name: One word back, label: 'Each next word is fixed by the word before it alone, so equal words are followed by equal words.' }
+        - { id: zipf, name: Zipf's law, label: 'The word at rank $r$ appears about $\frac{C}{r}$ times.' }
+        - { id: induction, name: Induction, label: 'A statement about a whole number $k$ that holds for $k = 0$, and holds for $k + 1$ whenever it holds for $k$, holds for every whole number $k \ge 0$.' }
+        - { id: vocabulary, name: Only V words, label: 'Every word the writer writes is one of the book''s $V$ different words.' }
+        - { id: counting, name: Counting, label: 'The whole numbers from $a$ to $b$, for $a \le b$, number $b - a + 1$.' }
+        - { id: pigeonhole, name: Pigeonholes, label: 'When more than $V$ things each have one of $V$ values, two of the things have the same value.' }
+      start: '\text{The writer writes } w_0, w_1, w_2, \ldots'
+      lines:
+        - math: 'w_0, w_1, \ldots, w_V \text{ are } V + 1 \text{ words}'
+          rule: counting
+        - math: '\text{Each is one of } V \text{ different words}'
+          rule: vocabulary
+        - math: 'w_i = w_j \text{ for some } 0 \le i < j \le V'
+          rule: pigeonhole
+        - math: 'w_{i+1} = w_{j+1}'
+          rule: function
+        - math: 'w_{i+k} = w_{j+k} \text{ for every } k \ge 0'
+          rule: induction
+    explanation: >-
+      $w_0$ to $w_V$ are $V + 1$ words (Counting), each one of the book's $V$ words (Only V
+      words), so two of them are the same word, $w_i = w_j$ with $i < j$ (Pigeonholes). Equal words
+      are followed by equal words, so $w_{i+1} = w_{j+1}$ (One word back), and in the same way,
+      step by step, $w_{i+k} = w_{j+k}$ for every $k$ (Induction): from $w_i$ on, the writer repeats
+      the $j - i$ words $w_i, \ldots, w_{j-1}$ for ever. Zipf's law is not needed.
+    review:
+      variants:
+        - prompt: >-
+            A writer that always adds the commonest next word works from a book with 500 different
+            words. At most how many words long can its loop be?
+          answer: { type: number, value: 500, tolerance: { abs: 0 } }
+          explanation: >-
+            Among $w_0, \ldots, w_{500}$, 501 words, two are equal, $w_i = w_j$ with
+            $0 \le i < j \le 500$, and the loop is $j - i$ words long: at most 500.
+        - prompt: >-
+            A writer chooses each next word from the last two words it wrote, always the commonest
+            after that pair, and every pair it reaches is followed by some word in the book. The
+            book has 500 different words. Does it fall into a loop?
+          answer:
+            type: choice
+            options:
+              - { id: never, label: 'No: with two words to look back on, it can write for ever without one' }
+              - { id: right, label: 'Yes: it can be at only $500^2$ pairs, and each pair fixes the next word' }
+              - { id: same, label: 'Yes, within 500 words, since there are still only 500 words to write' }
+              - { id: random, label: 'Only if some pair is never followed by anything in the book' }
+            correct: [right]
+          explanation: >-
+            The writer's place is now the last two words, and each pair fixes the next word and so
+            the next pair. There are at most $500^2 = 250{,}000$ pairs, so some pair comes round
+            again and everything after it repeats, though the loop can be far longer than 500
+            words.
+
+  - id: derive-join
+    phase: derive
+    kind: step
+    concept: E1.12/next-word-counts
+    title: Pairs in two joined texts
+    prompt: >-
+      The text `a` has $n$ words and the text `b` has $m$ words, with $n$ and $m$ at least 1. How
+      many neighbouring pairs of words does `a + " " + b` have, written with $n$ and $m$?
+    answer:
+      type: expression
+      symbols:
+        - { name: n, positive: true, integer: true }
+        - { name: m, positive: true, integer: true }
+      reference: n + m - 1
+      lhs: '\text{pairs} ='
+      accept: ['m + n - 1', '(n - 1) + (m - 1) + 1']
+      reject:
+        - 'n + m'
+        - 'n + m - 2'
+        - 'n*m'
+        - 'n + m + 1'
+    explanation: >-
+      The joined text has $n + m$ words, since the space ends `a`'s last word, and every word but
+      the last starts one pair: $n + m - 1$. Counted another way, `a` has $n - 1$ pairs, `b` has
+      $m - 1$, and one more crosses the join.
+    placement: true
+    review:
+      variants:
+        - prompt: >-
+            A text of 10 words is joined with a space to a text of 7 words. How many neighbouring
+            pairs of words does the result have?
+          answer: { type: number, value: 16, tolerance: { abs: 0 } }
+          explanation: $10 + 7 = 17$ words make 16 neighbouring pairs, 9 from the first text, 6 from the second and 1 across the join.
+        - prompt: >-
+            Two texts are joined with a space. How do the next-word counts of the result compare with
+            those of the two texts?
+          answer:
+            type: choice
+            options:
+              - { id: right, label: 'They are the two texts'' counts added up, and 1 more for the pair across the join' }
+              - { id: sum, label: 'They are the two texts'' counts added up, with nothing more and nothing less' }
+              - { id: less, label: 'They are the two texts'' counts added up, less 1 for the space between them' }
+              - { id: longer, label: 'They are the counts of the longer text, since its pairs outnumber the rest' }
+            correct: [right]
+          explanation: >-
+            Every pair inside either text is still there, and the first text's last word now has a
+            next word, the second text's first: one new pair, so a property test of `next_counts`
+            must expect the extra 1.
+
+  - id: derive-once
+    phase: derive
+    kind: step
+    concept: E1.12/word-frequencies
+    title: How many words appear once
+    prompt: >-
+      Take Zipf's law as exact: for an even whole number $C$, the word at rank $r$ appears
+      $\frac{C}{r}$ times rounded down. The word at rank $C$ appears once, and none come after it,
+      so there are $C$ different words. A word appears exactly once when
+      $1 \le \frac{C}{r} < 2$. For how many ranks $r$ is that true, written with $C$? Since $C$ is
+      even, write it without rounding.
+    answer:
+      type: expression
+      symbols:
+        - { name: C, positive: true }
+      reference: C/2
+      lhs: '\text{ranks} ='
+      accept: ['C - C/2', '0.5*C']
+      reject:
+        - 'C'
+        - 'C/3'
+        - 'C/2 - 1'
+        - 'C/2 + 1'
+        - '2*C'
+    explanation: >-
+      $1 \le \frac{C}{r} < 2$ is $\frac{C}{2} < r \le C$: the ranks from $\frac{C}{2} + 1$ to $C$,
+      and there are $C - \frac{C}{2} = \frac{C}{2}$ of them, half of the $C$ words.
+    review:
+      variants:
+        - prompt: >-
+            Take Zipf's law as exact: the word at rank $r$ appears $\frac{C}{r}$ times rounded
+            down, and $C = 1{,}000$. How many words appear exactly twice?
+          answer: { type: number, value: 167, tolerance: { abs: 0 } }
+          explanation: >-
+            Exactly twice needs $2 \le \frac{1{,}000}{r} < 3$, so $333.3 < r \le 500$: the ranks
+            from 334 to 500, which are 167 of them, about a sixth.
+        - prompt: >-
+            Under Zipf's law taken as exact, the word at rank $r$ appears $\frac{C}{r}$ times rounded
+            down, and there are $C$ different words. Which ranks hold the words that appear exactly
+            once?
+          answer:
+            type: choice
+            options:
+              - { id: last, label: 'Only rank $C$, the last word, since every other word appears more often than it' }
+              - { id: right, label: 'The ranks above $\frac{C}{2}$, up to $C$: half of all the different words' }
+              - { id: tenth, label: 'The ranks above $\frac{9C}{10}$, up to $C$: the last tenth of the words' }
+              - { id: none, label: 'None of them, since $\frac{C}{r}$ is a whole number only when $r$ divides $C$' }
+            correct: [right]
+          explanation: >-
+            A word appears exactly once when $1 \le \frac{C}{r} < 2$, which is
+            $\frac{C}{2} < r \le C$: every rank in the top half of the ranks, $\frac{C}{2}$ words.
+
+  - id: derive-sparse
+    phase: derive
+    kind: estimate
+    concept: E1.12/next-word-counts
+    title: How many pairs a book can show
+    prompt: >-
+      *Alice* has 26,687 neighbouring pairs of words and 2,630 different words, so $2{,}630^2$,
+      about 6.9 million, possible pairs. Even if every one of its neighbouring pairs were different,
+      at most what fraction of the possible pairs could it show? Estimate it without a calculator,
+      as a decimal.
+    answer: { type: number, value: 0.0039, tolerance: { factor: 1.5 } }
+    explanation: >-
+      At most 26,687 different pairs out of about 6.9 million:
+      $\frac{27{,}000}{7{,}000{,}000} \approx 0.004$, about 0.4%, and Python gives 0.00386.
+    review:
+      variants:
+        - prompt: >-
+            A book has 100,000 neighbouring pairs of words and 10,000 different words. At most what
+            fraction of the possible pairs can it show?
+          answer: { type: number, value: 0.001, tolerance: { factor: 1.2 } }
+          explanation: >-
+            $10{,}000^2 = 100{,}000{,}000$ possible pairs, and at most 100,000 of them shown:
+            $\frac{100{,}000}{100{,}000{,}000} = 0.001$.
+        - prompt: Why does a table of next-word counts built from one book say nothing about most pairs of words?
+          answer:
+            type: choice
+            options:
+              - { id: english, label: 'Most pairs of words are not good English, so no book could hold them' }
+              - { id: commonest, label: 'The table keeps only the commonest next word after each word, and drops the rest' }
+              - { id: once, label: 'Pairs that appear only once are left out of the table, and most pairs appear once' }
+              - { id: right, label: 'A book has about as many neighbouring pairs as words, far fewer than the possible pairs' }
+            correct: [right]
+          explanation: >-
+            With $V$ different words there are $V^2$ possible pairs, and a book of $N$ words shows at
+            most $N - 1$ of them. *Alice* shows 14,734 of about 6.9 million, and many it never shows
+            are good English: it has "little door" 6 times and "small door" never.
+
+
+  # Build ----------------------------------------------------------------------
+  - id: build-tokens
+    phase: build
+    kind: build
+    concept: E1.12/tokenising
+    title: A tokeniser for any script
+    prompt: >-
+      Rewrite `tokens(text)`, which is the Explore phase's tokeniser, so that it gives the words of
+      any text in lower case: its runs of characters whose Unicode category begins with `L`, `M` or
+      `N`. An apostrophe belongs to a word only when the character just before it and the character
+      just after it are both of those kinds, as in "don't" and "o'clock"; anywhere else it ends a
+      word, as other punctuation does. The tests try English with apostrophes and quotation marks,
+      Hindi, Tamil, digits, and the edges: an empty text and a text of one word.
+    answer:
+      type: code
+      starter: |
+        import unicodedata
+
+
+        def tokens(text):
+            """The words of text, in lower case: its runs of letters, marks and digits,
+            with an apostrophe kept only between two of them."""
+            words = []
+            word = ""
+            for ch in text.lower():
+                if ch.isalpha():
+                    word = word + ch
+                else:
+                    if word != "":
+                        words.append(word)
+                    word = ""
+            if word != "":
+                words.append(word)
+            return words
+
+
+        print(tokens("'Don't panic,' said the Rabbit at five o'clock."))
+        print(tokens("नमस्ते दुनिया, 2026"))
+      tests: |
+        def test_example():
+            """The Explore phase's text gives its six words, with "the" and "cat" twice."""
+            got = tokens("The cat sat. the CAT ran.")
+            expected = ["the", "cat", "sat", "the", "cat", "ran"]
+            assert got == expected, f"tokens('The cat sat. the CAT ran.') is {got!r}, not {expected!r}."
+
+        def test_empty_and_one_word():
+            """An empty text has no words, and a text of one word has just that word, in lower case."""
+            for text, expected in [("", []), ("Alice", ["alice"]), ("x", ["x"]), ("  ", []), ("?!", [])]:
+                got = tokens(text)
+                assert got == expected, f"tokens({text!r}) is {got!r}, not {expected!r}."
+
+        def test_apostrophe_inside():
+            """An apostrophe between two letters stays in its word."""
+            text = "Don't panic, it's five o'clock: rock'n'roll."
+            got = tokens(text)
+            expected = ["don't", "panic", "it's", "five", "o'clock", "rock'n'roll"]
+            assert got == expected, f"tokens({text!r}) is {got!r}, not {expected!r}."
+
+        def test_quotation_marks():
+            """An apostrophe at the start or the end of a word is a quotation mark, and is left out."""
+            cases = [
+                ("'Oh dear!' said the Rabbit.", ["oh", "dear", "said", "the", "rabbit"]),
+                ("the rabbits' ears", ["the", "rabbits", "ears"]),
+                ("'tis", ["tis"]),
+                ("a''b", ["a", "b"]),
+                ("' '", []),
+            ]
+            for text, expected in cases:
+                got = tokens(text)
+                assert got == expected, f"tokens({text!r}) is {got!r}, not {expected!r}."
+
+        def test_apostrophe_last():
+            """An apostrophe that is the last character of the text is left out, without looking past the end."""
+            for text, expected in [("it'", ["it"]), ("Said the Rabbit'", ["said", "the", "rabbit"]), ("don't'", ["don't"]), ("'", [])]:
+                got = tokens(text)
+                assert got == expected, f"tokens({text!r}) is {got!r}, not {expected!r}."
+
+        def test_hindi():
+            """A word of Hindi keeps its vowel signs and the sign that joins two consonants, which are marks."""
+            for text, expected in [("नमस्ते", ["नमस्ते"]), ("नमस्ते दुनिया", ["नमस्ते", "दुनिया"]), ("मैं ठीक हूँ।", ["मैं", "ठीक", "हूँ"])]:
+                got = tokens(text)
+                assert got == expected, f"tokens({text!r}) is {got!r}, not {expected!r}."
+
+        def test_tamil():
+            """Words of Tamil, with their marks, are whole words."""
+            text = "வணக்கம், தமிழ்"
+            got = tokens(text)
+            expected = ["வணக்கம்", "தமிழ்"]
+            assert got == expected, f"tokens({text!r}) is {got!r}, not {expected!r}."
+
+        def test_digits():
+            """Digits, in any script, belong to words: an apostrophe between digits stays, and a full stop between digits ends a word."""
+            for text, expected in [("Chapter 12", ["chapter", "12"]), ("3.50 rupees", ["3", "50", "rupees"]), ("२०२६ में", ["२०२६", "में"]), ("5'6 tall", ["5'6", "tall"])]:
+                got = tokens(text)
+                assert got == expected, f"tokens({text!r}) is {got!r}, not {expected!r}."
+
+        def test_capitals():
+            """Capital letters become small ones, accented ones too."""
+            text = "ÉCOLE École école"
+            got = tokens(text)
+            expected = ["école", "école", "école"]
+            assert got == expected, f"tokens({text!r}) is {got!r}, not {expected!r}."
+
+        def test_separate_accent():
+            """An accent typed as a mark after its letter, U+0301, stays in the word."""
+            import unicodedata
+            text = "cafe\u0301 au lait"
+            got = tokens(text)
+            nfc = [unicodedata.normalize("NFC", w) if isinstance(w, str) else w for w in got] if isinstance(got, list) else got
+            assert nfc == ["caf\u00e9", "au", "lait"], f"tokens({text!r}) is {got!r}, not ['café', 'au', 'lait']: the accent, U+0301, is a mark and should stay in its word."
+      reference: |
+        import unicodedata
+
+
+        def in_word(ch):
+            """True when ch is a letter, a mark or a digit, in any script."""
+            return unicodedata.category(ch)[0] in "LMN"
+
+
+        def tokens(text):
+            """The words of text, in lower case: its runs of letters, marks and digits,
+            with an apostrophe kept only between two of them."""
+            words = []
+            word = ""
+            text = text.lower()
+            for i in range(len(text)):
+                ch = text[i]
+                inner = ch == "'" and word != "" and i + 1 < len(text) and in_word(text[i + 1])
+                if in_word(ch) or inner:
+                    word = word + ch
+                else:
+                    if word != "":
+                        words.append(word)
+                    word = ""
+            if word != "":
+                words.append(word)
+            return words
+
+
+        print(tokens("'Don't panic,' said the Rabbit at five o'clock."))
+        print(tokens("नमस्ते दुनिया, 2026"))
+      wrong:
+        - code: |
+            import unicodedata
+
+
+            def tokens(text):
+                """The words of text, in lower case: its runs of letters, marks and digits,
+                with an apostrophe kept only between two of them."""
+                words = []
+                word = ""
+                for ch in text.lower():
+                    if ch.isalpha():
+                        word = word + ch
+                    else:
+                        if word != "":
+                            words.append(word)
+                        word = ""
+                if word != "":
+                    words.append(word)
+                return words
+
+
+            print(tokens("'Don't panic,' said the Rabbit at five o'clock."))
+            print(tokens("नमस्ते दुनिया, 2026"))
+          why: 'Keeps only what `isalpha` calls a letter, so it cuts words of Hindi at their marks, drops digits and splits "don''t".'
+        - code: |
+            import unicodedata
+
+
+            def in_word(ch):
+                """True when ch is a letter, a mark or a digit, in any script."""
+                return unicodedata.category(ch)[0] in "LM"
+
+
+            def tokens(text):
+                """The words of text, in lower case: its runs of letters, marks and digits,
+                with an apostrophe kept only between two of them."""
+                words = []
+                word = ""
+                text = text.lower()
+                for i in range(len(text)):
+                    ch = text[i]
+                    inner = ch == "'" and word != "" and i + 1 < len(text) and in_word(text[i + 1])
+                    if in_word(ch) or inner:
+                        word = word + ch
+                    else:
+                        if word != "":
+                            words.append(word)
+                        word = ""
+                if word != "":
+                    words.append(word)
+                return words
+
+
+            print(tokens("'Don't panic,' said the Rabbit at five o'clock."))
+            print(tokens("नमस्ते दुनिया, 2026"))
+          why: 'Leaves out digits, whose category begins with `N`.'
+        - code: |
+            import unicodedata
+
+
+            def in_word(ch):
+                """True when ch is a letter, a mark or a digit, in any script."""
+                return unicodedata.category(ch) in ["Lu", "Ll", "Lo", "Mn", "Nd"]
+
+
+            def tokens(text):
+                """The words of text, in lower case: its runs of letters, marks and digits,
+                with an apostrophe kept only between two of them."""
+                words = []
+                word = ""
+                text = text.lower()
+                for i in range(len(text)):
+                    ch = text[i]
+                    inner = ch == "'" and word != "" and i + 1 < len(text) and in_word(text[i + 1])
+                    if in_word(ch) or inner:
+                        word = word + ch
+                    else:
+                        if word != "":
+                            words.append(word)
+                        word = ""
+                if word != "":
+                    words.append(word)
+                return words
+
+
+            print(tokens("'Don't panic,' said the Rabbit at five o'clock."))
+            print(tokens("नमस्ते दुनिया, 2026"))
+          why: 'Lists the categories of the Explore phase''s table only, so it cuts words at a vowel sign of category `Mc`, as in दुनिया.'
+        - code: |
+            import unicodedata
+
+
+            def in_word(ch):
+                """True when ch is a letter, a mark or a digit, in any script."""
+                return unicodedata.category(ch) in "LMN"
+
+
+            def tokens(text):
+                """The words of text, in lower case: its runs of letters, marks and digits,
+                with an apostrophe kept only between two of them."""
+                words = []
+                word = ""
+                text = text.lower()
+                for i in range(len(text)):
+                    ch = text[i]
+                    inner = ch == "'" and word != "" and i + 1 < len(text) and in_word(text[i + 1])
+                    if in_word(ch) or inner:
+                        word = word + ch
+                    else:
+                        if word != "":
+                            words.append(word)
+                        word = ""
+                if word != "":
+                    words.append(word)
+                return words
+
+
+            print(tokens("'Don't panic,' said the Rabbit at five o'clock."))
+            print(tokens("नमस्ते दुनिया, 2026"))
+          why: 'Asks whether the two-letter category is in `"LMN"`, which is never true, so it finds no words at all.'
+        - code: |
+            import unicodedata
+
+
+            def in_word(ch):
+                """True when ch is a letter, a mark or a digit, in any script."""
+                return unicodedata.category(ch)[0] in "LMN"
+
+
+            def tokens(text):
+                """The words of text, in lower case: its runs of letters, marks and digits,
+                with an apostrophe kept only between two of them."""
+                words = []
+                word = ""
+                text = text.lower()
+                for i in range(len(text)):
+                    ch = text[i]
+                    inner = ch == "'"
+                    if in_word(ch) or inner:
+                        word = word + ch
+                    else:
+                        if word != "":
+                            words.append(word)
+                        word = ""
+                if word != "":
+                    words.append(word)
+                return words
+
+
+            print(tokens("'Don't panic,' said the Rabbit at five o'clock."))
+            print(tokens("नमस्ते दुनिया, 2026"))
+          why: 'Keeps every apostrophe, so quotation marks stick to the words they surround.'
+        - code: |
+            import unicodedata
+
+
+            def in_word(ch):
+                """True when ch is a letter, a mark or a digit, in any script."""
+                return unicodedata.category(ch)[0] in "LMN"
+
+
+            def tokens(text):
+                """The words of text, in lower case: its runs of letters, marks and digits,
+                with an apostrophe kept only between two of them."""
+                words = []
+                word = ""
+                text = text.lower()
+                for i in range(len(text)):
+                    ch = text[i]
+                    inner = ch == "'" and i + 1 < len(text) and in_word(text[i + 1])
+                    if in_word(ch) or inner:
+                        word = word + ch
+                    else:
+                        if word != "":
+                            words.append(word)
+                        word = ""
+                if word != "":
+                    words.append(word)
+                return words
+
+
+            print(tokens("'Don't panic,' said the Rabbit at five o'clock."))
+            print(tokens("नमस्ते दुनिया, 2026"))
+          why: 'Keeps an apostrophe at the start of a word, since it never checks the character before it.'
+        - code: |
+            import unicodedata
+
+
+            def in_word(ch):
+                """True when ch is a letter, a mark or a digit, in any script."""
+                return unicodedata.category(ch)[0] in "LMN"
+
+
+            def tokens(text):
+                """The words of text, in lower case: its runs of letters, marks and digits,
+                with an apostrophe kept only between two of them."""
+                words = []
+                word = ""
+                text = text.lower()
+                for i in range(len(text)):
+                    ch = text[i]
+                    inner = ch == "'" and word != "" and in_word(text[i + 1])
+                    if in_word(ch) or inner:
+                        word = word + ch
+                    else:
+                        if word != "":
+                            words.append(word)
+                        word = ""
+                if word != "":
+                    words.append(word)
+                return words
+
+
+            print(tokens("'Don't panic,' said the Rabbit at five o'clock."))
+            print(tokens("नमस्ते दुनिया, 2026"))
+          why: 'Looks past the end of the text when an apostrophe is its last character, and stops with `IndexError`.'
+        - code: |
+            import unicodedata
+
+
+            def in_word(ch):
+                """True when ch is a letter, a mark or a digit, in any script."""
+                return unicodedata.category(ch)[0] in "LMN"
+
+
+            def tokens(text):
+                """The words of text, in lower case: its runs of letters, marks and digits,
+                with an apostrophe kept only between two of them."""
+                words = []
+                word = ""
+                text = text.lower()
+                for i in range(len(text)):
+                    ch = text[i]
+                    inner = ch == "'" and word != "" and i + 1 < len(text) and in_word(text[i + 1])
+                    if in_word(ch) or inner:
+                        word = word + ch
+                    else:
+                        if word != "":
+                            words.append(word)
+                        word = ""
+                return words
+
+
+            print(tokens("'Don't panic,' said the Rabbit at five o'clock."))
+            print(tokens("नमस्ते दुनिया, 2026"))
+          why: 'Loses the last word of a text that ends with a word character.'
+        - code: |
+            import unicodedata
+
+
+            def in_word(ch):
+                """True when ch is a letter, a mark or a digit, in any script."""
+                return unicodedata.category(ch)[0] in "LMN"
+
+
+            def tokens(text):
+                """The words of text, in lower case: its runs of letters, marks and digits,
+                with an apostrophe kept only between two of them."""
+                words = []
+                word = ""
+                for i in range(len(text)):
+                    ch = text[i]
+                    inner = ch == "'" and word != "" and i + 1 < len(text) and in_word(text[i + 1])
+                    if in_word(ch) or inner:
+                        word = word + ch
+                    else:
+                        if word != "":
+                            words.append(word)
+                        word = ""
+                if word != "":
+                    words.append(word)
+                return words
+
+
+            print(tokens("'Don't panic,' said the Rabbit at five o'clock."))
+            print(tokens("नमस्ते दुनिया, 2026"))
+          why: 'Never lowers the case, so `The` and `the` stay different words.'
+    explanation: >-
+      Lower the case first, then go through the text by index, so that the character after an
+      apostrophe can be looked at. A character belongs to the current word when its category begins
+      with `L`, `M` or `N`, or when it is an apostrophe with a word character before it, which is
+      when `word` is not empty, and one after it, which needs the guard `i + 1 < len(text)` first.
+      Anything else ends the word, and a word still open when the text ends is added after the loop.
+
+  - id: debug-sentences
+    phase: build
+    kind: debug
+    concept: E1.12/tokenising
+    title: A sentence goes missing
+    prompt: >-
+      This `count_sentences` should count by the Explore phase's rule: a `.`, `!` or `?` ends a
+      sentence when the next character is whitespace or a closing quotation mark `'`, or when the
+      text ends there. But for "It was late. She ran." it gives 1, not 2. Debug it as an experiment,
+      as in E1.8: write a hypothesis and its prediction in the two comments at the top, make the
+      observation that tests it, and then mend the function. The tests try other texts, and the
+      property that the sentence counts of two texts joined with a space add up.
+    answer:
+      type: code
+      starter: |
+        # Hypothesis:
+        # Prediction, if it is right:
+
+        def count_sentences(text):
+            """How many sentences text has: the number of times a ., ! or ? is followed
+            by whitespace or a closing quotation mark ', or ends the text."""
+            count = 0
+            for i in range(len(text) - 1):
+                if text[i] in ".!?" and (text[i + 1].isspace() or text[i + 1] == "'"):
+                    count = count + 1
+            return count
+
+
+        print(count_sentences("It was late. She ran."))
+      tests: |
+        def test_example():
+            """'It was late. She ran.' has 2 sentences."""
+            got = count_sentences("It was late. She ran.")
+            assert got == 2, f"count_sentences('It was late. She ran.') is {got!r}, not 2."
+
+        def test_empty_and_one_word():
+            """An empty text has no sentences, and nor has a text of one word with no full stop, ! or ? after it."""
+            for text, expected in [("", 0), ("Alice", 0), ("no end", 0)]:
+                got = count_sentences(text)
+                assert got == expected, f"count_sentences({text!r}) is {got!r}, not {expected}."
+
+        def test_not_followed_by_space():
+            """A full stop, ! or ? followed by a letter, a digit or another of them ends nothing."""
+            for text, expected in [("It cost 3.50 rupees.", 1), ("Wait... What?! No.", 3), ("e.g.", 1)]:
+                got = count_sentences(text)
+                assert got == expected, f"count_sentences({text!r}) is {got!r}, not {expected}."
+
+        def test_quotation_mark():
+            """A full stop, ! or ? followed by a closing quotation mark ends a sentence."""
+            text = "'Oh dear! Oh dear! I shall be late!'"
+            got = count_sentences(text)
+            assert got == 3, f"count_sentences({text!r}) is {got!r}, not 3."
+
+        def test_whitespace():
+            """A full stop, ! or ? followed by a newline or a tab ends a sentence, as one followed by a space does."""
+            for text, expected in [("One.\nTwo.", 2), ("One!\tTwo?", 2), ("One. \n Two.", 2)]:
+                got = count_sentences(text)
+                assert got == expected, f"count_sentences({text!r}) is {got!r}, not {expected}."
+
+        def test_the_rule():
+            """The rule counts the full stop of Mr. too, so the Explore phase's text gives 3."""
+            text = "Mr. Brown paid 3.50 rupees. Was it worth it?!"
+            got = count_sentences(text)
+            assert got == 3, f"count_sentences({text!r}) is {got!r}, not 3, which is what the rule gives."
+
+        def test_join():
+            """The sentence counts of two texts joined with a space add up."""
+            pairs = [("Hi.", "Yo."), ("It was late.", "She ran!"), ("", "No."), ("Wait", "what?"), ("'Run!'", "He ran."), ("3.", "50")]
+            for a, b in pairs:
+                both = count_sentences(a + " " + b)
+                apart = count_sentences(a) + count_sentences(b)
+                assert both == apart, f"count_sentences({a + ' ' + b!r}) is {both!r}, but count_sentences({a!r}) + count_sentences({b!r}) is {apart!r}: the counts of two texts joined with a space should add up."
+
+        def test_end_of_the_text():
+            """A full stop, ! or ? that is the last character of the text ends a sentence."""
+            for text, expected in [("Hi!", 1), ("Is it?", 1), ("Alice.", 1), ("...", 1)]:
+                got = count_sentences(text)
+                assert got == expected, f"count_sentences({text!r}) is {got!r}, not {expected}."
+      reference: |
+        # Hypothesis: the loop never reaches the last character, so a full stop there is not counted.
+        # Prediction, if it is right: printing i and text[i] on every pass shows 0 I up to 19 n, never 20 .
+
+        def count_sentences(text):
+            """How many sentences text has: the number of times a ., ! or ? is followed
+            by whitespace or a closing quotation mark ', or ends the text."""
+            count = 0
+            for i in range(len(text)):
+                if text[i] in ".!?" and (i + 1 == len(text) or text[i + 1].isspace() or text[i + 1] == "'"):
+                    count = count + 1
+            return count
+
+
+        print(count_sentences("It was late. She ran."))
+      wrong:
+        - code: |
+            # Hypothesis:
+            # Prediction, if it is right:
+
+            def count_sentences(text):
+                """How many sentences text has: the number of times a ., ! or ? is followed
+                by whitespace or a closing quotation mark ', or ends the text."""
+                count = 0
+                for i in range(len(text) - 1):
+                    if text[i] in ".!?" and (text[i + 1].isspace() or text[i + 1] == "'"):
+                        count = count + 1
+                return count
+
+
+            print(count_sentences("It was late. She ran."))
+          why: 'The starter''s bug: the loop stops before the last character, so a `.`, `!` or `?` at the end of the text is never counted.'
+        - code: |
+            # Hypothesis:
+            # Prediction, if it is right:
+
+            def count_sentences(text):
+                """How many sentences text has: the number of times a ., ! or ? is followed
+                by whitespace or a closing quotation mark ', or ends the text."""
+                count = 0
+                for i in range(len(text)):
+                    if text[i] in ".!?" and (text[i + 1].isspace() or text[i + 1] == "'"):
+                        count = count + 1
+                return count
+
+
+            print(count_sentences("It was late. She ran."))
+          why: 'Loops over every character with no guard, so it looks past the end of a text that ends with a `.`, `!` or `?` and stops with `IndexError`.'
+        - code: |
+            # Hypothesis:
+            # Prediction, if it is right:
+
+            def count_sentences(text):
+                """How many sentences text has: the number of times a ., ! or ? is followed
+                by whitespace or a closing quotation mark ', or ends the text."""
+                count = 0
+                for i in range(len(text)):
+                    if text[i] in ".!?" and (text[i + 1].isspace() or text[i + 1] == "'" or i + 1 == len(text)):
+                        count = count + 1
+                return count
+
+
+            print(count_sentences("It was late. She ran."))
+          why: 'Puts the guard last, after `text[i + 1]` has already looked past the end, so it stops with `IndexError`.'
+        - code: |
+            # Hypothesis:
+            # Prediction, if it is right:
+
+            def count_sentences(text):
+                """How many sentences text has: the number of times a ., ! or ? is followed
+                by whitespace or a closing quotation mark ', or ends the text."""
+                count = 0
+                for i in range(len(text)):
+                    if text[i] in ".!?":
+                        count = count + 1
+                return count
+
+
+            print(count_sentences("It was late. She ran."))
+          why: 'Counts every `.`, `!` and `?`, so `3.50` and `?!` count as ends.'
+        - code: |
+            # Hypothesis:
+            # Prediction, if it is right:
+
+            def count_sentences(text):
+                """How many sentences text has: the number of times a ., ! or ? is followed
+                by whitespace or a closing quotation mark ', or ends the text."""
+                count = 0
+                for i in range(len(text)):
+                    if text[i] in ".!?" and (i + 1 == len(text) or text[i + 1] == " " or text[i + 1] == "'"):
+                        count = count + 1
+                return count
+
+
+            print(count_sentences("It was late. She ran."))
+          why: 'Counts a `.`, `!` or `?` only before a space, not before a newline or a tab.'
+        - code: |
+            # Hypothesis:
+            # Prediction, if it is right:
+
+            def count_sentences(text):
+                """How many sentences text has: the number of times a ., ! or ? is followed
+                by whitespace or a closing quotation mark ', or ends the text."""
+                count = 0
+                for i in range(len(text)):
+                    if text[i] in ".!?" and (i + 1 == len(text) or text[i + 1].isspace()):
+                        count = count + 1
+                return count
+
+
+            print(count_sentences("It was late. She ran."))
+          why: 'Forgets the closing quotation mark, so a sentence that ends a quotation is not counted.'
+        - code: |
+            # Hypothesis:
+            # Prediction, if it is right:
+
+            def count_sentences(text):
+                """How many sentences text has: the number of times a ., ! or ? is followed
+                by whitespace or a closing quotation mark ', or ends the text."""
+                count = 0
+                for i in range(len(text)):
+                    if i + 1 == len(text) or (text[i] in ".!?" and (text[i + 1].isspace() or text[i + 1] == "'")):
+                        count = count + 1
+                return count
+
+
+            print(count_sentences("It was late. She ran."))
+          why: 'Counts the end of the text as the end of a sentence even with no `.`, `!` or `?` there, so `Alice` counts 1.'
+    explanation: >-
+      `range(len(text) - 1)` stops one place short of the end of the text. Looping over every
+      character mends it, with `i + 1 == len(text)` tested first, as a
+      guard: `or` stops at the first `True`, so `text[i + 1]` is never looked at past the end.
+
+  - id: build-property
+    phase: build
+    kind: build
+    concept: E1.12/tokenising
+    title: A property-based test for tokenisers
+    prompt: >-
+      Write the three parts of a property-based test for tokenisers. `joins_right(tokenise, a, b)`
+      is `True` when the tokeniser `tokenise` gives the words of `a + " " + b` as the words of `a`
+      followed by the words of `b`. `shrink_pair(tokenise, a, b)`, for a pair that breaks the
+      property, works on `a` first, as E1.9's `shrink` did: it tries taking out the character at
+      position 0, and while the pair still breaks the property without it, it keeps the removal and
+      tries position 0 again; when a removal mends the property, it puts the character back and
+      moves on to the next position. Then it does the same for `b`, and gives the pair `(a, b)`
+      that is left. `find_bug(tokenise,
+      make, trials)` makes up to `trials` pairs, calling `make()` for `a` and then for `b`, and
+      gives the first pair that breaks the property, shrunk, at once, or `None` if none does.
+    answer:
+      type: code
+      starter: |
+        import random
+
+        ALPHABET = ["a", "b", "न", "ि", "'", " ", ".", "5"]
+
+
+        def random_text():
+            """A text of 0 to 8 characters, each chosen at random from ALPHABET."""
+            text = ""
+            for k in range(random.randint(0, 8)):
+                text = text + random.choice(ALPHABET)
+            return text
+
+
+        def tokens(text):
+            """The Explore phase's tokeniser, which keeps only what isalpha calls a letter."""
+            words = []
+            word = ""
+            for ch in text.lower():
+                if ch.isalpha():
+                    word = word + ch
+                else:
+                    if word != "":
+                        words.append(word)
+                    word = ""
+            if word != "":
+                words.append(word)
+            return words
+
+
+        def forgets_last(text):
+            """The same tokeniser without its last if."""
+            words = []
+            word = ""
+            for ch in text.lower():
+                if ch.isalpha():
+                    word = word + ch
+                else:
+                    if word != "":
+                        words.append(word)
+                    word = ""
+            return words
+
+
+        def joins_right(tokenise, a, b):
+            """True when tokenise gives the words of a + " " + b as the words of a
+            followed by the words of b."""
+            return True
+
+
+        def shrink_pair(tokenise, a, b):
+            """For a pair that breaks the property: takes the characters of a out one at
+            a time, keeping each removal after which the pair still breaks it, then does
+            the same for b. Gives the pair (a, b) that is left."""
+            return a, b
+
+
+        def find_bug(tokenise, make, trials):
+            """For up to trials trials, makes a with make() and then b with make(). Gives
+            the first pair that breaks the property, shrunk, or None if none does."""
+            return None
+
+
+        random.seed(1)
+        print(find_bug(tokens, random_text, 200))
+        random.seed(1)
+        print(find_bug(forgets_last, random_text, 200))
+      tests: |
+        import random
+
+
+        def _cut(text, start, keep_last, look_back, keep_quotes):
+            """The Explore phase's tokeniser, with switches that put bugs into it."""
+            words = []
+            word = ""
+            text = text.lower()
+            for i in range(start, len(text)):
+                ch = text[i]
+                quote = ch == "'" and keep_quotes
+                if look_back and ch == "'" and text[i - 1].isalpha() and i + 1 < len(text) and text[i + 1].isalpha():
+                    quote = True
+                if ch.isalpha() or quote:
+                    word = word + ch
+                else:
+                    if word != "":
+                        words.append(word)
+                    word = ""
+            if keep_last and word != "":
+                words.append(word)
+            return words
+
+        def letters_only(text):
+            """The Explore phase's tokeniser, which keeps only what isalpha calls a letter."""
+            return _cut(text, 0, True, False, False)
+
+        def keeps_quotes(text):
+            """Keeps every apostrophe as part of a word, quotation marks too."""
+            return _cut(text, 0, True, False, True)
+
+        def drops_last(text):
+            """Loses the last word of a text that ends inside a word."""
+            return _cut(text, 0, False, False, False)
+
+        def skips_first(text):
+            """Never looks at the first character of the text."""
+            return _cut(text, 1, True, False, False)
+
+        def looks_back(text):
+            """Keeps an apostrophe between two letters, looking at text[i - 1], which at i = 0 is the last character of the text."""
+            return _cut(text, 0, True, True, False)
+
+        def maker(texts):
+            """A stand-in for make that gives the texts in turn, and the list of those it has given."""
+            given = []
+            def make():
+                given.append(texts[len(given)])
+                return given[-1]
+            return make, given
+
+        def test_holds():
+            """joins_right is True for pairs whose words join right."""
+            for tokenise, a, b in [(letters_only, "The cat", "sat."), (letters_only, "", ""), (keeps_quotes, "a'", "'b"), (drops_last, "ab ", "c")]:
+                got = joins_right(tokenise, a, b)
+                assert got is True, f"joins_right({tokenise.__name__}, {a!r}, {b!r}) is {got!r}, not True: {tokenise.__name__}({a + ' ' + b!r}) is {tokenise(a + ' ' + b)!r}, and {tokenise.__name__}({a!r}) + {tokenise.__name__}({b!r}) is {tokenise(a) + tokenise(b)!r}."
+
+        def test_breaks():
+            """joins_right is False when the join loses a word or changes one."""
+            for tokenise, a, b in [(drops_last, "ab", "c"), (skips_first, "", "a"), (looks_back, "", "'a")]:
+                got = joins_right(tokenise, a, b)
+                assert got is False, f"joins_right({tokenise.__name__}, {a!r}, {b!r}) is {got!r}, not False: {tokenise.__name__}({a + ' ' + b!r}) is {tokenise(a + ' ' + b)!r}, but {tokenise.__name__}({a!r}) + {tokenise.__name__}({b!r}) is {tokenise(a) + tokenise(b)!r}."
+
+        def test_asks_for_the_joined_text():
+            """joins_right asks the tokeniser it is given for the words of a + ' ' + b, of a and of b."""
+            asked = []
+            def spy(text):
+                asked.append(text)
+                return letters_only(text)
+            joins_right(spy, "ab", "cd")
+            for text in ["ab cd", "ab", "cd"]:
+                assert text in asked, f"joins_right(tokenise, 'ab', 'cd') never asked tokenise for the words of {text!r}; it asked for {asked!r}."
+
+        def test_shrink_a():
+            """For a tokeniser that loses a word at the end, ('ab cd', 'ef') shrinks to ('d', ''): a first, then b."""
+            got = shrink_pair(drops_last, "ab cd", "ef")
+            assert got == ("d", ""), f"shrink_pair(drops_last, 'ab cd', 'ef') is {got!r}, not ('d', ''). Take the characters of a out from the first: when a removal is kept, the next character moves into its place, so try that place again, and move on only when the removal mends the property."
+
+        def test_shrink_b():
+            """For a tokeniser that skips the first character, ('xy', 'ab') shrinks to ('', 'b')."""
+            got = shrink_pair(skips_first, "xy", "ab")
+            assert got == ("", "b"), f"shrink_pair(skips_first, 'xy', 'ab') is {got!r}, not ('', 'b')."
+
+        def test_shrink_apostrophe():
+            """For a tokeniser that looks back past the start, ('x', "'ab") shrinks to ('', "'b")."""
+            got = shrink_pair(looks_back, "x", "'ab")
+            assert got == ("", "'b"), f"shrink_pair(looks_back, 'x', \"'ab\") is {got!r}, not ('', \"'b\")."
+
+        def test_shrink_small_pair():
+            """A pair that is already as small as it can be stays as it is."""
+            got = shrink_pair(drops_last, "a", "")
+            assert got == ("a", ""), f"shrink_pair(drops_last, 'a', '') is {got!r}, not ('a', '')."
+
+        def test_first_pair():
+            """find_bug gives the first pair that breaks the property, shrunk, after making just the texts up to it, a and then b."""
+            make, given = maker(["ab ", "c", "d", "e f", "g", "h"])
+            got = find_bug(drops_last, make, 3)
+            assert got == ("d", ""), f"With the texts 'ab ', 'c', 'd', 'e f' and so on, find_bug(drops_last, make, 3) is {got!r}, not ('d', ''): the first pair is ('ab ', 'c'), which keeps the property, and the second, ('d', 'e f'), breaks it and shrinks to ('d', '')."
+            assert given == ["ab ", "c", "d", "e f"], f"find_bug made the texts {given!r}, not just ['ab ', 'c', 'd', 'e f']: it should stop at the first pair that breaks the property."
+
+        def test_none():
+            """find_bug gives None when every pair keeps the property, after making 2 texts for each trial."""
+            make, given = maker(["a b", "c", "न", "", "it's", "x.y"] * 20)
+            got = find_bug(letters_only, make, 50)
+            assert got is None, f"find_bug(letters_only, make, 50) is {got!r}, not None, though every pair keeps the property."
+            assert len(given) == 100, f"find_bug made {len(given)} texts in 50 trials, not 100."
+
+        def test_random_texts():
+            """With random texts, it gives None for two wrong tokenisers that keep the property, and a pair for three that break it."""
+            for tokenise in [letters_only, keeps_quotes]:
+                random.seed(5)
+                got = find_bug(tokenise, random_text, 300)
+                assert got is None, f"find_bug({tokenise.__name__}, random_text, 300) is {got!r}, not None."
+            for tokenise in [drops_last, skips_first, looks_back]:
+                for seed in [1, 2, 3]:
+                    random.seed(seed)
+                    got = find_bug(tokenise, random_text, 300)
+                    assert got is not None, f"With random.seed({seed}), find_bug({tokenise.__name__}, random_text, 300) is None, but {tokenise.__name__} breaks the property."
+                    a, b = got
+                    assert not joins_right(tokenise, a, b), f"With random.seed({seed}), find_bug({tokenise.__name__}, random_text, 300) gives {got!r}, which keeps the property."
+                    for k in range(len(a)):
+                        assert joins_right(tokenise, a[:k] + a[k + 1:], b), f"With random.seed({seed}), find_bug({tokenise.__name__}, random_text, 300) gives {got!r}, but taking character {k} out of a still breaks the property, so the pair is not shrunk."
+                    for k in range(len(b)):
+                        assert joins_right(tokenise, a, b[:k] + b[k + 1:]), f"With random.seed({seed}), find_bug({tokenise.__name__}, random_text, 300) gives {got!r}, but taking character {k} out of b still breaks the property, so the pair is not shrunk."
+      reference: |
+        import random
+
+        ALPHABET = ["a", "b", "न", "ि", "'", " ", ".", "5"]
+
+
+        def random_text():
+            """A text of 0 to 8 characters, each chosen at random from ALPHABET."""
+            text = ""
+            for k in range(random.randint(0, 8)):
+                text = text + random.choice(ALPHABET)
+            return text
+
+
+        def tokens(text):
+            """The Explore phase's tokeniser, which keeps only what isalpha calls a letter."""
+            words = []
+            word = ""
+            for ch in text.lower():
+                if ch.isalpha():
+                    word = word + ch
+                else:
+                    if word != "":
+                        words.append(word)
+                    word = ""
+            if word != "":
+                words.append(word)
+            return words
+
+
+        def forgets_last(text):
+            """The same tokeniser without its last if."""
+            words = []
+            word = ""
+            for ch in text.lower():
+                if ch.isalpha():
+                    word = word + ch
+                else:
+                    if word != "":
+                        words.append(word)
+                    word = ""
+            return words
+
+
+        def joins_right(tokenise, a, b):
+            """True when tokenise gives the words of a + " " + b as the words of a
+            followed by the words of b."""
+            return tokenise(a + " " + b) == tokenise(a) + tokenise(b)
+
+
+        def shrink_pair(tokenise, a, b):
+            """For a pair that breaks the property: takes the characters of a out one at
+            a time, keeping each removal after which the pair still breaks it, then does
+            the same for b. Gives the pair (a, b) that is left."""
+            i = 0
+            while i < len(a):
+                smaller = a[:i] + a[i + 1:]
+                if not joins_right(tokenise, smaller, b):
+                    a = smaller
+                else:
+                    i = i + 1
+            i = 0
+            while i < len(b):
+                smaller = b[:i] + b[i + 1:]
+                if not joins_right(tokenise, a, smaller):
+                    b = smaller
+                else:
+                    i = i + 1
+            return a, b
+
+
+        def find_bug(tokenise, make, trials):
+            """For up to trials trials, makes a with make() and then b with make(). Gives
+            the first pair that breaks the property, shrunk, or None if none does."""
+            for t in range(trials):
+                a = make()
+                b = make()
+                if not joins_right(tokenise, a, b):
+                    return shrink_pair(tokenise, a, b)
+            return None
+
+
+        random.seed(1)
+        print(find_bug(tokens, random_text, 200))
+        random.seed(1)
+        print(find_bug(forgets_last, random_text, 200))
+      wrong:
+        - code: |
+            import random
+
+            ALPHABET = ["a", "b", "न", "ि", "'", " ", ".", "5"]
+
+
+            def random_text():
+                """A text of 0 to 8 characters, each chosen at random from ALPHABET."""
+                text = ""
+                for k in range(random.randint(0, 8)):
+                    text = text + random.choice(ALPHABET)
+                return text
+
+
+            def tokens(text):
+                """The Explore phase's tokeniser, which keeps only what isalpha calls a letter."""
+                words = []
+                word = ""
+                for ch in text.lower():
+                    if ch.isalpha():
+                        word = word + ch
+                    else:
+                        if word != "":
+                            words.append(word)
+                        word = ""
+                if word != "":
+                    words.append(word)
+                return words
+
+
+            def forgets_last(text):
+                """The same tokeniser without its last if."""
+                words = []
+                word = ""
+                for ch in text.lower():
+                    if ch.isalpha():
+                        word = word + ch
+                    else:
+                        if word != "":
+                            words.append(word)
+                        word = ""
+                return words
+
+
+            def joins_right(tokenise, a, b):
+                """True when tokenise gives the words of a + " " + b as the words of a
+                followed by the words of b."""
+                return tokenise(a + b) == tokenise(a) + tokenise(b)
+
+
+            def shrink_pair(tokenise, a, b):
+                """For a pair that breaks the property: takes the characters of a out one at
+                a time, keeping each removal after which the pair still breaks it, then does
+                the same for b. Gives the pair (a, b) that is left."""
+                i = 0
+                while i < len(a):
+                    smaller = a[:i] + a[i + 1:]
+                    if not joins_right(tokenise, smaller, b):
+                        a = smaller
+                    else:
+                        i = i + 1
+                i = 0
+                while i < len(b):
+                    smaller = b[:i] + b[i + 1:]
+                    if not joins_right(tokenise, a, smaller):
+                        b = smaller
+                    else:
+                        i = i + 1
+                return a, b
+
+
+            def find_bug(tokenise, make, trials):
+                """For up to trials trials, makes a with make() and then b with make(). Gives
+                the first pair that breaks the property, shrunk, or None if none does."""
+                for t in range(trials):
+                    a = make()
+                    b = make()
+                    if not joins_right(tokenise, a, b):
+                        return shrink_pair(tokenise, a, b)
+                return None
+
+
+            random.seed(1)
+            print(find_bug(tokens, random_text, 200))
+            random.seed(1)
+            print(find_bug(forgets_last, random_text, 200))
+          why: 'Joins `a` and `b` with no space, which runs the last word of `a` into the first word of `b`.'
+        - code: |
+            import random
+
+            ALPHABET = ["a", "b", "न", "ि", "'", " ", ".", "5"]
+
+
+            def random_text():
+                """A text of 0 to 8 characters, each chosen at random from ALPHABET."""
+                text = ""
+                for k in range(random.randint(0, 8)):
+                    text = text + random.choice(ALPHABET)
+                return text
+
+
+            def tokens(text):
+                """The Explore phase's tokeniser, which keeps only what isalpha calls a letter."""
+                words = []
+                word = ""
+                for ch in text.lower():
+                    if ch.isalpha():
+                        word = word + ch
+                    else:
+                        if word != "":
+                            words.append(word)
+                        word = ""
+                if word != "":
+                    words.append(word)
+                return words
+
+
+            def forgets_last(text):
+                """The same tokeniser without its last if."""
+                words = []
+                word = ""
+                for ch in text.lower():
+                    if ch.isalpha():
+                        word = word + ch
+                    else:
+                        if word != "":
+                            words.append(word)
+                        word = ""
+                return words
+
+
+            def joins_right(tokenise, a, b):
+                """True when tokenise gives the words of a + " " + b as the words of a
+                followed by the words of b."""
+                return len(tokenise(a + " " + b)) == len(tokenise(a)) + len(tokenise(b))
+
+
+            def shrink_pair(tokenise, a, b):
+                """For a pair that breaks the property: takes the characters of a out one at
+                a time, keeping each removal after which the pair still breaks it, then does
+                the same for b. Gives the pair (a, b) that is left."""
+                i = 0
+                while i < len(a):
+                    smaller = a[:i] + a[i + 1:]
+                    if not joins_right(tokenise, smaller, b):
+                        a = smaller
+                    else:
+                        i = i + 1
+                i = 0
+                while i < len(b):
+                    smaller = b[:i] + b[i + 1:]
+                    if not joins_right(tokenise, a, smaller):
+                        b = smaller
+                    else:
+                        i = i + 1
+                return a, b
+
+
+            def find_bug(tokenise, make, trials):
+                """For up to trials trials, makes a with make() and then b with make(). Gives
+                the first pair that breaks the property, shrunk, or None if none does."""
+                for t in range(trials):
+                    a = make()
+                    b = make()
+                    if not joins_right(tokenise, a, b):
+                        return shrink_pair(tokenise, a, b)
+                return None
+
+
+            random.seed(1)
+            print(find_bug(tokens, random_text, 200))
+            random.seed(1)
+            print(find_bug(forgets_last, random_text, 200))
+          why: 'Compares only the numbers of words, so it misses a word that the join changes without losing it.'
+        - code: |
+            import random
+
+            ALPHABET = ["a", "b", "न", "ि", "'", " ", ".", "5"]
+
+
+            def random_text():
+                """A text of 0 to 8 characters, each chosen at random from ALPHABET."""
+                text = ""
+                for k in range(random.randint(0, 8)):
+                    text = text + random.choice(ALPHABET)
+                return text
+
+
+            def tokens(text):
+                """The Explore phase's tokeniser, which keeps only what isalpha calls a letter."""
+                words = []
+                word = ""
+                for ch in text.lower():
+                    if ch.isalpha():
+                        word = word + ch
+                    else:
+                        if word != "":
+                            words.append(word)
+                        word = ""
+                if word != "":
+                    words.append(word)
+                return words
+
+
+            def forgets_last(text):
+                """The same tokeniser without its last if."""
+                words = []
+                word = ""
+                for ch in text.lower():
+                    if ch.isalpha():
+                        word = word + ch
+                    else:
+                        if word != "":
+                            words.append(word)
+                        word = ""
+                return words
+
+
+            def joins_right(tokenise, a, b):
+                """True when tokenise gives the words of a + " " + b as the words of a
+                followed by the words of b."""
+                return tokenise(a + " " + b) == tokenise(a) + tokenise(b)
+
+
+            def shrink_pair(tokenise, a, b):
+                """For a pair that breaks the property: takes the characters of a out one at
+                a time, keeping each removal after which the pair still breaks it, then does
+                the same for b. Gives the pair (a, b) that is left."""
+                i = 0
+                while i < len(a):
+                    smaller = a[:i] + a[i + 1:]
+                    if not joins_right(tokenise, smaller, b):
+                        a = smaller
+                    i = i + 1
+                i = 0
+                while i < len(b):
+                    smaller = b[:i] + b[i + 1:]
+                    if not joins_right(tokenise, a, smaller):
+                        b = smaller
+                    else:
+                        i = i + 1
+                return a, b
+
+
+            def find_bug(tokenise, make, trials):
+                """For up to trials trials, makes a with make() and then b with make(). Gives
+                the first pair that breaks the property, shrunk, or None if none does."""
+                for t in range(trials):
+                    a = make()
+                    b = make()
+                    if not joins_right(tokenise, a, b):
+                        return shrink_pair(tokenise, a, b)
+                return None
+
+
+            random.seed(1)
+            print(find_bug(tokens, random_text, 200))
+            random.seed(1)
+            print(find_bug(forgets_last, random_text, 200))
+          why: 'Moves on after a removal from `a`, as E1.9''s buggy shrinker did, so it skips the next character and can leave one that could go.'
+        - code: |
+            import random
+
+            ALPHABET = ["a", "b", "न", "ि", "'", " ", ".", "5"]
+
+
+            def random_text():
+                """A text of 0 to 8 characters, each chosen at random from ALPHABET."""
+                text = ""
+                for k in range(random.randint(0, 8)):
+                    text = text + random.choice(ALPHABET)
+                return text
+
+
+            def tokens(text):
+                """The Explore phase's tokeniser, which keeps only what isalpha calls a letter."""
+                words = []
+                word = ""
+                for ch in text.lower():
+                    if ch.isalpha():
+                        word = word + ch
+                    else:
+                        if word != "":
+                            words.append(word)
+                        word = ""
+                if word != "":
+                    words.append(word)
+                return words
+
+
+            def forgets_last(text):
+                """The same tokeniser without its last if."""
+                words = []
+                word = ""
+                for ch in text.lower():
+                    if ch.isalpha():
+                        word = word + ch
+                    else:
+                        if word != "":
+                            words.append(word)
+                        word = ""
+                return words
+
+
+            def joins_right(tokenise, a, b):
+                """True when tokenise gives the words of a + " " + b as the words of a
+                followed by the words of b."""
+                return tokenise(a + " " + b) == tokenise(a) + tokenise(b)
+
+
+            def shrink_pair(tokenise, a, b):
+                """For a pair that breaks the property: takes the characters of a out one at
+                a time, keeping each removal after which the pair still breaks it, then does
+                the same for b. Gives the pair (a, b) that is left."""
+                i = 0
+                while i < len(a):
+                    smaller = a[:i] + a[i + 1:]
+                    if not joins_right(tokenise, smaller, b):
+                        a = smaller
+                    else:
+                        i = i + 1
+                return a, b
+
+
+            def find_bug(tokenise, make, trials):
+                """For up to trials trials, makes a with make() and then b with make(). Gives
+                the first pair that breaks the property, shrunk, or None if none does."""
+                for t in range(trials):
+                    a = make()
+                    b = make()
+                    if not joins_right(tokenise, a, b):
+                        return shrink_pair(tokenise, a, b)
+                return None
+
+
+            random.seed(1)
+            print(find_bug(tokens, random_text, 200))
+            random.seed(1)
+            print(find_bug(forgets_last, random_text, 200))
+          why: 'Shrinks `a` but never `b`.'
+        - code: |
+            import random
+
+            ALPHABET = ["a", "b", "न", "ि", "'", " ", ".", "5"]
+
+
+            def random_text():
+                """A text of 0 to 8 characters, each chosen at random from ALPHABET."""
+                text = ""
+                for k in range(random.randint(0, 8)):
+                    text = text + random.choice(ALPHABET)
+                return text
+
+
+            def tokens(text):
+                """The Explore phase's tokeniser, which keeps only what isalpha calls a letter."""
+                words = []
+                word = ""
+                for ch in text.lower():
+                    if ch.isalpha():
+                        word = word + ch
+                    else:
+                        if word != "":
+                            words.append(word)
+                        word = ""
+                if word != "":
+                    words.append(word)
+                return words
+
+
+            def forgets_last(text):
+                """The same tokeniser without its last if."""
+                words = []
+                word = ""
+                for ch in text.lower():
+                    if ch.isalpha():
+                        word = word + ch
+                    else:
+                        if word != "":
+                            words.append(word)
+                        word = ""
+                return words
+
+
+            def joins_right(tokenise, a, b):
+                """True when tokenise gives the words of a + " " + b as the words of a
+                followed by the words of b."""
+                return tokenise(a + " " + b) == tokenise(a) + tokenise(b)
+
+
+            def shrink_pair(tokenise, a, b):
+                """For a pair that breaks the property: takes the characters of a out one at
+                a time, keeping each removal after which the pair still breaks it, then does
+                the same for b. Gives the pair (a, b) that is left."""
+                i = 0
+                while i < len(a):
+                    smaller = a[:i] + a[i + 1:]
+                    if joins_right(tokenise, smaller, b):
+                        a = smaller
+                    else:
+                        i = i + 1
+                i = 0
+                while i < len(b):
+                    smaller = b[:i] + b[i + 1:]
+                    if not joins_right(tokenise, a, smaller):
+                        b = smaller
+                    else:
+                        i = i + 1
+                return a, b
+
+
+            def find_bug(tokenise, make, trials):
+                """For up to trials trials, makes a with make() and then b with make(). Gives
+                the first pair that breaks the property, shrunk, or None if none does."""
+                for t in range(trials):
+                    a = make()
+                    b = make()
+                    if not joins_right(tokenise, a, b):
+                        return shrink_pair(tokenise, a, b)
+                return None
+
+
+            random.seed(1)
+            print(find_bug(tokens, random_text, 200))
+            random.seed(1)
+            print(find_bug(forgets_last, random_text, 200))
+          why: 'Keeps the removals from `a` after which the property holds, instead of those after which it still breaks.'
+        - code: |
+            import random
+
+            ALPHABET = ["a", "b", "न", "ि", "'", " ", ".", "5"]
+
+
+            def random_text():
+                """A text of 0 to 8 characters, each chosen at random from ALPHABET."""
+                text = ""
+                for k in range(random.randint(0, 8)):
+                    text = text + random.choice(ALPHABET)
+                return text
+
+
+            def tokens(text):
+                """The Explore phase's tokeniser, which keeps only what isalpha calls a letter."""
+                words = []
+                word = ""
+                for ch in text.lower():
+                    if ch.isalpha():
+                        word = word + ch
+                    else:
+                        if word != "":
+                            words.append(word)
+                        word = ""
+                if word != "":
+                    words.append(word)
+                return words
+
+
+            def forgets_last(text):
+                """The same tokeniser without its last if."""
+                words = []
+                word = ""
+                for ch in text.lower():
+                    if ch.isalpha():
+                        word = word + ch
+                    else:
+                        if word != "":
+                            words.append(word)
+                        word = ""
+                return words
+
+
+            def joins_right(tokenise, a, b):
+                """True when tokenise gives the words of a + " " + b as the words of a
+                followed by the words of b."""
+                return tokenise(a + " " + b) == tokenise(a) + tokenise(b)
+
+
+            def shrink_pair(tokenise, a, b):
+                """For a pair that breaks the property: takes the characters of a out one at
+                a time, keeping each removal after which the pair still breaks it, then does
+                the same for b. Gives the pair (a, b) that is left."""
+                i = 0
+                while i < len(a):
+                    smaller = a[:i] + a[i + 1:]
+                    if not joins_right(tokenise, smaller, b):
+                        a = smaller
+                    else:
+                        i = i + 1
+                i = 0
+                while i < len(b):
+                    smaller = b[:i] + b[i + 1:]
+                    if not joins_right(tokenise, a, smaller):
+                        b = smaller
+                    else:
+                        i = i + 1
+                return a, b
+
+
+            def find_bug(tokenise, make, trials):
+                """For up to trials trials, makes a with make() and then b with make(). Gives
+                the first pair that breaks the property, shrunk, or None if none does."""
+                for t in range(trials):
+                    a = make()
+                    b = make()
+                    if not joins_right(tokenise, a, b):
+                        return a, b
+                return None
+
+
+            random.seed(1)
+            print(find_bug(tokens, random_text, 200))
+            random.seed(1)
+            print(find_bug(forgets_last, random_text, 200))
+          why: 'Gives the failing pair without shrinking it.'
+        - code: |
+            import random
+
+            ALPHABET = ["a", "b", "न", "ि", "'", " ", ".", "5"]
+
+
+            def random_text():
+                """A text of 0 to 8 characters, each chosen at random from ALPHABET."""
+                text = ""
+                for k in range(random.randint(0, 8)):
+                    text = text + random.choice(ALPHABET)
+                return text
+
+
+            def tokens(text):
+                """The Explore phase's tokeniser, which keeps only what isalpha calls a letter."""
+                words = []
+                word = ""
+                for ch in text.lower():
+                    if ch.isalpha():
+                        word = word + ch
+                    else:
+                        if word != "":
+                            words.append(word)
+                        word = ""
+                if word != "":
+                    words.append(word)
+                return words
+
+
+            def forgets_last(text):
+                """The same tokeniser without its last if."""
+                words = []
+                word = ""
+                for ch in text.lower():
+                    if ch.isalpha():
+                        word = word + ch
+                    else:
+                        if word != "":
+                            words.append(word)
+                        word = ""
+                return words
+
+
+            def joins_right(tokenise, a, b):
+                """True when tokenise gives the words of a + " " + b as the words of a
+                followed by the words of b."""
+                return tokenise(a + " " + b) == tokenise(a) + tokenise(b)
+
+
+            def shrink_pair(tokenise, a, b):
+                """For a pair that breaks the property: takes the characters of a out one at
+                a time, keeping each removal after which the pair still breaks it, then does
+                the same for b. Gives the pair (a, b) that is left."""
+                i = 0
+                while i < len(a):
+                    smaller = a[:i] + a[i + 1:]
+                    if not joins_right(tokenise, smaller, b):
+                        a = smaller
+                    else:
+                        i = i + 1
+                i = 0
+                while i < len(b):
+                    smaller = b[:i] + b[i + 1:]
+                    if not joins_right(tokenise, a, smaller):
+                        b = smaller
+                    else:
+                        i = i + 1
+                return a, b
+
+
+            def find_bug(tokenise, make, trials):
+                """For up to trials trials, makes a with make() and then b with make(). Gives
+                the first pair that breaks the property, shrunk, or None if none does."""
+                for t in range(trials):
+                    b = make()
+                    a = make()
+                    if not joins_right(tokenise, a, b):
+                        return shrink_pair(tokenise, a, b)
+                return None
+
+
+            random.seed(1)
+            print(find_bug(tokens, random_text, 200))
+            random.seed(1)
+            print(find_bug(forgets_last, random_text, 200))
+          why: 'Makes `b` before `a`, so each pair is the other way round.'
+        - code: |
+            import random
+
+            ALPHABET = ["a", "b", "न", "ि", "'", " ", ".", "5"]
+
+
+            def random_text():
+                """A text of 0 to 8 characters, each chosen at random from ALPHABET."""
+                text = ""
+                for k in range(random.randint(0, 8)):
+                    text = text + random.choice(ALPHABET)
+                return text
+
+
+            def tokens(text):
+                """The Explore phase's tokeniser, which keeps only what isalpha calls a letter."""
+                words = []
+                word = ""
+                for ch in text.lower():
+                    if ch.isalpha():
+                        word = word + ch
+                    else:
+                        if word != "":
+                            words.append(word)
+                        word = ""
+                if word != "":
+                    words.append(word)
+                return words
+
+
+            def forgets_last(text):
+                """The same tokeniser without its last if."""
+                words = []
+                word = ""
+                for ch in text.lower():
+                    if ch.isalpha():
+                        word = word + ch
+                    else:
+                        if word != "":
+                            words.append(word)
+                        word = ""
+                return words
+
+
+            def joins_right(tokenise, a, b):
+                """True when tokenise gives the words of a + " " + b as the words of a
+                followed by the words of b."""
+                return tokenise(a + " " + b) == tokenise(a) + tokenise(b)
+
+
+            def shrink_pair(tokenise, a, b):
+                """For a pair that breaks the property: takes the characters of a out one at
+                a time, keeping each removal after which the pair still breaks it, then does
+                the same for b. Gives the pair (a, b) that is left."""
+                i = 0
+                while i < len(a):
+                    smaller = a[:i] + a[i + 1:]
+                    if not joins_right(tokenise, smaller, b):
+                        a = smaller
+                    else:
+                        i = i + 1
+                i = 0
+                while i < len(b):
+                    smaller = b[:i] + b[i + 1:]
+                    if not joins_right(tokenise, a, smaller):
+                        b = smaller
+                    else:
+                        i = i + 1
+                return a, b
+
+
+            def find_bug(tokenise, make, trials):
+                """For up to trials trials, makes a with make() and then b with make(). Gives
+                the first pair that breaks the property, shrunk, or None if none does."""
+                found = None
+                for t in range(trials):
+                    a = make()
+                    b = make()
+                    if not joins_right(tokenise, a, b):
+                        found = shrink_pair(tokenise, a, b)
+                return found
+
+
+            random.seed(1)
+            print(find_bug(tokens, random_text, 200))
+            random.seed(1)
+            print(find_bug(forgets_last, random_text, 200))
+          why: 'Goes on after a failure and gives the last failing pair, not the first.'
+        - code: |
+            import random
+
+            ALPHABET = ["a", "b", "न", "ि", "'", " ", ".", "5"]
+
+
+            def random_text():
+                """A text of 0 to 8 characters, each chosen at random from ALPHABET."""
+                text = ""
+                for k in range(random.randint(0, 8)):
+                    text = text + random.choice(ALPHABET)
+                return text
+
+
+            def tokens(text):
+                """The Explore phase's tokeniser, which keeps only what isalpha calls a letter."""
+                words = []
+                word = ""
+                for ch in text.lower():
+                    if ch.isalpha():
+                        word = word + ch
+                    else:
+                        if word != "":
+                            words.append(word)
+                        word = ""
+                if word != "":
+                    words.append(word)
+                return words
+
+
+            def forgets_last(text):
+                """The same tokeniser without its last if."""
+                words = []
+                word = ""
+                for ch in text.lower():
+                    if ch.isalpha():
+                        word = word + ch
+                    else:
+                        if word != "":
+                            words.append(word)
+                        word = ""
+                return words
+
+
+            def joins_right(tokenise, a, b):
+                """True when tokenise gives the words of a + " " + b as the words of a
+                followed by the words of b."""
+                return tokenise(a + " " + b) == tokenise(a) + tokenise(b)
+
+
+            def shrink_pair(tokenise, a, b):
+                """For a pair that breaks the property: takes the characters of a out one at
+                a time, keeping each removal after which the pair still breaks it, then does
+                the same for b. Gives the pair (a, b) that is left."""
+                i = 0
+                while i < len(a):
+                    smaller = a[:i] + a[i + 1:]
+                    if not joins_right(tokenise, smaller, b):
+                        a = smaller
+                    else:
+                        i = i + 1
+                i = 0
+                while i < len(b):
+                    smaller = b[:i] + b[i + 1:]
+                    if not joins_right(tokenise, a, smaller):
+                        b = smaller
+                    else:
+                        i = i + 1
+                return a, b
+
+
+            def find_bug(tokenise, make, trials):
+                """For up to trials trials, makes a with make() and then b with make(). Gives
+                the first pair that breaks the property, shrunk, or None if none does."""
+                for t in range(trials):
+                    a = make()
+                    b = make()
+                    if not joins_right(tokens, a, b):
+                        return shrink_pair(tokens, a, b)
+                return None
+
+
+            random.seed(1)
+            print(find_bug(tokens, random_text, 200))
+            random.seed(1)
+            print(find_bug(forgets_last, random_text, 200))
+          why: 'Tests the script''s `tokens` every time, not the tokeniser it is given.'
+    explanation: >-
+      `joins_right` compares `tokenise(a + " " + b)` with `tokenise(a) + tokenise(b)`. `shrink_pair`
+      runs E1.9's loop twice: over `a`, with `b` fixed, keeping a removal while `joins_right` is
+      still `False` and moving on only when it is `True`; then over `b`, with the shrunk `a`.
+      `find_bug` is E1.9's `check` for pairs: make `a`, make `b`, and give the shrunk pair at once
+      if the property fails.
+
+  - id: build-next
+    phase: build
+    kind: build
+    concept: E1.12/next-word-counts
+    title: The next-word table
+    prompt: >-
+      Write `next_counts(words)`, the table in which `follows[a][b]` is how many times the word `b`
+      comes straight after the word `a` in the list `words`; `most_likely(follows, word)`, the word
+      that most often follows `word`, with ties going to the word first in alphabetical order, or
+      `None` if nothing follows `word`; and `generate(follows, start, n)`, the puzzle's writer: a
+      list that starts with `start` and adds the most likely word after its last word, again and
+      again, until it holds `n` words or its last word has nothing after it. `by_count` is the
+      Explore phase's, ready to use: rank a word's next words with it, as `top_words` did.
+    answer:
+      type: code
+      starter: |
+        def by_count(pair):
+            """Sort key: larger counts first, and equal counts in alphabetical order."""
+            word, count = pair
+            return (-count, word)
+
+
+        def next_counts(words):
+            """follows[a][b] is how many times the word b comes straight after the word a
+            in the list words."""
+            return {}
+
+
+        def most_likely(follows, word):
+            """The word that most often follows word, with ties going to the word first in
+            alphabetical order, or None if nothing follows word."""
+            return None
+
+
+        def generate(follows, start, n):
+            """A list that starts with start and adds the most likely next word again and
+            again, until it holds n words or its last word has nothing after it."""
+            return [start]
+
+
+        with open("story.txt", encoding="utf-8") as f:
+            words = f.read().split()
+
+        follows = next_counts(words)
+        print(follows.get("said"))
+        print(generate(follows, "the", 10))
+      tests: |
+        def nonempty(follows):
+            """The table without entries for words that nothing follows."""
+            return {a: follows[a] for a in follows if follows[a] != {}}
+
+        def test_counts_example():
+            """For "the cat sat the cat ran", the table counts "cat" twice after "the"."""
+            words = ["the", "cat", "sat", "the", "cat", "ran"]
+            got = nonempty(next_counts(words))
+            expected = {"the": {"cat": 2}, "cat": {"sat": 1, "ran": 1}, "sat": {"the": 1}}
+            assert got == expected, f"next_counts({words!r}) is {got!r}, not {expected!r}."
+
+        def test_counts_edges():
+            """An empty list and a list of one word have no neighbouring pairs, so nothing follows anything."""
+            for words in [[], ["alice"]]:
+                got = nonempty(next_counts(list(words)))
+                assert got == {}, f"next_counts({words!r}) is {got!r}, but with no neighbouring pairs nothing follows anything."
+
+        def test_counts_add_up():
+            """A list of n words has n - 1 neighbouring pairs, so the counts add up to n - 1."""
+            for words in [["a", "b", "a", "b", "a"], ["x", "x", "x", "x"], ["the", "queen", "and", "the", "king"]]:
+                follows = next_counts(list(words))
+                total = 0
+                for a in follows:
+                    for b in follows[a]:
+                        total = total + follows[a][b]
+                assert total == len(words) - 1, f"The counts of next_counts({words!r}) add up to {total}, not {len(words) - 1}."
+
+        def test_counts_join():
+            """The table of two lists joined is the two tables added up, plus 1 for the pair where they meet."""
+            xs = ["the", "cat", "sat"]
+            ys = ["on", "the", "cat"]
+            got = nonempty(next_counts(xs + ys))
+            expected = {"the": {"cat": 2}, "cat": {"sat": 1}, "sat": {"on": 1}, "on": {"the": 1}}
+            assert got == expected, f"next_counts({xs + ys!r}) is {got!r}, not {expected!r}: the pair (sat, on), where the lists meet, is counted once."
+
+        def test_counts_leave_words():
+            """next_counts leaves the list it is given as it was."""
+            words = ["a", "b", "a"]
+            next_counts(words)
+            assert words == ["a", "b", "a"], f"After next_counts(words), words is {words!r}, not ['a', 'b', 'a']."
+
+        def test_most_likely():
+            """After "said", Alice's counts give "the", 210 times in 462."""
+            follows = {"said": {"alice": 116, "the": 210, "to": 39, "nothing": 6}}
+            got = most_likely(follows, "said")
+            assert got == "the", f"most_likely(follows, 'said') is {got!r}, not 'the', which follows 'said' 210 times."
+
+        def test_ties():
+            """A tie goes to the word first in alphabetical order, wherever it is in the dict."""
+            for counts, expected in [({"queen": 2, "king": 2, "cat": 1}, "king"), ({"his": 1, "her": 1}, "her"), ({"b": 3, "a": 1, "c": 3}, "b")]:
+                got = most_likely({"w": counts}, "w")
+                assert got == expected, f"With {counts!r} after w, most_likely gives {got!r}, not {expected!r}."
+
+        def test_nothing_follows():
+            """For a word that nothing follows, most_likely gives None."""
+            for word in ["b", "zebra"]:
+                got = most_likely({"a": {"b": 1}}, word)
+                assert got is None, f"most_likely({{'a': {{'b': 1}}}}, {word!r}) is {got!r}, not None."
+
+        def test_generate_puzzle():
+            """With Alice's counts after "the", "queen" and "and", generate writes the puzzle's loop."""
+            follows = {
+                "the": {"queen": 65, "king": 60, "gryphon": 53, "mock": 53},
+                "queen": {"and": 7, "said": 5, "of": 4},
+                "and": {"the": 82, "she": 53, "then": 33},
+            }
+            got = generate(follows, "the", 7)
+            expected = ["the", "queen", "and", "the", "queen", "and", "the"]
+            assert got == expected, f"generate(follows, 'the', 7) is {got!r}, not {expected!r}."
+
+        def test_generate_stops():
+            """generate stops early at a word that nothing follows."""
+            follows = {"a": {"b": 1}}
+            for start, expected in [("a", ["a", "b"]), ("zebra", ["zebra"])]:
+                got = generate(follows, start, 5)
+                assert got == expected, f"generate({{'a': {{'b': 1}}}}, {start!r}, 5) is {got!r}, not {expected!r}."
+
+        def test_generate_lengths():
+            """generate gives exactly n words when it can, for n from 1 to 6."""
+            follows = {"a": {"b": 1}, "b": {"c": 1}, "c": {"a": 1}}
+            for n in range(1, 7):
+                got = generate(follows, "a", n)
+                expected = ["a", "b", "c", "a", "b", "c"][:n]
+                assert got == expected, f"generate(follows, 'a', {n}) is {got!r}, not {expected!r}."
+
+        def test_story():
+            """The story in story.txt gives "the queen said nothing at all"."""
+            with open("story.txt", encoding="utf-8") as f:
+                words = f.read().split()
+            got = generate(next_counts(words), "the", 10)
+            expected = ["the", "queen", "said", "nothing", "at", "all"]
+            assert got == expected, f"generate(next_counts(words), 'the', 10) is {got!r}, not {expected!r}."
+      reference: |
+        def by_count(pair):
+            """Sort key: larger counts first, and equal counts in alphabetical order."""
+            word, count = pair
+            return (-count, word)
+
+
+        def next_counts(words):
+            """follows[a][b] is how many times the word b comes straight after the word a
+            in the list words."""
+            follows = {}
+            for i in range(len(words) - 1):
+                a = words[i]
+                b = words[i + 1]
+                if a not in follows:
+                    follows[a] = {}
+                follows[a][b] = follows[a].get(b, 0) + 1
+            return follows
+
+
+        def most_likely(follows, word):
+            """The word that most often follows word, with ties going to the word first in
+            alphabetical order, or None if nothing follows word."""
+            if word not in follows:
+                return None
+            return sorted(follows[word].items(), key=by_count)[0][0]
+
+
+        def generate(follows, start, n):
+            """A list that starts with start and adds the most likely next word again and
+            again, until it holds n words or its last word has nothing after it."""
+            text = [start]
+            while len(text) < n:
+                word = most_likely(follows, text[-1])
+                if word is None:
+                    return text
+                text.append(word)
+            return text
+
+
+        with open("story.txt", encoding="utf-8") as f:
+            words = f.read().split()
+
+        follows = next_counts(words)
+        print(follows.get("said"))
+        print(generate(follows, "the", 10))
+      wrong:
+        - code: |
+            def by_count(pair):
+                """Sort key: larger counts first, and equal counts in alphabetical order."""
+                word, count = pair
+                return (-count, word)
+
+
+            def next_counts(words):
+                """follows[a][b] is how many times the word b comes straight after the word a
+                in the list words."""
+                follows = {}
+                for i in range(len(words) - 1):
+                    a = words[i]
+                    b = words[i + 1]
+                    if a not in follows:
+                        follows[a] = {}
+                    follows[a] = {b: follows[a].get(b, 0) + 1}
+                return follows
+
+
+            def most_likely(follows, word):
+                """The word that most often follows word, with ties going to the word first in
+                alphabetical order, or None if nothing follows word."""
+                if word not in follows:
+                    return None
+                return sorted(follows[word].items(), key=by_count)[0][0]
+
+
+            def generate(follows, start, n):
+                """A list that starts with start and adds the most likely next word again and
+                again, until it holds n words or its last word has nothing after it."""
+                text = [start]
+                while len(text) < n:
+                    word = most_likely(follows, text[-1])
+                    if word is None:
+                        return text
+                    text.append(word)
+                return text
+
+
+            with open("story.txt", encoding="utf-8") as f:
+                words = f.read().split()
+
+            follows = next_counts(words)
+            print(follows.get("said"))
+            print(generate(follows, "the", 10))
+          why: 'Replaces the whole dict for `a` at each pair, so it keeps only the last word seen after each word.'
+        - code: |
+            def by_count(pair):
+                """Sort key: larger counts first, and equal counts in alphabetical order."""
+                word, count = pair
+                return (-count, word)
+
+
+            def next_counts(words):
+                """follows[a][b] is how many times the word b comes straight after the word a
+                in the list words."""
+                follows = {}
+                for i in range(len(words) - 1):
+                    a = words[i]
+                    b = words[i + 1]
+                    if b not in follows:
+                        follows[b] = {}
+                    follows[b][a] = follows[b].get(a, 0) + 1
+                return follows
+
+
+            def most_likely(follows, word):
+                """The word that most often follows word, with ties going to the word first in
+                alphabetical order, or None if nothing follows word."""
+                if word not in follows:
+                    return None
+                return sorted(follows[word].items(), key=by_count)[0][0]
+
+
+            def generate(follows, start, n):
+                """A list that starts with start and adds the most likely next word again and
+                again, until it holds n words or its last word has nothing after it."""
+                text = [start]
+                while len(text) < n:
+                    word = most_likely(follows, text[-1])
+                    if word is None:
+                        return text
+                    text.append(word)
+                return text
+
+
+            with open("story.txt", encoding="utf-8") as f:
+                words = f.read().split()
+
+            follows = next_counts(words)
+            print(follows.get("said"))
+            print(generate(follows, "the", 10))
+          why: 'Counts the word before each word instead of the word after it.'
+        - code: |
+            def by_count(pair):
+                """Sort key: larger counts first, and equal counts in alphabetical order."""
+                word, count = pair
+                return (-count, word)
+
+
+            def next_counts(words):
+                """follows[a][b] is how many times the word b comes straight after the word a
+                in the list words."""
+                follows = {}
+                for i in range(len(words) - 1):
+                    a = words[i]
+                    b = words[i + 1]
+                    if a not in follows:
+                        follows[a] = {}
+                    follows[a][b] = follows[a].get(b, 0) + 1
+                return follows
+
+
+            def most_likely(follows, word):
+                """The word that most often follows word, with ties going to the word first in
+                alphabetical order, or None if nothing follows word."""
+                if word not in follows:
+                    return None
+                best = None
+                for w in follows[word]:
+                    if best is None or follows[word][w] > follows[word][best]:
+                        best = w
+                return best
+
+
+            def generate(follows, start, n):
+                """A list that starts with start and adds the most likely next word again and
+                again, until it holds n words or its last word has nothing after it."""
+                text = [start]
+                while len(text) < n:
+                    word = most_likely(follows, text[-1])
+                    if word is None:
+                        return text
+                    text.append(word)
+                return text
+
+
+            with open("story.txt", encoding="utf-8") as f:
+                words = f.read().split()
+
+            follows = next_counts(words)
+            print(follows.get("said"))
+            print(generate(follows, "the", 10))
+          why: 'Gives a tie to the word the dict met first, not the word first in alphabetical order.'
+        - code: |
+            def by_count(pair):
+                """Sort key: larger counts first, and equal counts in alphabetical order."""
+                word, count = pair
+                return (-count, word)
+
+
+            def next_counts(words):
+                """follows[a][b] is how many times the word b comes straight after the word a
+                in the list words."""
+                follows = {}
+                for i in range(len(words) - 1):
+                    a = words[i]
+                    b = words[i + 1]
+                    if a not in follows:
+                        follows[a] = {}
+                    follows[a][b] = follows[a].get(b, 0) + 1
+                return follows
+
+
+            def most_likely(follows, word):
+                """The word that most often follows word, with ties going to the word first in
+                alphabetical order, or None if nothing follows word."""
+                if word not in follows:
+                    return None
+                return sorted(follows[word].items(), key=by_count)[-1][0]
+
+
+            def generate(follows, start, n):
+                """A list that starts with start and adds the most likely next word again and
+                again, until it holds n words or its last word has nothing after it."""
+                text = [start]
+                while len(text) < n:
+                    word = most_likely(follows, text[-1])
+                    if word is None:
+                        return text
+                    text.append(word)
+                return text
+
+
+            with open("story.txt", encoding="utf-8") as f:
+                words = f.read().split()
+
+            follows = next_counts(words)
+            print(follows.get("said"))
+            print(generate(follows, "the", 10))
+          why: 'Gives the least likely next word, the last in the sorted list.'
+        - code: |
+            def by_count(pair):
+                """Sort key: larger counts first, and equal counts in alphabetical order."""
+                word, count = pair
+                return (-count, word)
+
+
+            def next_counts(words):
+                """follows[a][b] is how many times the word b comes straight after the word a
+                in the list words."""
+                follows = {}
+                for i in range(len(words) - 1):
+                    a = words[i]
+                    b = words[i + 1]
+                    if a not in follows:
+                        follows[a] = {}
+                    follows[a][b] = follows[a].get(b, 0) + 1
+                return follows
+
+
+            def most_likely(follows, word):
+                """The word that most often follows word, with ties going to the word first in
+                alphabetical order, or None if nothing follows word."""
+                if word not in follows:
+                    return None
+                return sorted(follows[word].items(), key=by_count)[0][0]
+
+
+            def generate(follows, start, n):
+                """A list that starts with start and adds the most likely next word again and
+                again, until it holds n words or its last word has nothing after it."""
+                text = [start]
+                while len(text) < n:
+                    word = most_likely(follows, start)
+                    if word is None:
+                        return text
+                    text.append(word)
+                return text
+
+
+            with open("story.txt", encoding="utf-8") as f:
+                words = f.read().split()
+
+            follows = next_counts(words)
+            print(follows.get("said"))
+            print(generate(follows, "the", 10))
+          why: 'Asks for the word after `start` every time, not after the last word written.'
+        - code: |
+            def by_count(pair):
+                """Sort key: larger counts first, and equal counts in alphabetical order."""
+                word, count = pair
+                return (-count, word)
+
+
+            def next_counts(words):
+                """follows[a][b] is how many times the word b comes straight after the word a
+                in the list words."""
+                follows = {}
+                for i in range(len(words) - 1):
+                    a = words[i]
+                    b = words[i + 1]
+                    if a not in follows:
+                        follows[a] = {}
+                    follows[a][b] = follows[a].get(b, 0) + 1
+                return follows
+
+
+            def most_likely(follows, word):
+                """The word that most often follows word, with ties going to the word first in
+                alphabetical order, or None if nothing follows word."""
+                if word not in follows:
+                    return None
+                return sorted(follows[word].items(), key=by_count)[0][0]
+
+
+            def generate(follows, start, n):
+                """A list that starts with start and adds the most likely next word again and
+                again, until it holds n words or its last word has nothing after it."""
+                text = [start]
+                while len(text) < n:
+                    text.append(most_likely(follows, text[-1]))
+                return text
+
+
+            with open("story.txt", encoding="utf-8") as f:
+                words = f.read().split()
+
+            follows = next_counts(words)
+            print(follows.get("said"))
+            print(generate(follows, "the", 10))
+          why: 'Never stops at a word that nothing follows, so it adds `None`.'
+        - code: |
+            def by_count(pair):
+                """Sort key: larger counts first, and equal counts in alphabetical order."""
+                word, count = pair
+                return (-count, word)
+
+
+            def next_counts(words):
+                """follows[a][b] is how many times the word b comes straight after the word a
+                in the list words."""
+                follows = {}
+                for i in range(len(words) - 1):
+                    a = words[i]
+                    b = words[i + 1]
+                    if a not in follows:
+                        follows[a] = {}
+                    follows[a][b] = follows[a].get(b, 0) + 1
+                return follows
+
+
+            def most_likely(follows, word):
+                """The word that most often follows word, with ties going to the word first in
+                alphabetical order, or None if nothing follows word."""
+                if word not in follows:
+                    return None
+                return sorted(follows[word].items(), key=by_count)[0][0]
+
+
+            def generate(follows, start, n):
+                """A list that starts with start and adds the most likely next word again and
+                again, until it holds n words or its last word has nothing after it."""
+                text = [start]
+                while len(text) <= n:
+                    word = most_likely(follows, text[-1])
+                    if word is None:
+                        return text
+                    text.append(word)
+                return text
+
+
+            with open("story.txt", encoding="utf-8") as f:
+                words = f.read().split()
+
+            follows = next_counts(words)
+            print(follows.get("said"))
+            print(generate(follows, "the", 10))
+          why: 'Writes one word too many.'
+      files:
+        story.txt: |
+          the queen said off with his head
+          the king said nothing
+          the queen said off with her head
+          the cat said nothing at all
+    explanation: >-
+      `next_counts` goes through the neighbouring pairs, `words[i]` and `words[i + 1]` for `i` up to
+      `len(words) - 2`, and adds 1 to the count of each, making the inner dict the first time a word
+      is met. `most_likely` sorts the word's next words with
+      `sorted(follows[word].items(), key=by_count)` and takes the word of the first pair. `generate` keeps asking for the most likely word after the last one it wrote,
+      and stops when the list is long enough or the answer is `None`.
+
+  - id: breakit-nfc
+    phase: build
+    kind: breakit
+    concept: E1.12/tokenising
+    title: Two ways to type é
+    prompt: Predict what happens after the change, then run both versions to see.
+    answer:
+      type: breakit
+      code: |
+        import unicodedata
+
+        words = ["café", "au", "lait", "cafe\u0301", "noir"]
+        counts = {}
+        for w in words:
+            w = unicodedata.normalize("NFC", w)
+            counts[w] = counts.get(w, 0) + 1
+        print(counts["café"])
+      broken: |
+        import unicodedata
+
+        words = ["café", "au", "lait", "cafe\u0301", "noir"]
+        counts = {}
+        for w in words:
+            counts[w] = counts.get(w, 0) + 1
+        print(counts["café"])
+      change: The loop no longer puts each word in NFC before it counts it.
+      options:
+        - { id: same, label: 'It still prints `2`', when: "error is None and output.strip() == '2'" }
+        - { id: one, label: 'It prints `1`', when: "error is None and output.strip() == '1'" }
+        - { id: keyerror, label: 'Python stops with `KeyError`', when: "error is not None" }
+    explanation: >-
+      The word typed with é as one code point and the word typed with e and an accent are different
+      strings, though they print alike, so without NFC the dict counts them under two keys, once
+      each, and `counts["café"]` finds only the first: 1.
+
+  # Explain --------------------------------------------------------------------
+  - id: explain-tool
+    phase: explain
+    kind: explain
+    concept: E1.12/tokenising
+    covers: [E1.12/word-frequencies, E1.12/next-word-counts]
+    title: A text tool, simply
+    prompt: >-
+      Explain to your friend why `split` and a dict will miscount the chat's words, and what a
+      tokeniser does instead, with an example; why a word in Hindi needs more than `isalpha`; and
+      why the same word typed on two devices can count as two words, and what mends that. Then
+      explain what their counts will look like by Zipf's law, and why about half the different
+      words will appear only once. Then explain what the writer will do and why, what to do
+      instead, and why a table of word pairs knows so little. Last, suggest tests for the
+      tokeniser: some examples, and one property.
+    answer:
+      type: text
+      rubric:
+        - { id: split, criterion: 'Says why `split` and a dict miscount: `split` cuts only at whitespace, so capitals and punctuation make one word several keys, with an example, and that a tokeniser lowers the case and keeps only runs of the characters that can be part of a word.' }
+        - { id: scripts, criterion: 'Says that Hindi''s vowel signs and the sign that joins consonants are marks, not letters, so `isalpha` cuts words at them, and a tokeniser keeps characters whose Unicode category begins with L, M or N; and that one word can be typed as different code points, such as é as one character or as e and an accent, which putting the text in NFC first mends.' }
+        - { id: zipf, criterion: 'Says that by Zipf''s law count times rank stays roughly the same, so a few words make up much of the chat, and why about half the different words appear once: if the word at rank r appears C/r times, the ranks from about C/2 to C each appear once.' }
+        - { id: loop, criterion: 'Says that always adding the likeliest next word falls into a loop, since each next word depends only on the word before it and among a limited number of words some word must come round again, and that drawing each next word at random in proportion to the counts avoids the loop.' }
+        - { id: sparse, criterion: 'Says why a table of word pairs knows so little: a text has about as many neighbouring pairs as words, far fewer than the square of the number of different words, so most possible pairs never appear and the table can say nothing about them.' }
+        - { id: tests, criterion: 'Suggests examples that say exactly which words are right, such as an empty text, one word, a word with an apostrophe and a word in Hindi, and a property, such as that the words of two texts joined with a space are the words of the first followed by the words of the second.' }
+      reference: >-
+        `split` cuts only at whitespace and changes nothing else, so it keeps capitals and
+        punctuation, and the dict counts "Haan", "haan" and "haan!" as three different words. A
+        tokeniser lowers the case and keeps only the runs of characters that can be part of a word,
+        so all three become "haan", with an apostrophe kept only between two such characters, as in
+        "don't". `isalpha` is not enough for Hindi. In नमस्ते, the sign ् that joins two consonants
+        and the vowel sign े are marks, not letters, so a tokeniser built on `isalpha` cuts the word
+        in two and drops a piece. Unicode gives every character a category, and the tokeniser should
+        keep each character whose category begins with L, M or N: a letter, a mark or a digit. The
+        same word typed on two devices can still count twice, because Unicode allows more than one
+        way to type it: é can arrive as one code point from one keyboard and as an e followed by an
+        accent from another program.
+        They look the same but are different strings, so the dict keeps two keys. Putting the whole
+        text in one form first, with `unicodedata.normalize("NFC", text)`, mends it. The counts will
+        be very uneven. By Zipf's law the word at rank r appears about C/r times, so count times rank
+        stays roughly the same: the 100th commonest word appears about a tenth as often as the
+        10th, 48 times against 386 in *Alice*. A handful of words will make up much of the chat, followed by a long tail of rare
+        ones. If the law were exact, the words at ranks from C/2 to C would each appear once, which
+        is half of the C different words; in Alice it is 43%. The writer will soon repeat itself,
+        such as "the queen and the queen and" for ever. Each next word depends only on the word
+        before it, and there are only V different words, so within V + 1 words some word comes round
+        again, and from there everything repeats. Instead, draw each next word at random, in
+        proportion to its count, with `random.choices`. Even then the table knows little: a chat of
+        50,000 words has under 50,000 neighbouring pairs, but with 5,000 different words there are
+        25 million possible pairs, so at most 0.2% of them can ever be seen, and the table can say
+        nothing about the rest. For tests, start with examples that say exactly what is right: an
+        empty text gives no words, "Hi" gives ["hi"], "Don't panic!" gives ["don't", "panic"], and
+        नमस्ते gives one word, not two. Then a property: for any two texts a and b, the words of
+        a + " " + b are the words of a followed by the words of b. Check it on thousands of random
+        texts made of Latin and Devanagari letters, marks, apostrophes and spaces, and shrink any
+        failure to a small case.
+      minWords: 120
+      maxWords: 600
+    explanation: >-
+      A strong answer says that `split` keeps capitals and punctuation, so one word becomes several
+      keys, and that a tokeniser lowers the case and keeps runs of word characters; that Hindi's
+      vowel signs and joining sign are marks, so a tokeniser keeps categories L, M and N rather than
+      only what `isalpha` accepts, and that NFC puts a word typed as different code points in one
+      form; that by Zipf's law count times rank stays about the same, and about half the different
+      words appear once; that always taking the likeliest next word loops, since each word fixes
+      the next and some word must come round again, while drawing in proportion to the counts does
+      not; that most possible pairs never appear; and that tests need exact examples and a property
+      such as the join.

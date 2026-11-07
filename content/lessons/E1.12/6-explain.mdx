@@ -1,0 +1,27 @@
+The test of understanding is explaining it simply to someone who was not there. Your friend knows Python's strings, lists and dicts. They have saved a year of their family's group chat as a text file, messages in Hindi and in English typed on several phones and computers, and want to know which words the family uses most. Their plan is to cut the text into words with `split()` and count the pieces with a dict. Then they want a writer that makes up new messages in the family's style, by starting from a word and always adding the word that most often comes next.
+
+<Exercise id="explain-tool" />
+
+## Where this leads
+
+A tool for text starts by deciding what a word is, and every count after it depends on that decision. This lesson's tool cut words by Unicode's categories, ranked them with a key that never leaves the order to chance, and counted which word comes next, with examples and a property to keep each part right. Its counts showed two facts that shape language models: a few words make up much of any text while most of its different words are rare, and a table of what follows what has seen almost none of the pairs that could occur.
+
+<Foreshadow lesson="L4.1">
+
+A table of next-word counts is a language model, the simplest one. L4.1 turns the counts into probabilities, scores a model by how surprised it is by text it has not seen, and builds models that learn what words have in common, so that a pair of words never seen together can still get a sensible probability.
+
+</Foreshadow>
+
+<Foreshadow lesson="L4.10">
+
+The puzzle's writer is greedy decoding, and its loop is a known failure of language models that always take their likeliest token. L4.10 studies the other ways to choose the next token: drawing it in proportion to the probabilities, as this lesson's figure did, with a temperature that sharpens or flattens them, and drawing only from the likeliest few.
+
+</Foreshadow>
+
+<Foreshadow lesson="E9.2">
+
+Text gathered from the web comes in every script and in both Unicode forms. E9.2 cleans it for training: it pulls the text out of web pages, normalises it, as this lesson did with NFC, and tells which language each document is in from counts like this lesson's.
+
+</Foreshadow>
+
+<MixedCheck />

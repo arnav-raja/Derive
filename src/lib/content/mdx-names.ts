@@ -43,6 +43,8 @@ export const MDX_COMPONENT_NAMES = [
   "ShuffleBuffer",
   "ComplexPlane",
   "EulerSteps",
+  "WordRanks",
+  "NextWords",
 ] as const;
 
 export type MdxComponentName = (typeof MDX_COMPONENT_NAMES)[number];

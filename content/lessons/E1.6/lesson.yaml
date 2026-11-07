@@ -36,7 +36,7 @@ concepts:
         of each byte say where a character starts and how many bytes it has, so a byte from 128 to
         191 never starts a character. `len` counts code points, which need not be the syllables
         and letters a reader sees, and a string's bytes can number up to four times its characters.
-      usedBy: [L4.2, E9.2]
+      usedBy: [L4.2, E9.2, E1.12]
     - id: E1.6/files
       name: Reading and writing files
       summary: >-

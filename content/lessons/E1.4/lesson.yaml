@@ -34,7 +34,7 @@ concepts:
         gives the default for a missing key. A set holds each value at most once. Both work out from
         the key itself where to look, so finding a key takes about the same time however many keys
         there are.
-      usedBy: [E1.6, E1.10, E9.3, E8.4]
+      usedBy: [E1.6, E1.10, E9.3, E8.4, E1.12]
     - id: E1.4/aliasing-and-mutation
       name: Aliasing and mutation
       summary: >-

@@ -1,0 +1,61 @@
+This lesson builds on E1.4's dictionaries, E1.6's strings and characters, and E1.9's tests. Five quick questions check that they are ready. Answer from memory, without running anything. A miss opens a short re-teach straight away.
+
+<Exercise id="recall-length" />
+
+<Reteach for="recall-length">
+
+<Callback lesson="E1.6">
+
+`len` counts code points, the numbers Unicode gives characters, not the shapes on the screen. नमस्ते is drawn as three clusters, but it is six code points: न, म, स, the sign ् that joins स to the next letter, त, and the sign े that gives त its vowel. So `len("नमस्ते")` is 6, and UTF-8 stores each of them in three bytes, 18 in all.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-counts" />
+
+<Reteach for="recall-counts">
+
+<Callback lesson="E1.4">
+
+`counts.get(w, 0)` gives the count kept under `w`, or 0 when `w` is not a key yet, so `counts[w] = counts.get(w, 0) + 1` adds 1 to a word's count, starting it at 1 the first time. After the loop, `"be"` has been seen twice, so `counts["be"]` is 2, and `counts.get("is", 0)` is 0, since `"is"` never appeared. `counts["is"]` would stop the program with a `KeyError`.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-split" />
+
+<Reteach for="recall-split">
+
+<Callback lesson="E1.6">
+
+`split(" ")` cuts at every single space and keeps an empty field where nothing stands between two of them, so `"the  cat".split(" ")` is `['the', '', 'cat']`: three items. `split()` with nothing in the brackets cuts at any run of spaces, tabs and newlines and drops the empty pieces, so `"the  cat".split()` is `['the', 'cat']`.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-seed" />
+
+<Reteach for="recall-seed">
+
+<Callback lesson="E1.9">
+
+`random.seed(1)` starts the generator from a fixed place, so the program makes the same "random" inputs every time it runs. A property-based test wants that: when an input makes the property fail, running the test again makes the same input again, so the failure can be looked at, fixed and checked. A different seed gives different inputs, which is a way to try more of them.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-shrink" />
+
+<Reteach for="recall-shrink">
+
+<Callback lesson="E1.9">
+
+A random input that fails is usually large and full of things that have nothing to do with the bug. Shrinking takes out one item at a time and keeps each removal only if the property still fails. Repeated until no single removal still fails, it leaves a small input that shows the bug and little else.
+
+</Callback>
+
+</Reteach>

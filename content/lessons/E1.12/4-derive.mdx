@@ -1,0 +1,47 @@
+The Explore phase built the tool's parts and ran them on *Alice*. Now prove what they do: why always writing the commonest next word must repeat itself, how many neighbouring pairs two texts make when they are joined, what Zipf's law says about the words that appear only once, and how few of the possible pairs of words any book can show.
+
+## Why the writer repeats
+
+Two facts carry the proof. When more things than there are values each take one of the values, two of them share one: put 5 letters into 4 pigeonholes and some hole gets two, which is why this is called the *pigeonhole principle*. And a statement that holds at the start, and that each step keeps true, holds at every step, as E1.2's loop invariants did: true before the loop, kept by every pass, and so true at every check. For a statement about every whole number $k$, mathematicians call this *induction*.
+
+<Exercise id="derive-loop" />
+
+<Reveal for="derive-loop">
+
+For *Alice*, $V$ is 2,630, and the loop came round after three words. The proof never used the counts, only that the next word is fixed by the word before it, so it holds for any table and any way of choosing that looks one word back and never at random. A writer that looks two words back has more to go on, but it too can only be in so many places, the pairs of words, so it too must repeat in the end, unless it reaches a pair that nothing in the book follows, as nothing follows *Alice*'s last two words, "summer days". Drawing at random escapes the proof, since the same word need not be followed by the same word twice.
+
+## Joining two texts
+
+E1.9 looked ahead to a property of this tool: the word counts of two texts joined with a space should add up. Every word of `a + " " + b` is a word of `a` or a word of `b`, since the space ends `a`'s last word and starts nothing. The neighbouring pairs, which the next-word table counts, are another matter.
+
+<Exercise id="derive-join" />
+
+</Reveal>
+
+<Reveal for="derive-join">
+
+So the next-word counts of the joined text are those of the two texts added up, plus 1 for the pair across the join, `a`'s last word followed by `b`'s first. A property test for `next_counts` must expect that 1, or it fails on a right program.
+
+## The words that appear once
+
+Zipf's law says the word at rank $r$ appears about $\frac{C}{r}$ times. Take it as exact, with rounding down, and see what it says about the rarest words.
+
+<Exercise id="derive-once" />
+
+</Reveal>
+
+<Reveal for="derive-once">
+
+In the same way, a count of exactly 2 needs $\frac{C}{3} < r \le \frac{C}{2}$, about $\frac{C}{6}$ words, a sixth of them. *Alice* has 43% of its words once and 15.5% twice, against the law's 50% and about 17%: close, for a rule that is only rough at the ends. So in a long text that follows the law, about half the different words are seen once, and each new text brings words the counts have never seen.
+
+## How many pairs a book can show
+
+<Exercise id="derive-sparse" />
+
+</Reveal>
+
+<Reveal for="derive-sparse">
+
+In fact *Alice* shows 14,734 different pairs, about 0.2% of the 6,916,900 possible ones, and three quarters of the pairs it shows appear only once. A table of next-word counts built from it has nothing to say about 99.8% of the pairs, even where a pair is perfectly good English. A longer book helps less than it seems, since its new pairs come with new words, as Zipf's law says. The table has seen "little door" 6 times and "small door" never. A language model fills the gaps by learning what words have in common, so that what it learns about "little door" carries over to "small door".
+
+</Reveal>

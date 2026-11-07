@@ -26,7 +26,7 @@ concepts:
         likely it seemed. It is tested by working out what it predicts before running anything,
         and then looking. Changing one thing at a time keeps each test about one hypothesis, and a
         fix that works does not show which hypothesis was true.
-      usedBy: [E1.9, E10.1, E10.3]
+      usedBy: [E1.9, E10.1, E10.3, E1.12]
     - id: E1.8/observation
       name: Choosing an observation
       summary: >-
@@ -36,7 +36,7 @@ concepts:
         in order, each against an estimate made beforehand, finds the first wrong one, and the
         mistake lies in the step that made it. An error message is an observation too: its type,
         the line where Python stopped, which need not be the line of the cause, and its details.
-      usedBy: [E3.5, E3.6, E10.3]
+      usedBy: [E3.5, E3.6, E10.3, E1.12]
     - id: E1.8/bisection
       name: Bisection
       summary: >-

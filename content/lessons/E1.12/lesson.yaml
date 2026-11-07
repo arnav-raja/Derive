@@ -1,0 +1,112 @@
+code: E1.12
+title: "Project: a tested text-statistics tool"
+course: E1
+status: ready
+summary: >-
+  A program reads Alice's Adventures in Wonderland, counts which word follows which, and writes by
+  always adding the word that most often comes next. What does it write? A project: a tool that
+  cuts text into words in any script, counts words and sentences, ranks the words, and predicts
+  the next word, with the unit tests and property tests that keep it right.
+sittings: 2
+minutes:
+  puzzle: 10
+  recall: 10
+  explore: 50
+  derive: 35
+  build: 75
+  explain: 25
+concepts:
+  taught:
+    - id: E1.12/tokenising
+      name: Cutting text into words and sentences
+      summary: >-
+        `text.split()` cuts only at spaces, so capitals and punctuation make one word look like
+        several. A tokeniser lowers the case and keeps runs of the characters that can be part of
+        a word, and Unicode says which those are: `unicodedata.category(ch)` begins with `L` for a
+        letter, `M` for a mark and `N` for a digit or other number, and Hindi's vowel signs and
+        virama are marks, so a tokeniser built on `isalpha`, or on the `re` module's `\w`, cuts
+        नमस्ते in two. An apostrophe belongs to a word only between two word characters; at either
+        end it is a quotation mark. The same text can be typed as different code points, é as one
+        character or as e and an accent, so a tool puts its text in one form first with
+        `unicodedata.normalize("NFC", text)`. A sentence ends at `.`, `!` or `?` followed by
+        whitespace, a closing quotation mark or the end of the text, a rule that still counts the
+        full stop of "Mr." as an end.
+      usedBy: [L4.1, E9.2]
+    - id: E1.12/word-frequencies
+      name: Word frequencies
+      summary: >-
+        A dictionary counts each word, and `sorted(counts.items(), key=...)` ranks them, most
+        common first, with ties broken by the word so that the order never depends on chance;
+        tuples compare item by item, so the key `(-count, word)` does both. In a long text, a
+        word's count times its rank stays roughly the same from rank to rank (Zipf's law): in
+        Alice's Adventures in Wonderland the 10 commonest words are a quarter of its 26,688 words,
+        and 1,143 of its 2,630 different words appear only once. If the count at rank $r$ were
+        exactly $\frac{C}{r}$ rounded down, half the different words would appear once.
+      usedBy: [L4.1, E9.2]
+    - id: E1.12/next-word-counts
+      name: Next-word counts
+      summary: >-
+        A table of how often each word follows each other word predicts the next word: after
+        "said", Alice's Adventures in Wonderland has "the" 210 times in 462. Always adding the
+        likeliest next word repeats a loop once any word comes round again, which with $V$
+        different words happens within $V + 1$ words, since each next word depends only on the
+        word before it. Choosing at random in proportion to the counts wanders instead. Most pairs
+        are never seen: the book's 26,687 neighbouring pairs show 14,734 of the $2{,}630^2$
+        possible ones, about 0.2%.
+      usedBy: [L4.1, L4.10]
+  used:
+    - E1.9/unit-tests
+    - E1.9/test-cases
+    - E1.9/properties
+    - E1.9/shrinking
+    - E1.6/strings-as-sequences
+    - E1.6/unicode-and-bytes
+    - E1.6/files
+    - E1.6/parsing-and-formatting
+    - E1.4/dicts-and-sets
+    - E1.3/abstraction
+    - E1.2/accumulator-pattern
+    - E1.2/conditions
+    - E1.8/hypothesis
+    - E1.8/observation
+links:
+  requires:
+    - lesson: E1.6
+      bridge: >-
+        E1.6 counted the six characters of नमस्ते, read files a line at a time and cut lines into
+        fields with `split`. This lesson cuts whole texts into words, in any script, and finds that
+        two of those six characters are not letters at all.
+    - lesson: E1.9
+      bridge: >-
+        E1.9 built a test runner, chose cases at the edges, and checked properties on random inputs
+        that it then shrank. This lesson builds a tool with its tests from the start: cases for an
+        empty text and a text of one word, and the property that the word counts of two texts
+        joined with a space add up.
+  applies:
+    - lesson: E1.4
+      bridge: >-
+        E1.4's commonest use of a dict, `counts[w] = counts.get(w, 0) + 1`, counts every word of a
+        novel here, and a dict of dicts counts which word follows which.
+    - lesson: E1.3
+      bridge: >-
+        Each part of the tool is a function with a contract, `tokens`, `word_counts`,
+        `count_sentences`, so that the tests check the contract and the parts can be changed one at
+        a time, as E1.3's abstraction promised.
+  foreshadows:
+    - lesson: L4.1
+      bridge: >-
+        A table of next-word counts is a language model, the simplest one. L4.1 turns the counts
+        into probabilities, scores a model by how surprised it is by text it has not seen, and
+        builds models that learn what words have in common, so that a pair of words never seen
+        together can still get a sensible probability.
+    - lesson: L4.10
+      bridge: >-
+        The puzzle's writer is greedy decoding, and its loop is a known failure of language models
+        that always take their likeliest token. L4.10 studies the other ways to choose the next
+        token: drawing it in proportion to the probabilities, with a temperature that sharpens or
+        flattens them, and drawing only from the likeliest few.
+    - lesson: E9.2
+      bridge: >-
+        Text gathered from the web comes in every script and in both Unicode forms. E9.2 cleans it
+        for training: it pulls the text out of web pages, normalises it, as this lesson did with
+        NFC, and tells which language each document is in from counts like this lesson's.
