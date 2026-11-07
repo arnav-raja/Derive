@@ -35,16 +35,22 @@ describe("bufferShuffle", () => {
   });
 
   it("never hands out the item at place p before place p - k + 1, and reaches that place", () => {
+    // Gathered and asserted once: an expect for each item of 7,200 shuffles took seconds.
+    const early: string[] = [];
+    const furthest: number[] = [];
     for (let k = 1; k <= STREAM_LENGTH; k++) {
-      let furthest = 0;
+      let most = 0;
       for (let seed = 1; seed <= 200; seed++) {
         bufferShuffle(stream(), k, seed).forEach((item, j) => {
-          expect(j).toBeGreaterThanOrEqual(item.place - k + 1);
-          furthest = Math.max(furthest, item.place - j);
+          if (j < item.place - k + 1) early.push(`buffer ${k}, seed ${seed}: place ${item.place} out at ${j}`);
+          most = Math.max(most, item.place - j);
         });
       }
-      expect(furthest).toBe(k - 1);
+      furthest.push(most);
     }
+    expect(early).toEqual([]);
+    // With a buffer of k, the furthest any item comes forward is k - 1 places.
+    expect(furthest).toEqual(Array.from({ length: STREAM_LENGTH }, (_, i) => i));
   });
 
   it("gives the same order for the same seed, and a different one for another", () => {

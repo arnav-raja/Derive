@@ -7,33 +7,40 @@ const key = ([r, c]: Square) => `${r},${c}`;
 describe("tiling", () => {
   for (const width of [2, 4, 8, 16]) {
     it(`covers every ${width} by ${width} grid, wherever the cut square is, once each`, () => {
+      // The checks are gathered and asserted once: an expect for each square of every 16 by 16
+      // tiling took seconds, close to the runner's timeout.
+      const problems: string[] = [];
       for (let r = 0; r < width; r++) {
         for (let c = 0; c < width; c++) {
+          const where = `cut at ${r},${c}`;
           const { tiles, blocks } = tiling(width, [r, c]);
-          expect(tiles).toHaveLength(tilesFor(width));
+          if (tiles.length !== tilesFor(width)) problems.push(`${where}: ${tiles.length} tiles`);
           const seen = new Map<string, number>();
           for (const t of tiles) {
-            expect(t.squares).toHaveLength(3);
+            if (t.squares.length !== 3) problems.push(`${where}: a tile of ${t.squares.length} squares`);
             for (const s of t.squares) {
               // Each tile's squares lie in its 2 by 2 block, and the left-out square is not among them.
-              expect(s[0] - t.top).toBeGreaterThanOrEqual(0);
-              expect(s[0] - t.top).toBeLessThan(2);
-              expect(s[1] - t.left).toBeGreaterThanOrEqual(0);
-              expect(s[1] - t.left).toBeLessThan(2);
-              expect((s[0] - t.top) * 2 + (s[1] - t.left)).not.toBe(t.gap);
+              const down = s[0] - t.top;
+              const across = s[1] - t.left;
+              if (down < 0 || down > 1 || across < 0 || across > 1) problems.push(`${where}: ${key(s)} lies outside its block`);
+              if (down * 2 + across === t.gap) problems.push(`${where}: ${key(s)} is its tile's left-out square`);
               seen.set(key(s), (seen.get(key(s)) ?? 0) + 1);
             }
           }
-          expect(seen.has(key([r, c]))).toBe(false);
-          expect(seen.size).toBe(width * width - 1);
-          expect([...seen.values()].every((v) => v === 1)).toBe(true);
+          if (seen.has(key([r, c]))) problems.push(`${where}: the cut square is covered`);
+          if (seen.size !== width * width - 1) problems.push(`${where}: ${seen.size} squares covered`);
+          if (![...seen.values()].every((v) => v === 1)) problems.push(`${where}: a square is covered twice`);
           // Level k has 4^(k-1) blocks, each with one tile across its centre.
           for (let k = 1; k <= levelsFor(width); k++) {
-            expect(blocks.filter((b) => b.level === k)).toHaveLength(4 ** (k - 1));
-            expect(tiles.filter((t) => t.level === k)).toHaveLength(4 ** (k - 1));
+            const levelBlocks = blocks.filter((b) => b.level === k).length;
+            const levelTiles = tiles.filter((t) => t.level === k).length;
+            if (levelBlocks !== 4 ** (k - 1) || levelTiles !== 4 ** (k - 1)) {
+              problems.push(`${where}: level ${k} has ${levelBlocks} blocks and ${levelTiles} tiles`);
+            }
           }
         }
       }
+      expect(problems).toEqual([]);
     });
   }
 
