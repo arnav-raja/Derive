@@ -10,6 +10,7 @@ Every public function takes and returns a JSON string.
 """
 
 import ast
+import cmath
 import contextlib
 import io
 import json
@@ -224,8 +225,10 @@ def _execute(code, max_steps, stdin=None, files=None):
 
 
 def close(a, b, rel=1e-9, abs_tol=1e-12):
-    """True when two numbers agree to a relative tolerance."""
+    """True when two numbers, real or complex, agree to a relative tolerance."""
     try:
+        if isinstance(a, complex) or isinstance(b, complex):
+            return cmath.isclose(complex(a), complex(b), rel_tol=rel, abs_tol=abs_tol)
         return math.isclose(float(a), float(b), rel_tol=rel, abs_tol=abs_tol)
     except (TypeError, ValueError, OverflowError):
         return False
@@ -820,6 +823,9 @@ def _refuse_negative_function_power(text):
         raise _NegativeFunctionPower(m.group(1))
 
 
+_SUPERSCRIPT_DIGITS = str.maketrans("⁰¹²³⁴⁵⁶⁷⁸⁹", "0123456789")
+
+
 def _parse(text, names, evaluate=True):
     import sympy
     from sympy.parsing.sympy_parser import (
@@ -850,6 +856,8 @@ def _parse(text, names, evaluate=True):
     cleaned = (
         text.replace("×", "*").replace("·", "*").replace("−", "-").replace("÷", "/").strip()
     )
+    # a² typed with a raised digit is a^2, as on paper.
+    cleaned = re.sub("[⁰¹²³⁴⁵⁶⁷⁸⁹]+", lambda m: "^" + m.group(0).translate(_SUPERSCRIPT_DIGITS), cleaned)
     _refuse_negative_function_power(cleaned)
     # β typed as itself stands for the step's beta, when the step has one; spaces keep 2β and βk
     # products, as 2 beta and beta k.
@@ -1037,9 +1045,12 @@ def check_expression(payload):
     unknown = _undefined_names(expr, table)
     if unknown:
         allowed = ", ".join(sorted(table)) or "no letters"
+        # The answer is always a real expression, so an i is most likely the number whose square is -1.
+        advice = (" If you meant the number i, whose square is -1, the answer here is a real number,"
+                  " such as the part that multiplies i, so leave the i out." if unknown == ["i"]
+                  else " Write products with * if you meant a product.")
         return {"status": "unknown-names", "latex": shown,
-                "message": f"This step uses only {allowed}, but your answer has {', '.join(unknown)}."
-                           " Write products with * if you meant a product."}
+                "message": f"This step uses only {allowed}, but your answer has {', '.join(unknown)}.{advice}"}
     for point, expected_text in zip(payload["points"], payload["values"]):
         got = evaluate_at(expr, table, point)
         expected = sympy.Float(expected_text, 30)

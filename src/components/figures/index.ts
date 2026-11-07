@@ -1,3 +1,5 @@
+export { ComplexPlane } from "./complex-plane";
+export { EulerSteps } from "./euler-steps";
 export { ExpressionTree } from "./expression-tree";
 export { FloatLine } from "./float-line";
 export { FourTriangles } from "./four-triangles";

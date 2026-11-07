@@ -29,7 +29,7 @@ concepts:
         For a positive base $b$ other than 1, $\log_b x$ is the power of $b$ that gives $x$: the
         inverse of $b^x$, defined only for positive $x$. Base 10 counts powers of ten, and base 2
         counts doublings.
-      usedBy: [M11.1, M13.3, M3.6]
+      usedBy: [M11.1, M13.3, M3.6, M1.12]
     - id: M1.5/log-rules
       name: The rules for logarithms
       summary: >-

@@ -1,0 +1,156 @@
+## The number i
+
+No real number has a negative square: a positive number times itself is positive, and so is a negative number times itself. So invent one. Call it $i$, and ask only two things of it: that $i^2 = -1$, and that it obeys every rule of M1.2's algebra, so that it can be added, multiplied and multiplied out of brackets like any number. The numbers built from it, $a + bi$ for real numbers $a$ and $b$, are the *complex numbers*. $a$ is the *real part*, and $b$, the number that multiplies $i$, is the *imaginary part*. In Python, `1j` is $i$, `3 + 1j` is $3 + i$, and `complex(3, 1)` builds the same number from its two parts.
+
+A complex number is a pair of real numbers, and so is a point of the plane. Draw $a + bi$ as the point $(a, b)$: the real numbers are the first axis, and $i$ is the point $(0, 1)$, a step up from 0. Adding works part by part, $(2 + i) + (1 + 3i) = 3 + 4i$, which is laying an arrow from 0 to $(1, 3)$ on the end of an arrow from 0 to $(2, 1)$. Multiplying is where something new happens. Multiply out the brackets as M1.2 does, and put $-1$ wherever $i^2$ turns up.
+
+<Exercise id="explore-times-i" />
+
+<Reveal for="explore-times-i">
+
+Draw it. $3 + i$ is the point $(3, 1)$, and $-1 + 3i$ is the point $(-1, 3)$, which is $(3, 1)$ turned a quarter turn anticlockwise about 0, by M1.11's rule that a quarter turn takes $(x, y)$ to $(-y, x)$. It works for every point: $i(a + bi) = ai + bi^2 = -b + ai$, which is $(-b, a)$. So multiplying by $i$ turns the plane a quarter turn about 0, and multiplying by $i$ twice turns it half a turn, which takes 1 to $-1$. That is all $i^2 = -1$ says.
+
+René Descartes called these numbers *imaginary* in 1637, meaning it as a slight, and the name stuck. They are no more imaginary than the negative numbers, which Michael Stifel called absurd in 1544: they are the points of the plane, with a way of multiplying that turns.
+
+## Square roots of negative numbers
+
+$i^2 = -1$, and $(-i)^2 = (-1)^2 i^2 = -1$ as well, so $-1$ has two square roots, $i$ and $-i$, as 4 has 2 and $-2$. In the same way $(2i)^2 = 4i^2 = -4$, so $-4$ has the square roots $2i$ and $-2i$. M1.4's quadratic formula, which stopped at $\sqrt{b^2 - 4ac}$ when $b^2 - 4ac$ was negative, can now go on: $x^2 + 4x + 5 = 0$ has $b^2 - 4ac = -4$, so $x = \frac{-4 \pm 2i}{2} = -2 \pm i$. Check one: $(-2 + i)^2 + 4(-2 + i) + 5 = (3 - 4i) + (-8 + 4i) + 5 = 0$. Every quadratic has two solutions among the complex numbers, or one solution given twice. Python's `cmath` module, a `math` for complex numbers that `import cmath` brings in as `import math` brings in `math`, has a square root that takes any number: `cmath.sqrt(-4)` gives `2j`.
+
+## Multiplying two complex numbers
+
+Now multiply two complex numbers, neither of them $i$. Work it out by hand first.
+
+<Exercise id="explore-product" />
+
+</Reveal>
+
+<Reveal for="explore-product">
+
+In Python a complex number's two parts are `z.real` and `z.imag`, both floats: `((1 + 2j) * (3 - 1j)).imag` is `5.0`.
+
+## Length and conjugate
+
+The *length* of $z = a + bi$, written $|z|$, is the distance of the point $(a, b)$ from 0, which is $\sqrt{a^2 + b^2}$ by Pythagoras' theorem, and Python's `abs` gives it: `abs(3 + 4j)` is `5.0`. Mirroring $z$ in the first axis gives $a - bi$, the *conjugate* of $z$, written $\bar z$, and in Python `z.conjugate()`. A number times its conjugate is $(a + bi)(a - bi) = a^2 - abi + abi - b^2i^2 = a^2 + b^2$, a real number, the square of the length: $z\bar z = |z|^2$.
+
+Now compare the lengths in the product above.
+
+<Exercise id="explore-length" />
+
+</Reveal>
+
+<Reveal for="explore-length">
+
+A point has a direction as well as a length, so look at the directions too.
+
+## Length and angle
+
+As M1.11 found for any point of the plane, a complex number can be given by its two parts, or by its length $r$ and the angle $\theta$ that turns 1, the point $(1, 0)$, towards it. Its two parts are then $r\cos\theta$ and $r\sin\theta$, so
+$$z = r(\cos\theta + i\sin\theta),$$
+which is the *polar form* of $z$. In Python, `cmath.phase(z)` gives the angle, in radians from $-\pi$ to $\pi$ as `math.atan2` does, `cmath.polar(z)` gives the length and the angle together, and `cmath.rect(r, theta)` builds the number from them. So `cmath.phase(1j)` is `1.5707963267948966`, a quarter turn, and `cmath.polar(1 + 1j)` is `(1.4142135623730951, 0.7853981633974483)`: length $\sqrt{2}$ at angle $\frac{\pi}{4}$, which is $45°$. Going back, `cmath.rect(2, math.pi / 6)` is `(1.7320508075688774+0.9999999999999999j)`, which is $\sqrt{3} + i$ up to rounding.
+
+<Exercise id="explore-angle-sum" />
+
+</Reveal>
+
+<Reveal for="explore-angle-sum">
+
+The product's length is $\sqrt{2} \times 2$, about 2.83, and its angle is $45° + 30°$. The figure multiplies any two numbers $z$ and $w$, each set by its length and its angle. Move the sliders and see whether the rule ever fails.
+
+<ComplexPlane
+  title="Multiplying two complex numbers"
+  description="The plane of complex numbers, with the circle of radius 1 dashed. Arrows from 0 show two numbers, z and w, each set by sliders for its length, from 0.5 to 2, and its angle, from −180 to 180 degrees; at first z is 1 + i, of length √2 at 45 degrees, and w is √3 + i, of length 2 at 30 degrees. A thicker arrow shows their product zw, and two thick arcs at the centre show the angle of z and, just outside it, the angle of w, laid on from the end of the first. Sentences give z, w and zw by their parts, and the length and angle of zw beside the product of the two lengths and the sum of the two angles."
+  mode="product"
+  z={[1.41421356237, 45]}
+  w={[2, 30]}
+/>
+
+The Derive phase proves that the rule never fails: multiplying multiplies the lengths and adds the angles. It explains the puzzle. $1 + i$ has length $\sqrt{2}$ and angle $45°$, so each multiplication by it stretches by $\sqrt{2}$ and turns by $45°$, and its eighth power has length $\sqrt{2}^8 = 16$ and angle $8 \times 45° = 360°$, a whole turn: 16, on the first axis. The figure draws the powers of any number.
+
+<ComplexPlane
+  title="Powers of a complex number"
+  description="The plane of complex numbers, with the circle of radius 1 dashed, and the powers 1, z, z², and so on of a number z, each joined to the next. Sliders set the length of z, from 0.8 to 1.5, and its angle, from −180 to 180 degrees, at first 1 + i, of length √2 at 45 degrees, and a third slider sets the highest power drawn, from 1 to 24, at first 8. At first the powers wind once round 0, growing as they go, and the eighth lands on 16. Sentences give the highest power by its parts, with its length as the length of z raised to that power and its angle as that many times the angle of z."
+  mode="powers"
+  z={[1.41421356237, 45]}
+  count={8}
+/>
+
+## When is z³ = 1?
+
+The only real number whose cube is 1 is 1 itself. Among the complex numbers, use what multiplying does to lengths and angles.
+
+<Exercise id="explore-cube-roots" />
+
+</Reveal>
+
+<Reveal for="explore-cube-roots">
+
+The figure draws the powers of the number of length 1 at $120°$. Try other angles and powers, and look for the numbers whose powers come back to 1: which angles bring the fourth power back, or the fifth?
+
+<ComplexPlane
+  title="Powers that come back to 1"
+  description="The powers figure again, starting from the number of length 1 at 120 degrees, −1/2 + (√3/2)i, with powers up to the third: 1, z, z² at −120 degrees, and z³, which is 1 again. Sliders set the length and angle of z and the highest power, and sentences give the highest power, its length and its angle."
+  mode="powers"
+  z={[1, 120]}
+  count={3}
+/>
+
+The Derive phase finds every solution of $z^n = 1$.
+
+## Interest paid more and more often
+
+Turning is half of what this lesson is after. The other half starts with money. Jacob Bernoulli asked in 1683 what happens when interest is paid more and more often.
+
+<Exercise id="explore-compound" />
+
+</Reveal>
+
+<Reveal for="explore-compound">
+
+Python keeps $e$ as `math.e`, which prints `2.718281828459045`. Even a million payments fall short of it in the seventh figure: `(1 + 1/1000000) ** 1000000` gives `2.7182804690957534`.
+
+Interest at another rate gives a power of $e$. A year at $x$ times 100%, paid in $n$ parts, gives $\left(1 + \frac{x}{n}\right)^n$. For a positive $x$, write $n = xm$: then $\left(1 + \frac{x}{n}\right)^n = \left(1 + \frac{1}{m}\right)^{xm} = \left(\left(1 + \frac{1}{m}\right)^m\right)^x$, by the rule that a power of a power multiplies the exponents, which M1.5 used for every power. As $n$ grows so does $m$. It need not be a whole number, but $\left(1 + \frac{1}{m}\right)^m$ grows steadily with $m$, as the payments did, so it is caught between its values at the whole numbers either side of $m$, and settles on $e$ too. A number close to $e$, raised to the power $x$, is close to $e^x$, so the whole settles on $e^x$. A negative $x$, a year of losses, takes another step to show, and settles the same way: `(1 - 1/1000000) ** 1000000` gives `0.36787925722106646`, and $e^{-1} = 0.3678794\ldots$. So for every real number $x$, $e^x$ is where $\left(1 + \frac{x}{n}\right)^n$ settles as $n$ grows.
+
+## Interest at an imaginary rate
+
+Nothing in $\left(1 + \frac{x}{n}\right)^n$ needs $x$ to be real: it is one number multiplied by itself $n$ times, and complex numbers can be multiplied. So try an imaginary rate.
+
+<Exercise id="explore-euler" />
+
+</Reveal>
+
+<Reveal for="explore-euler">
+
+The figure draws the product as a chain. It starts at 1 and multiplies by $1 + \frac{i\theta}{n}$ again and again, $n$ times, marking each product while there are 40 steps or fewer. Multiplying a point $w$ by $1 + \frac{i\theta}{n}$ adds $\frac{i\theta}{n}w$ to it, which is $w$ turned a quarter turn by the $i$ and scaled by $\frac{\theta}{n}$, so each step leaves its corner at right angles to the line from 0, and the chain winds round 0. Start with a few steps and add more.
+
+<EulerSteps
+  title="Many small turns"
+  description="The plane of complex numbers, with the circle of radius 1 dashed, and a chain of short steps that starts at 1 and multiplies by 1 + iθ/n again and again, n times, marking each product while there are 40 steps or fewer. Sliders set the angle θ, from −360 to 360 degrees, at first 180, and the number of steps n, from 1 to 100, at first 4. A thick pale arc follows the circle from 1 through the angle θ, and a ring marks its end, cos θ + i sin θ. With few steps the chain spirals outwards and ends far from the ring; with many it hugs the circle and ends close to the ring. Sentences give each factor's length and angle and where the chain ends, and a table gives the end for 1, 2, 4, 10, 100, 1,000, 10,000 and 1,000,000 steps."
+  angle={180}
+  steps={4}
+/>
+
+As $n$ grows, $\left(1 + \frac{i\theta}{n}\right)^n$ settles on the point at angle $\theta$ on the circle of radius 1. For a real $x$, where $\left(1 + \frac{x}{n}\right)^n$ settles is M1.5's power $e^x$. For $x = i\theta$ there is no power to agree with, since "$e$ multiplied by itself $i\theta$ times" means nothing, so where $\left(1 + \frac{i\theta}{n}\right)^n$ settles is taken as what $e^{i\theta}$ means:
+$$e^{i\theta} = \cos\theta + i\sin\theta.$$
+This is *Euler's formula*, which Leonhard Euler published in 1748. It earns the name of a power because M1.2's rule for powers still holds for it, $e^{i\alpha}e^{i\beta} = e^{i(\alpha + \beta)}$, as the Derive phase shows. At $\theta = \pi$, half a turn, it says that $e^{i\pi} = -1$. Python's `cmath.exp` gives these powers of $e$: `cmath.exp(1j * math.pi)` gives `(-1+1.2246467991473532e-16j)`, which is $-1$ apart from M1.11's gap between `math.pi` and $\pi$. The Derive phase shows why the end of the chain comes to length 1 and to angle $\theta$.
+
+## The names
+
+<Definition term="Complex numbers">
+
+The numbers $a + bi$, with $a$ and $b$ real and $i^2 = -1$, drawn as the points $(a, b)$ of the plane: $a$ is the real part and $b$ the imaginary part. They add part by part, and multiply by multiplying out brackets with $-1$ put for $i^2$; multiplying by $i$ turns the plane a quarter turn about 0. The length $|z| = \sqrt{a^2 + b^2}$ and the conjugate $\bar z = a - bi$ have $z\bar z = |z|^2$. Every quadratic has two solutions among them. Python has `1j`, `complex(a, b)`, `z.real`, `z.imag`, `abs(z)`, `z.conjugate()` and `cmath.sqrt`.
+
+</Definition>
+
+<Definition term="Polar form">
+
+A complex number of length $r$ at angle $\theta$ is $r(\cos\theta + i\sin\theta)$. Multiplying two complex numbers multiplies their lengths and adds their angles, so $z^n$ has length $r^n$ and angle $n\theta$. Python's `cmath.phase`, `cmath.polar` and `cmath.rect` move between the two forms.
+
+</Definition>
+
+<Definition term="The number e">
+
+$e = 2.718281828\ldots$ is where $\left(1 + \frac{1}{n}\right)^n$, a year's interest of 100% paid in $n$ parts, settles as $n$ grows, and for any real number $x$, $e^x$ is where $\left(1 + \frac{x}{n}\right)^n$ settles; for an imaginary $x = i\theta$, that is what $e^{i\theta}$ is taken to mean. Python keeps $e$ as `math.e`, and `cmath.exp(1j * theta)` gives $e^{i\theta}$.
+
+</Definition>
+
+</Reveal>

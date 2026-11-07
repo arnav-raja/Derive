@@ -39,7 +39,7 @@ concepts:
       summary: >-
         Estimating a quantity by breaking it into factors you can guess, taking the geometric mean of
         your bounds, and judging the result by the factor it might be off by.
-      usedBy: [E1.4, E7.1, L6.10, M1.11]
+      usedBy: [E1.4, E7.1, L6.10, M1.11, M1.12]
       skill: 2
   used: []
 links:

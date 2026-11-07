@@ -1,0 +1,27 @@
+The test of understanding is explaining it simply to someone who was not there. Your friend knows school algebra and a little Python. They say that imaginary numbers are a trick that mathematicians made up to dodge an impossible equation, that nobody can picture them, and that $e^{i\pi} = -1$ must be mystical, since no power of 2.718 can be negative.
+
+<Exercise id="explain-euler" />
+
+## Where this leads
+
+Complex numbers are the points of the plane, multiplied so that they turn and stretch, and $e^{i\theta}$ is the turn through $\theta$. Anything that goes round, from a wave to a word's position, can be written with them.
+
+<Foreshadow lesson="M7.3">
+
+M7.3 looks for the directions that a matrix only stretches, its *eigenvectors*, and the amounts it stretches them by, its *eigenvalues*. A turn of the plane, other than a half or a whole turn, leaves no line through 0 where it was, so among the real numbers it has none. Among the complex numbers it has two, and they are $e^{i\theta}$ and $e^{-i\theta}$: the turn is multiplication by a complex number of length 1.
+
+</Foreshadow>
+
+<Foreshadow lesson="L4.7">
+
+L4.7 gives attention, which L4.6 builds, a sense of where each word sits: first the sines and cosines of the original Transformer, then rotary position embeddings. Each pair of a query's or a key's numbers is multiplied by $e^{im\theta}$ for a word at position $m$, at a rate $\theta$ of its own, so that the score between two words depends on their positions only through how far apart they are.
+
+</Foreshadow>
+
+<Foreshadow lesson="M12.5">
+
+The $n$ solutions of $z^n = 1$, evenly spaced round the circle, are the frequencies of the *discrete Fourier transform*, which writes any list of $n$ numbers as a sum of turning waves. Its fast form takes about $n\log_2 n$ steps instead of $n^2$, and it and its relatives sit inside the compression of sound and pictures and the quick multiplication of very large numbers.
+
+</Foreshadow>
+
+<MixedCheck />

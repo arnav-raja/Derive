@@ -1,0 +1,105 @@
+code: M1.12
+title: Complex numbers and Euler's formula
+course: M1
+status: ready
+summary: >-
+  Python has a number whose square is −1. What does it make of (1 + i)⁸? Numbers a + bi as points
+  of the plane, what multiplying them does, the angle-addition formulas in one line, where the
+  solutions of zⁿ = 1 lie, what interest paid more and more often comes to, and Euler's formula,
+  which joins e to turning.
+sittings: 2
+minutes:
+  puzzle: 10
+  recall: 10
+  explore: 50
+  derive: 45
+  build: 45
+  explain: 25
+concepts:
+  taught:
+    - id: M1.12/complex-numbers
+      name: Complex numbers
+      summary: >-
+        Numbers $a + bi$, where $i^2 = -1$, drawn as the points $(a, b)$ of the plane, with $a$ the
+        real part and $b$ the imaginary part. They add part by part, as arrows laid end to end, and
+        multiply by the distributive law with $-1$ put for $i^2$, so multiplying by $i$ turns the
+        plane a quarter turn. The conjugate $\bar z = a - bi$ is $z$ mirrored in the first axis,
+        the length is $|z| = \sqrt{a^2 + b^2}$, $z\bar z = |z|^2$, and dividing by $z$ is
+        multiplying by $\frac{\bar z}{|z|^2}$. Every quadratic has two solutions among them,
+        complex when $b^2 - 4ac < 0$. Python writes $i$ as `1j`, and has `complex(a, b)`, `.real`,
+        `.imag`, `abs`, `.conjugate()` and `cmath.sqrt`.
+      usedBy: [M7.3, M12.5]
+    - id: M1.12/polar-form
+      name: Polar form
+      summary: >-
+        A complex number given by its length $r$ and its angle $\theta$:
+        $z = r(\cos\theta + i\sin\theta)$, which `cmath.phase`, `cmath.polar` and `cmath.rect` move
+        between. Multiplying by $\cos\theta + i\sin\theta$ is M1.11's turn through $\theta$, so
+        multiplying two numbers multiplies their lengths and adds their angles, the angle-addition
+        formulas come from one product, and $z^n$ has length $r^n$ and angle $n\theta$. The $n$
+        solutions of $z^n = 1$ sit evenly spaced round the circle of radius 1, at the angles
+        $\frac{2\pi k}{n}$ for $k = 0, 1, \ldots, n - 1$.
+      usedBy: [M7.3, M12.5, L4.7]
+    - id: M1.12/eulers-formula
+      name: Euler's formula
+      summary: >-
+        $e = 2.71828\ldots$ is where $\left(1 + \frac{1}{n}\right)^n$, a year's interest of 100%
+        paid in $n$ parts, settles as $n$ grows, and $e^x$ is where
+        $\left(1 + \frac{x}{n}\right)^n$ settles. For an angle $\theta$,
+        $\left(1 + \frac{i\theta}{n}\right)^n$ is $n$ small turns of a little under
+        $\frac{\theta}{n}$ each, which stretch the length by almost nothing, so
+        $e^{i\theta} = \cos\theta + i\sin\theta$ and $e^{i\pi} = -1$. Python's `cmath.exp` gives
+        it, and $e^{i\alpha}e^{i\beta} = e^{i(\alpha + \beta)}$ is turning twice.
+      usedBy: [L4.7, M12.5]
+  used:
+    - M1.11/rotation
+    - M1.11/sine-and-cosine
+    - M1.11/radians
+    - M1.5/exponential-growth
+    - M1.5/logarithms
+    - M1.4/quadratics
+    - M1.2/field-axioms
+    - M1.2/equivalence
+    - M1.2/exponent-rules
+    - M1.1/fermi-estimation
+links:
+  requires:
+    - lesson: M1.5
+      bridge: >-
+        M1.5 gave powers a meaning for every number and named $e$, about 2.718, as the base of the
+        natural logarithm. This lesson builds $e$ from compound interest, and then gives a power of
+        $e$ a meaning for an imaginary exponent, where it turns instead of growing.
+    - lesson: M1.11
+      bridge: >-
+        M1.11 turned $(x, y)$ through $\theta$ to $(x\cos\theta - y\sin\theta,\; x\sin\theta +
+        y\cos\theta)$ and found the cosine of a sum by turning twice. Multiplying $x + iy$ by
+        $\cos\theta + i\sin\theta$ gives the same turn in one line of algebra, so multiplying
+        complex numbers is turning, and turning twice is multiplying twice.
+  applies:
+    - lesson: M1.4
+      bridge: >-
+        M1.4's quadratic formula stopped when $b^2 - 4ac$ was negative, since no real number has a
+        negative square. With $i$, $\sqrt{-4}$ is $2i$, and $x^2 + 4x + 5 = 0$ has the two solutions
+        $-2 \pm i$.
+    - lesson: M1.2
+      bridge: >-
+        Complex numbers obey M1.2's rules of algebra, so they are multiplied out like any brackets,
+        with $-1$ put for $i^2$. The exponent rule $b^{x + y} = b^x b^y$ holds for powers of $e$
+        with imaginary exponents too, and there it says that turning by $\alpha$ and then by
+        $\beta$ is turning by $\alpha + \beta$.
+  foreshadows:
+    - lesson: M7.3
+      bridge: >-
+        M7.3 looks for the directions that a matrix only stretches. A turn of the plane, other than a
+        half or a whole turn, leaves no line through 0 where it was, but among complex numbers it
+        acts as multiplication by $e^{i\theta}$ and $e^{-i\theta}$, its eigenvalues.
+    - lesson: L4.7
+      bridge: >-
+        Rotary position embeddings treat each pair of a query's or a key's numbers as one complex
+        number and multiply it by $e^{im\theta}$ for a word at position $m$, so that the score
+        between two words depends on their positions only through how far apart they are.
+    - lesson: M12.5
+      bridge: >-
+        The $n$ solutions of $z^n = 1$, spaced evenly round the circle, are the frequencies of the
+        discrete Fourier transform, which writes a list of $n$ numbers as a sum of turning waves.
+skills: []

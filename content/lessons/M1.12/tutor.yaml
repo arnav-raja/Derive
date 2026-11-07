@@ -1,0 +1,455 @@
+misconceptions:
+  - id: i-squared-plus
+    belief: $i^2$ is 1, as the square of a number usually is positive, or it can be left as it is.
+    why: >-
+      $i$ is the number whose square is $-1$; that is the whole of its definition. So every $i^2$ that
+      turns up when brackets are multiplied out becomes $-1$, and changes the sign of its term:
+      $i(3 + i) = 3i + i^2 = -1 + 3i$.
+    cue: >-
+      The learner chooses $1 + 3i$ in explore-times-i or $-5 + 2i$ in its first review, $1 + 5i$ in
+      explore-product or $2 + 2i$ in its review, writes `cos(alpha)*cos(beta) + sin(alpha)*sin(beta)` in derive-product, or
+      `a/(a**2 - b**2)` in derive-divide.
+  - id: i-squared-zero
+    belief: A term with $i^2$ in it can be dropped, as if $i \times i$ were 0.
+    why: >-
+      $i^2$ is $-1$, a real number, so a term with $i^2$ in it moves into the real part with its sign
+      changed; it does not vanish. Dropping it loses a whole term: $i(3 + i)$ is $-1 + 3i$, not $3i$.
+    cue: >-
+      The learner chooses $3i$ in explore-times-i, $2i$ in its first review, or writes
+      `cos(alpha)*cos(beta)` alone in derive-product.
+  - id: first-and-last
+    belief: Multiplying two brackets multiplies the first terms together and the last terms together.
+    why: >-
+      Each term of the first bracket multiplies each term of the second, so two brackets of two
+      terms make four products. With numbers, $(2 + 3)(4 + 5) = 45$, while $2 \times 4 + 3 \times 5 = 23$.
+    cue: >-
+      The learner chooses $ac + bd$ in recall-expand, $5$ in explore-product, or $0$ in the
+      review of $(1 + i)(1 + i)$.
+  - id: turn-clockwise
+    belief: Multiplying by $i$ turns a point clockwise, taking $(x, y)$ to $(y, -x)$.
+    why: >-
+      $i(a + bi) = -b + ai$, the point $(-b, a)$, which is M1.11's anticlockwise quarter turn: $1$
+      goes to $i$, up the second axis. A clockwise turn is multiplying by $-i$.
+    cue: >-
+      The learner chooses $(y, -x)$ in recall-quarter-turn, or turns the wrong way in
+      build-turn-about or build-rope, so that test_example gives (1+0j) for the quarter turn of
+      2 + 1j about 1 + 1j, or test_turns gives the pair turned through minus the angle.
+  - id: add-for-multiply
+    belief: Multiplying two complex numbers adds them part by part, or adds their lengths.
+    why: >-
+      Adding is part by part; multiplying is multiplying out brackets. In pictures, adding lays one
+      arrow on the end of the other, while multiplying turns and stretches: the lengths multiply and
+      the angles add.
+    cue: >-
+      The learner chooses $4 + i$ in explore-product, answers about 5.40 in explore-length, which is
+      $\sqrt{5} + \sqrt{10}$, answers 5 for $|zw|$ in its review, or chooses 'It adds the lengths
+      and adds the angles'.
+  - id: angles-multiply
+    belief: Multiplying two complex numbers multiplies their angles, or the angle of a product cannot be known without the lengths.
+    why: >-
+      Multiplying by $r(\cos\theta + i\sin\theta)$ turns through $\theta$ and stretches by $r$, so
+      angles add whatever the lengths are. $(1 + i)(\sqrt{3} + i)$ is at $45° + 30° = 75°$, and $z^2$
+      at twice the angle of $z$, not its square.
+    cue: >-
+      The learner chooses $1{,}350°$ or 'It cannot be known without their lengths' in
+      explore-angle-sum, 'Length 4 and angle $900°$' in its review, or 'It multiplies the lengths and
+      multiplies the angles'.
+  - id: angle-difference
+    belief: The angle of a product is the difference of the two angles.
+    why: >-
+      The second number turns the first on through its own angle, in the same direction, so the
+      angles add. A difference comes from dividing, or from multiplying by a conjugate, which turns
+      the other way.
+    cue: The learner chooses $15°$ in explore-angle-sum.
+  - id: one-cube-root
+    belief: 1 is the only number whose cube is 1, even among the complex numbers, or there are just two, 1 and $-1$.
+    why: >-
+      Cubing cubes the length and triples the angle, so any number of length 1 whose angle, taken
+      three times, is a whole number of turns has cube 1: the angles $0°$, $120°$ and $240°$. And
+      $(-1)^3 = -1$.
+    cue: >-
+      The learner answers 1 or 2 in explore-cube-roots, 2 in its review for $z^4 = 1$, or chooses
+      $-1$ as a solution of $z^3 = 1$.
+  - id: compound-unbounded
+    belief: Paying interest more and more often makes the year's total grow without limit, or settle at 3, or a rate twice as high settles on twice as much.
+    why: >-
+      Each extra payment adds less than the one before, and the total settles: 12 payments give about
+      2.613, 1,000 give 2.7169 and a million 2.7182805, closing in on $e = 2.71828\ldots$. A rate of
+      200% settles on $e^2$, about 7.39, not on $2e$: with $n = 2m$,
+      $\left(1 + \frac{2}{n}\right)^n = \left(\left(1 + \frac{1}{m}\right)^m\right)^2$, so doubling the
+      rate squares the total.
+    cue: >-
+      The learner chooses 'It grows without limit' or 'It settles on 3' in explore-compound, or
+      $2e$ in its review.
+  - id: first-step-only
+    belief: $\left(1 + \frac{x}{n}\right)^n$ is about $1 + x$, since the rest of the product is made of tiny terms.
+    why: >-
+      There are many tiny terms, and together they matter: $\left(1 + \frac{1}{n}\right)^n$ settles
+      on $e$, not on 2. For an imaginary $x$, $1 + i\theta$ is only the first of $n$ small turns: it
+      stretches and turns too little, while the $n$ small turns stay on the circle.
+    cue: >-
+      The learner chooses 'Near $1 + \pi i$' in explore-euler, or writes
+      `q * (1 + 1j * position * theta)` in build-rope.
+  - id: exponent-ignores-i
+    belief: An imaginary exponent acts like a real one, so $e^{i\pi}$ is about $e^\pi$, and `cmath.exp(angle)` turns.
+    why: >-
+      A real power of $e$ stretches: $e^\pi$ is about 23. An imaginary power turns: $e^{i\theta}$ is
+      the point at angle $\theta$ on the circle of radius 1, so the `1j` inside `cmath.exp(1j * angle)`
+      is what makes it a turn.
+    cue: >-
+      The learner chooses 'Near $e^{\pi}$' in explore-euler, or leaves the `1j` out of `cmath.exp` in
+      build-turn-about or build-rope.
+  - id: tiny-factors-vanish
+    belief: A product of many factors, each very close to 1, is about 1.
+    why: >-
+      Each factor adds only a little, but there are as many factors as the little is small:
+      $\left(1 + \frac{1}{n}\right)^n$ settles on $e$, about 2.718, not on 1, and
+      $\left(1 + \frac{i\pi}{n}\right)^n$ is $n$ small turns that add up to half a turn.
+    cue: >-
+      The learner chooses 'It falls back towards 2' in explore-compound, or 'Near 1' in
+      explore-euler.
+  - id: split-fraction
+    belief: $\frac{1}{a + bi}$ is $\frac{1}{a} + \frac{1}{bi}$, as if a fraction split over its bottom.
+    why: >-
+      A fraction splits over its top, $\frac{p + q}{r} = \frac{p}{r} + \frac{q}{r}$, never over its
+      bottom: $\frac{1}{1 + 1} = \frac{1}{2}$, not $\frac{1}{1} + \frac{1}{1} = 2$. Multiplying top
+      and bottom by the conjugate makes the bottom a single real number, and then the top splits.
+    cue: The learner writes `1/a` in derive-divide, or `-1/b` in its review.
+  - id: divide-by-length
+    belief: $\frac{1}{z}$ is the conjugate divided by the length, $\frac{\bar z}{|z|}$.
+    why: >-
+      $z\bar z = |z|^2$, the square of the length, so $\frac{1}{z} = \frac{\bar z}{|z|^2}$. Dividing
+      by the length alone gives a number of length 1, which only undoes the turn.
+    cue: The learner writes `a/sqrt(a**2 + b**2)` in derive-divide.
+  - id: abs-trick
+    belief: >-
+      The square root in the quadratic formula can be taken of the size of $b^2 - 4ac$, with or
+      without a `1j`, for every equation at once.
+    why: >-
+      The sign of $b^2 - 4ac$ decides whether its square root is real or imaginary, and `abs`
+      throws the sign away. With `* 1j` every square root is made imaginary, so 1 and 2 come out
+      as $1.5 \pm 0.5i$; without it every square root is real, so $-2 \pm i$ comes out as $-3$
+      and $-1$. `cmath.sqrt(b**2 - 4*a*c)` keeps the sign and gives the right kind of root.
+    cue: >-
+      In debug-roots the learner keeps `abs` with `* 1j`, so test_real_roots reports
+      $1.5 \pm 0.5i$ for $x^2 - 3x + 2 = 0$, or keeps `abs` without it, so test_complex_roots
+      reports $-3$ and $-1$ for $x^2 + 4x + 5 = 0$.
+  - id: principal-root
+    belief: '`(-8) ** (1 / 3)` gives $-2$, the real cube root of $-8$.'
+    why: >-
+      $-8$ has three cube roots, at $60°$, $180°$ and $300°$, each of length 2. To raise a negative
+      number to a power that is not whole, Python takes the power of the length and multiplies the
+      angle, $180°$, by $\frac{1}{3}$, which gives the root at $60°$, $1 + \sqrt{3}i$.
+      `math.cbrt(-8)` gives $-2$.
+    cue: The learner chooses 'It prints `-2.0`' or 'It stops with an error' in breakit-cube-root.
+  - id: forget-move-back
+    belief: To turn about a centre, it is enough to take the centre away and turn, or to turn about 0.
+    why: >-
+      Taking the centre away moves the centre to 0, where multiplying can turn about it; the turned
+      point must then be moved back by adding the centre, or every answer is off by the centre.
+    cue: >-
+      The learner's turn_about fails test_centre_stays, which reports that the centre moved, in
+      build-turn-about.
+  - id: score-without-conjugate
+    belief: The score $ac + bd$ is the real part of $qk$.
+    why: >-
+      $(a + bi)(c + di) = (ac - bd) + (ad + bc)i$, so its real part has $-bd$. Mirroring $k$ first
+      changes that sign: $(a + bi)(c - di) = (ac + bd) + (bc - ad)i$. With the conjugate, the turns
+      of the two words subtract, so only the gap between their positions is left.
+    cue: >-
+      The learner writes `(q * k).real` in build-rope, and test_score reports a score with the wrong
+      sign on the $bd$ term.
+  - id: radians-twice
+    belief: Every angle should go through `math.radians` before a turn.
+    why: >-
+      `math.radians` turns degrees into radians. An angle that is already in radians comes out about
+      57 times too small, so a quarter turn becomes a turn of about $1.6°$.
+    cue: The learner adds `math.radians` in build-turn-about, and the tests report a quarter turn that barely moves the point.
+  - id: real-imaginary-mixed
+    belief: The imaginary part of $a + bi$ is $bi$, with the $i$ in it, or the two parts can be read off in either order.
+    why: >-
+      The imaginary part is the real number $b$ that multiplies $i$; the real part is the term without
+      $i$. In $(x\cos\theta - y\sin\theta) + i(x\sin\theta + y\cos\theta)$ the imaginary part is
+      $x\sin\theta + y\cos\theta$.
+    cue: >-
+      The learner gives the real part, `x*cos(theta) - y*sin(theta)`, in derive-turn, or the
+      imaginary part, `sin(alpha)*cos(beta) + cos(alpha)*sin(beta)`, in derive-product, or chooses
+      $3 - i$ in explore-times-i or $2 + 5i$ in its first review, the answer with its two parts
+      swapped.
+  - id: drift-grows
+    belief: Every factor is longer than 1, so the length of $\left(1 + \frac{i\theta}{n}\right)^n$ grows without limit as $n$ grows.
+    why: >-
+      Each factor is longer than 1 by only about $\frac{\theta^2}{2n^2}$, and $n$ of them add up to
+      about $\frac{\theta^2}{2n}$, which shrinks as $n$ grows: more factors, but each so much closer
+      to 1 that the total gap falls.
+    cue: The learner chooses 'It grows without limit' in the second review of derive-drift.
+  - id: square-root-half
+    belief: $\sqrt{1 + \epsilon}$ is about $1 + \epsilon$, or the length of $1 + \frac{i\theta}{n}$ is about $1 + \frac{\theta}{n}$.
+    why: >-
+      $\left(1 + \frac{\epsilon}{2}\right)^2 = 1 + \epsilon + \frac{\epsilon^2}{4}$, which is
+      $1 + \epsilon$ but for a tiny $\frac{\epsilon^2}{4}$, so $\sqrt{1 + \epsilon}$ is about
+      $1 + \frac{\epsilon}{2}$. And the length of $1 + \frac{i\theta}{n}$ is
+      $\sqrt{1 + \frac{\theta^2}{n^2}}$, by Pythagoras' theorem: it is the square of
+      $\frac{\theta}{n}$ that goes under the root, so the length is about $1 + \frac{\theta^2}{2n^2}$.
+    cue: The learner answers about 0.08, about 3 or about 6 in derive-drift.
+
+exercises:
+  derive-turn:
+    rungs:
+      - >-
+        Multiplying out two brackets of two terms each gives four products. What are they, and which
+        of them still have one $i$ in them once $i^2$ has become $-1$?
+      - >-
+        M1.2 multiplied out $(a + b)(c + d)$ into four products, and the Explore phase put $-1$
+        wherever $i^2$ turned up, as in $i(3 + i) = 3i + i^2 = -1 + 3i$. The imaginary part is the
+        number that multiplies $i$, without the $i$ itself.
+      - >-
+        Try $x = 3$, $y = 1$ and a quarter turn, where $\cos\theta = 0$ and $\sin\theta = 1$, so the
+        second bracket is $i$. The Explore phase found $i(3 + i) = -1 + 3i$, whose imaginary part is
+        3. What does your expression give there?
+      - >-
+        With $x = 3$, $y = 1$ and a quarter turn: if your expression gives 3, it passes that check, so
+        try $\theta = 0$ as well, where the product is just $x + iy$ and its imaginary part is $y$. If
+        it gives $-1$, it is built correctly from the terms without $i$, which make the real part;
+        the step asks for the other part. If it gives anything else, look again at which of the four
+        products carry exactly one $i$, and what each is without it.
+      - >-
+        Multiplying out $(2 + 5i)(4 + 3i)$: the four products are $8$, $6i$, $20i$ and
+        $15i^2 = -15$. The terms with one $i$ are $6i$ and $20i$, so the imaginary part is
+        $6 + 20 = 26$, and the real part is $8 - 15 = -7$: $(2 + 5i)(4 + 3i) = -7 + 26i$.
+    notes: >-
+      `x*cos(theta) - y*sin(theta)` is the real part, not the imaginary part.
+      `x*sin(theta) - y*cos(theta)` has a sign slip: neither term with one $i$ meets $i^2$.
+      `x*sin(theta) + y*sin(theta)` takes a sine in both terms. `y*cos(theta)` or `x*sin(theta)`
+      alone drops one of the two terms with one $i$. The checker accepts any equal expression,
+      comparing values at sample points.
+  derive-product:
+    rungs:
+      - >-
+        Which of the four products have no $i$ left in them once $i^2$ is $-1$? What sign does each
+        of them carry?
+      - >-
+        The step before multiplied $x + iy$ by $\cos\theta + i\sin\theta$ and collected the terms
+        without $i$ into the real part. This product has the same shape: which of its terms play the
+        parts of $x$, $y$ and $\theta$?
+      - >-
+        Try $\alpha = \beta = 45°$: the product is two turns of $45°$, which is a quarter turn, so it
+        is $i$, with real part 0. With $\cos 45° = \sin 45° = \frac{1}{\sqrt{2}}$, does your
+        expression give 0?
+      - >-
+        At $\alpha = \beta = 45°$: if your expression gives 0, that check is passed, so try
+        $\alpha = 30°$ and $\beta = 60°$, which also make a quarter turn. If it gives 1, it is built
+        from the right kind of pieces, a cosine or a sine of $\alpha$ times one of $\beta$; check
+        that it collects the terms without $i$, and the sign that $i^2$ gives the product of the two
+        sines. If it gives $\frac{1}{2}$, it has one of the terms without $i$; look for the other.
+        If it gives $\sqrt{2}$, compare what multiplying does with the cosines with what your
+        expression does.
+      - >-
+        Multiplying $(\cos 30° + i\sin 30°)(\cos 30° + i\sin 30°)$, with $\cos 30° = \frac{\sqrt{3}}{2}$
+        and $\sin 30° = \frac{1}{2}$: the four products are $\frac{3}{4}$, $\frac{\sqrt{3}}{4}i$,
+        $\frac{\sqrt{3}}{4}i$ and $\frac{1}{4}i^2 = -\frac{1}{4}$. The real part is
+        $\frac{3}{4} - \frac{1}{4} = \frac{1}{2}$, which is $\cos 60°$, as two turns of $30°$ should
+        give.
+    notes: >-
+      `cos(alpha)*cos(beta) + sin(alpha)*sin(beta)` takes $i^2$ as $+1$; it is
+      $\cos(\alpha - \beta)$. `cos(alpha)*cos(beta)` drops the product of the two terms with $i$.
+      `sin(alpha)*cos(beta) + cos(alpha)*sin(beta)` is the imaginary part. `cos(alpha) + cos(beta)`
+      treats multiplying as adding. An answer written with `cos(alpha + beta)` is turned away for its
+      form, since that is what the step asks to multiply out.
+  derive-divide:
+    rungs:
+      - >-
+        Which number, multiplied by $a + bi$, gives a real number? Once the bottom is real, how does
+        the fraction split into a real part and an imaginary part?
+      - >-
+        The Explore phase found that a number times its conjugate is the square of its length,
+        $z\bar z = |z|^2$. And a sum divided by a number splits into two fractions,
+        $\frac{p + q}{r} = \frac{p}{r} + \frac{q}{r}$, as $\frac{6 + 4}{2} = 3 + 2$.
+      - >-
+        Try $a = 2$ and $b = 3$. Python's `1 / (2 + 3j)` gives
+        `(0.15384615384615385-0.23076923076923078j)`, so the real part is about 0.154. What does your
+        expression give for $a = 2$ and $b = 3$?
+      - >-
+        At $a = 2$ and $b = 3$: if your expression gives about 0.154, it is right there; try $a = 1$
+        and $b = 0$, where $\frac{1}{1} = 1$. If it gives 0.5, it divides by $a$ alone; look at what
+        the whole bottom becomes once it is multiplied out. If it gives $-0.4$, the top is right;
+        multiply out the bottom again, watching what $(bi)(-bi)$ becomes. If it gives 0.4, the top is
+        right; look at what the bottom becomes once it is made real. If it gives about 0.077,
+        the bottom is right; look at what the top brings. If it gives about 0.555, the top is right
+        and the bottom is close; compare $(a + bi)(a - bi)$ with the length $|a + bi|$.
+      - >-
+        To write $\frac{5}{1 - 2i}$ with a real bottom, multiply the top and the bottom by $1 + 2i$:
+        the bottom becomes $(1 - 2i)(1 + 2i) = 1 + 2i - 2i - 4i^2 = 5$ and the top $5 + 10i$, so
+        $\frac{5}{1 - 2i} = \frac{5 + 10i}{5} = 1 + 2i$, with real part 1 and imaginary part 2.
+    notes: >-
+      `1/a` splits the fraction over its bottom, as if $\frac{1}{a + bi}$ were
+      $\frac{1}{a} + \frac{1}{bi}$. `a/(a**2 - b**2)` takes $-b^2i^2$ as $-b^2$. `1/(a**2 + b**2)`
+      forgets the top. `a/sqrt(a**2 + b**2)` divides by the length instead of its square.
+      `a/(a + b)` adds the parts. Any equal form passes.
+  derive-roots:
+    rungs:
+      - >-
+        For each line, what does it conclude, and what fact would you need to be sure of it? Which
+        line above does it lean on?
+      - >-
+        The Derive phase's first step proved that multiplying multiplies lengths and adds angles. M1.11
+        found that the point at $\theta + 2\pi$ is the point at $\theta$ again, and M1.2 divided both
+        sides of an equation by the same number.
+      - >-
+        Take $n = 4$ and the solution $z = i$, with $r = 1$ and $\theta = \frac{\pi}{2}$. Go through
+        the lines with those numbers: $z^4$ has length $1^4$ and angle $4 \times \frac{\pi}{2} = 2\pi$,
+        and so on. For each line, say what you used to get it.
+      - >-
+        If your rules for lines 1 and 5 are right, the trouble is in lines 2, 3, 4 or 6. For each of
+        those, say in your own words what it adds to the line above before you look at the menu, and
+        then find the rule whose label says exactly that.
+      - >-
+        In a different proof, the line $|zw| = 6$, after $|z| = 2$ and $|w| = 3$, is justified by
+        Products, since multiplying multiplies lengths. And the line $|z| = 2$, after $|z|^2 = 4$,
+        needs the fact that a length is positive and 2 is the only positive number whose square is 4,
+        not Both sides: taking a root is not dividing.
+    notes: >-
+      Line 1 needs Products: $z^n$ multiplies $n$ copies of $z$, so the lengths multiply to $r^n$ and
+      the angles add to $n\theta$. Line 2 needs Equal lengths, since $z^n = 1$ and the length of 1 is
+      1. Line 3 needs Positive roots, since $r > 0$; Both sides is a common slip there. Line 4 needs
+      Whole turns: putting $r = 1$ into line 1 needs no rule, and the step to justify is from
+      $\cos n\theta + i\sin n\theta = 1$ to $n\theta = 2\pi k$, since the point at angle $n\theta$ is 1,
+      the point at angle 0. Line 5 is Both sides,
+      dividing by $n$. Line 6 is Whole turns again: the angles for $k = 0$ to $n - 1$ are less than a
+      whole turn apart, and $k$ and $k + n$ give angles a whole turn apart.
+      Conjugates is never needed.
+  derive-drift:
+    rungs:
+      - >-
+        How much longer than 1 is one factor? And if each of $n$ numbers is $1 + \delta$, roughly how
+        much longer than 1 is their product?
+      - >-
+        The prompt gives two tools: $\sqrt{1 + \epsilon}$ is about $1 + \frac{\epsilon}{2}$, and $n$
+        factors of $1 + \delta$ make about $1 + n\delta$ when $n\delta$ is small. M1.1's estimates
+        rounded freely, and $\pi^2 \approx 10$ is close enough here.
+      - >-
+        Try a smaller case first: $\theta = 1$ and $n = 10$. Each factor's length is
+        $\sqrt{1 + \frac{1}{100}}$. What does the first tool make that, and the second make ten of
+        them?
+      - >-
+        If you found each factor about $1 + 0.00008$ long, that is right, and what is left is the
+        product of 500 of them. If you found $1 + 0.00016$, you have $\frac{\theta^2}{n^2}$ right;
+        look at what the square root does to it. If you found about $1 + 0.0126$, look at whether the
+        length uses $\frac{\theta}{n}$ or its square. If you found about $1 + 0.0063$, the half from
+        the square root is right; look at whether the length uses $\frac{\theta}{n}$ or its square.
+        If your answer is about 1.04, compare it with what the question asks: by how much the length
+        is more than 1.
+      - >-
+        Ten factors of $1.003$ multiply to about $1 + 10 \times 0.003 = 1.03$; the exact product is
+        $1.0304$. And $\sqrt{1.02}$ is about $1 + \frac{0.02}{2} = 1.01$; the exact value is
+        $1.00995$.
+    notes: >-
+      The answer is about 0.0403, and anything within a factor of 1.5 passes, from about 0.027 to
+      0.06. 0.08 forgets the half in the square root; about 3.1 uses $\frac{\theta}{n}$ where its
+      square belongs, and about 6.3 forgets the half as well; 1.04 gives the length instead of how
+      much it is more than 1.
+  debug-roots:
+    rungs:
+      - >-
+        Run it. For $x^2 - 3x + 2 = 0$ it should give 1 and 2: what does it give, and what is
+        $b^2 - 4ac$ there? Is the line that makes `d` right for that sign?
+      - >-
+        M1.4's quadratic formula takes the square root of $b^2 - 4ac$ itself. The Explore phase found
+        that a negative number's square roots are imaginary, and that `cmath.sqrt` takes the square
+        root of any number.
+      - >-
+        Work it by hand for $x^2 - 3x + 2 = 0$, where $b^2 - 4ac = 1$. What does
+        `math.sqrt(abs(1)) * 1j` make `d`, and what should a square root of 1 be?
+      - >-
+        If test_complex_roots passes, the formula is right when $b^2 - 4ac$ is negative, and for a
+        positive $b^2 - 4ac$ the line that makes `d` gives an imaginary number: which part of that
+        line is right only for a negative $b^2 - 4ac$? If a change now stops with a `ValueError`,
+        look at which square root you call and what it accepts. If the complex solutions now come
+        out real, look at whether the sign of $b^2 - 4ac$ still reaches the square root, and at what
+        multiplying a square root that is already imaginary by `1j` does.
+      - >-
+        `math.sqrt(x**2)` gives the size of $x$, not $x$ itself: it is right for $x = 3$ and wrong for
+        $x = -3$, where it gives 3. A function tried only on positive numbers can hide a slip like
+        that, which is why each test here tries a different kind of equation.
+    notes: >-
+      The bug left in multiplies every square root by `1j`, which is right only for a negative
+      $b^2 - 4ac$: test_real_roots and test_put_back fail, while test_complex_roots and test_one_root
+      pass. `math.sqrt(b**2 - 4*a*c)` stops with a `ValueError` in test_complex_roots and
+      test_put_back. `cmath.sqrt(abs(b**2 - 4*a*c))` makes the complex solutions real, $-3$ and $-1$
+      for $x^2 + 4x + 5 = 0$. `cmath.sqrt(b**2 - 4*a*c) * 1j` turns every square root a quarter turn,
+      so the complex solutions come out real, $-1$ and $-3$, and the real ones complex. `cmath.sqrt(b**2 - 4*a*c)` mends it, and so does `(b**2 - 4*a*c) ** 0.5`, since Python
+      raises a negative number to a power that is not whole by way of the complex numbers.
+  build-turn-about:
+    rungs:
+      - >-
+        Where should the centre itself be after the turn? What does your function give for
+        `turn_about(1 + 1j, 1 + 1j, 1.0)`?
+      - >-
+        M1.11's `rotate_about` moved the centre to the origin, turned, and moved back. The Derive
+        phase proved that multiplying by $e^{i\theta}$, which is `cmath.exp(1j * theta)` in Python,
+        turns the plane through $\theta$ about 0.
+      - >-
+        Work the prompt's example by hand: a quarter turn of $2 + i$ about $1 + i$, where
+        $e^{i\pi/2} = i$. Where should $2 + i$ land? Multiplying $2 + i$ by $i$ turns it about 0
+        instead: where does that put it, and how could you arrange for the turn to be about $1 + i$?
+      - >-
+        Look at what test_centre_stays says. If the centre went to 0, the first move and the turn are
+        right; what is left to do to the turned point? If the centre moved somewhere else, the turn
+        may be right; look at what the point is measured from when you turn it. If the centre stays but
+        test_turns_by_the_angle fails, the moves are right; look at the number you multiply by, and
+        check that it has length 1 and the angle you want. If a quarter turn barely moves the point,
+        look at what happens to `angle` before the turn.
+      - >-
+        To scale a point by 2 away from the centre $1 + i$ instead of from 0, take the centre away,
+        multiply by 2, and add the centre back: $3 + 2i$ becomes $2 + i$, then $4 + 2i$, then
+        $5 + 3i$.
+    notes: >-
+      The starter gives `z` back unchanged, which keeps the centre and every distance, so it fails
+      only test_example and test_turns_by_the_angle. Turning about 0, or leaving out the move back,
+      moves the centre, and every test fails. `cmath.exp(angle)` without `1j` stretches instead of
+      turning: the centre stays, so test_centre_stays passes and the rest fail. `math.radians(angle)`
+      turns about 57 times too little: test_centre_stays and test_keeps_distance pass.
+      `cmath.rect(1, angle)` and `complex(math.cos(angle), math.sin(angle))` are as good as
+      `cmath.exp(1j * angle)`.
+  build-rope:
+    rungs:
+      - >-
+        Which number has length 1 and angle `position * theta`, and what does multiplying `q` by it
+        do? For `score`, which product of complex numbers has $ac + bd$ as its real part?
+      - >-
+        The Derive phase found that `cmath.exp(1j * angle)` is $e^{i \cdot \text{angle}}$, the turn
+        through that angle. The Explore phase found that a number times its conjugate is real,
+        $(a + bi)(a - bi) = a^2 + b^2$, and that `z.conjugate()` mirrors `z` in the first axis.
+      - >-
+        Try `score(3 + 1j, 2 + 5j)`, which should be $3 \times 2 + 1 \times 5 = 11$. Multiply out
+        $(3 + i)(2 + 5i)$ by hand: which of its four products give $3 \times 2$ and $1 \times 5$, and
+        with what signs? What change to $2 + 5i$ would give $1 \times 5$ the other sign?
+      - >-
+        If test_position_zero and test_turns pass, `rope` is right. If test_position_zero fails, the
+        pair is being turned, which is right; look at whether the angle grows with the position. If
+        test_turns reports a pair that grew, or turned too little, look at whether your multiplier
+        has length 1 and whether its angle is `position * theta`; if it reports the pair turned the
+        other way, look at the sign of the angle. If test_score reports 1 for
+        `score(3 + 1j, 2 + 5j)`, which is $3 \times 2 - 1 \times 5$, taking the real part of a product
+        is the right idea; look at what would change the sign of the $1 \times 5$ term. If it reports
+        another number, compare what you take from the product with $ac + bd$ worked out by hand.
+      - >-
+        To turn the pair $(1, 2)$ through a quarter turn and score it against $(3, 0)$: as a complex
+        number the pair is $1 + 2i$, and multiplying by $i$ gives $-2 + i$, the pair $(-2, 1)$. Its
+        score against $(3, 0)$ is $-2 \times 3 + 1 \times 0 = -6$.
+    notes: >-
+      `(q * k).real` is $ac - bd$: test_score fails, and so does test_only_the_gap_matters, since
+      without the conjugate the two turns add instead of cancelling. `q * (1 + 1j * position * theta)`
+      is only the first small step, so it stretches the pair and turns it too little: test_turns and
+      test_only_the_gap_matters fail. `cmath.exp(position * theta)` without `1j` stretches: test_turns
+      and test_only_the_gap_matters fail. Turning through
+      `theta` whatever the position fails test_position_zero and test_turns but passes the gap test.
+      `q.real * k.real + q.imag * k.imag` is as good a score as the conjugate, and
+      `cmath.rect(abs(q), cmath.phase(q) + position * theta)` as good a turn as `cmath.exp`.
+
+novice:
+  - If $i$ is imaginary, in what sense does it exist?
+  - Why does multiplying by $i$ turn a point instead of stretching it?
+  - Why do the lengths multiply but the angles add when two complex numbers are multiplied?
+  - How can a power of $e$, a positive number, ever be negative?
+  - Why does Python print `(16+0j)` and not just `16`?
