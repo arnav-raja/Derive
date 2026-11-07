@@ -8,15 +8,14 @@
 import { handle } from "./handler";
 
 declare const Deno: {
-  env: { toObject(): Record<string, string> };
   serve(handler: (request: Request) => Response | Promise<Response>): unknown;
 };
 declare const EdgeRuntime: { waitUntil(work: Promise<unknown>): void } | undefined;
 
-const env = Deno.env.toObject();
-for (const [k, v] of Object.entries(env)) process.env[k] ??= v;
-process.env.DERIVE_DEPLOYED = "1";
-delete process.env.DERIVE_LOCAL_STORE;
+// process.env reads the function's environment, secrets included, but the Edge
+// Runtime refuses to change it, so nothing here writes to it. The build fixes
+// DERIVE_DEPLOYED to "1" and DERIVE_LOCAL_STORE to undefined in this bundle,
+// which keeps local mode off whatever the environment holds.
 
 const allowed = new Set(
   (process.env.DERIVE_ALLOWED_ORIGINS || "https://arnav-raja.github.io")

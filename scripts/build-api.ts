@@ -237,6 +237,9 @@ async function buildEdge() {
       "process.env.NEXT_PUBLIC_SUPABASE_URL": JSON.stringify(url),
       "process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY": JSON.stringify(key),
       "process.env.DERIVE_COMMIT": JSON.stringify(commit()),
+      // The Edge Runtime cannot set environment variables, so these are fixed here.
+      "process.env.DERIVE_DEPLOYED": JSON.stringify("1"),
+      "process.env.DERIVE_LOCAL_STORE": "undefined",
     },
     banner: {
       js: [

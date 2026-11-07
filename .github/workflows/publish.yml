@@ -48,6 +48,14 @@ jobs:
       - name: Derive's server, with every lesson packed in
         run: npm run build:edge
 
+      # The Deno that Supabase's Edge Runtime is compatible with.
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: 2.1.4
+
+      - name: Check the server starts as the Edge Runtime runs it
+        run: deno run --allow-env --allow-read --no-prompt scripts/smoke-edge.mjs
+
       - name: The site
         run: npx next build
 
@@ -95,9 +103,11 @@ jobs:
 
       - name: Check the new server answers
         run: |
+          # The health route reports the commit by its first seven characters.
+          commit="${GITHUB_SHA::7}"
           for attempt in $(seq 1 12); do
             body=$(curl -fsS -H "x-region: $NEXT_PUBLIC_DERIVE_API_REGION" "$NEXT_PUBLIC_DERIVE_API_URL/api/health" || true)
-            if echo "$body" | grep -q "\"commit\":\"$GITHUB_SHA\""; then
+            if echo "$body" | grep -q "\"commit\":\"$commit\""; then
               echo "$body"
               if ! echo "$body" | grep -q '"tutor":{"configured":true}'; then
                 echo "::warning::The tutor has no key. Add the secret ANTHROPIC_API_KEY at https://supabase.com/dashboard/project/$SUPABASE_PROJECT/functions/secrets."
