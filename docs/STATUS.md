@@ -853,14 +853,10 @@ Next, in order:
 
 ## Waiting on Arnav
 
-- Three steps for the move to GitHub Pages, asked on 6 November in the hosting thread:
-  1. https://github.com/arnav-raja/Derive/settings/pages: Source "GitHub Actions".
-  2. https://supabase.com/dashboard/project/spivlvrkjsqxjeonnmvd/functions/secrets: the secret
-     `ANTHROPIC_API_KEY` (the tutor's key).
-  3. A token from https://supabase.com/dashboard/account/tokens, added as the repository secret
-     `SUPABASE_ACCESS_TOKEN` at https://github.com/arnav-raja/Derive/settings/secrets/actions/new,
-     so that Actions can deploy the server.
-  Until all three are done the Publish workflow stops with a message that names the missing one.
+- The three steps for the move to GitHub Pages are done (7 November): Pages builds from GitHub
+  Actions, the Edge Function has its `ANTHROPIC_API_KEY`, and the repository has
+  `SUPABASE_ACCESS_TOKEN` (a token named "Derive publish", limited to the derive project's Edge
+  Functions, that never expires; it can be revoked at https://supabase.com/dashboard/account/tokens).
 - Saying the Vercel project can be deleted, once the GitHub Pages site and its tutor work.
 
 - Confirming the Supabase tool's prompt to delete the test sign-up address (he said yes to the

@@ -3,6 +3,8 @@
 export const CLIENT_MODULES: Record<string, () => Promise<unknown>> = {
   "next/link": () => import("next/link"),
   "src/components/exercise/exercise-card.tsx": () => import("@/components/exercise/exercise-card"),
+  "src/components/figures/complex-plane.tsx": () => import("@/components/figures/complex-plane"),
+  "src/components/figures/euler-steps.tsx": () => import("@/components/figures/euler-steps"),
   "src/components/figures/expression-tree.tsx": () => import("@/components/figures/expression-tree"),
   "src/components/figures/float-line.tsx": () => import("@/components/figures/float-line"),
   "src/components/figures/four-triangles.tsx": () => import("@/components/figures/four-triangles"),
