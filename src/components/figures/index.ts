@@ -1,5 +1,6 @@
 export { ExpressionTree } from "./expression-tree";
 export { FloatLine } from "./float-line";
+export { FourTriangles } from "./four-triangles";
 export { FunctionPlot } from "./function-plot";
 export { HashBuckets } from "./hash-buckets";
 export { MappingDiagram } from "./mapping-diagram";
@@ -15,3 +16,5 @@ export { Staircase } from "./staircase";
 export { TextBytes } from "./text-bytes";
 export { TieLists } from "./tie-lists";
 export { TileGrid } from "./tile-grid";
+export { UnitCircle } from "./unit-circle";
+export { VectorPlane } from "./vector-plane";

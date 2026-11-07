@@ -1,0 +1,57 @@
+The Derive phase found the rule for turning a point and the cosine of a sum. Now build with them in Python: mend a turning function, turn about any centre, find a point's distance and angle, and write the puzzle's schedule. Then predict what `math.sin(math.pi)` is.
+
+A function that gives back two values, as M1.4's `roots` did, can have them caught in two names at once: after `a, b = roots(1, -3, 2)`, `a` holds the first value and `b` the second. As M1.1 showed, Python writes $3.15 \times 10^{23}$ as `3.15e23`, and it writes a very small float the same way: `1.5e-08` is $1.5 \times 10^{-8}$. Each exercise here has tests of its own, in the tab `tests.py`; they check the properties a right answer must have, and each failing test says what it tried. You need not follow the test code itself: each test's first line says in words what it checks. Some tests use `math.hypot(x, y)`, the distance $\sqrt{x^2 + y^2}$ of $(x, y)$ from the origin, and `math.atan2`, which the section A point's distance and angle explains.
+
+## A turn that shrinks
+
+<Exercise id="debug-rotate" />
+
+<Reveal for="debug-rotate">
+
+The same care is needed in any update in which each new value depends on several old ones: a training step works out every new weight from the old weights before it replaces any of them.
+
+## Turning about any centre
+
+<Exercise id="build-rotate-about" />
+
+</Reveal>
+
+<Reveal for="build-rotate-about">
+
+The pattern, move to where the operation is simple, do it, and move back, comes up again and again, and M7.2 meets it as a change of basis.
+
+## A point's distance and angle
+
+A point can be given by its two coordinates, or by its distance $r$ from the origin and the angle $\theta$ that turns $(1, 0)$ towards it, since the point is $(r\cos\theta, r\sin\theta)$. `math.hypot(x, y)` gives $\sqrt{x^2 + y^2}$, the distance. For the angle, `math.atan2(y, x)` gives the angle of the point $(x, y)$, in radians, from $-\pi$ to $\pi$: note that $y$ comes first. Python also has `math.atan(t)`, which gives an angle whose slope, $\frac{\sin\theta}{\cos\theta}$, is $t$.
+
+<Exercise id="build-polar" />
+
+</Reveal>
+
+<Reveal for="build-polar">
+
+`math.atan(y / x)` cannot do this job. The points $(1, 1)$ and $(-1, -1)$ have the same slope, $\frac{y}{x} = 1$, so a function given only the slope cannot tell them apart, any more than M1.3's square root could tell $3$ from $-3$. As M1.3 narrowed squaring to the numbers 0 or more so that it could be undone, the slope of an angle is narrowed to the angles between $-\frac{\pi}{2}$ and $\frac{\pi}{2}$, where each slope belongs to one angle, and `math.atan` undoes it there. And `y / x` fails outright, with a `ZeroDivisionError`, when $x$ is 0. `math.atan2` is given $y$ and $x$ separately, so it can see which quarter of the plane the point is in.
+
+## The puzzle's schedule
+
+<Exercise id="build-cosine-schedule" />
+
+</Reveal>
+
+<Reveal for="build-cosine-schedule">
+
+The tests checked what the puzzle's wheel promises: the full rate at the start, the bottom rate at the end, halfway between them at half time, and never a rise. GPT-3's schedule went down to a tenth of its starting rate, and many runs add a short warm-up first, in which the rate climbs from 0 before the cosine begins.
+
+## Break it: the sine of pi
+
+The sine of $\pi$ is 0, since half a turn from $(1, 0)$ reaches $(-1, 0)$.
+
+<Exercise id="breakit-sine-pi" />
+
+</Reveal>
+
+<Reveal for="breakit-sine-pi">
+
+The point at `math.pi` is the point at the gap, $\pi$ less `math.pi`, mirrored in the second axis, as the point at $150°$ mirrors the point at $30°$, so the two have the same sine. For so small an angle the sine and the angle agree to every digit a float keeps, so `math.sin(math.pi)` measures the gap itself, about $1.22 \times 10^{-16}$: how far `math.pi` is from $\pi$. Floats are compared within a tolerance, as M1.4's tests compared them with `close`, never with `==`.
+
+</Reveal>

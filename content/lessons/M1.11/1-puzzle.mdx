@@ -1,0 +1,28 @@
+Most training runs lower their learning rate as they go, so that the early steps move far and the late steps settle. A common way to lower it is the *cosine schedule*, and it can be pictured with a wheel.
+
+A wheel stands upright, with a mark on its rim at the very top. Over the run the wheel turns at a steady speed through exactly half a turn, so the mark goes down one side of the wheel and reaches the very bottom on the last step. At every step the learning rate is in proportion to the mark's height above the bottom of the wheel: the full rate while the mark is at the top, and nothing once it reaches the bottom.
+
+A run of 10,000 steps starts at a learning rate of 0.001. At step 2,500, a quarter of the way through, the wheel has turned through a quarter of its half turn, an eighth of a whole turn.
+
+<Exercise id="puzzle-cosine-schedule" />
+
+<Reveal for="puzzle-cosine-schedule">
+
+The learning rate follows the wheel, not the clock. In the first steps the mark moves almost sideways, so its height barely changes and the rate stays near the top; halfway, the mark is moving straight down and the rate falls fastest; near the end it moves almost sideways again and the rate settles gently. The figure draws the schedule against a straight line from 0.001 to 0.
+
+<FunctionPlot
+  title="A cosine schedule and a straight line"
+  description="The learning rate against the step, from step 0 to step 10,000, for two schedules that both start at 0.001 and end at 0. The cosine schedule is a curve that starts flat, falls fastest at step 5,000 and ends flat; the straight line falls by the same amount at every step. The two meet at the start, at step 5,000 and at the end, and the curve is above the line before step 5,000 and below it after."
+  curves={[
+    { expr: "0.0005*(1 + cos(pi*x/10000))", label: "cosine schedule" },
+    { expr: "0.001*(1 - x/10000)", label: "straight line" }
+  ]}
+  x={[0, 10000]}
+  y={[0, 0.001]}
+  xLabel="step"
+  yLabel="learning rate"
+/>
+
+The height of a point on a circle, measured from the centre, is what this lesson calls a *sine* or a *cosine*, and the angle the wheel has turned is measured best not in degrees but by the length of its arc. Ilya Loshchilov and Frank Hutter proposed the cosine schedule for training networks in 2016, and many large language models have used it since: GPT-3, in 2020, lowered its learning rate along a cosine to a tenth of its starting value. The same two functions turn points about a centre, measure the angle between two lists of numbers, and tell a language model where each word sits in a sentence.
+
+</Reveal>

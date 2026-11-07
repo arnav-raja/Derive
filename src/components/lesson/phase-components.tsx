@@ -9,6 +9,7 @@ import { ExerciseCard } from "@/components/exercise/exercise-card";
 import {
   ExpressionTree,
   FloatLine,
+  FourTriangles,
   FunctionPlot,
   HashBuckets,
   MappingDiagram,
@@ -24,6 +25,8 @@ import {
   TextBytes,
   TieLists,
   TileGrid,
+  UnitCircle,
+  VectorPlane,
 } from "@/components/figures";
 import { HintIcon, LockIcon } from "@/components/ui/icons";
 import { loadLesson, type LoadedLesson } from "@/lib/content/lesson";
@@ -323,5 +326,8 @@ export function phaseComponents(ctx: PhaseContext): MDXComponents {
     PascalTriangle: PascalTriangleSlot,
     MergeLevels,
     HashBuckets,
+    UnitCircle,
+    VectorPlane,
+    FourTriangles,
   };
 }

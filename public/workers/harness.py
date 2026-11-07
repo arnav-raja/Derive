@@ -733,10 +733,31 @@ _GREEK = {
 }
 
 
+# The functions an answer may name. A power written straight after one, as cos^2(x) is written on
+# paper, is a power of the function's value, cos(x)^2. A negative power there is refused, since
+# sin^-1(x) is written for the function that undoes the sine as often as for one over the sine.
+_FUNCTION_NAMES = ("sqrt", "exp", "log10", "log2", "log", "ln", "sin", "cos", "tan", "abs", "Abs", "factorial", "binomial")
+
+
+class _NegativeFunctionPower(ValueError):
+    def __init__(self, name):
+        super().__init__(name)
+        self.name = name
+
+
+def _refuse_negative_function_power(text):
+    import re
+
+    m = re.search(r"\b(" + "|".join(_FUNCTION_NAMES) + r")\s*(?:\^|\*\*)\s*\(?\s*-", text)
+    if m:
+        raise _NegativeFunctionPower(m.group(1))
+
+
 def _parse(text, names, evaluate=True):
     import sympy
     from sympy.parsing.sympy_parser import (
         convert_xor,
+        function_exponentiation,
         implicit_application,
         implicit_multiplication,
         parse_expr,
@@ -751,15 +772,18 @@ def _parse(text, names, evaluate=True):
     def is_product(name):
         return len(name) > 1 and name not in names and all(ch in letters for ch in name)
 
+    # ^ becomes ** first, so that the later steps read cos^2(x) and cos^2 x as powers of cos(x).
     transformations = standard_transformations + (
+        convert_xor,
         split_symbols_custom(is_product),
         implicit_multiplication,
         implicit_application,
-        convert_xor,
+        function_exponentiation,
     )
     cleaned = (
         text.replace("×", "*").replace("·", "*").replace("−", "-").replace("÷", "/").strip()
     )
+    _refuse_negative_function_power(cleaned)
     # β typed as itself stands for the step's beta, when the step has one; spaces keep 2β and βk
     # products, as 2 beta and beta k.
     for letter, word in _GREEK.items():
@@ -928,6 +952,11 @@ def check_expression(payload):
         return {"status": "empty", "message": "Write an expression first."}
     try:
         expr = _parse(text, names)
+    except _NegativeFunctionPower as exc:
+        f = exc.name
+        return {"status": "unparsed",
+                "message": f"{f}^-1 can mean one over {f} or the function that undoes {f}, so a power with a minus"
+                           f" sign straight after {f} is not read. For one over {f}(x), write 1/{f}(x)."}
     except Exception:  # noqa: BLE001 - any parse failure is the learner's to fix
         return {"status": "unparsed",
                 "message": "That could not be read as an expression. Check the brackets and operators."}

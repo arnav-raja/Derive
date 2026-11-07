@@ -1,0 +1,147 @@
+## Measuring an angle by its arc
+
+An angle is an amount of turning, from one arm to the other about a corner. Degrees cut a whole turn into 360 equal parts. There is a second way to measure turning, and it fits the rest of mathematics far better: draw a circle of radius 1 about the corner, and measure the length of the arc that the angle cuts from it. An angle measured this way is in *radians*.
+
+A circle of radius $r$ is the circle of radius 1 made $r$ times as large, so every length on it is $r$ times as long, and an angle of $\theta$ (the Greek letter theta) radians cuts from it an arc of length $r\theta$. A whole turn cuts the whole circle, whose length is $2\pi$ for radius 1, so a whole turn is $2\pi$ radians, a half turn is $\pi$ and a quarter turn is $\frac{\pi}{2}$. Since $2\pi$ radians and $360°$ are the same turn, $\frac{\pi \text{ radians}}{180°}$ is a ratio equal to 1, as in M1.1, and converts one into the other: $30° \times \frac{\pi \text{ radians}}{180°} = \frac{\pi}{6}$ radians, about 0.524, and 1 radian is $\frac{180°}{\pi}$, about $57.3°$. An angle written with no degree sign is in radians.
+
+<Exercise id="explore-wheel" />
+
+<Reveal for="explore-wheel">
+
+A radian is a length divided by a length, metres over metres here, so it carries no unit at all, as M1.1 found for the angle a pendulum swings from.
+
+## The point at an angle
+
+Put the circle of radius 1 with its centre at the origin of the plane. Start at the point $(1, 0)$ and turn anticlockwise along the circle through an angle $\theta$. The point you reach has two coordinates, and they have names: the first is the *cosine* of $\theta$, written $\cos\theta$, and the second is the *sine*, $\sin\theta$. So the point at angle $\theta$ is $(\cos\theta, \sin\theta)$. A clockwise turn counts as a negative angle, and a turn may go round more than once: the point at $\theta + 2\pi$ is the point at $\theta$ again.
+
+The point is at distance 1 from the centre. By Pythagoras' theorem, $a^2 + b^2 = c^2$ for a triangle with a right angle whose longest side is $c$, which the Derive phase proves, every angle has
+$$\cos^2\theta + \sin^2\theta = 1,$$
+where $\cos^2\theta$ means $(\cos\theta)^2$.
+
+At $45°$ the point lies on the line $y = x$, so its two coordinates are equal, $2\cos^2 45° = 1$, and $\cos 45° = \sin 45° = \frac{1}{\sqrt{2}}$, about 0.707: the puzzle's 0.707.
+
+At $60°$, the point, the centre and $(1, 0)$ make a triangle with two sides of length 1 and an angle of $60°$ between them. Its other two angles are equal and add up to $120°$, so they are $60°$ each, all three sides are equal, and the point sits straight above the middle of the side from $(0, 0)$ to $(1, 0)$. So $\cos 60° = \frac{1}{2}$, and $\sin 60° = \sqrt{1 - \frac{1}{4}} = \frac{\sqrt{3}}{2}$, about 0.866.
+
+<Exercise id="explore-thirty" />
+
+</Reveal>
+
+<Reveal for="explore-thirty">
+
+<Exercise id="explore-hundred-fifty" />
+
+</Reveal>
+
+<Reveal for="explore-hundred-fifty">
+
+## Sine and cosine in Python
+
+Python's `math` module has `math.cos` and `math.sin`, and `math.pi`, the float nearest to $\pi$, all ready to use after `import math`, as in M1.4.
+
+<Exercise id="explore-python-sine" />
+
+</Reveal>
+
+<Reveal for="explore-python-sine">
+
+To work in degrees, convert first: `math.radians(30)` turns 30 degrees into radians, and `math.sin(math.radians(30))` prints `0.49999999999999994`. The unit is now right, and the last digit is M1.2's rounding: `math.radians` works from `math.pi`, which is not quite $\pi$, and rounds as it goes, so `math.radians(30)` lands a little below $\frac{\pi}{6}$, and its sine a little below $\frac{1}{2}$.
+
+## Sine and cosine together
+
+The two coordinates of the point are tied together, so knowing one says a good deal about the other.
+
+<Exercise id="explore-sine-of-one" />
+
+</Reveal>
+
+<Reveal for="explore-sine-of-one">
+
+## Small angles
+
+Picture the arc from $(1, 0)$ for a very small angle, and the point's height at its end.
+
+<Exercise id="explore-small-angle" />
+
+</Reveal>
+
+<Reveal for="explore-small-angle">
+
+$\frac{\sin h - \sin 0}{h - 0}$ is M1.4's average rate of change of the sine between 0 and $h$, and as $h$ shrinks it comes ever closer to 1: near 0, the sine rises at the same rate as the angle, when the angle is in radians. In degrees the rate would be $\frac{\pi}{180}$ per degree, about 0.0175, and every formula about the rate of change of the sine would carry that factor. This is why mathematics, and Python, measure angles in radians.
+
+The figure draws the point at any angle. Turn it round the whole circle and watch the two coordinates change sign from one quarter of the plane to the next, and near $0°$ compare the arc with the height.
+
+<UnitCircle
+  title="The point at an angle"
+  description="A circle of radius 1 about the origin, with the point reached by turning from (1, 0) through an angle, anticlockwise for a positive angle and clockwise for a negative one, which a slider sets from −360 to 360 degrees, at first 150. The arc from (1, 0) to the point is drawn and its length given, the size of the angle in radians. Dashed lines from the point to the two axes mark its coordinates, the cosine and the sine of the angle, and a sentence gives both."
+  angle={150}
+/>
+
+Drawn against the angle, each coordinate makes a wave between $-1$ and $1$ that repeats every $2\pi$.
+
+<FunctionPlot
+  title="Sine and cosine as waves"
+  description="The sine and the cosine of the angle in radians, for angles from −2π to 2π, about −6.28 to 6.28. Both are waves between −1 and 1 that repeat every 2π. The sine is 0 at 0 and rises; the cosine is 1 at 0 and falls on either side."
+  curves={[
+    { expr: "sin(x)", label: "sin" },
+    { expr: "cos(x)", label: "cos" }
+  ]}
+  x={[-6.3, 6.3]}
+  y={[-1.2, 1.2]}
+  xLabel="angle in radians"
+  yLabel="value"
+/>
+
+## Turning the plane
+
+Turn the whole plane about the origin through an angle $\theta$, anticlockwise. Every point moves along its own circle about the origin, through the same angle, so distances from the origin are kept, and so are the distances and angles between points: a drawing turns without being stretched. The point $(1, 0)$ moves to $(\cos\theta, \sin\theta)$, by the meaning of cosine and sine.
+
+<Exercise id="explore-quarter-turn" />
+
+</Reveal>
+
+<Reveal for="explore-quarter-turn">
+
+<Exercise id="explore-second-axis" />
+
+</Reveal>
+
+<Reveal for="explore-second-axis">
+
+The figure turns a flag about the origin. Watch where $(1, 0)$ and $(0, 1)$ go, and then turn twice, by one angle and then another.
+
+<VectorPlane
+  title="Turning the plane"
+  description="A grid from −4 to 4 in each direction, with a flag drawn on it, the point (3, 1), and arrows from the origin to (1, 0) and (0, 1). A slider turns the plane about the origin through an angle, at first 30 degrees: the turned flag, point and arrows are drawn over the faint originals, and a sentence gives where (1, 0), (0, 1) and (3, 1) went. A second slider turns again by a second angle, and the sentence gives the angle of the two turns together."
+  x={[-4, 4]}
+  y={[-4, 4]}
+  turn={30}
+  then={0}
+  marks={[{ x: 3, y: 1, label: "(3, 1)" }]}
+  flag
+/>
+
+Turning by one angle and then by another is turning by their sum, since each point goes round its circle through the first angle and then on through the second. The Derive phase uses that, with where $(1, 0)$ and $(0, 1)$ go, to turn any point.
+
+The answer also explains the two waves. The point a quarter turn on from the point at angle $\theta$ is the point at $\theta$ turned a quarter turn, $(-\sin\theta, \cos\theta)$, so $\sin\left(\theta + \frac{\pi}{2}\right) = \cos\theta$: the cosine wave is the sine wave moved a quarter turn, $\frac{\pi}{2}$, to the left.
+
+## The names
+
+<Definition term="Radian">
+
+An angle measured by the length of the arc it cuts from a circle of radius 1 about its corner. A whole turn is $2\pi$ radians, or $360°$, so degrees become radians on multiplying by $\frac{\pi}{180°}$. On a circle of radius $r$ an angle of $\theta$ radians cuts an arc of length $r\theta$. Python's `math.sin` and `math.cos` take radians.
+
+</Definition>
+
+<Definition term="Cosine and sine">
+
+Turning from $(1, 0)$ anticlockwise through an angle $\theta$ along the circle of radius 1 about the origin reaches the point $(\cos\theta, \sin\theta)$. So $\cos^2\theta + \sin^2\theta = 1$, both repeat every $2\pi$, $\cos 60° = \sin 30° = \frac{1}{2}$, $\cos 45° = \sin 45° = \frac{1}{\sqrt{2}}$, and for a small angle in radians $\sin\theta$ is close to $\theta$.
+
+</Definition>
+
+<Definition term="Rotation">
+
+Turning the plane about the origin through $\theta$ moves every point along its circle about the origin by the same angle, keeping all distances. It takes $(1, 0)$ to $(\cos\theta, \sin\theta)$ and $(0, 1)$ to $(-\sin\theta, \cos\theta)$, and turning by $\alpha$ (the Greek letter alpha) and then by $\beta$ (beta) is turning by $\alpha + \beta$.
+
+</Definition>
+
+</Reveal>

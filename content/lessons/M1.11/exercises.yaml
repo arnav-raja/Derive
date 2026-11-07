@@ -1,0 +1,1456 @@
+exercises:
+  # Puzzle ---------------------------------------------------------------------
+  - id: puzzle-cosine-schedule
+    phase: puzzle
+    kind: predict
+    concept: M1.11/sine-and-cosine
+    title: A quarter of the way through
+    prompt: What is the learning rate at step 2,500?
+    answer:
+      type: choice
+      options:
+        - { id: straight, label: '0.00075' }
+        - { id: right, label: 'About 0.00085' }
+        - { id: centre, label: 'About 0.00071' }
+        - { id: size, label: 'It depends on the size of the wheel' }
+      correct: [right]
+    explanation: >-
+      An eighth of a turn puts the mark on the line through the centre at $45°$ from the top. Take
+      the radius as 1. The mark is then the far corner of a square whose diagonal is that radius,
+      so its height above the centre is the side $s$ of the square, where $s^2 + s^2 = 1$ by
+      Pythagoras' theorem, which the Derive phase proves, so $s = \frac{1}{\sqrt{2}} \approx 0.707$.
+      Its height above the bottom is then $1.707$ of the full height of $2$, about 85%. So the rate
+      is about $0.001 \times 0.854 \approx 0.00085$. 0.00075 is a straight line from 0.001 to 0;
+      0.00071 measures the height from the centre instead of from the bottom; and a larger wheel
+      scales every height alike, so its size makes no difference to the fraction.
+
+  # Recall ---------------------------------------------------------------------
+  - id: recall-turns
+    phase: recall
+    kind: recall
+    concept: M1.1/units-as-algebra
+    prompt: A disk spins 7,200 times a minute. How many times does it spin each second?
+    answer: { type: number, value: 120, tolerance: { abs: 0 } }
+    explanation: >-
+      $7{,}200 \frac{\text{turns}}{\text{minute}} \times \frac{1 \text{ minute}}{60 \text{ s}} =
+      120$ turns a second. The ratio $\frac{1 \text{ minute}}{60 \text{ s}}$ equals 1, so
+      multiplying by it changes the unit and not the amount.
+
+  - id: recall-square
+    phase: recall
+    kind: recall
+    concept: M1.2/equivalence
+    prompt: Which of these is equal to $(x - a)^2$ for all numbers $x$ and $a$?
+    answer:
+      type: choice
+      options:
+        - { id: squares, label: '$x^2 - a^2$' }
+        - { id: plus, label: '$x^2 + a^2$' }
+        - { id: right, label: '$x^2 - 2ax + a^2$' }
+        - { id: once, label: '$x^2 - ax + a^2$' }
+      correct: [right]
+    explanation: >-
+      $(x - a)(x - a) = x^2 - ax - ax + a^2 = x^2 - 2ax + a^2$: each term of one bracket times each
+      term of the other.
+
+  - id: recall-inverse
+    phase: recall
+    kind: recall
+    concept: M1.3/inverse-functions
+    prompt: The function $f(x) = x^2$, on all numbers, has no inverse. Why not, and what gives it one?
+    answer:
+      type: choice
+      options:
+        - { id: negative, label: 'It never gives a negative output, so its outputs must be widened to the numbers below 0' }
+        - { id: formula, label: 'Its rule has a power in it, so it needs a different formula' }
+        - { id: steep, label: 'It grows too fast for large inputs, so it needs its outputs narrowed to small numbers' }
+        - { id: right, label: 'Two inputs share each positive output, so its inputs must be narrowed to the numbers 0 or more' }
+      correct: [right]
+    explanation: >-
+      $3$ and $-3$ both give 9, so given 9 nothing says which input it came from. On the inputs
+      that are 0 or more each output comes from one input, and there $\sqrt{\phantom{x}}$ undoes
+      squaring.
+
+  - id: recall-composition
+    phase: recall
+    kind: recall
+    concept: M1.3/composition
+    prompt: With $f(x) = x + 3$ and $g(x) = 2x$, what is $g(f(1))$?
+    answer: { type: number, value: 8, tolerance: { abs: 0 } }
+    explanation: >-
+      The inside first: $f(1) = 4$, and then $g(4) = 8$. The other order, $f(g(1)) = 5$, is a
+      different function.
+
+  - id: recall-rate
+    phase: recall
+    kind: recall
+    concept: M1.4/average-rate-of-change
+    prompt: What is the average rate of change of $f(x) = x^2$ between $x = 1$ and $x = 3$?
+    answer: { type: number, value: 4, tolerance: { abs: 0 } }
+    explanation: >-
+      $\frac{f(3) - f(1)}{3 - 1} = \frac{9 - 1}{2} = 4$, the slope of the chord from $(1, 1)$ to
+      $(3, 9)$.
+
+  # Explore --------------------------------------------------------------------
+  - id: explore-wheel
+    phase: explore
+    kind: predict
+    concept: M1.11/radians
+    title: A rolling wheel
+    prompt: >-
+      A wheel of radius 0.5 metres rolls 1 metre along flat ground without slipping. Through how
+      many radians has it turned?
+    answer: { type: number, value: 2, tolerance: { abs: 0.01 } }
+    explanation: >-
+      The rim that touched the ground is the arc the turn cut, and an arc is the radius times the
+      angle in radians: $1 = 0.5\theta$, so $\theta = 2$ radians, about $115°$, a little under a
+      third of a turn.
+    placement: true
+    review:
+      variants:
+        - prompt: How many radians are there in a quarter turn, to two decimal places?
+          answer: { type: number, value: 1.57, tolerance: { abs: 0.005 } }
+          explanation: >-
+            A whole turn is $2\pi$ radians, so a quarter turn is $\frac{\pi}{2}$, about 1.57.
+        - prompt: A clock's minute hand is 10 cm long. How far does its tip travel in 15 minutes, in centimetres, to one decimal place?
+          answer: { type: number, value: 15.7, tolerance: { abs: 0.05 } }
+          explanation: >-
+            15 minutes is a quarter turn, $\frac{\pi}{2}$ radians, so the tip travels
+            $10 \times \frac{\pi}{2} \approx 15.7$ cm.
+        - prompt: How many degrees is 1 radian, to the nearest degree?
+          answer: { type: number, value: 57, tolerance: { abs: 0.5 } }
+          explanation: >-
+            $\pi$ radians is $180°$, so 1 radian is $\frac{180°}{\pi} \approx 57.3°$.
+
+  - id: explore-thirty
+    phase: explore
+    kind: predict
+    concept: M1.11/sine-and-cosine
+    title: Thirty degrees
+    prompt: What is $\sin 30°$?
+    answer:
+      type: choice
+      options:
+        - { id: right, label: '$\frac{1}{2}$' }
+        - { id: root-three, label: '$\frac{\sqrt{3}}{2}$' }
+        - { id: half-of-sixty, label: '$\frac{\sqrt{3}}{4}$' }
+        - { id: root-two, label: '$\frac{1}{\sqrt{2}}$' }
+      correct: [right]
+    explanation: >-
+      The point at $30°$ is $30°$ above the first axis, as the point at $60°$ is $30°$ to the right
+      of the second, so each is the other's mirror image in the line $y = x$, which swaps the two
+      coordinates: the point at $30°$ is $\left(\frac{\sqrt{3}}{2}, \frac{1}{2}\right)$. Halving an
+      angle does not halve its sine, so $\frac{\sqrt{3}}{4}$ is not it.
+    placement: true
+    review:
+      variants:
+        - prompt: What is $\cos 30°$?
+          answer:
+            type: choice
+            options:
+              - { id: half, label: '$\frac{1}{2}$' }
+              - { id: right, label: '$\frac{\sqrt{3}}{2}$' }
+              - { id: root-two, label: '$\frac{1}{\sqrt{2}}$' }
+              - { id: double, label: '$\sqrt{3}$' }
+            correct: [right]
+          explanation: >-
+            The point at $30°$ is the point at $60°$ with its coordinates swapped, so its first
+            coordinate is $\sin 60° = \frac{\sqrt{3}}{2}$.
+        - prompt: What is $\cos 45°$, to three decimal places?
+          answer: { type: number, value: 0.707, tolerance: { abs: 0.0005 } }
+          explanation: >-
+            At $45°$ the two coordinates are equal and their squares add to 1, so each is
+            $\frac{1}{\sqrt{2}} \approx 0.707$.
+        - prompt: Which angle between $0°$ and $90°$ has $\cos\theta = \sin\theta$?
+          answer: { type: number, value: 45, tolerance: { abs: 0 }, unit: '°' }
+          explanation: >-
+            Equal coordinates put the point on the line $y = x$, which makes $45°$ with the first
+            axis.
+
+  - id: explore-hundred-fifty
+    phase: explore
+    kind: predict
+    concept: M1.11/sine-and-cosine
+    title: Past a quarter turn
+    prompt: Which point is $(\cos 150°, \sin 150°)$?
+    answer:
+      type: choice
+      options:
+        - { id: thirty, label: '$\left(\frac{\sqrt{3}}{2}, \frac{1}{2}\right)$' }
+        - { id: sixty, label: '$\left(-\frac{1}{2}, \frac{\sqrt{3}}{2}\right)$' }
+        - { id: below, label: '$\left(-\frac{\sqrt{3}}{2}, -\frac{1}{2}\right)$' }
+        - { id: right, label: '$\left(-\frac{\sqrt{3}}{2}, \frac{1}{2}\right)$' }
+      correct: [right]
+    explanation: >-
+      $150°$ is $30°$ short of a half turn, so the point is the point at $30°$ reflected in the
+      second axis: its height is the same, $\frac{1}{2}$, and its first coordinate changes sign, to
+      $-\frac{\sqrt{3}}{2}$. So $\cos 150° = -\frac{\sqrt{3}}{2}$, and a cosine is negative for
+      every angle between a quarter turn and three quarters.
+    review:
+      variants:
+        - prompt: What is $\cos 180°$?
+          answer:
+            type: choice
+            options:
+              - { id: zero, label: '$0$' }
+              - { id: one, label: '$1$' }
+              - { id: right, label: '$-1$' }
+              - { id: half, label: '$-\frac{1}{2}$' }
+            correct: [right]
+          explanation: >-
+            Half a turn from $(1, 0)$ reaches $(-1, 0)$, so $\cos 180° = -1$ and $\sin 180° = 0$.
+        - prompt: What is $\sin(-30°)$?
+          answer:
+            type: choice
+            options:
+              - { id: right, label: '$-\frac{1}{2}$' }
+              - { id: half, label: '$\frac{1}{2}$' }
+              - { id: root-three, label: '$-\frac{\sqrt{3}}{2}$' }
+              - { id: none, label: 'It has no sine, since angles cannot be negative' }
+            correct: [right]
+          explanation: >-
+            A negative angle turns clockwise, so the point is the point at $30°$ reflected in the
+            first axis, $\left(\frac{\sqrt{3}}{2}, -\frac{1}{2}\right)$.
+        - prompt: For which angles between $0°$ and $360°$ are the cosine and the sine both negative?
+          answer:
+            type: choice
+            options:
+              - { id: first, label: 'Between $0°$ and $90°$' }
+              - { id: second, label: 'Between $90°$ and $180°$' }
+              - { id: right, label: 'Between $180°$ and $270°$' }
+              - { id: fourth, label: 'Between $270°$ and $360°$' }
+            correct: [right]
+          explanation: >-
+            Both coordinates are negative only in the quarter of the plane to the left of and below
+            the origin, which the turn reaches between a half turn and three quarters.
+
+  - id: explore-python-sine
+    phase: explore
+    kind: predict
+    concept: M1.11/radians
+    title: Python's sine
+    prompt: |
+      What does this program print?
+
+      ```python
+      import math
+      print(math.sin(30))
+      ```
+    answer:
+      type: choice
+      options:
+        - { id: degrees, label: '`0.5`' }
+        - { id: float, label: '`0.49999999999999994`' }
+        - { id: plus, label: '`0.9880316240928618`' }
+        - { id: right, label: '`-0.9880316240928618`' }
+      correct: [right]
+    explanation: >-
+      `math.sin` takes radians, and 30 radians is $\frac{30}{2\pi} \approx 4.77$ turns. Four whole
+      turns change nothing, and the $0.77$ of a turn left, about $279°$, is just past three
+      quarters of a turn, where the point is near the bottom of the circle and its height is close
+      to $-1$.
+    review:
+      variants:
+        - prompt: >-
+            `import math` has been run. Which of these prints the cosine of 60 degrees, up to the
+            rounding of floats?
+          answer:
+            type: choice
+            options:
+              - { id: plain, label: '`print(math.cos(60))`' }
+              - { id: right, label: '`print(math.cos(math.radians(60)))`' }
+              - { id: times, label: '`print(math.cos(60) * math.pi / 180)`' }
+              - { id: wrong-way, label: '`print(math.cos(60 * 180 / math.pi))`' }
+            correct: [right]
+          explanation: >-
+            The angle must be in radians before `math.cos` sees it, so 60 degrees is converted
+            first, inside the call. Converting the result afterwards changes the wrong number.
+        - prompt: What does `print(math.cos(math.pi))` show, after `import math`?
+          answer:
+            type: choice
+            options:
+              - { id: right, label: '`-1.0`' }
+              - { id: one, label: '`1.0`' }
+              - { id: zero, label: '`0.0`' }
+              - { id: near, label: '`0.9984971498638638`' }
+            correct: [right]
+          explanation: >-
+            `math.pi` radians is half a turn, which reaches $(-1, 0)$; the float nearest to $\pi$
+            is so close that the cosine rounds to exactly $-1$. `0.998...` is the cosine of $\pi$
+            degrees.
+        - prompt: In radians, about how many whole turns is an angle of 30?
+          answer:
+            type: choice
+            options:
+              - { id: thirty, label: '30' }
+              - { id: tenth, label: 'About 0.08' }
+              - { id: ten, label: 'About 9.5' }
+              - { id: right, label: 'About 4.8' }
+            correct: [right]
+          explanation: >-
+            A turn is $2\pi \approx 6.28$ radians, so 30 radians is about $\frac{30}{6.28} \approx
+            4.8$ turns. 0.08 of a turn is 30 degrees, and 9.5 is $\frac{30}{\pi}$, half turns.
+
+  - id: explore-sine-of-one
+    phase: explore
+    kind: predict
+    concept: M1.11/sine-and-cosine
+    title: From the cosine to the sine
+    prompt: >-
+      $\cos 1 = 0.5403$ to four decimal places, where the angle is 1 radian, about $57°$. What is
+      $\sin 1$, to four decimal places?
+    answer:
+      type: choice
+      options:
+        - { id: minus, label: '$0.4597$' }
+        - { id: square, label: '$0.7081$' }
+        - { id: right, label: '$0.8415$' }
+        - { id: negative, label: '$-0.8415$' }
+      correct: [right]
+    explanation: >-
+      $\sin^2 1 = 1 - \cos^2 1 = 1 - 0.2919 = 0.7081$, so $\sin 1$ is $0.8415$ or $-0.8415$. An
+      angle of about $57°$ points into the quarter of the plane where both coordinates are
+      positive, so $\sin 1 = 0.8415$. $0.7081$ is its square, and $0.4597$ is $1 - \cos 1$, which
+      forgets the squares.
+    review:
+      variants:
+        - prompt: An angle between $90°$ and $180°$ has $\sin\theta = 0.6$. What is $\cos\theta$?
+          answer: { type: number, value: -0.8, tolerance: { abs: 0.0005 } }
+          explanation: >-
+            $\cos^2\theta = 1 - 0.36 = 0.64$, so $\cos\theta$ is $0.8$ or $-0.8$, and past a quarter
+            turn the point is left of the second axis, so $\cos\theta = -0.8$.
+        - prompt: For which angles is $\cos^2\theta + \sin^2\theta = 1$?
+          answer:
+            type: choice
+            options:
+              - { id: acute, label: 'Only for angles between $0°$ and $90°$' }
+              - { id: special, label: 'Only for $0°$, $90°$, $180°$ and $270°$' }
+              - { id: degrees, label: 'Only when the angle is in degrees' }
+              - { id: right, label: 'For every angle' }
+            correct: [right]
+          explanation: >-
+            $(\cos\theta, \sin\theta)$ is a point on the circle of radius 1 for every angle, so its
+            distance from the centre, $\sqrt{\cos^2\theta + \sin^2\theta}$, is always 1.
+
+  - id: explore-small-angle
+    phase: explore
+    kind: predict
+    concept: M1.11/sine-and-cosine
+    title: A small angle
+    prompt: Which of these is $\dfrac{\sin 0.01}{0.01}$ closest to? The angle is in radians.
+    answer:
+      type: choice
+      options:
+        - { id: tiny, label: '0.01' }
+        - { id: degree, label: '0.0175' }
+        - { id: right, label: '1' }
+        - { id: big, label: '57.3' }
+      correct: [right]
+    explanation: >-
+      For a small angle the arc climbs almost straight up from $(1, 0)$, so the point's height,
+      $\sin 0.01$, is nearly the arc's length, $0.01$, and their ratio is nearly 1: it is
+      $0.99998$. $0.0175$ is the sine of one degree, and $57.3$ is the degrees in a radian.
+    review:
+      variants:
+        - prompt: About what is $\sin 0.002$, with the angle in radians?
+          answer:
+            type: choice
+            options:
+              - { id: right, label: 'About 0.002' }
+              - { id: zero, label: 'Exactly 0' }
+              - { id: degrees, label: 'About 0.000035' }
+              - { id: one, label: 'About 1' }
+            correct: [right]
+          explanation: >-
+            For a small angle in radians the sine is close to the angle itself, here
+            $0.0019999987$.
+        - prompt: In degrees, about what is $\sin 1°$?
+          answer:
+            type: choice
+            options:
+              - { id: one, label: 'About 1' }
+              - { id: right, label: 'About 0.0175' }
+              - { id: radian, label: 'About 0.84' }
+              - { id: tiny, label: 'About 0.0001' }
+            correct: [right]
+          explanation: >-
+            $1° = \frac{\pi}{180}$ radians, about 0.01745, and for so small an angle the sine is
+            close to the angle in radians.
+
+  - id: explore-quarter-turn
+    phase: explore
+    kind: predict
+    concept: M1.11/rotation
+    title: A quarter turn
+    prompt: The plane turns a quarter turn anticlockwise about the origin. Where does the point $(3, 1)$ go?
+    answer:
+      type: choice
+      options:
+        - { id: right, label: '$(-1, 3)$' }
+        - { id: clockwise, label: '$(1, -3)$' }
+        - { id: swap, label: '$(1, 3)$' }
+        - { id: half, label: '$(-3, -1)$' }
+      correct: [right]
+    explanation: >-
+      Turn the whole drawing of the route from the origin, 3 to the right and 1 up, through a
+      quarter turn: "to the right" becomes "up" and "up" becomes "to the left", so the route goes 3
+      up and 1 to the left, to $(-1, 3)$. $(1, -3)$ is a quarter turn clockwise, $(-3, -1)$ a half
+      turn, and $(1, 3)$ a reflection in the line $y = x$.
+    review:
+      variants:
+        - prompt: The plane turns a half turn about the origin. Where does $(2, -5)$ go?
+          answer:
+            type: choice
+            options:
+              - { id: right, label: '$(-2, 5)$' }
+              - { id: first, label: '$(-2, -5)$' }
+              - { id: swap, label: '$(-5, 2)$' }
+              - { id: second, label: '$(2, 5)$' }
+            correct: [right]
+          explanation: >-
+            Two quarter turns take $(x, y)$ to $(-y, x)$ and then to $(-x, -y)$, so a half turn
+            changes the sign of both coordinates.
+        - prompt: The plane turns a quarter turn clockwise about the origin. Where does $(0, 2)$ go?
+          answer:
+            type: choice
+            options:
+              - { id: anti, label: '$(-2, 0)$' }
+              - { id: right, label: '$(2, 0)$' }
+              - { id: down, label: '$(0, -2)$' }
+              - { id: stay, label: '$(0, 2)$' }
+            correct: [right]
+          explanation: >-
+            Straight up turned a quarter turn clockwise points to the right, so $(0, 2)$ goes to
+            $(2, 0)$.
+
+  - id: explore-second-axis
+    phase: explore
+    kind: predict
+    concept: M1.11/rotation
+    title: The other axis
+    prompt: >-
+      Turning the plane through $\theta$ takes $(1, 0)$ to $(\cos\theta, \sin\theta)$. Where does it
+      take $(0, 1)$?
+    answer:
+      type: choice
+      options:
+        - { id: swap, label: '$(\sin\theta, \cos\theta)$' }
+        - { id: right, label: '$(-\sin\theta, \cos\theta)$' }
+        - { id: minus-sine, label: '$(\cos\theta, -\sin\theta)$' }
+        - { id: minus-cos, label: '$(-\cos\theta, \sin\theta)$' }
+      correct: [right]
+    explanation: >-
+      $(0, 1)$ is $(1, 0)$ turned a quarter turn, so turning it through $\theta$ gives $(1, 0)$
+      turned through $\theta$ and then a quarter turn more: $(\cos\theta, \sin\theta)$ turned a
+      quarter turn, which by the last question is $(-\sin\theta, \cos\theta)$. At $\theta = 0$ it
+      is $(0, 1)$ itself, as it must be.
+    placement: true
+    review:
+      variants:
+        - prompt: Turning the plane through $\theta$ takes $(1, 0)$ to $(\cos\theta, \sin\theta)$. Where does it take $(-1, 0)$?
+          answer:
+            type: choice
+            options:
+              - { id: right, label: '$(-\cos\theta, -\sin\theta)$' }
+              - { id: same, label: '$(\cos\theta, \sin\theta)$' }
+              - { id: first, label: '$(-\cos\theta, \sin\theta)$' }
+              - { id: swap, label: '$(-\sin\theta, \cos\theta)$' }
+            correct: [right]
+          explanation: >-
+            $(-1, 0)$ is $(1, 0)$ turned a half turn, so it goes to the point opposite
+            $(\cos\theta, \sin\theta)$ across the origin.
+        - prompt: Where does a turn through $30°$ take $(0, 1)$?
+          answer:
+            type: choice
+            options:
+              - { id: swap, label: '$\left(\frac{1}{2}, \frac{\sqrt{3}}{2}\right)$' }
+              - { id: other, label: '$\left(-\frac{\sqrt{3}}{2}, \frac{1}{2}\right)$' }
+              - { id: down, label: '$\left(\frac{1}{2}, -\frac{\sqrt{3}}{2}\right)$' }
+              - { id: right, label: '$\left(-\frac{1}{2}, \frac{\sqrt{3}}{2}\right)$' }
+            correct: [right]
+          explanation: >-
+            $(0, 1)$ goes to $(-\sin 30°, \cos 30°) = \left(-\frac{1}{2}, \frac{\sqrt{3}}{2}\right)$,
+            the point at $120°$.
+
+  # Derive ---------------------------------------------------------------------
+  - id: derive-pythagoras
+    phase: derive
+    kind: proof
+    concept: M1.11/law-of-cosines
+    title: Four triangles in a square
+    prompt: >-
+      Here is a proof of Pythagoras' theorem from the picture. Each line follows from the lines
+      above it. Choose the rule that justifies each line. A rule may be used more than once or not
+      at all.
+    answer:
+      type: steps
+      rules:
+        - { id: multiply-out, name: Multiply out, label: 'Each term of one bracket times each term of the other, as in M1.2.' }
+        - { id: angles, name: Angle sums, label: 'The angles of a triangle add up to $180°$, and so do the angles that meet at a point of a straight line.' }
+        - { id: similar, name: Same angles, label: 'Two triangles with the same three angles have their sides in the same ratios.' }
+        - { id: pieces, name: Areas add, label: 'A shape cut into pieces has an area equal to the sum of their areas.' }
+        - { id: square-area, name: Area of a square, label: 'A square of side $s$ has area $s^2$.' }
+        - { id: both-sides, name: Both sides, label: 'The same amount can be taken from both sides of an equation.' }
+        - { id: triangle-area, name: Area of a triangle, label: 'A triangle with a right angle between sides of lengths $p$ and $q$ has area $\frac{1}{2}pq$, half of the rectangle with those sides.' }
+      start: '\text{A square of side } a + b \text{ holds four copies of the triangle, one in each corner, a side } a \text{ of one meeting a side } b \text{ of the next along each side, and the shape in the middle has four sides of length } c.'
+      lines:
+        - math: '\text{Each corner of the middle shape is a right angle, so the shape is a square.}'
+          rule: angles
+        - math: '\text{The middle square has area } c^2.'
+          rule: square-area
+        - math: '\text{The four triangles have area } 4 \times \tfrac{1}{2}ab = 2ab.'
+          rule: triangle-area
+        - math: '\text{The big square has area } (a + b)^2.'
+          rule: square-area
+        - math: '(a + b)^2 = c^2 + 2ab'
+          rule: pieces
+        - math: 'a^2 + 2ab + b^2 = c^2 + 2ab'
+          rule: multiply-out
+        - math: 'a^2 + b^2 = c^2'
+          rule: both-sides
+    explanation: >-
+      At each point where two triangles meet on a side of the big square, their two smaller angles
+      and the corner of the middle shape make a straight line, $180°$. The two smaller angles of a
+      triangle with a right angle add up to $90°$, so the corner is $90°$, and a shape with four
+      equal sides and four right angles is a square. Its area and the triangles' make up the big
+      square's, and multiplying out and taking $2ab$ from both sides leaves $a^2 + b^2 = c^2$. The
+      rule about triangles with the same angles is not needed.
+    review:
+      variants:
+        - prompt: A triangle with a right angle has shorter sides 5 and 12. How long is its longest side?
+          answer: { type: number, value: 13, tolerance: { abs: 0 } }
+          explanation: >-
+            $5^2 + 12^2 = 25 + 144 = 169 = 13^2$.
+        - prompt: How far is the point $(-3, 4)$ from the origin?
+          answer: { type: number, value: 5, tolerance: { abs: 0 } }
+          explanation: >-
+            The point is the far corner of a triangle with a right angle and shorter sides 3 and 4
+            along the axes, so its distance is $\sqrt{9 + 16} = 5$; the sign of a coordinate does not
+            change its square.
+        - prompt: >-
+            In the proof, why is the shape in the middle a square, and not just a shape with four
+            equal sides?
+          answer:
+            type: choice
+            options:
+              - { id: sides, label: 'Four equal sides always make a square, whatever its corners' }
+              - { id: picture, label: 'It looks like a square in the picture of the four triangles' }
+              - { id: inside, label: 'It sits inside the big square, so it is a square too' }
+              - { id: right, label: 'Each corner is $180°$ less two angles that add up to $90°$' }
+            correct: [right]
+          explanation: >-
+            A rhombus has four equal sides and is not a square, so the corners need an argument: at
+            each one, a straight line's $180°$ is split into the corner and the two smaller angles of
+            a triangle, which add up to $90°$.
+
+  - id: derive-rotation
+    phase: derive
+    kind: step
+    concept: M1.11/rotation
+    title: Turning any point
+    prompt: >-
+      Going $x$ towards $(\cos\theta, \sin\theta)$ and then $y$ towards $(-\sin\theta, \cos\theta)$
+      ends at the turned point. What is the turned point's first coordinate?
+    answer:
+      type: expression
+      symbols:
+        - { name: x }
+        - { name: y }
+        - { name: theta }
+      reference: x*cos(theta) - y*sin(theta)
+      lhs: '\text{first coordinate} ='
+      accept: ['cos(theta)*x - sin(theta)*y', '-y*sin(theta) + x*cos(theta)', 'x*cos(theta) + y*(-sin(theta))']
+      reject:
+        - 'x*cos(theta) + y*sin(theta)'
+        - 'x*cos(theta) - y*cos(theta)'
+        - 'x*cos(theta)'
+        - 'x*sin(theta) - y*cos(theta)'
+        - 'x*cos(theta) - y*sin(theta) + x'
+    explanation: >-
+      Going $x$ towards $(\cos\theta, \sin\theta)$ moves $x\cos\theta$ along the first axis, and going
+      $y$ towards $(-\sin\theta, \cos\theta)$ moves $-y\sin\theta$ along it, so the first coordinate
+      is $x\cos\theta - y\sin\theta$.
+    review:
+      variants:
+        - prompt: What is the second coordinate of the point $(x, y)$ turned through $\theta$?
+          answer:
+            type: expression
+            symbols:
+              - { name: x }
+              - { name: y }
+              - { name: theta }
+            reference: x*sin(theta) + y*cos(theta)
+            accept: ['sin(theta)*x + cos(theta)*y']
+            reject: ['x*sin(theta) - y*cos(theta)', 'y*cos(theta) - x*sin(theta)', 'x*cos(theta) + y*sin(theta)']
+          explanation: >-
+            The second coordinates of the two moves are $x\sin\theta$ and $y\cos\theta$, so the second
+            coordinate is $x\sin\theta + y\cos\theta$.
+        - prompt: Where does a turn through $90°$ take $(x, y)$?
+          answer:
+            type: choice
+            options:
+              - { id: swap, label: '$(y, x)$' }
+              - { id: right, label: '$(-y, x)$' }
+              - { id: clockwise, label: '$(y, -x)$' }
+              - { id: half, label: '$(-x, -y)$' }
+            correct: [right]
+          explanation: >-
+            With $\cos 90° = 0$ and $\sin 90° = 1$, the rule gives $(x \cdot 0 - y \cdot 1, x \cdot 1
+            + y \cdot 0) = (-y, x)$.
+
+  - id: derive-sum
+    phase: derive
+    kind: step
+    concept: M1.11/rotation
+    title: Two turns as one
+    prompt: >-
+      Write $\cos(\alpha + \beta)$ using $\cos\alpha$, $\sin\alpha$, $\cos\beta$ and $\sin\beta$.
+    answer:
+      type: expression
+      symbols:
+        - { name: alpha }
+        - { name: beta }
+      reference: cos(alpha)*cos(beta) - sin(alpha)*sin(beta)
+      lhs: '\cos(\alpha + \beta) ='
+      accept: ['cos(beta)*cos(alpha) - sin(beta)*sin(alpha)', '-sin(alpha)*sin(beta) + cos(alpha)*cos(beta)']
+      reject:
+        - 'cos(alpha)*cos(beta) + sin(alpha)*sin(beta)'
+        - 'cos(alpha) + cos(beta)'
+        - 'cos(alpha)*cos(beta)'
+        - 'sin(alpha)*cos(beta) + cos(alpha)*sin(beta)'
+        - 'cos(alpha + beta)'
+      form:
+        forbid: ['cos(alpha + beta)', 'sin(alpha + beta)']
+        message: That is equal, but this step asks for it written with the cosines and sines of $\alpha$ and $\beta$ on their own.
+    explanation: >-
+      The turned point's first coordinate is $x\cos\theta - y\sin\theta$ with $x = \cos\alpha$,
+      $y = \sin\alpha$ and $\theta = \beta$, which is $\cos\alpha\cos\beta - \sin\alpha\sin\beta$, and
+      it is also the first coordinate of the point at angle $\alpha + \beta$.
+    placement: true
+    review:
+      variants:
+        - prompt: Write $\sin(\alpha + \beta)$ using $\cos\alpha$, $\sin\alpha$, $\cos\beta$ and $\sin\beta$.
+          answer:
+            type: expression
+            symbols:
+              - { name: alpha }
+              - { name: beta }
+            reference: sin(alpha)*cos(beta) + cos(alpha)*sin(beta)
+            accept: ['cos(alpha)*sin(beta) + sin(alpha)*cos(beta)']
+            reject: ['sin(alpha)*cos(beta) - cos(alpha)*sin(beta)', 'sin(alpha) + sin(beta)', 'cos(alpha)*cos(beta) - sin(alpha)*sin(beta)', 'sin(alpha + beta)']
+            form:
+              forbid: ['sin(alpha + beta)']
+              message: That is equal, but this asks for it written with the cosines and sines of $\alpha$ and $\beta$ on their own.
+          explanation: >-
+            The second coordinate of the turned point is $x\sin\theta + y\cos\theta$ with
+            $x = \cos\alpha$, $y = \sin\alpha$ and $\theta = \beta$.
+        - prompt: >-
+            Use $75° = 45° + 30°$ to find $\cos 75°$ to three decimal places.
+          answer: { type: number, value: 0.259, tolerance: { abs: 0.0005 } }
+          explanation: >-
+            $\cos 75° = \cos 45°\cos 30° - \sin 45°\sin 30° = \frac{1}{\sqrt{2}} \cdot \frac{\sqrt{3}}{2}
+            - \frac{1}{\sqrt{2}} \cdot \frac{1}{2} = \frac{\sqrt{3} - 1}{2\sqrt{2}} \approx 0.259$.
+        - prompt: Is $\cos(\alpha + \beta)$ equal to $\cos\alpha + \cos\beta$?
+          answer:
+            type: choice
+            options:
+              - { id: always, label: 'Yes: turning twice adds the angles, so it adds the cosines too' }
+              - { id: quarter, label: 'No: they differ only once $\alpha + \beta$ is past a quarter turn' }
+              - { id: radians, label: 'Yes, but only when both angles are measured in radians' }
+              - { id: right, label: 'No: at $\alpha = \beta = 0$ the left side is 1 and the right side is 2' }
+            correct: [right]
+          explanation: >-
+            One pair of angles where the two sides differ is enough to show they are not equal, and
+            $\alpha = \beta = 0$ gives $\cos 0 = 1$ against $1 + 1 = 2$.
+
+  - id: derive-double
+    phase: derive
+    kind: step
+    concept: M1.11/rotation
+    covers: [M1.11/sine-and-cosine]
+    title: Twice an angle
+    prompt: >-
+      Put $\beta = \alpha$ in the formula for $\cos(\alpha + \beta)$, and use
+      $\sin^2\alpha = 1 - \cos^2\alpha$, to write $\cos 2\alpha$ using $\cos\alpha$ alone. Type
+      $\cos^2\alpha$ as `cos(alpha)^2`.
+    answer:
+      type: expression
+      symbols:
+        - { name: alpha }
+      reference: 2*cos(alpha)**2 - 1
+      lhs: '\cos 2\alpha ='
+      accept: ['cos(alpha)**2 - (1 - cos(alpha)**2)', '-1 + 2*cos(alpha)^2']
+      reject:
+        - 'cos(alpha)**2 - sin(alpha)**2'
+        - '2*cos(alpha) - 1'
+        - 'cos(alpha)**2 - 1'
+        - '1 - 2*cos(alpha)**2'
+        - 'cos(2*alpha)'
+      form:
+        forbid: ['cos(2*alpha)', 'sin(alpha)']
+        message: That is equal, but this step asks for $\cos 2\alpha$ written with $\cos\alpha$ alone.
+    explanation: >-
+      With $\beta = \alpha$, $\cos 2\alpha = \cos^2\alpha - \sin^2\alpha$, and putting
+      $1 - \cos^2\alpha$ for $\sin^2\alpha$ gives $\cos^2\alpha - 1 + \cos^2\alpha = 2\cos^2\alpha - 1$.
+    review:
+      variants:
+        - prompt: Write $\sin 2\alpha$ using $\sin\alpha$ and $\cos\alpha$.
+          answer:
+            type: expression
+            symbols:
+              - { name: alpha }
+            reference: 2*sin(alpha)*cos(alpha)
+            accept: ['2*cos(alpha)*sin(alpha)']
+            reject: ['2*sin(alpha)', 'sin(alpha)*cos(alpha)', 'sin(alpha)**2 + cos(alpha)**2']
+            form:
+              forbid: ['sin(2*alpha)']
+              message: That is equal, but this asks for it written with $\sin\alpha$ and $\cos\alpha$.
+          explanation: >-
+            With $\beta = \alpha$, $\sin(\alpha + \beta) = \sin\alpha\cos\beta + \cos\alpha\sin\beta$
+            gives $2\sin\alpha\cos\alpha$.
+        - prompt: >-
+            The puzzle's schedule kept $\frac{1 + \cos\theta}{2}$ of the starting rate after the
+            wheel turned through $\theta$. What fraction is left halfway through the run, when
+            $\theta = 90°$?
+          answer: { type: number, value: 0.5, tolerance: { abs: 0.001 } }
+          explanation: >-
+            $\cos 90° = 0$, so $\frac{1 + 0}{2} = \frac{1}{2}$: halfway through, half the rate is left,
+            and it is $\cos^2 45° = \frac{1}{2}$ too.
+        - prompt: >-
+            With the same schedule, what fraction of the starting rate is left three quarters of the
+            way through the run, when $\theta = 135°$? Give it to two decimal places.
+          answer: { type: number, value: 0.15, tolerance: { abs: 0.005 } }
+          explanation: >-
+            $\cos 135° = -\frac{1}{\sqrt{2}} \approx -0.707$, so $\frac{1 - 0.707}{2} \approx 0.15$, the
+            mirror image of the 85% left after a quarter of the run.
+
+  - id: derive-cosines
+    phase: derive
+    kind: step
+    concept: M1.11/law-of-cosines
+    title: The third side
+    prompt: >-
+      The third side runs from $(a, 0)$ to $(b\cos C, b\sin C)$. Use Pythagoras' theorem for its
+      length, and $\cos^2 C + \sin^2 C = 1$, to write $c^2$ without $\sin C$.
+    answer:
+      type: expression
+      symbols:
+        - { name: a, positive: true }
+        - { name: b, positive: true }
+        - { name: C }
+      reference: a**2 + b**2 - 2*a*b*cos(C)
+      lhs: 'c^2 ='
+      accept: ['b**2 + a**2 - 2*b*a*cos(C)', 'a^2 + b^2 - 2*a*b*cos(C)']
+      reject:
+        - 'a**2 + b**2'
+        - 'a**2 + b**2 + 2*a*b*cos(C)'
+        - 'a**2 + b**2 - 2*a*b'
+        - 'a**2 + b**2 - a*b*cos(C)'
+        - '(b*cos(C) - a)**2 + (b*sin(C))**2'
+      form:
+        forbid: ['sin(C)']
+        message: That is equal, but it still has $\sin C$ in it. Multiply out the squares and collect the terms in $\cos^2 C$ and $\sin^2 C$.
+    explanation: >-
+      $c^2 = (b\cos C - a)^2 + (b\sin C)^2 = b^2\cos^2 C - 2ab\cos C + a^2 + b^2\sin^2 C$, and
+      $b^2\cos^2 C + b^2\sin^2 C = b^2$, so $c^2 = a^2 + b^2 - 2ab\cos C$.
+    placement: true
+    review:
+      variants:
+        - prompt: Two sides of a triangle, 3 and 5 long, meet at an angle of $60°$. How long is the third side, to three decimal places?
+          answer: { type: number, value: 4.359, tolerance: { abs: 0.001 } }
+          explanation: >-
+            $c^2 = 9 + 25 - 2 \times 3 \times 5 \times \frac{1}{2} = 19$, so $c = \sqrt{19} \approx
+            4.359$.
+        - prompt: A triangle has sides 3, 5 and 7. What is the angle opposite the side of 7, in degrees?
+          answer: { type: number, value: 120, tolerance: { abs: 0.5 }, unit: '°' }
+          explanation: >-
+            $\cos C = \frac{9 + 25 - 49}{2 \times 3 \times 5} = -\frac{15}{30} = -\frac{1}{2}$, and
+            the angle between $0°$ and $180°$ with cosine $-\frac{1}{2}$ is $120°$.
+        - prompt: Two sides of a triangle meet at an angle of more than $90°$. How does the third side compare with what Pythagoras' theorem would give?
+          answer:
+            type: choice
+            options:
+              - { id: shorter, label: 'Shorter, since the angle is larger' }
+              - { id: same, label: 'The same, since Pythagoras holds for every triangle' }
+              - { id: right, label: 'Longer, since the cosine of the angle is negative' }
+              - { id: depends, label: 'It depends on which side is longer' }
+            correct: [right]
+          explanation: >-
+            Past $90°$ the cosine is negative, so $-2ab\cos C$ is positive and $c^2$ is more than
+            $a^2 + b^2$.
+
+  - id: derive-degree
+    phase: derive
+    kind: estimate
+    concept: M1.11/radians
+    title: How long is a degree?
+    prompt: >-
+      The Earth's radius is about 6,371 km. Two places due north and south of each other differ in
+      latitude by $1°$, an angle measured at the Earth's centre. Estimate how far apart they are
+      along the surface, in kilometres, without a calculator.
+    answer: { type: number, value: 111, tolerance: { factor: 1.2 }, unit: km }
+    explanation: >-
+      An arc is the radius times the angle in radians, and $1° = \frac{\pi}{180} \approx
+      \frac{1}{57}$ radians, so the distance is about $\frac{6{,}371}{57} \approx 112$ km, and a
+      calculator gives $111.2$ km. The metre was first defined, in 1791, as a ten-millionth of the distance
+      from the pole to the equator, which is why that quarter of a meridian is about 10,000 km and
+      a degree of it about 111 km.
+    review:
+      variants:
+        - prompt: >-
+            A satellite circles 6,771 km from the Earth's centre. Estimate how far it travels while
+            its direction from the centre turns through $1°$, in kilometres.
+          answer: { type: number, value: 118, tolerance: { factor: 1.2 }, unit: km }
+          explanation: >-
+            $6{,}771 \times \frac{\pi}{180} \approx \frac{6{,}771}{57.3} \approx 118$ km.
+        - prompt: >-
+            The Moon is about 384,000 km away and looks about half a degree wide. Estimate its
+            width in kilometres.
+          answer: { type: number, value: 3400, tolerance: { factor: 1.3 }, unit: km }
+          explanation: >-
+            So far away, its width is nearly an arc of a circle of radius 384,000 km, and half a
+            degree is about $\frac{1}{114}$ radian, so about $\frac{384{,}000}{114} \approx 3{,}400$
+            km. The Moon is 3,475 km across.
+
+  # Build ----------------------------------------------------------------------
+  - id: debug-rotate
+    phase: build
+    kind: debug
+    concept: M1.11/rotation
+    title: A turn that shrinks
+    prompt: >-
+      `rotate` should turn the point `(x, y)` anticlockwise about the origin through `angle`, in
+      radians, by the Derive phase's rule. A quarter turn should take `(1, 0)` to `(0, 1)` and
+      `(3, 1)` to `(-1, 3)`, but run it and see what it gives. Find the bug and fix it.
+    answer:
+      type: code
+      starter: |
+        import math
+
+
+        def rotate(x, y, angle):
+            """(x, y) turned anticlockwise about the origin through angle, in radians."""
+            c = math.cos(angle)
+            s = math.sin(angle)
+            x = x * c - y * s
+            y = x * s + y * c
+            return x, y
+
+
+        print(rotate(1, 0, math.pi / 2))   # a quarter turn: should be about (0, 1)
+        print(rotate(3, 1, math.pi / 2))   # should be about (-1, 3)
+      tests: |
+        import math
+
+
+        def show(point):
+            """A point with each coordinate to 6 significant figures, and rounding's tiny leftovers as 0."""
+            return "(" + ", ".join(f"{0.0 if abs(v) < 1e-12 else v:.6g}" for v in point) + ")"
+
+
+        def test_quarter_turn():
+            """A quarter turn takes (1, 0) to (0, 1)."""
+            got = rotate(1, 0, math.pi / 2)
+            assert close(got[0], 0, abs_tol=1e-9) and close(got[1], 1), f"rotate(1, 0, math.pi / 2) gave {show(got)}, not (0, 1)."
+
+
+        def test_three_one():
+            """A quarter turn takes (3, 1) to (-1, 3)."""
+            got = rotate(3, 1, math.pi / 2)
+            assert close(got[0], -1) and close(got[1], 3), f"rotate(3, 1, math.pi / 2) gave {show(got)}, not (-1, 3)."
+
+
+        def test_keeps_distance():
+            """Turning keeps a point's distance from the origin."""
+            for x, y in [(1, 0), (3, 1), (-2, 5), (0.5, -0.25)]:
+                for angle in [0.3, 1, 2.5, -1.2, 4]:
+                    got = rotate(x, y, angle)
+                    before = math.hypot(x, y)
+                    after = math.hypot(got[0], got[1])
+                    assert close(after, before), f"rotate({x}, {y}, {angle}) gave {show(got)}, {after:.6g} from the origin, but ({x}, {y}) is {before:.6g} from it."
+
+
+        def test_two_turns():
+            """Turning by one angle and then by another is turning by their sum."""
+            for a, b in [(0.4, 0.9), (1, -2), (2.5, 2.5)]:
+                first = rotate(2, 1, a)
+                twice = rotate(first[0], first[1], b)
+                once = rotate(2, 1, a + b)
+                assert close(twice[0], once[0], abs_tol=1e-9) and close(twice[1], once[1], abs_tol=1e-9), f"Turning (2, 1) by {a} and then by {b} gave {show(twice)}, but turning it by {a + b} at once gave {show(once)}."
+      reference: |
+        import math
+
+
+        def rotate(x, y, angle):
+            """(x, y) turned anticlockwise about the origin through angle, in radians."""
+            c = math.cos(angle)
+            s = math.sin(angle)
+            return x * c - y * s, x * s + y * c
+
+
+        print(rotate(1, 0, math.pi / 2))
+        print(rotate(3, 1, math.pi / 2))
+      wrong:
+        - code: |
+            import math
+
+
+            def rotate(x, y, angle):
+                c = math.cos(angle)
+                s = math.sin(angle)
+                x = x * c - y * s
+                y = x * s + y * c
+                return x, y
+          why: >-
+            The bug left in: the second line works out the new y from the new x, which has already
+            replaced the old one, so a quarter turn sends $(1, 0)$ to about $(0, 0)$.
+        - code: |
+            import math
+
+
+            def rotate(x, y, angle):
+                c = math.cos(angle)
+                s = math.sin(angle)
+                y = x * s + y * c
+                x = x * c - y * s
+                return x, y
+          why: >-
+            The two lines swapped: now the new x is worked out from the new y, so the bug has moved
+            instead of going, and a quarter turn sends $(1, 0)$ to $(-1, 1)$.
+        - code: |
+            import math
+
+
+            def rotate(x, y, angle):
+                c = math.cos(angle)
+                s = math.sin(angle)
+                return x * c + y * s, -x * s + y * c
+          why: >-
+            The signs of the sine terms are swapped, which turns clockwise: distances are kept and
+            two turns still add up, but a quarter turn sends $(1, 0)$ to $(0, -1)$.
+        - code: |
+            import math
+
+
+            def rotate(x, y, angle):
+                c = math.cos(math.radians(angle))
+                s = math.sin(math.radians(angle))
+                return x * c - y * s, x * s + y * c
+          why: >-
+            The angle is already in radians, and converting it again as if it were degrees turns
+            through about a fifty-seventh of the angle.
+    explanation: >-
+      The line `x = x * c - y * s` replaces the old `x` before the next line uses it, so the new
+      `y` is made from the new `x`. Working both out from the old values, in one `return` or with
+      new names such as `new_x` and `new_y`, mends it.
+
+  - id: build-rotate-about
+    phase: build
+    kind: build
+    concept: M1.11/rotation
+    title: Turning about any centre
+    prompt: >-
+      `rotate`, mended, turns about the origin only. Write `rotate_about(x, y, cx, cy, angle)`,
+      which turns the point `(x, y)` anticlockwise through `angle` about the centre `(cx, cy)`: move
+      the centre to the origin by taking `(cx, cy)` from the point, turn with `rotate`, and move
+      back.
+    answer:
+      type: code
+      starter: |
+        import math
+
+
+        def rotate(x, y, angle):
+            """(x, y) turned anticlockwise about the origin through angle, in radians."""
+            c = math.cos(angle)
+            s = math.sin(angle)
+            return x * c - y * s, x * s + y * c
+
+
+        def rotate_about(x, y, cx, cy, angle):
+            """(x, y) turned anticlockwise about the point (cx, cy) through angle, in radians."""
+            return x, y
+
+
+        print(rotate_about(2, 1, 1, 1, math.pi / 2))   # should be about (1, 2)
+      tests: |
+        import math
+
+
+        def show(point):
+            """A point with each coordinate to 6 significant figures, and rounding's tiny leftovers as 0."""
+            return "(" + ", ".join(f"{0.0 if abs(v) < 1e-12 else v:.6g}" for v in point) + ")"
+
+
+        def test_example():
+            """A quarter turn of (2, 1) about (1, 1) gives (1, 2)."""
+            got = rotate_about(2, 1, 1, 1, math.pi / 2)
+            assert close(got[0], 1) and close(got[1], 2), f"rotate_about(2, 1, 1, 1, math.pi / 2) gave {show(got)}, not (1, 2)."
+
+
+        def test_centre_stays():
+            """The centre itself does not move."""
+            for cx, cy in [(1, 1), (-3, 2), (0.5, -4)]:
+                got = rotate_about(cx, cy, cx, cy, 1.1)
+                assert close(got[0], cx, abs_tol=1e-9) and close(got[1], cy, abs_tol=1e-9), f"Turning the centre ({cx}, {cy}) about itself gave {show(got)}: the centre should stay where it is."
+
+
+        def test_keeps_distance():
+            """Every point keeps its distance from the centre."""
+            for x, y, cx, cy in [(2, 1, 1, 1), (5, -1, -2, 3), (0, 0, 4, 4)]:
+                for angle in [0.5, 2, -2.7]:
+                    got = rotate_about(x, y, cx, cy, angle)
+                    before = math.hypot(x - cx, y - cy)
+                    after = math.hypot(got[0] - cx, got[1] - cy)
+                    assert close(after, before), f"rotate_about({x}, {y}, {cx}, {cy}, {angle}) gave {show(got)}, {after:.6g} from the centre, but ({x}, {y}) is {before:.6g} from it."
+
+
+        def test_quarter_and_half_turns():
+            """Quarter and half turns about a centre land where they should."""
+            for x, y, cx, cy, angle, words, want in [(5, -1, -2, 3, math.pi / 2, "math.pi / 2", (2, 10)), (0, 0, 4, 4, math.pi, "math.pi", (8, 8)), (1, 6, 2, -1, -math.pi / 2, "-math.pi / 2", (9, 0))]:
+                got = rotate_about(x, y, cx, cy, angle)
+                assert close(got[0], want[0], abs_tol=1e-9) and close(got[1], want[1], abs_tol=1e-9), f"rotate_about({x}, {y}, {cx}, {cy}, {words}) gave {show(got)}, not {show(want)}."
+
+
+        def test_turns_by_the_angle():
+            """Seen from the centre, the point turns anticlockwise through exactly the angle."""
+            for x, y, cx, cy, angle in [(5, -1, -2, 3, 0.7), (1, 6, 2, -1, 3), (0, 0, 4, 4, -2)]:
+                got = rotate_about(x, y, cx, cy, angle)
+                before = (x - cx, y - cy)
+                after = (got[0] - cx, got[1] - cy)
+                size = math.hypot(*before) * math.hypot(*after)
+                assert size > 0, f"rotate_about({x}, {y}, {cx}, {cy}, {angle}) gave the centre itself, {show(got)}."
+                turned = math.atan2((before[0] * after[1] - before[1] * after[0]) / size, (before[0] * after[0] + before[1] * after[1]) / size)
+                assert close(turned, angle, abs_tol=1e-9), f"Seen from the centre ({cx}, {cy}), rotate_about({x}, {y}, {cx}, {cy}, {angle}) turned the point through {turned:.6g} radians, not {angle}."
+      reference: |
+        import math
+
+
+        def rotate(x, y, angle):
+            """(x, y) turned anticlockwise about the origin through angle, in radians."""
+            c = math.cos(angle)
+            s = math.sin(angle)
+            return x * c - y * s, x * s + y * c
+
+
+        def rotate_about(x, y, cx, cy, angle):
+            """(x, y) turned anticlockwise about the point (cx, cy) through angle, in radians."""
+            u, v = rotate(x - cx, y - cy, angle)
+            return u + cx, v + cy
+
+
+        print(rotate_about(2, 1, 1, 1, math.pi / 2))
+      wrong:
+        - code: |
+            import math
+
+
+            def rotate(x, y, angle):
+                c = math.cos(angle)
+                s = math.sin(angle)
+                return x * c - y * s, x * s + y * c
+
+
+            def rotate_about(x, y, cx, cy, angle):
+                return rotate(x - cx, y - cy, angle)
+          why: >-
+            It moves the centre to the origin and turns, but never moves back, so every answer is
+            off by $(cx, cy)$ and the centre itself lands on the origin.
+        - code: |
+            import math
+
+
+            def rotate(x, y, angle):
+                c = math.cos(angle)
+                s = math.sin(angle)
+                return x * c - y * s, x * s + y * c
+
+
+            def rotate_about(x, y, cx, cy, angle):
+                return rotate(x, y, angle)
+          why: >-
+            It ignores the centre and turns about the origin.
+        - code: |
+            import math
+
+
+            def rotate(x, y, angle):
+                c = math.cos(angle)
+                s = math.sin(angle)
+                return x * c - y * s, x * s + y * c
+
+
+            def rotate_about(x, y, cx, cy, angle):
+                u, v = rotate(x - cx, y - cy, angle)
+                return u - cx, v - cy
+          why: >-
+            It moves back the wrong way, taking $(cx, cy)$ away a second time instead of adding it
+            back.
+        - code: |
+            import math
+
+
+            def rotate(x, y, angle):
+                c = math.cos(angle)
+                s = math.sin(angle)
+                return x * c - y * s, x * s + y * c
+
+
+            def rotate_about(x, y, cx, cy, angle):
+                u, v = rotate(x + cx, y + cy, angle)
+                return u - cx, v - cy
+          why: >-
+            The moves are the wrong way round: it adds the centre first and takes it away after,
+            which turns about the point $(-cx, -cy)$.
+    explanation: >-
+      Taking the centre away moves it to the origin, `rotate` turns about the origin, and adding
+      the centre back undoes the first move, as in M1.3 an inverse undoes its function.
+
+  - id: build-polar
+    phase: build
+    kind: build
+    concept: M1.11/sine-and-cosine
+    covers: [M1.11/rotation]
+    title: A point's distance and angle
+    prompt: >-
+      Write `polar(x, y)`, which gives two values: the distance `r` of the point `(x, y)` from the
+      origin, and the angle, in radians from $-\pi$ to $\pi$, that turns `(1, 0)` towards it. The
+      tests turn `(r, 0)` through that angle, which must give back `(x, y)`.
+    answer:
+      type: code
+      starter: |
+        import math
+
+
+        def polar(x, y):
+            """The distance of (x, y) from the origin, and its angle in radians from -pi to pi."""
+            return 0, 0
+
+
+        print(polar(1, 1))     # should be about (1.414, 0.785), the square root of 2 and pi / 4
+        print(polar(-1, -1))   # should be about (1.414, -2.356)
+      tests: |
+        import math
+
+
+        def show(point):
+            """A pair with each number to 6 significant figures, and rounding's tiny leftovers as 0."""
+            return "(" + ", ".join(f"{0.0 if abs(v) < 1e-12 else v:.6g}" for v in point) + ")"
+
+
+        def turn(x, y, angle):
+            """The tests' own turn about the origin."""
+            return x * math.cos(angle) - y * math.sin(angle), x * math.sin(angle) + y * math.cos(angle)
+
+
+        def test_distance():
+            """The distance is the square root of x squared plus y squared."""
+            for x, y in [(3, 4), (-5, 12), (-2, -7), (1, 1)]:
+                got = polar(x, y)
+                assert close(got[0], math.hypot(x, y)), f"polar({x}, {y}) gave the distance {got[0]:.6g}, not {math.hypot(x, y):.6g}."
+
+
+        def test_four_quarters():
+            """The angle is right in every quarter of the plane."""
+            for x, y, angle, words in [(1, 1, math.pi / 4, "pi / 4"), (-1, 1, 3 * math.pi / 4, "3 pi / 4"), (-1, -1, -3 * math.pi / 4, "-3 pi / 4"), (1, -1, -math.pi / 4, "-pi / 4")]:
+                got = polar(x, y)
+                if close(got[1], math.degrees(angle)):
+                    assert False, f"polar({x}, {y}) gave the angle {got[1]:.6g}, which is {words} in degrees; the angle should be in radians."
+                why = ""
+                if close(abs(got[1] - angle), math.pi):
+                    why = f" The angle {got[1]:.6g} points the opposite way: check which quarter of the plane ({x}, {y}) is in."
+                elif close(abs(got[1] - angle), 2 * math.pi):
+                    why = f" The angle {got[1]:.6g} points the right way, but the angle should be from -pi to pi."
+                assert close(got[1], angle), f"polar({x}, {y}) gave the angle {got[1]:.6g}, not {words}, about {angle:.6g}.{why}"
+
+
+        def test_on_the_axes():
+            """Points on the axes have the angles 0, pi / 2, pi (or -pi, the same angle) and -pi / 2."""
+            for x, y, angle, words in [(2, 0, 0, "0"), (0, 2, math.pi / 2, "pi / 2"), (-2, 0, math.pi, "pi"), (0, -2, -math.pi / 2, "-pi / 2")]:
+                try:
+                    got = polar(x, y)
+                except ZeroDivisionError:
+                    axis = "second axis, where x is 0" if x == 0 else "first axis, where y is 0"
+                    assert False, f"polar({x}, {y}) stopped with a ZeroDivisionError, a division by 0: ({x}, {y}) is on the {axis}, and its angle is {words}."
+                if x < 0 and close(got[1], -math.pi):
+                    continue
+                assert close(got[1], angle, abs_tol=1e-9), f"polar({x}, {y}) gave the angle {got[1]:.6g}, not {words}."
+
+
+        def test_round_trip():
+            """Turning (r, 0) through the angle gives back the point."""
+            for x, y in [(3, 4), (-5, 12), (-0.5, -0.25), (7, -1)]:
+                r, angle = polar(x, y)
+                back = turn(r, 0, angle)
+                assert close(back[0], x, abs_tol=1e-9) and close(back[1], y, abs_tol=1e-9), f"polar({x}, {y}) gave {show((r, angle))}, and turning ({r:.6g}, 0) through {angle:.6g} gives {show(back)}, not ({x}, {y})."
+      reference: |
+        import math
+
+
+        def polar(x, y):
+            """The distance of (x, y) from the origin, and its angle in radians from -pi to pi."""
+            return math.hypot(x, y), math.atan2(y, x)
+
+
+        print(polar(1, 1))
+        print(polar(-1, -1))
+      wrong:
+        - code: |
+            import math
+
+
+            def polar(x, y):
+                return math.hypot(x, y), math.atan(y / x)
+          why: >-
+            `math.atan(y / x)` sees only the slope, which is the same for $(1, 1)$ and $(-1, -1)$,
+            so it gives angles between $-\frac{\pi}{2}$ and $\frac{\pi}{2}$ only, and it divides by 0
+            for a point on the second axis.
+        - code: |
+            import math
+
+
+            def polar(x, y):
+                return math.hypot(x, y), math.atan2(x, y)
+          why: >-
+            The arguments of `math.atan2` are the wrong way round: it takes $y$ first.
+        - code: |
+            import math
+
+
+            def polar(x, y):
+                return x**2 + y**2, math.atan2(y, x)
+          why: >-
+            The distance is the square root of $x^2 + y^2$, not $x^2 + y^2$ itself.
+        - code: |
+            import math
+
+
+            def polar(x, y):
+                return math.hypot(x, y), math.degrees(math.atan2(y, x))
+          why: >-
+            The angle is in degrees, but the function promises radians, and turning by it as
+            radians lands somewhere else.
+    explanation: >-
+      `math.hypot(x, y)` is $\sqrt{x^2 + y^2}$, and `math.atan2(y, x)` is the angle of the point
+      itself, so turning $(r, 0)$ through it reaches $(r\cos\theta, r\sin\theta) = (x, y)$. A
+      point's distance and angle are called its *polar coordinates*.
+
+  - id: build-cosine-schedule
+    phase: build
+    kind: build
+    concept: M1.11/sine-and-cosine
+    covers: [M1.11/radians]
+    title: The puzzle's schedule
+    prompt: >-
+      Write `cosine_lr(step, total, top, bottom)`, the learning rate at `step` of a run of `total`
+      steps, which follows the puzzle's wheel from `top` at step 0 down to `bottom` at the last
+      step. After `step` of the `total` steps the wheel has turned through that fraction of half a
+      turn, and the rate is the fraction $\frac{1 + \cos\theta}{2}$ of the way from `bottom` up to
+      `top`, where $\theta$ is the angle turned.
+    answer:
+      type: code
+      starter: |
+        import math
+
+
+        def cosine_lr(step, total, top, bottom):
+            """The learning rate at step, of total steps, falling along a cosine from top to bottom."""
+            return top
+
+
+        print(cosine_lr(0, 10000, 0.001, 0))       # should be 0.001
+        print(cosine_lr(2500, 10000, 0.001, 0))    # the puzzle's step
+        print(cosine_lr(10000, 10000, 0.001, 0))   # should be about 0
+      tests: |
+        import math
+
+
+        def test_start_and_end():
+            """The rate is top at step 0 and bottom at the last step."""
+            for total, top, bottom in [(10000, 0.001, 0), (500, 0.003, 0.0003), (8, 1, 0.5)]:
+                first = cosine_lr(0, total, top, bottom)
+                last = cosine_lr(total, total, top, bottom)
+                assert close(first, top), f"cosine_lr(0, {total}, {top}, {bottom}) gave {first:.6g}, not top, {top}."
+                hint = " At the last step the wheel has turned half a turn, math.pi radians, where the cosine is -1." if last > bottom else " The rate should never fall below bottom."
+                assert close(last, bottom, abs_tol=1e-12), f"cosine_lr({total}, {total}, {top}, {bottom}) gave {last:.6g}, not bottom, {bottom}.{hint}"
+
+
+        def test_halfway():
+            """Halfway through, the rate is halfway between top and bottom."""
+            for total, top, bottom in [(10000, 0.001, 0), (500, 0.003, 0.0003)]:
+                got = cosine_lr(total // 2, total, top, bottom)
+                want = (top + bottom) / 2
+                assert close(got, want), f"cosine_lr({total // 2}, {total}, {top}, {bottom}) gave {got:.6g}, not {want:.6g}, halfway between top and bottom."
+
+
+        def test_never_rises():
+            """The rate never goes up from one step to the next."""
+            before = cosine_lr(0, 1000, 0.002, 0.0002)
+            for step in range(1, 1001):
+                now = cosine_lr(step, 1000, 0.002, 0.0002)
+                assert now <= before + 1e-15, f"The rate rose from {before:.6g} at step {step - 1:,} to {now:.6g} at step {step:,}."
+                before = now
+
+
+        def test_cosine_shape():
+            """It stays above a straight line from top to bottom for the first half, and below it for the second."""
+            for step in [100, 2500, 4900]:
+                got = cosine_lr(step, 10000, 0.001, 0)
+                line = 0.001 * (1 - step / 10000)
+                assert got > line, f"At step {step:,} of 10,000 the rate is {got:.6g}, not above the straight line's {line:.6g}: a cosine schedule falls slowly at first."
+            for step in [5100, 7500, 9900]:
+                got = cosine_lr(step, 10000, 0.001, 0)
+                line = 0.001 * (1 - step / 10000)
+                assert got < line, f"At step {step:,} of 10,000 the rate is {got:.6g}, not below the straight line's {line:.6g}: a cosine schedule falls fast in the middle."
+      reference: |
+        import math
+
+
+        def cosine_lr(step, total, top, bottom):
+            """The learning rate at step, of total steps, falling along a cosine from top to bottom."""
+            angle = math.pi * step / total
+            return bottom + (top - bottom) * (1 + math.cos(angle)) / 2
+
+
+        print(cosine_lr(0, 10000, 0.001, 0))
+        print(cosine_lr(2500, 10000, 0.001, 0))
+        print(cosine_lr(10000, 10000, 0.001, 0))
+      wrong:
+        - code: |
+            import math
+
+
+            def cosine_lr(step, total, top, bottom):
+                return bottom + (top - bottom) * (1 + math.cos(step / total)) / 2
+          why: >-
+            The angle is the fraction of the run, not that fraction of half a turn, $\pi$ radians,
+            so the wheel turns through only 1 radian and the rate ends well above `bottom`.
+        - code: |
+            import math
+
+
+            def cosine_lr(step, total, top, bottom):
+                return bottom + (top - bottom) * (1 + math.cos(180 * step / total)) / 2
+          why: >-
+            Half a turn written as 180 degrees, but `math.cos` takes radians, so the angle runs to
+            180 radians and the rate goes up and down many times.
+        - code: |
+            import math
+
+
+            def cosine_lr(step, total, top, bottom):
+                return bottom + (top - bottom) * (1 - math.cos(math.pi * step / total)) / 2
+          why: >-
+            $1 - \cos\theta$ in place of $1 + \cos\theta$ follows the mark's height from the top,
+            so the rate starts at `bottom` and climbs to `top`.
+        - code: |
+            import math
+
+
+            def cosine_lr(step, total, top, bottom):
+                return top * (1 + math.cos(math.pi * step / total)) / 2
+          why: >-
+            It falls from `top` to 0 and ignores `bottom`, which is right only when `bottom` is 0.
+    explanation: >-
+      The angle after `step` steps is $\pi \cdot \frac{\text{step}}{\text{total}}$, and the rate is
+      `bottom` plus the fraction $\frac{1 + \cos\theta}{2}$ of `top - bottom`. At the puzzle's step
+      2,500 that is $0.001 \times \frac{1 + \cos\frac{\pi}{4}}{2} \approx 0.000854$.
+
+  - id: breakit-sine-pi
+    phase: build
+    kind: breakit
+    concept: M1.11/sine-and-cosine
+    covers: [M1.11/radians]
+    title: The sine of pi
+    prompt: >-
+      The working program prints the cosine of `math.pi` and whether it equals $-1$. The changed
+      program asks the same of the sine, which should be 0. Predict what the changed program
+      prints, then run both.
+    answer:
+      type: breakit
+      code: |
+        import math
+
+        value = math.cos(math.pi)
+        print(value, value == -1)
+      broken: |
+        import math
+
+        value = math.sin(math.pi)
+        print(value, value == 0)
+      change: The cosine of `math.pi` becomes its sine, and $-1$ becomes 0, the other coordinate of the point half a turn from $(1, 0)$.
+      options:
+        - { id: zero, label: 'It prints `0.0 True`', when: "error is None and value == 0" }
+        - { id: tiny, label: 'It prints a number close to 0 but not 0, and `False`', when: "error is None and value != 0 and abs(value) < 1e-6" }
+        - { id: far, label: 'It prints a number far from 0, and `False`', when: "error is None and abs(value) >= 1e-6" }
+        - { id: error, label: 'It stops with an error', when: "error is not None" }
+    explanation: >-
+      It prints `1.2246467991473532e-16 False`. `math.pi` falls just short of $\pi$, so half a turn
+      by it stops just short of $(-1, 0)$, a tiny height above the first axis. The cosine there
+      still rounds to exactly $-1.0$: near its leftmost point the circle runs straight up and down,
+      so a tiny step along it changes the height but hardly the first coordinate. The sine is the
+      tiny height itself.
+
+  # Explain --------------------------------------------------------------------
+  - id: explain-rotation
+    phase: explain
+    kind: explain
+    concept: M1.11/rotation
+    covers: [M1.11/radians, M1.11/sine-and-cosine, M1.11/law-of-cosines]
+    title: Turning, simply
+    prompt: >-
+      Explain to your friend why `math.sin(30)` printed `-0.9880316240928618`, what a radian is,
+      what to type to get the sine of 30 degrees, and what that prints. Then explain what
+      $\cos\theta$ and $\sin\theta$ really are, what multiplying both coordinates by $\cos\theta$
+      does to a point and why that is not a way to turn it, and how to turn $(x, y)$ through
+      $\theta$, with the reason the rule works. Last, explain when squaring two sides of a triangle
+      and adding gives the square of the third, what gives it otherwise, and why. Give an example
+      for each.
+    answer:
+      type: text
+      rubric:
+        - { id: radians, criterion: 'Says what a radian is, that `math.sin` reads its angle in radians, and how to give it 30 degrees instead, with the value that gives.' }
+        - { id: thirty, criterion: 'Says why `math.sin(30)` is close to $-1$: where an angle of 30 radians ends up on the circle.' }
+        - { id: coordinates, criterion: 'Says what $\cos\theta$ and $\sin\theta$ are, as the coordinates of a point on the circle of radius 1, with an example.' }
+        - { id: shrink, criterion: 'Says what multiplying both coordinates by $\cos\theta$ really does to a point, with an example where it plainly fails to turn it.' }
+        - { id: rule, criterion: 'Gives the rule for turning $(x, y)$ through $\theta$, says why it holds, for example from where $(1, 0)$ and $(0, 1)$ go, and works an example.' }
+        - { id: cosines, criterion: 'Says that squaring and adding gives the third side only when the two sides meet at a right angle, gives the law of cosines for any angle with where it comes from, and works an example.' }
+      reference: >-
+        Python's sine is fine: it measures angles in another unit. Draw a circle of radius 1 about
+        the corner of an angle, and measure the angle by the length of the arc it cuts from that
+        circle: that is the angle in radians. A whole turn cuts the whole circle, $2\pi$ long, so
+        $360°$ is $2\pi$ radians. `math.sin` reads radians, so `math.sin(30)` is the sine of 30
+        radians, $\frac{30}{2\pi} \approx 4.77$ turns. Four whole turns change nothing, and the 0.77
+        of a turn left, about $279°$, ends near the bottom of the circle, where the height is close to
+        $-1$. For 30 degrees, convert first: `math.sin(math.radians(30))` takes $\frac{\pi}{6}$, about
+        0.524, and prints `0.49999999999999994`, which is $\frac{1}{2}$ up to the rounding of floats.
+        So what are sine and cosine? Put the circle of radius 1 at the origin, start at $(1, 0)$, and
+        go anticlockwise along it through $\theta$. The point you reach is
+        $(\cos\theta, \sin\theta)$: the cosine is its first coordinate and the sine its second. At
+        $30°$ it is $\left(\frac{\sqrt{3}}{2}, \frac{1}{2}\right)$. Now turning. Multiplying both
+        coordinates by $\cos\theta$ keeps the point on its line through the origin and only scales
+        it, which matches a turn only for a whole or a half turn: a quarter turn should take $(1, 0)$
+        to $(0, 1)$, but $\cos 90° = 0$, so your plan gives $(0, 0)$. Instead, think of $(x, y)$ as a route: $x$ along the first axis,
+        then $y$ along the second. Turn the whole picture and the route turns with it. The direction
+        $(1, 0)$ turns to $(\cos\theta, \sin\theta)$ and $(0, 1)$, a quarter turn further on, to
+        $(-\sin\theta, \cos\theta)$, so the turned point is
+        $(x\cos\theta - y\sin\theta,\; x\sin\theta + y\cos\theta)$. A quarter turn of $(3, 1)$
+        gives $(0 - 1, 3 + 0) = (-1, 3)$: 3 up and 1 to the left. Last, squaring two sides and adding
+        gives the square of the third only when the two sides meet at a right angle. If they meet
+        at an angle $C$, put that corner at the origin with side $a$ along the first axis, ending at
+        $(a, 0)$; side $b$ ends at $(b\cos C, b\sin C)$. Pythagoras on the gaps between those ends
+        gives $c^2 = (b\cos C - a)^2 + (b\sin C)^2 = a^2 + b^2 - 2ab\cos C$, since
+        $\cos^2 C + \sin^2 C = 1$. At a right angle the cosine is 0, and squaring and adding is
+        right. Sides 3 and 5 at $60°$ give $c^2 = 9 + 25 - 15 = 19$, so $c$ is about 4.36, not the
+        5.83 your way gives.
+      minWords: 120
+      maxWords: 550
+    explanation: >-
+      A strong answer says that `math.sin` takes radians, the arc an angle cuts from a circle of
+      radius 1, so 30 is about 4.77 turns and ends near the bottom of the circle; converts $30°$ to
+      $\frac{\pi}{6}$ with `math.radians`; gives $(\cos\theta, \sin\theta)$ as the point reached by
+      turning $(1, 0)$ through $\theta$; shows that multiplying by $\cos\theta$ only scales a point
+      along its line, so a quarter turn of $(1, 0)$ gives $(0, 0)$; builds the rule from where
+      $(1, 0)$ and $(0, 1)$ go, with an example such as $(3, 1)$ turned to $(-1, 3)$; and says that
+      squaring and adding needs a right angle, deriving $c^2 = a^2 + b^2 - 2ab\cos C$ from the
+      coordinates of the two far ends.

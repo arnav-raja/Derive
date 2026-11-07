@@ -37,6 +37,9 @@ export const MDX_COMPONENT_NAMES = [
   "PascalTriangle",
   "MergeLevels",
   "HashBuckets",
+  "UnitCircle",
+  "VectorPlane",
+  "FourTriangles",
 ] as const;
 
 export type MdxComponentName = (typeof MDX_COMPONENT_NAMES)[number];

@@ -28,19 +28,19 @@ concepts:
       summary: >-
         A short list of rules about adding and multiplying, and how the other facts of arithmetic,
         such as a negative times a negative, follow from them.
-      usedBy: [M1.6, M2.7, M13.2]
+      usedBy: [M1.6, M2.7, M13.2, M1.11]
     - id: M1.2/equivalence
       name: Equivalent expressions
       summary: >-
         Deciding whether two expressions are equivalent, which means they agree for every allowed
         value of their letters, and what kind of argument settles it either way.
-      usedBy: [M1.4, M1.8, E1.9]
+      usedBy: [M1.4, M1.8, E1.9, M1.11]
     - id: M1.2/solving-equations
       name: Solving equations
       summary: >-
         Solving an equation by replacing it with simpler ones that have the same solutions, and
         spotting the steps that can quietly add solutions or lose them.
-      usedBy: [M1.3, M1.4, M2.4, M1.6]
+      usedBy: [M1.3, M1.4, M2.4, M1.6, M1.11]
     - id: M1.2/exponent-rules
       name: Exponent rules
       summary: >-

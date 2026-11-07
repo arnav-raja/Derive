@@ -1,6 +1,6 @@
 # Status
 
-Updated 7 November 2026 at about 04:00 UTC, when E1.10 went live. On "Pause" or "Resume",
+Updated 7 November 2026 at about 05:20 UTC, when M1.11 went live. On "Pause" or "Resume",
 follow CLAUDE.md and carry on from "Resume here" (phase 1) and "Phase 2: resume here" (phase 2).
 
 ## Where things stand
@@ -25,9 +25,10 @@ components, the set diagram and the quantifier grid. E1.7 Classes and objects is
 reviewed by both, every finding applied, walked and tested end to end. M1.8 Proof I is live
 too, on the same terms, and so are E1.8 Debugging as an experiment, M1.9 Proof II:
 induction and recursion, E1.9 Testing and property-based testing, and M1.10 Counting:
-permutations, combinations and the binomial theorem, and E1.10 Algorithms: sorting, searching
-and hashing. M1.11 Angles, trigonometry and rotation is next (written, checked and under review),
-then E1.11 Iterators, generators and streaming data (drafted).
+permutations, combinations and the binomial theorem, E1.10 Algorithms: sorting, searching
+and hashing, and M1.11 Angles, trigonometry and rotation. E1.11 Iterators, generators and
+streaming data is next (written, checked and under review), then M1.12 Complex numbers and
+Euler's formula (its two figures built and tested, its phases being written).
 
 ### Done
 
@@ -609,28 +610,65 @@ Done so far:
   them; its words come from `buckets.ts`, with unit tests, and count moves, not keys.
   `scripts/learner-view.py` no longer writes "Answer: ." for an item with no stated answer.
 
+- M1.11 Angles, trigonometry and rotation, live (`ready`) since 7 November: all six phases and
+  26 exercises (a puzzle on how much of a cosine schedule's learning rate is left a quarter of
+  the way through, 5 recall, 8 explore predictions, a proof of Pythagoras' theorem, four
+  expression steps and an estimate, 3 builds, a debug and a break-it, and the explain-back),
+  three new figure components (below), two function plots, tutor notes with 20 misconceptions,
+  and checks.json (62 items). It requires M1.4, applies M1.1 and M1.3, and foreshadows M1.12,
+  M2.2 and L4.7; M1.2's field axioms and M1.4's linear functions gained it as a use. Reviewed
+  by both (the simulated learner, 26 of 26 right with 16 findings; the independent reviewer, a
+  blocker, 13 should-fix findings and nits; in `derive-resume/review/M1.11-*.md`), and every
+  finding applied: the explain-back's prompt now asks for everything its rubric needs, and the
+  rubric no longer asks that scaling by $\cos\theta$ never turns a point (it does for a half
+  turn); the account of `math.radians(30)`'s last digit is now true; four sentences that gave
+  away the next item no longer do; the four-triangles figure calls the middle shape "the middle"
+  until the proof shows it is a square, shows only the tilted square while the proof is asked,
+  and the second proof, with the two rectangles, sits in the Reveal; derive-sum's review no
+  longer accepts the question typed back; derive-double can be answered as `2cos^2(alpha) - 1`;
+  the schedule's $\frac{1 + \cos\theta}{2}$ is derived before it is used; build-polar's tests
+  report a division by 0 in words, accept $-\pi$ for $(-2, 0)$, name degrees, and no longer
+  fail a right distance; `math.atan` is described as the inverse of the narrowed slope; three
+  Reveals no longer repeat their cards; the right options are spread over every position; 21
+  rungs rewritten; and nine misconceptions corrected, with a new one for taking
+  $1 - \cos^2\theta$ as the sine. `check:exercises` passes all 62 items; the lesson was walked
+  in all six phases with the mixed check and no page errors other than the grader's 503 in local
+  mode (store `derive-resume/m111walk/store-before-M1.11-walk-moved.json`, the store after the
+  E1.10 walk with E1.9, M1.10 and E1.10 started a week earlier; the store after it is
+  `store-after-M1.11-walk.json`); and its end-to-end tests pass at all three widths, with the
+  performance budget.
+- Engine changes with M1.11: three new figure components. `UnitCircle` draws the point at an
+  angle from $-360°$ to $360°$ on the circle of radius 1, the arc to it with its length in
+  radians, and its coordinates, with a table of the usual angles. `VectorPlane` turns a flag, a
+  marked point and the arrows to $(1, 0)$ and $(0, 1)$ about the origin by one angle and then by
+  a second, and says where each went and the one turn they make together. `FourTriangles` lays
+  four copies of a triangle with a right angle in a square of side $a + b$, tilted or as two
+  rectangles (`arrangements` limits the choice), and gives the areas. Their words come from
+  `rotation.ts` and `squares.ts`, with unit tests. The expression checker now reads a power
+  written straight after a function's name, so `cos^2(alpha)` is `cos(alpha)^2`, and refuses a
+  negative one, such as `cos^-1(x)`, with a message that says to write `1/cos(x)` for one over
+  the cosine; `check:exercises` passes on every lesson with it.
+
 Next, in order:
 
-1. M1.11 Angles, trigonometry and rotation: written and checked in its own worktree (the
-   lesson and its five figure files are in `derive-resume/m111-draft/`, the plan in
-   `m111plan.md`); its simulated learner is done (26 of 26 right, 16 findings, in
-   `derive-resume/review/M1.11-learner-fix-plan.md`) and its independent review was running.
-   Apply both, move it into the main tree (the figure registrations in `index.ts`,
-   `mdx-names.ts` and `phase-components.tsx`, and the `usedBy` edits of M1.1 to M1.4, then
-   `npm run check:graph -- --fix`), walk it and release it. Then E1.11 Iterators, generators
-   and streaming data: all six phases and their exercises are drafted in
-   `derive-resume/e111-draft/` and every program runs as meant against its tests; still to do
-   are its tutor notes and a `ShuffleBuffer` figure (36 items of three topics through a buffer
-   of 1 to 36, a row in and a row out), then the checks, both reviews and the walk. It requires
-   E1.4, E1.6 and E1.7. Then M1.12 and E1.12, then the start of stage 2, each written, checked,
-   reviewed by both and walked before it goes live, adding the remaining figure components as
-   the lessons need them. The phase 2 features (item 3) come first once the
-   hosting pull request has landed. E1.9 picks up E1.8's preview: tests that run on every change,
-   and property-based tests. E1.10 must show how to give a class a `__hash__` that agrees with
-   its `__eq__` (E1.7 promises it, and E1.10 now requires E1.7); the E1.8 reviewer suggests E1.8
-   as a requirement of E1.10 too, with E1.10 among the uses of `E1.8/bisection`, since binary
-   search is E1.8's search on a sorted list. The E1.7 reviewer suggests E1.7 as a requirement of
-   E1.11, if E1.11 writes an iterator class, and of E3.4, if its configuration is a class.
+1. E1.11 Iterators, generators and streaming data: written and checked in its own worktree,
+   with its tutor notes and the `ShuffleBuffer` figure (the lesson is in
+   `derive-resume/e111-draft/lesson/`, the figure in `figures/`, and the edits to other lessons'
+   `usedBy` and the figure registrations in `shared.patch`, made against ec5db9b); its simulated
+   learner is done (16 findings, in
+   `derive-resume/review/E1.11-learner-findings.md`) and its independent review was running.
+   Apply both, move it into the main tree, walk it and release it. It requires E1.4, E1.6 and
+   E1.7. Then M1.12 Complex numbers and Euler's formula: its plan is
+   `derive-resume/m112-draft/plan.md`, its lesson.yaml and its two figure components
+   (`ComplexPlane`, with a product mode and a powers mode, and `EulerSteps`, the chain of $n$
+   small turns $\left(1 + \frac{i\theta}{n}\right)^k$ against the circle, with their words in
+   `complex.ts` and its unit tests) are in `derive-resume/m112-draft/`; still to write are the
+   six phases, the exercises and the tutor notes, and the harness's `close` must learn to
+   compare complex numbers (it calls `float`). Then E1.12, then the start of stage 2, each
+   written, checked, reviewed by both and walked before it goes live, adding the remaining
+   figure components as the lessons need them. The phase 2 features (item 3) come first once
+   the hosting pull request has landed. The E1.7 reviewer suggests E1.7 as a requirement of
+   E3.4, if its configuration is a class.
 2. When the hosting pull request lands: pages move to `src/server/app/` (a new page needs a line
    in `src/server/routes.ts` and a static shell in `src/app/`, copied from
    `src/app/today/page.tsx`); server components cannot use state or effects; client components
@@ -690,6 +728,13 @@ Next, in order:
   and the finish. Copy `store-before-E1.10-walk.json` to a store folder as `store.json` and
   start the production build on it at port 3100; `store-after-E1.10-walk.json` is the store
   after the walk, and the start for M1.11's.
+- Walking M1.11: `derive-resume/m111walk/` holds `walk-m111.cjs` (`node walk-m111.cjs overview
+  puzzle recall explore derive build explain`), which loads `walk-lib.cjs` beside it,
+  `mixed.cjs` for the mixed check and the finish, and `peek-polar.cjs`, which prints the whole
+  test report of four wrong programs. Copy `store-before-M1.11-walk-moved.json` to a store folder
+  as `store.json` and start the production build on it at port 3100. The pace governor counts
+  three new lessons a week from Monday, so a walk late in the week moves the week's starts back
+  with `prep-store.py` first.
 - Walking E1.7: copy `derive-resume/store-before-E1.7-walk.json` into a store folder with
   `prep-store.py <snapshot> <folder>/store.json M1.7=<yesterday>`, so that a new lesson can
   begin today, start the production build on it as above, and run `walk-e17.cjs` and

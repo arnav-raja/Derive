@@ -33,13 +33,13 @@ concepts:
       summary: >-
         Feeding the output of one function into another makes a new function, and the order in which
         the two are applied usually matters.
-      usedBy: [M3.4, M2.7, E1.3]
+      usedBy: [M3.4, M2.7, E1.3, M1.11]
     - id: M1.3/inverse-functions
       name: Inverse functions
       summary: >-
         The function that undoes another: how to find it by solving for the input, and how to undo a
         chain of functions.
-      usedBy: [M1.5, M8.7]
+      usedBy: [M1.5, M8.7, M1.11]
   used: [M1.2/solving-equations, M1.2/expression-trees, M1.2/field-axioms]
 links:
   requires:
