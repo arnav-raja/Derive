@@ -22,8 +22,8 @@ deploys Derive's server, tutor included, to the Supabase Edge Function `derive-a
 `74db8cb`): the pages, the sign-in page and Derive's own 404 load with no console errors in a
 real browser, and the server reports 23 lessons ready and a tutor key that reaches both Claude
 models. Signed-in pages and the tutor's answers wait on Arnav signing in once at the new
-address. The Vercel project still builds from main, but nothing uses it; it is removed only
-when Arnav says so.
+address. The Vercel project "derive" was deleted on 7 November at Arnav's word, so pushes to
+main deploy only through GitHub Actions.
 
 Phase 2 (the full learning loop, and the lessons after the first slice) began on 6 November in
 its own thread. M1.7 Logic, sets and quantifiers is live (`ready`): written, reviewed by both
@@ -939,7 +939,6 @@ Next, in order:
   Functions, that never expires; it can be revoked at https://supabase.com/dashboard/account/tokens).
 - Signing in once at https://arnav-raja.github.io/Derive/ (the same account), which is the only
   way to see the signed-in pages and the tutor's answers on the new site.
-- Saying the Vercel project can be deleted (asked on 7 November).
 
 - Confirming the Supabase tool's prompt to delete the test sign-up address (he said yes to the
   removal on 6 November; the first prompt timed out). Sign-up is closed anyway once the one
