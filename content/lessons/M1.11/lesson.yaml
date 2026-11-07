@@ -1,0 +1,118 @@
+code: M1.11
+title: Angles, trigonometry and rotation
+course: M1
+status: ready
+summary: >-
+  A cosine schedule lowers a learning rate as a mark on a turning wheel goes down. How much of the
+  rate is left a quarter of the way through? Angles measured by arcs, sine and cosine as the
+  coordinates of a point on a circle, turning the plane, the cosine of a sum from turning twice,
+  and the law of cosines, built on Pythagoras' theorem.
+sittings: 2
+minutes:
+  puzzle: 10
+  recall: 10
+  explore: 45
+  derive: 45
+  build: 50
+  explain: 25
+concepts:
+  taught:
+    - id: M1.11/radians
+      name: Radians
+      summary: >-
+        An angle measured by the length of the arc it cuts from a circle of radius 1 about its
+        corner. A whole turn is $2\pi$ radians, or $360°$, so $\frac{\pi \text{ radians}}{180°}$ is a
+        ratio equal to 1 that turns degrees into radians, and 1 radian is about $57.3°$. On a circle
+        of radius $r$ an angle of $\theta$ radians cuts an arc of length $r\theta$. Python's
+        `math.sin` and `math.cos` read radians, so `math.sin(30)` is the sine of 30 radians, about
+        $-0.988$. Only in radians is the sine of a small angle close to the angle itself.
+      usedBy: [M1.12, L4.7]
+    - id: M1.11/sine-and-cosine
+      name: Sine and cosine
+      summary: >-
+        Turning from $(1, 0)$ anticlockwise through $\theta$ along the circle of radius 1 about the
+        origin reaches the point $(\cos\theta, \sin\theta)$, so $\cos^2\theta + \sin^2\theta = 1$ by
+        Pythagoras' theorem, and both repeat every $2\pi$. Half a square gives
+        $\cos 45° = \sin 45° = \frac{1}{\sqrt{2}}$, and half a triangle with three equal sides gives
+        $\cos 60° = \sin 30° = \frac{1}{2}$. Their signs follow the quarter of the plane the point
+        is in, and `math.atan2(y, x)` gives a point's angle where `math.atan(y / x)` cannot. A cosine
+        schedule keeps the fraction $\frac{1 + \cos\theta}{2}$ of a learning rate once its wheel has
+        turned through $\theta$.
+      usedBy: [M1.12, M2.2, L3.9, L4.7]
+    - id: M1.11/rotation
+      name: Rotation
+      summary: >-
+        Turning the plane about the origin through $\theta$ moves every point along its circle by
+        the same angle and keeps all distances. It takes $(1, 0)$ to $(\cos\theta, \sin\theta)$ and
+        $(0, 1)$ to $(-\sin\theta, \cos\theta)$, so it takes $(x, y)$ to
+        $(x\cos\theta - y\sin\theta,\; x\sin\theta + y\cos\theta)$. Turning by $\alpha$ and then by
+        $\beta$ is turning by $\alpha + \beta$, which gives
+        $\cos(\alpha + \beta) = \cos\alpha\cos\beta - \sin\alpha\sin\beta$, the matching formula for
+        the sine, and $\cos 2\alpha = 2\cos^2\alpha - 1$. Turning about another centre moves the
+        centre to the origin, turns, and moves it back.
+      usedBy: [M1.12, M7.3, L4.7]
+    - id: M1.11/law-of-cosines
+      name: The law of cosines
+      summary: >-
+        In a triangle whose sides $a$ and $b$ meet at an angle $C$, the third side has
+        $c^2 = a^2 + b^2 - 2ab\cos C$, found by putting the corner at the origin and using
+        Pythagoras' theorem on the coordinates of the two far ends. With $C$ a right angle it is
+        Pythagoras' theorem, $c^2 = a^2 + b^2$, which four copies of the triangle in a square of
+        side $a + b$ prove. Read the other way, it gives an angle from three lengths:
+        $\cos C = \frac{a^2 + b^2 - c^2}{2ab}$.
+      usedBy: [M2.2, L1.10]
+  used:
+    - M1.4/average-rate-of-change
+    - M1.4/linear-functions
+    - M1.3/composition
+    - M1.3/inverse-functions
+    - M1.2/field-axioms
+    - M1.2/equivalence
+    - M1.2/solving-equations
+    - M1.1/units-as-algebra
+    - M1.1/dimensional-analysis
+    - M1.1/fermi-estimation
+links:
+  requires:
+    - lesson: M1.4
+      bridge: >-
+        M1.4 measured how fast a function changes by its average rate of change over a step. Near
+        0, the sine of an angle changes at the same rate as the angle itself only when the angle is
+        in radians, which is why mathematics and Python measure angles that way. M1.4's two values
+        returned at once, and its tests' `close`, which compares floats within a tolerance, return
+        in this lesson's Python.
+  applies:
+    - lesson: M1.1
+      bridge: >-
+        M1.1 changed units by multiplying by a ratio equal to 1, and found that a pendulum's angle
+        carries no unit. Degrees become radians by the ratio
+        $\frac{\pi \text{ radians}}{180°}$, and a radian, a length divided by a length, has no unit
+        either.
+    - lesson: M1.3
+      bridge: >-
+        Turning by $\alpha$ and then by $\beta$ is a composition of two turns, which is one turn by
+        $\alpha + \beta$, and turning about another centre moves the centre to the origin, turns,
+        and undoes the move. The slope of an angle is narrowed to the angles between
+        $-\frac{\pi}{2}$ and $\frac{\pi}{2}$, as M1.3 narrowed squaring to the numbers 0 or more, so
+        that it has an inverse, `math.atan`.
+  foreshadows:
+    - lesson: M1.12
+      bridge: >-
+        A complex number is a point of the plane that can be multiplied, and multiplying by
+        $\cos\theta + i\sin\theta$ turns a point through $\theta$. Turning twice is multiplying
+        twice, so the angle-addition formulas come out of one line of algebra, and Euler's formula,
+        $e^{i\theta} = \cos\theta + i\sin\theta$, joins the turn to the exponential.
+    - lesson: M2.2
+      bridge: >-
+        The law of cosines gives the angle between two lists of numbers from their lengths and the
+        distance between them, and M2.2 turns it into the dot product. The cosine of that angle, the
+        cosine similarity, is how a search engine, or the retrieval step that feeds a language model,
+        measures whether two embeddings point the same way.
+    - lesson: L4.7
+      bridge: >-
+        Rotary position embeddings turn each pair of the numbers that attention compares for a word,
+        its query and key, through an angle that grows with the word's position, at a rate of its
+        own for each pair, so that the comparison of two words depends on where they sit
+        only through how far apart they are, because turning by one angle and then by another is
+        turning by their sum.
+skills: []

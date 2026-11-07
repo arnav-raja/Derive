@@ -708,7 +708,8 @@
       "buildsOn": [],
       "leadsTo": [
         "M1.12",
-        "M2.2"
+        "M2.2",
+        "L4.7"
       ]
     },
     "M1.12": {
@@ -3757,14 +3758,17 @@
       ],
       "leadsTo": [
         "M11.3",
-        "E9.3"
+        "E9.3",
+        "L4.10"
       ]
     },
     "E1.11": {
       "title": "Iterators, generators and streaming data",
       "course": "E1",
       "requires": [
-        "E1.4"
+        "E1.4",
+        "E1.6",
+        "E1.7"
       ],
       "buildsOn": [],
       "leadsTo": [

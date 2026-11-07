@@ -1,0 +1,395 @@
+misconceptions:
+  - id: sorted-needs-nothing
+    belief: A list already in order needs no comparisons to sort, since nothing has to move.
+    why: >-
+      A sort cannot know that a list is in order without looking. Every pair of neighbours must be
+      compared, since any pair left unchecked could have been the wrong way round, so a list of
+      $n$ items needs $n - 1$ comparisons even when it is in order.
+    cue: The learner chooses 0 in puzzle-sorted-already, or says that a sorted list costs a sort nothing.
+  - id: one-comparison-per-item
+    belief: Merge sort makes about one comparison for each item, as one merge does.
+    why: >-
+      One merge places each of its items once, but every item is merged again at every level, and
+      a list of $n$ items has about as many levels as halvings from $n$ down to 1: about 10 for
+      1,024 items, so about 9,000 comparisons, not 1,000.
+    cue: >-
+      The learner chooses "About 1,000, one for each loss" in explore-sort-count, or 1,000 for the
+      levels of a million items in its review.
+  - id: merge-every-pair
+    belief: Merging two sorted lists compares every item of one with every item of the other.
+    why: >-
+      Only the two front items are ever compared, and each comparison places one item, so merging
+      lists of $p$ and $q$ items makes at most $p + q - 1$ comparisons, not $p \times q$.
+    cue: The learner chooses 25 in the review of explore-merge-count, or gives 16 for two lists of 4.
+  - id: merge-count-fixed
+    belief: A merge always makes one comparison for each item, whatever the items are.
+    why: >-
+      Once one list is used up, the rest of the other is copied without any comparison. Merging
+      `[1, 2, 3, 4]` with `[5, 6, 7, 8]` uses up the first list in 4 comparisons, while lists whose
+      items take turns need 7.
+    cue: The learner chooses "8 and 8" or "7 and 7" in explore-merge-count.
+  - id: sorting-needs-every-pair
+    belief: Any sort must compare every pair of items, so a million items take about a million times a million steps.
+    why: >-
+      Order carries over: once $a < b$ and $b < c$ are known, $a < c$ need not be asked. Merge sort
+      sorts a million items in under 20 million comparisons, against 499,999,500,000 for comparing
+      every pair.
+    cue: >-
+      The learner chooses 523,776 in explore-sort-count, or agrees with the friend in the Explain
+      phase that sorting a million losses takes about a million times a million steps.
+  - id: bound-every-list
+    belief: The bound says that every list needs at least that many comparisons, so the puzzle's 999 breaks it.
+    why: >-
+      The bound is about the worst case: whatever a sort does, some order makes it use at least $k$
+      comparisons. A list that is already in order can be sorted in $n - 1$, as Timsort does.
+    cue: The learner says that Python's 999 comparisons on 1,000 sorted losses is below the bound of 8,530.
+  - id: two-comparisons-link-three
+    belief: Two comparisons are enough for 3 items, since they can link all three.
+    why: >-
+      Two answers of yes or no come out in only 4 ways, and 3 different items have 6 orders, so two
+      orders would get the same answers, be moved the same way, and one of them would end out of
+      order. Two comparisons link the items only when the answers happen to chain them.
+    cue: The learner chooses 2 in explore-three, or 4 for the 24 orders of 4 items in its review.
+  - id: ties-any-order
+    belief: A sort puts equal items in any order, or turns them round.
+    why: >-
+      This lesson's `merge` takes from the first list when the front items are equal, and the
+      first list holds the items that came earlier, so equal items keep the order they came in: the
+      sort is stable. Python's `sorted` is stable too.
+    cue: >-
+      The learner chooses an answer in explore-stable that puts `'e'` before `'b'` or `'c'` before
+      `'a'`, or "Either way" in its review.
+  - id: search-unsorted
+    belief: A search by halving works on any list.
+    why: >-
+      Halving relies on order: in a sorted list, the answers to "is this item at least $x$?" are no
+      for a first stretch of slots and yes for the rest, so one look rules out half the slots. In a
+      list in no order, the half thrown away may hold what is wanted.
+    cue: The learner runs `first_at_least` on a list that is not sorted, or asks why the list must be sorted first.
+  - id: missing-is-none
+    belief: A search for a value larger than every item gives `None`, or -1, to say that it is not there.
+    why: >-
+      `first_at_least` gives a slot, and when no item is at least $x$, the first such slot is just
+      past the end, `len(xs)`, which is where $x$ would be inserted to keep the list sorted.
+    cue: The learner chooses `None 1` in explore-search, or -1 or `None` in its review.
+  - id: lo-mid-moves
+    belief: '`lo = mid` and `lo = mid + 1` both move `lo` up, so either will do.'
+    why: >-
+      When `hi` is one more than `lo`, `mid` is `lo`, so `lo = mid` leaves it where it was and the
+      gap never shrinks. In the form where every slot before `lo` holds an item less than $x$, slot
+      `mid` is known to hold such an item, so `lo` can move past it, to `mid + 1`.
+    cue: In debug-bisect, the learner changes the loop's test or the line that moves `hi`, and the search then gives a wrong slot, such as 1 for `[10, 20, 30]` and 25, or still never ends on other lists.
+  - id: set-checks-all-at-once
+    belief: A set finds a key at once because the computer checks every key at the same moment.
+    why: >-
+      Nothing is checked at the same moment. The key's hash says which bucket it must be in, and
+      the lookup compares it only with the few keys in that bucket.
+    cue: The learner agrees with the friend in the Explain phase, or chooses 5 in explore-bucket.
+  - id: one-key-per-bucket
+    belief: Each bucket holds one key, so a lookup makes at most one comparison.
+    why: >-
+      Keys whose hashes leave the same remainder share a bucket: 3, 11, 19 and 27 all go in bucket
+      3 of 8, and looking up 35, which also belongs there, compares it with all four.
+    cue: The learner chooses 0 or 1 in explore-bucket.
+  - id: equal-hash-same-key
+    belief: Keys with the same hash count as the same key.
+    why: >-
+      The rule runs one way: equal keys must have equal hashes, but keys that share a hash are
+      still compared with `==`, so different keys that share a hash are kept apart, only more
+      slowly.
+    cue: The learner chooses "2 configs trained" in breakit-one-field.
+  - id: python-checks-hash
+    belief: Python checks that `__hash__` agrees with `__eq__`, and stops with an error when they disagree.
+    why: >-
+      Python never checks; it relies on the rule. A `__hash__` that breaks it gives wrong answers
+      without any error, and one that keeps it but looks at too little only makes lookups slower.
+    cue: The learner chooses the `TypeError` in breakit-one-field.
+  - id: changed-key-still-found
+    belief: A key changed after it was added is still found, since the set holds that very object.
+    why: >-
+      The key sits in the slot of the hash it had when it was added, with that hash kept beside
+      it. A lookup works out the hash from the key as it is now, and passes over any key whose
+      kept hash differs, so it misses the key, even when it is given the very same object.
+    cue: The learner chooses `True True False` or `True True True` in explore-changed-key.
+  - id: doubling-costs-squares
+    belief: Moving every key each time the buckets double makes adding $n$ keys cost about $n^2$ moves.
+    why: >-
+      The buckets double only as the 9th, 17th, 33rd key and so on arrives, and each doubling
+      moves the keys already stored, so the moves add up to $8 + 16 + 32 + \dots$, a geometric
+      series less than $2n$: fewer than 2 moves for each key added.
+    cue: The learner worries that doubling makes a set slow, or counts the moves as about $n^2$.
+
+exercises:
+  derive-sorts:
+    rungs:
+      - >-
+        For each line, is it worked out directly, assumed, or drawn from the lines above it? Which
+        line is the base case, and which line leans on the claim for shorter lists?
+      - >-
+        M1.9 proved `power` right by strong induction: base cases worked out, a step that may
+        suppose the claim for every smaller case, and a last line that concludes for every $n$. The
+        Explore phase showed what `merge` does with two lists that are each in order.
+      - >-
+        Try the list `[5, 3]`: what are `xs[:h]` and `xs[h:]`, what does `merge_sort` give for
+        each, and what does `merge` then give? Which fact did you use at each of those steps?
+      - >-
+        If your rules for lines 1 and 6 are right, the trouble is in lines 2 to 5. For each of them,
+        say in your own words what the line concludes before you look at the menu, and then find
+        the rule whose words say exactly that. A rule fits a line because of what the line
+        concludes, not because the line mentions the same code.
+      - >-
+        M1.9's `power(x, n)` is proved right the same way. $n = 0$ is worked out. For $n \ge 1$,
+        `n // 2` is less than $n$, so the hypothesis says that `power(x, n // 2)` gives
+        $x^{n // 2}$, and squaring it, with one more factor of $x$ when $n$ is odd, gives $x^n$ by
+        the rules of powers. Strong induction then concludes for every $n$.
+    notes: >-
+      The Hypothesis for line 2 mistakes where the lengths come from: `h = n // 2` makes both halves
+      shorter, which is the Shorter halves rule, and the hypothesis is only used once they are
+      known to be shorter, in line 3. Merging for line 5 is close, but line 4 already used it, and
+      line 5 adds that the halves hold the items of `xs`, which is The two slices. Base cases for
+      line 6 mistakes the conclusion for the start. Loop invariant is never needed here, since it
+      is what proves `merge` itself right, as the Reveal says. Equal halves for line 2 holds only
+      when $n$ is even, while line 2 must hold for every $n \ge 2$; what the step needs is that
+      both halves are shorter, which is Shorter halves.
+  derive-merges:
+    rungs:
+      - >-
+        Each call on two or more items makes exactly one merge, and each call on one item makes
+        none. How many calls on one item are there, and how are they joined?
+      - >-
+        M1.9 counted the numbers and the operations in an expression tree, in which each operation
+        joins two parts, and found how the two counts compare. E1.5 drew `total`'s calls as a tree.
+      - >-
+        Try $n = 4$: draw the calls of `merge_sort([4, 3, 2, 1])`, and count the calls on one item
+        and the merges. Then try $n = 3$ and $n = 5$, where the halves are not equal.
+      - >-
+        If you drew the calls as a tree, with one merge wherever a call splits its list in two, that
+        is the right start. If your answer is $n$ or $n + 1$, check it at $n = 1$: a list of one
+        item is given back with no merge at all. If it has $\frac{n}{2}$ or a power of 2 in it, check it at $n = 3$, whose
+        halves have 1 and 2 items, and count every merge, not only those on the bottom level.
+      - >-
+        A bar of chocolate of 3 by 4 squares is broken into its 12 single squares, one break at a
+        time, each break splitting one piece in two. Each break makes one more piece, and there is
+        1 piece at the start and 12 at the end, so it takes 11 breaks, whatever order they come in.
+    notes: >-
+      $n$ counts the calls on one item, not the merges. $\frac{n}{2}$ counts only the merges on the
+      bottom level, when $n$ is a power of 2. $2n - 1$ counts every call, merges and leaves
+      together. An answer with a power or a product of $n$ confuses merges with comparisons. The
+      checker compares values at whole numbers from 1 to 9.
+  derive-worst:
+    rungs:
+      - >-
+        What are $W(1)$, $W(2)$, $W(3)$ and $W(4)$ from the recurrence, and how does each compare
+        with its own power of 2, $2^k$?
+      - >-
+        M1.9 guessed $T(n) = \frac{4^n - 1}{3}$ from the first few tile counts by setting each
+        beside a power of 4, and then proved the guess by induction.
+      - >-
+        Work out $W(1)$, $W(2)$ and $W(3)$ by hand from $W(0) = 0$, and divide each by its own
+        power of 2, $2^k$. How do the quotients grow as $k$ goes up by 1?
+      - >-
+        Guessing from the first values and checking the guess in the recurrence is the right
+        method. If your guess fits some of $W(1)$ to $W(4)$ but not all, or not $W(0) = 0$, put it
+        into the recurrence for $W(k)$ on the right, simplify, and see whether the formula for
+        $k + 1$ comes back. If it is out by the same amount at every $k$, look at the constant at its end.
+      - >-
+        The recurrence $A(k + 1) = 2A(k) + 1$ with $A(0) = 0$ gives 0, 1, 3, 7 and 15, each one
+        less than a power of 2, which suggests $A(k) = 2^k - 1$. Checking it in the recurrence:
+        $2(2^k - 1) + 1 = 2^{k + 1} - 1$, the formula for $k + 1$.
+    notes: >-
+      $k \times 2^k$ is the bound from counting the levels, which forgets that each merge saves one
+      comparison. $(k - 1)2^k$ and $k \times 2^k - 1$ are close: the first fails at $k = 1$, where
+      $W(1) = 1$, and the second at $k = 2$, where $W(2) = 5$. $2^k - 1$ counts the merges, not the
+      comparisons. Any form equal to $(k - 1)2^k + 1$ is accepted, such as
+      $k \times 2^k - (2^k - 1)$. The checker compares values at whole numbers from 1 to 9 and from
+      -9 to -1.
+  derive-bound:
+    rungs:
+      - >-
+        For each line, what does it conclude, and is that a fact about how the sort moves the items,
+        about how many orders are left, or about what one comparison can tell?
+      - >-
+        The Explore phase found that 2 comparisons have only 4 patterns of answers for the 6 orders
+        of 3 items. E1.2's invariants hold after every pass when they are true before the first and
+        every pass keeps them.
+      - >-
+        Try $n = 3$, with a sort that first compares the first two items. Which of the 6 orders
+        answer yes, and which no? Which group keeps more orders possible, and how many orders are
+        left after each answer, if every answer keeps the larger group?
+      - >-
+        If your rules for lines 1, 2 and 6 are right, the trouble is in lines 3 to 5. For each, say
+        in your own words what the line concludes before you look at the menu, and choose the rule
+        whose words say exactly that.
+      - >-
+        In a game of twenty questions about a million names, the one answering may choose each
+        reply so that more names stay in play, keeping at least half of them each time. After $q$
+        questions at least $\frac{1{,}000{,}000}{2^q}$ names are still in play, and the asker cannot
+        be sure until one is left, so $2^q \ge 1{,}000{,}000$, which needs $q \ge 20$.
+    notes: >-
+      Multiply both sides for line 3 mistakes the conclusion for the arithmetic: the claim after
+      every comparison holds because it starts true and every comparison keeps it, which is the
+      Invariant. Same answers, same moves and One way to sort are easily swapped at lines 4 and 5:
+      line 4 says that orders with the same answers were moved alike, and line 5 that two orders
+      moved alike cannot both end in order. Orders and Pairs are never needed, since the $n!$
+      orders are given in the start line.
+  derive-sort-first:
+    rungs:
+      - >-
+        What do $m$ searches cost by scanning, and what does sorting first and then making $m$
+        binary searches cost? For which $m$ are the two the same?
+      - >-
+        E1.4 compared removing repeats with a list and with a set by writing the cost of each for
+        the same number of documents and setting them side by side.
+      - >-
+        Try $m = 10$: what does scanning cost in all, and what does sorting first cost in all? Then
+        try $m = 100$. Between which two counts does the answer lie?
+      - >-
+        Setting the cost of $m$ scans beside the cost of sorting once and then searching $m$ times
+        is the right way in. If your answer is near 20, check what one scan costs, as the prompt
+        gives it. If it is near a million, check which cost you divided by which, and whether
+        sorting is paid once or for every search.
+      - >-
+        A gym charges ₹2,000 to join and ₹50 a visit after that, or ₹250 a visit without joining.
+        Joining costs $2{,}000 + 50v$ for $v$ visits and not joining $250v$, which are equal at
+        $v = \frac{2{,}000}{200} = 10$, so joining pays from about 10 visits on.
+    notes: >-
+      Answers from about 27 to 60 are accepted. 20 comes from charging a million comparisons for a
+      scan. A million comes from dividing the cost of sorting by the 20 looks of one binary search.
+      An answer of 1 compares one search with sorting and forgets that sorting is paid only once.
+  build-runs:
+    rungs:
+      - >-
+        In `find_runs`, what decides that an item starts a new run, and what should happen to an
+        item equal to the one before it? In `run_sort`, what does one round of merging do to the
+        list of runs, and when do the rounds stop?
+      - >-
+        The Explore phase's figure merged the items level by level, each level merging neighbours
+        in pairs. E1.2's loops kept a result up to date as they went, as `find_runs` keeps the run
+        it is building.
+      - >-
+        Work through `find_runs([3, 5, 2, 2, 7, 1])` by hand: keep the run being built, and for each
+        item after the first, decide whether it joins that run or starts the next. Then merge the
+        three runs in pairs by hand: which runs are merged, and which is carried over?
+      - >-
+        Building each run as you walk along the list, and merging in rounds of pairs, is the right
+        plan. If test_find_runs fails on equal items, look at the comparison that starts a new run,
+        and at what it does with an item equal to the one before it. If test_small fails, work
+        through your functions by hand on an empty list. If test_pairs finds too many comparisons,
+        look at which runs your loop merges in each round. If test_sorts loses items, look at a
+        round with an odd number of runs. If test_new_list fails, look at what you give back when
+        there is only one run.
+      - >-
+        A list of numbers can be added up in pairs, round after round: `[1, 2, 3, 4, 5]` becomes
+        `[3, 7, 5]`, with 5 carried over since it has no partner, then `[10, 5]`, then `[15]`. Each
+        round walks along the list two slots at a time and builds a new, shorter list, and the
+        rounds stop when one number is left.
+    notes: >-
+      Starting a new run at an equal item, with `<=` written as `not (xs[i - 1] < xs[i])` or the
+      like, fails test_find_runs on `[3, 5, 2, 2, 7, 1]`. Merging every run into one growing list
+      sorts correctly but fails test_pairs with about 43,500 comparisons for 512 items. Dropping a
+      run left over in a round with an odd number of runs fails test_sorts with items missing.
+      Giving back `runs[0]` without first checking for an empty list stops test_small with an
+      `IndexError`. Giving back `xs` itself when it is one run fails test_new_list. Using `sorted`,
+      or a list's `sort`, in `run_sort` or any function it calls fails test_own_work, and so does
+      `run_sort = sorted`. The Explore phase's `merge_sort`, which ignores runs, sorts correctly but
+      fails test_in_order with 4,932 comparisons on 1,000 sorted items, against 999. Writing `<=`,
+      `>` or `>=` between items stops a test with a message saying to compare only with `<`.
+  build-count-between:
+    rungs:
+      - >-
+        Which slot does the range of items between `low` and `high` start at, and which slot does
+        it end just before? How do those two slots give the count?
+      - >-
+        The Explore phase's `first_at_least` found the first slot whose item is at least $x$, by
+        keeping every item up to `lo` less than $x$ and every item from `hi` on at least $x$.
+      - >-
+        Try `[2, 4, 4, 6]` by hand, first with `low` and `high` both 4, then with `low` 5 and
+        `high` 3. Which slots hold the items in the range, and what does your code work out for
+        each end?
+      - >-
+        If your code searches once for each end of the range, the plan is right. If items equal to
+        `high` are left out, look at the test in your second search, and at what it does with an
+        item equal to `high`. If a range with `low` above `high` gives a negative count, look at
+        the two slots your searches give then, and at what the count should be. If test_looks
+        fails, count the items your code looks at in a list of a million.
+      - >-
+        To count the multiples of 5 from 15 to 42, count those up to 42, which is 8, and take away
+        those below 15, which is 2: 6 in all. A count of what lies in a range is a count up to its
+        top less a count below its bottom, so each end needs a count of its own.
+    notes: >-
+      Ending the range with `first_at_least(xs, high)` leaves out items equal to `high`, and fails
+      every test. Counting the items one by one gives right answers but fails test_looks.
+      Subtracting without checking that `low` is at most `high` gives a negative count for some
+      lists, caught by test_against_counting and test_edges. A second search that starts `lo` at
+      0 instead of -1 never looks at slot 0, so `count_between([5], 1, 3)` gives 1. Floats are
+      compared exactly, so 0.3 in the list counts as equal to `high`.
+  build-hash-set:
+    rungs:
+      - >-
+        Which bucket does a key go in, and which bucket should `__contains__` search? When a new key
+        would make the keys outnumber the buckets, what has to happen to every key already stored?
+      - >-
+        The Explore phase put 3, 11, 19, 27 and 13 in 8 buckets by `hash(key) % 8`, and its figure
+        doubled the buckets before a new key would make the keys outnumber them. E1.4 found that
+        two names for one list share every change made through either.
+      - >-
+        Try 8 buckets and the keys 0 to 8, which are their own hashes: which bucket does each go in?
+        The ninth key, 8, makes the buckets double to 16 first. Which bucket does 8 then go in,
+        and which bucket does 0 stay in?
+      - >-
+        Keeping the buckets as a list of lists, and choosing one with
+        `hash(key) % len(self.buckets)`, is the right frame. If test_doubles fails, look at the
+        moment your `add` decides to double: which keys has it counted by then, and is the key it
+        was just given among them? If test_moved fails, look at where each old key lands, and at
+        how the new buckets are made, remembering E1.4's two names for one list. If
+        test_one_bucket fails, look at which buckets `__contains__` searches.
+      - >-
+        A library shelves its books by the last digit of their number, on 10 shelves, so book 1,234
+        is looked for only on shelf 4. When the shelves grow crowded it moves to 100 shelves, by the
+        last two digits, and every book has to be carried to its new shelf: 1,234 to shelf 34.
+    notes: >-
+      Never doubling gives right answers but fails test_doubles, and test_moved, which needs the
+      64 buckets that 43 keys should make. Doubling before checking for a repeat, or when the keys
+      would only equal the buckets, fails test_doubles with 16 buckets for 8 keys. Doubling
+      without moving the keys loses them for later lookups, so repeats are added again, failing
+      test_like_a_set, test_doubles and test_moved. Making the new buckets with `[[]] * n`, or
+      appending one list several times, makes them one list, which test_moved names. Searching
+      every bucket fails test_one_bucket. Adding a key without first checking its bucket for an
+      equal key counts repeats, failing test_like_a_set, test_strings, test_doubles and
+      test_configs. `self.count` in the starter is there to be kept up to date by `add` and given
+      by `__len__`.
+  debug-bisect:
+    rungs:
+      - >-
+        What does each pass of the loop do to the gap `hi - lo`? Is there a gap for which some pass
+        leaves it the same?
+      - >-
+        The Explore phase's `first_at_least` kept two slots and stopped when they were next to each
+        other. E1.8's bisection checked that every step halved the gap, so that the search had to
+        end.
+      - >-
+        Trace `bisect_left([10, 20], 15)` by hand, writing `lo`, `hi` and `mid` for each pass.
+        Which pass is the first to change nothing?
+      - >-
+        The loop's test, `lo` starting at 0 and the line that moves `hi` are all right. If the loop
+        never ends, look at the line that moves `lo`: when `xs[mid] < x`, what is known about slot
+        `mid` itself, and so which slots are known to hold items less than `x`? If it ends but gives
+        a slot one too early, look at whether slot `mid` could still be the answer when `hi` moves.
+      - >-
+        A loop pays back a debt in halves, `while debt > 0:`, with `debt = debt - debt // 2`. From
+        a debt of 1, `debt // 2` is 0, so the debt stays 1 for ever, though every larger debt
+        shrinks. A step that rounds down can stop shrinking at the smallest case, so check the
+        smallest case that the loop allows.
+    notes: >-
+      The bug is `lo = mid`: when `hi` is `lo + 1`, `mid` is `lo`, so the loop stops making
+      progress. `lo = mid + 1` mends it. `hi = mid - 1` skips a slot that may be the answer.
+      `while lo <= hi` keeps going when the two meet and looks past the end. Comparing with `<=`
+      gives the slot after items equal to `x`, as `bisect_right` does. Stopping when the gap is 1
+      and giving `hi` leaves slot `lo` unchecked. Each of these fails at least one test.
+
+novice:
+  - Why does sorting a list that is already in order still take comparisons?
+  - Why is merge sort so much faster than picking the smallest item again and again?
+  - How can a set find a key without looking at every key?
+  - Why must equal keys have equal hashes, but keys with equal hashes need not be equal?
+  - Why does a search by halving need the list to be sorted?

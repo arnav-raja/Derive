@@ -1,0 +1,81 @@
+The Explore phase used iterators and generators, and the Derive phase proved what they promise. Now build them: an iterator written by hand, the puzzle's training loop mended, documents packed into the sequences a language model trains on, and several streams mixed into one. Then break `batches`.
+
+Each exercise here that asks for code has tests of its own, in the tab `tests.py`. They check the properties a right answer must have, and each test's first line says in words what it checks. A test stops with its message when an `assert` finds its statement false: `assert len(got) == 3, "too short"` stops with `too short` unless `got` holds 3 items. The tests also use `break`, which ends a loop at once, and none of them waits for the end of an endless stream. Your own program runs first, and if it runs too long it is stopped, at the line it was on, before any test runs: look there for a loop that waits for an end that never comes.
+
+## An iterator by hand
+
+A generator is the short way to write an iterator. The long way is a class, and it shows exactly what a `for` loop calls. `for x in c:` first calls `iter(c)`, which calls `c.__iter__()`, and then before every pass calls `next` on what that gave back, which calls its `__next__()`. An iterator's `__iter__` gives back the object itself. Its `__next__` gives the next value, or, when there is none, runs the line `raise StopIteration`. `raise` makes an error happen on purpose: a bare `next` would stop the program with it, as in the Explore phase, while a `for` loop takes it as its signal to stop.
+
+<Exercise id="build-countdown" />
+
+<Reveal for="build-countdown">
+
+`Countdown` keeps its place in `self.n`, as a file keeps its place in the text, so it is used up after one loop, like every iterator. To make an object that can be looped over again and again, as a list can, give it an `__iter__` that makes a fresh iterator each time. A generator does that in a few lines: an `__iter__` written with `yield` gives a new generator on every call, starting from the top.
+
+```python
+class Repeatable:
+    def __init__(self, n):
+        self.n = n
+
+    def __iter__(self):
+        n = self.n
+        while n > 0:
+            yield n
+            n = n - 1
+
+
+r = Repeatable(3)
+print(list(r), list(r))
+```
+
+This prints `[3, 2, 1] [3, 2, 1]`: each `list` calls `iter(r)`, which runs `__iter__` again and makes a new generator, while `r` itself never changes.
+
+## The epochs' counts
+
+Here is the puzzle's script again, reading the file through a generator. It still counts wrong.
+
+<Exercise id="debug-epochs" />
+
+</Reveal>
+
+<Reveal for="debug-epochs">
+
+The generator function is the recipe and each call is a fresh stream, so calling `examples(path)` inside the epoch loop opens the file again for every epoch. Reading the lines into a list once would also count right, but it holds the whole file at once, and a file of 50 GB takes more memory as a list of lines than it does on disk, more than most machines have. PyTorch's `DataLoader` works in the first way: each `for` over it makes a new iterator, which is why every epoch sees all the data.
+
+## Packing documents
+
+A language model reads each token as a whole number, its *token id*, and trains on sequences of a fixed number of tokens, 2,048 for GPT-3, while documents come in every length. So the documents are *packed*: their tokens are laid end to end, with a token that marks the end of each document, and the stream is cut into sequences of exactly the right length. GPT-3's paper describes doing this, to make training more efficient, with a special end-of-text token between documents.
+
+<Exercise id="build-pack" />
+
+</Reveal>
+
+<Reveal for="build-pack">
+
+`pack` is `batches` with a different source: a stream of tokens, made from a stream of documents, cut into lists of one size, with the short end dropped. A document longer than a sequence is split across two or more, and a sequence may hold the end of one document and the start of the next. The model learns from the end token where one document stops and the next begins.
+
+## Mixing streams
+
+A training set mixes data from several sources, such as web pages, books and code, each its own stream. The simplest mix takes one item from each stream in turn. Since a stream may be a file or a generator, each must be asked for its items through one iterator, made once with `iter` and kept. `next(it, default)` tells when a stream has run dry. `object()` makes a new object that is equal to nothing else, which makes a safe default: after `done = object()`, `next(it, done) is done` is `True` only when `it` has nothing left, whatever values the stream holds, `None` included.
+
+<Exercise id="build-interleave" />
+
+</Reveal>
+
+<Reveal for="build-interleave">
+
+Real mixtures take from each source in proportion to a weight chosen for it, at random, rather than strictly in turn, and the weights are among the most carefully tested choices in training a model: how much code, how much mathematics, how many books. E9.6 runs such tests on small models.
+
+## Break it: emptying the batch
+
+The Derive phase's proof needed `batch = []` to make a new list. Change it to `batch.clear()`, which empties the list that `batch` already names.
+
+<Exercise id="breakit-clear" />
+
+</Reveal>
+
+<Reveal for="breakit-clear">
+
+A loop that uses each batch before asking for the next, as a training loop does, would never notice. A program that keeps the batches, to log them or to train on them twice, finds every one replaced by the last: E1.4's mistake of a log in which every saved state of a model's weights turned out to be the last one.
+
+</Reveal>

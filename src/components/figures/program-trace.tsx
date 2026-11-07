@@ -9,14 +9,28 @@ import { python, type TraceFrame, type TraceResult } from "@/lib/python/client";
 
 import { CodeText, FigureFrame, PredictPanel, RangeControl, type PredictPhase } from "./shell";
 import { normalise, sameAnswer } from "./trace-answer";
-import { callName, changesBetween, finishedStep, frameHeading, frameMarks, frameStatus, lookupName, MAIN, returnText, runningIn } from "./trace-frames";
+import {
+  changesBetween,
+  finishedStep,
+  frameHeading,
+  frameMarks,
+  frameStatus,
+  lookupName,
+  MAIN,
+  pausedMarks,
+  pausedStatus,
+  returnText,
+  runningIn,
+  waitingText,
+} from "./trace-frames";
 
 /*
  * A program run one line at a time by real Python in the browser. Each step
  * shows the line about to run, every variable as it stands and what has been
  * printed so far, so the learner can predict a value before seeing it. While a
  * function is running, the names of the main program and of every call in
- * progress are shown side by side, each call with its own.
+ * progress are shown side by side, each call with its own, and a generator
+ * paused at a yield is shown below them, with the names it keeps.
  */
 
 /**
@@ -284,7 +298,7 @@ export function ProgramTrace({
                               <CodeText text={frameHeading(f, i)} />
                             </span>
                             <span>
-                              <CodeText text={top ? frameStatus(current) : `waiting for \`${callName(frames[i + 1]!)}\` to return`} />
+                              <CodeText text={top ? frameStatus(current) : waitingText(frames[i + 1]!)} />
                             </span>
                           </p>
                           {variablesTable(f, frameMarks(previous, current, i))}
@@ -298,6 +312,26 @@ export function ProgramTrace({
                     {variablesTable(frames[0], frameMarks(previous, current, 0))}
                   </div>
                 )}
+                {current?.paused?.length ? (
+                  <div>
+                    <p className="mb-1 text-xs font-semibold tracking-wide text-ink-muted uppercase">Paused generators</p>
+                    <ul className="flex flex-col gap-2" aria-label="Generators paused at a yield, each keeping its names until it is asked for its next value">
+                      {current.paused.map((f) => (
+                        <li key={f.id ?? f.function} className="rounded-md border border-dashed border-rule-strong bg-surface px-3 py-2">
+                          <p className="mb-1 flex flex-wrap items-baseline gap-x-2 text-xs text-ink-muted">
+                            <span className="font-semibold tracking-wide uppercase [&_code]:tracking-normal [&_code]:normal-case">
+                              <CodeText text={frameHeading(f, 1)} />
+                            </span>
+                            <span>
+                              <CodeText text={pausedStatus(f)} />
+                            </span>
+                          </p>
+                          {variablesTable(f, pausedMarks(previous, f))}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
                 <div>
                   <p className="mb-1 text-xs font-semibold tracking-wide text-ink-muted uppercase">Printed so far</p>
                   <pre className="max-h-32 overflow-auto rounded-md border border-rule bg-surface px-2 py-1 font-mono text-sm whitespace-pre-wrap text-ink">

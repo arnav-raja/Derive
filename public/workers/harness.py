@@ -14,7 +14,9 @@ import contextlib
 import io
 import json
 import math
+import opcode
 import os
+import re
 import sys
 import traceback
 import zlib
@@ -377,6 +379,29 @@ def _cut(text, limit):
     return text if limit is None or len(text) <= limit else text[: limit - 1] + "…"
 
 
+_ADDRESS = re.compile(r" at 0x[0-9a-fA-F]+>")
+
+
+def _plain(text):
+    """A value's text without a memory address, such as <generator object read>: the address
+    tells a learner nothing, and two runs of one program give different ones."""
+    return _ADDRESS.sub(">", text)
+
+
+# A generator's code, and the instruction at which it hands out a value and pauses.
+_CO_GENERATOR = 0x20
+_YIELD_VALUE = opcode.opmap["YIELD_VALUE"]
+
+
+def _at_yield(frame):
+    """Whether a generator's frame is leaving at a yield, to go on when it is next asked for a
+    value, rather than at the end of its body."""
+    try:
+        return frame.f_code.co_code[frame.f_lasti] == _YIELD_VALUE
+    except IndexError:
+        return False
+
+
 def _is_object(value):
     """An object of a class that the learner's program defines, such as a Config or a Value."""
     return (
@@ -524,7 +549,7 @@ def _trace(payload):
                 parts.append("methods: " + ", ".join(methods))
             return "; ".join(parts) if parts else "no attributes"
         if depth > 6 or not _holds_object(value):
-            return _safe_repr(value, None)
+            return _plain(_safe_repr(value, None))
         if isinstance(value, list):
             return "[" + ", ".join(shown(x, False, depth + 1) for x in value) + "]"
         if isinstance(value, tuple):
@@ -534,7 +559,7 @@ def _trace(payload):
             return "{" + ", ".join(f"{shown(k, False, depth + 1)}: {shown(v, False, depth + 1)}" for k, v in value.items()) + "}"
         if isinstance(value, (set, frozenset)):
             return "{" + ", ".join(shown(x, False, depth + 1) for x in value) + "}"
-        return _safe_repr(value, None)
+        return _plain(_safe_repr(value, None))
 
     def text(value, limit=80):
         try:
@@ -550,12 +575,50 @@ def _trace(payload):
 
     def argument(value):
         """A call's argument as its heading shows it: an object by its tag, anything else as repr."""
-        return tag(value) if _is_object(value) else _safe_repr(value, 24)
+        return tag(value) if _is_object(value) else _cut(_plain(_safe_repr(value, None)), 24)
 
     def name_of(code):
         """A method by its class, such as Config.__init__; a function by its name."""
         qual = getattr(code, "co_qualname", code.co_name)
         return code.co_name if "<locals>" in qual else qual
+
+    def frame_entry(f):
+        """One frame as a step shows it: the call, the line it is at and its names."""
+        scope = f.f_globals if f.f_code.co_name == "<module>" else f.f_locals
+        names = [(k, v) for k, v in scope.items() if _visible(k, v)]
+        entry = {
+            "function": "(main program)" if f.f_code.co_name == "<module>" else name_of(f.f_code),
+            "line": f.f_lineno,
+            "variables": {k: text(v) for k, v in names},
+        }
+        if id(f) in numbers:
+            # The call's number, so that one call can be followed from step to step, even a
+            # generator's, which leaves the stack at each yield and comes back to it.
+            entry["id"] = numbers[id(f)]
+        if f.f_code.co_name != "<module>":
+            # The call as it began, such as countdown(2), so that calls of one function can be
+            # told apart.
+            entry["call"] = f"{name_of(f.f_code)}({begun.get(id(f), '')})"
+            if f.f_code.co_flags & _CO_GENERATOR:
+                entry["generator"] = True
+        refs = {k: t for k, t in ((k, tag(v)) for k, v in names) if t}
+        if refs:
+            entry["refs"] = refs
+            # The shown value is cut at 80 characters, so a change further along is found
+            # by comparing fingerprints of the whole value.
+            entry["digests"] = {k: digest(v) for k, v in names if k in refs}
+        # An object's attributes one by one, so that a question can ask for one, such as
+        # self.count, with those it finds in its class, such as self.losses for a list
+        # kept in the class, and a class's own, such as Run.losses.
+        attrs = {
+            k: {a: _cut(shown(x, False), 80) for a, x in _readable_attrs(v).items()}
+            for k, v in names
+            if _is_object(v) or (isinstance(v, type) and getattr(v, "__module__", None) == "__main__")
+        }
+        attrs = {k: a for k, a in attrs.items() if a}
+        if attrs:
+            entry["attrs"] = attrs
+        return entry
 
     def snapshot(frame):
         frames = []
@@ -565,38 +628,7 @@ def _trace(payload):
                 frames.append(f)
             f = f.f_back
         # From the main program inwards, so that tags are given in the order the stack is read.
-        stack = []
-        for f in reversed(frames):
-            scope = f.f_globals if f.f_code.co_name == "<module>" else f.f_locals
-            names = [(k, v) for k, v in scope.items() if _visible(k, v)]
-            entry = {
-                "function": "(main program)" if f.f_code.co_name == "<module>" else name_of(f.f_code),
-                "line": f.f_lineno,
-                "variables": {k: text(v) for k, v in names},
-            }
-            if f.f_code.co_name != "<module>":
-                # The call as it began, such as countdown(2), so that calls of one function can be
-                # told apart.
-                entry["call"] = f"{name_of(f.f_code)}({begun.get(id(f), '')})"
-            refs = {k: t for k, t in ((k, tag(v)) for k, v in names) if t}
-            if refs:
-                entry["refs"] = refs
-                # The shown value is cut at 80 characters, so a change further along is found
-                # by comparing fingerprints of the whole value.
-                entry["digests"] = {k: digest(v) for k, v in names if k in refs}
-            # An object's attributes one by one, so that a question can ask for one, such as
-            # self.count, with those it finds in its class, such as self.losses for a list
-            # kept in the class, and a class's own, such as Run.losses.
-            attrs = {
-                k: {a: _cut(shown(x, False), 80) for a, x in _readable_attrs(v).items()}
-                for k, v in names
-                if _is_object(v) or (isinstance(v, type) and getattr(v, "__module__", None) == "__main__")
-            }
-            attrs = {k: a for k, a in attrs.items() if a}
-            if attrs:
-                entry["attrs"] = attrs
-            stack.append(entry)
-        return stack
+        return [frame_entry(f) for f in reversed(frames)]
 
     # An error seen in a frame, kept until that frame runs another line. A return straight after
     # it means that the error stopped the frame, which then gave back no value.
@@ -604,6 +636,12 @@ def _trace(payload):
     # Each call's arguments as it began, by frame. The frames are kept alive, so that no later
     # frame reuses an id.
     begun = {}
+    # Each call's number, by frame, in the order the calls began: the main program's is 0.
+    numbers = {}
+    # The generators paused at a yield, by frame: each keeps its place and its names until it is
+    # asked for its next value. And the numbers of those just asked, whose next step says so.
+    paused = {}
+    resuming = set()
 
     def tracer(frame, event, arg):
         if frame.f_code.co_filename != LEARNER_FILE:
@@ -614,9 +652,16 @@ def _trace(payload):
                 # A class statement's body runs as a frame of its own, though it is not a call:
                 # its lines are not stepped through, and the class appears once it is made.
                 return None
+            if id(frame) in begun:
+                # A generator asked for its next value: the same call goes on after its yield,
+                # with its names as it left them.
+                paused.pop(id(frame), None)
+                resuming.add(numbers[id(frame)])
+                return tracer
             count = fc.co_argcount + fc.co_kwonlyargcount + bool(fc.co_flags & 0x04) + bool(fc.co_flags & 0x08)
             params = fc.co_varnames[:count]
             begun[id(frame)] = ", ".join(argument(frame.f_locals[p]) for p in params if p in frame.f_locals)
+            numbers[id(frame)] = len(numbers)
             kept.append(frame)
             return tracer
         if event == "exception":
@@ -628,11 +673,33 @@ def _trace(payload):
                 raise StepLimit()
             step = {"event": event, "line": frame.f_lineno, "stack": snapshot(frame),
                     "output": out.getvalue()[-4000:]}
+            # A generator going on after its yield, at its first step since: usually a line of its
+            # own, but a call it makes on the line of the yield comes first.
+            for entry in step["stack"] if resuming else ():
+                if entry.get("id") in resuming:
+                    resuming.discard(entry["id"])
+                    entry["resumed"] = True
+            yielded = False
             if event == "return":
+                value = f"{tag(arg)} ({text(arg)})" if _is_object(arg) else _plain(_safe_repr(arg))
                 if raised:
                     step["raised"] = raised
+                elif frame.f_code.co_flags & _CO_GENERATOR and _at_yield(frame):
+                    # A yield: the generator hands out a value and pauses, to go on later.
+                    step["yielded"] = value
+                    yielded = True
                 else:
-                    step["returned"] = f"{tag(arg)} ({text(arg)})" if _is_object(arg) else _safe_repr(arg)
+                    step["returned"] = value
+                    if frame.f_code.co_flags & _CO_GENERATOR:
+                        # The end of a generator's body: the next that asked it raises StopIteration.
+                        step["ended"] = True
+            if paused:
+                step["paused"] = [frame_entry(f) for f in sorted(paused.values(), key=lambda f: numbers.get(id(f), 0))]
+            if event == "return":
+                if yielded:
+                    paused[id(frame)] = frame
+                else:
+                    paused.pop(id(frame), None)
             steps.append(step)
         return tracer
 
@@ -733,10 +800,31 @@ _GREEK = {
 }
 
 
+# The functions an answer may name. A power written straight after one, as cos^2(x) is written on
+# paper, is a power of the function's value, cos(x)^2. A negative power there is refused, since
+# sin^-1(x) is written for the function that undoes the sine as often as for one over the sine.
+_FUNCTION_NAMES = ("sqrt", "exp", "log10", "log2", "log", "ln", "sin", "cos", "tan", "abs", "Abs", "factorial", "binomial")
+
+
+class _NegativeFunctionPower(ValueError):
+    def __init__(self, name):
+        super().__init__(name)
+        self.name = name
+
+
+def _refuse_negative_function_power(text):
+    import re
+
+    m = re.search(r"\b(" + "|".join(_FUNCTION_NAMES) + r")\s*(?:\^|\*\*)\s*\(?\s*-", text)
+    if m:
+        raise _NegativeFunctionPower(m.group(1))
+
+
 def _parse(text, names, evaluate=True):
     import sympy
     from sympy.parsing.sympy_parser import (
         convert_xor,
+        function_exponentiation,
         implicit_application,
         implicit_multiplication,
         parse_expr,
@@ -751,15 +839,18 @@ def _parse(text, names, evaluate=True):
     def is_product(name):
         return len(name) > 1 and name not in names and all(ch in letters for ch in name)
 
+    # ^ becomes ** first, so that the later steps read cos^2(x) and cos^2 x as powers of cos(x).
     transformations = standard_transformations + (
+        convert_xor,
         split_symbols_custom(is_product),
         implicit_multiplication,
         implicit_application,
-        convert_xor,
+        function_exponentiation,
     )
     cleaned = (
         text.replace("×", "*").replace("·", "*").replace("−", "-").replace("÷", "/").strip()
     )
+    _refuse_negative_function_power(cleaned)
     # β typed as itself stands for the step's beta, when the step has one; spaces keep 2β and βk
     # products, as 2 beta and beta k.
     for letter, word in _GREEK.items():
@@ -928,6 +1019,11 @@ def check_expression(payload):
         return {"status": "empty", "message": "Write an expression first."}
     try:
         expr = _parse(text, names)
+    except _NegativeFunctionPower as exc:
+        f = exc.name
+        return {"status": "unparsed",
+                "message": f"{f}^-1 can mean one over {f} or the function that undoes {f}, so a power with a minus"
+                           f" sign straight after {f} is not read. For one over {f}(x), write 1/{f}(x)."}
     except Exception:  # noqa: BLE001 - any parse failure is the learner's to fix
         return {"status": "unparsed",
                 "message": "That could not be read as an expression. Check the brackets and operators."}

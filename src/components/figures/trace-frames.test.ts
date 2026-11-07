@@ -2,7 +2,20 @@ import { describe, expect, it } from "vitest";
 
 import type { TraceStep } from "@/lib/python/client";
 
-import { changesBetween, finishedStep, frameHeading, frameMarks, frameStatus, lookupName, returnText, runningIn, sameCall } from "./trace-frames";
+import {
+  changesBetween,
+  finishedStep,
+  frameHeading,
+  frameMarks,
+  frameStatus,
+  lookupName,
+  pausedMarks,
+  pausedStatus,
+  returnText,
+  runningIn,
+  sameCall,
+  waitingText,
+} from "./trace-frames";
 
 const main = (variables: Record<string, string>, line = 1, refs?: Record<string, string>, digests?: Record<string, number>) => ({
   function: "(main program)",
@@ -273,5 +286,76 @@ describe("objects of the program's own classes", () => {
   it("are said to change in place, with every name that refers to them", () => {
     const step = (total: string) => at(12, [main({ m: `total=${total}`, n: `total=${total}` }, 12, { m: "Meter 1", n: "Meter 1" })]);
     expect(changesBetween(step("0"), step("3"))).toBe("Meter 1, which `m` and `n` refer to, is now `total=3`");
+  });
+});
+
+// The trace the harness gives for a generator:
+//   def count(n): while n > 0: yield n; n -= 1 / c = count(2) / a = next(c) / b = next(c) / print(list(c))
+// Each call has a number, so that the generator can be followed as it leaves the stack at each
+// yield, waits among the paused generators, and comes back.
+const gen = "<generator object count>";
+const countMain = (variables: Record<string, string>, line: number) => ({ ...main({ count: "<function count>", c: gen, ...variables }, line), id: 0 });
+const counter = (n: string, line: number, resumed = false) => ({
+  function: "count",
+  call: "count(2)",
+  line,
+  variables: { n },
+  id: 1,
+  generator: true,
+  ...(resumed ? { resumed } : {}),
+});
+const generatorRun: TraceStep[] = [
+  at(8, [countMain({}, 8)]),
+  at(2, [countMain({}, 8), counter("2", 2)]),
+  { ...at(3, [countMain({}, 8), counter("2", 3)], "return"), yielded: "2" },
+  { ...at(9, [countMain({ a: "2" }, 9)]), paused: [counter("2", 3)] },
+  at(4, [countMain({ a: "2" }, 9), counter("2", 4, true)]),
+  at(2, [countMain({ a: "2" }, 9), counter("1", 2)]),
+  { ...at(2, [countMain({ a: "2", b: "1" }, 10), counter("0", 2)], "return", "None"), ended: true },
+];
+
+describe("generators", () => {
+  it("start at the first next, with the arguments the generator was made with", () => {
+    expect(changesBetween(generatorRun[0]!, generatorRun[1])).toBe("starts `count` with `n = 2`");
+    expect(frameMarks(generatorRun[0], generatorRun[1], 1)).toEqual({ n: "new" });
+  });
+
+  it("yield a value and pause, rather than return", () => {
+    expect(returnText(generatorRun[2]!)).toBe("`count(2)` yields `2` and pauses");
+    expect(frameStatus(generatorRun[2])).toBe("yielding `2`");
+    expect(changesBetween(generatorRun[2]!, generatorRun[3])).toBe("`a = 2`");
+  });
+
+  it("wait among the paused generators with the names they keep", () => {
+    const pausedFrame = generatorRun[3]!.paused![0]!;
+    expect(pausedStatus(pausedFrame)).toBe("paused at its `yield` on line 3");
+    expect(pausedMarks(generatorRun[2], pausedFrame)).toEqual({});
+  });
+
+  it("go on after their yield when asked again, the same call with the same names", () => {
+    expect(changesBetween(generatorRun[3]!, generatorRun[4])).toBe("resumes `count(2)` after its `yield`");
+    expect(frameMarks(generatorRun[3], generatorRun[4], 1)).toEqual({});
+    expect(sameCall(generatorRun[4], generatorRun[5]!, 1)).toBe(true);
+    expect(changesBetween(generatorRun[4]!, generatorRun[5])).toBe("`n = 1` in `count(2)`");
+  });
+
+  it("end by making the next that asked them raise StopIteration", () => {
+    expect(returnText(generatorRun[6]!)).toBe("`count(2)` ends, so the `next` that asked it raises `StopIteration`");
+    expect(frameStatus(generatorRun[6])).toBe("ending, with nothing more to yield");
+  });
+
+  it("are waited for by the call that asked them for a value", () => {
+    expect(waitingText(counter("2", 2))).toBe("waiting for `count(2)` to give its next value");
+    expect(waitingText(counting("1", 4))).toBe("waiting for `countdown(1)` to return");
+  });
+
+  it("are told apart from another call of the same function in their place", () => {
+    const other = { ...counter("5", 2), id: 2 };
+    expect(sameCall(generatorRun[5], at(2, [countMain({ a: "2" }, 9), other]), 1)).toBe(false);
+  });
+
+  it("are said to be closed when dropped while paused", () => {
+    const closed = { ...at(3, [countMain({}, 9), counter("2", 3)], "return"), raised: "GeneratorExit" };
+    expect(returnText(closed)).toBe("`count(2)` is closed while paused");
   });
 });

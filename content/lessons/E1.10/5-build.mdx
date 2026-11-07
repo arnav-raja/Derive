@@ -1,0 +1,63 @@
+The Derive phase proved merge sort right and counted its work. Now build: a sort that finds runs and merges them, as Timsort does; a search that counts the losses in a range; and a set of your own, made of buckets. Then predict what a hash that looks at too little does, and mend a binary search that never ends.
+
+Each exercise in this phase that asks for code has tests of its own, in the tab `tests.py`. You need not read their code, which uses some Python that this lesson does not teach. Some of the tests count your comparisons, with items whose `__lt__` counts each call, as the puzzle's `Loss` did.
+
+## Sorting by runs
+
+<Exercise id="build-runs" />
+
+<Reveal for="build-runs">
+
+On a list already in order, `run_sort` finds one run in $n - 1$ comparisons and is done, as the puzzle's `sorted` was. On 1,000 shuffled losses it finds about 500 runs, most of them 1 or 2 items long, and makes about 9,350 comparisons in all, more than merge sort's 8,700 or so, since finding the runs costs 999 comparisons and short runs save little. Timsort does better on shuffled lists: a run shorter than a minimum, between 32 and 64 items for a long list, is lengthened by inserting the items after it one at a time, each in the place that a binary search finds for it, which takes few comparisons. It also chooses which neighbouring runs to merge, so that the runs merged are of similar lengths, by a rule called *powersort* since Python 3.11.
+
+For 1,000 shuffled losses, then:
+
+| Sort | Comparisons |
+| --- | --- |
+| The bound, for any sort that only compares | 8,530 |
+| Python's `sorted` (Timsort) | about 8,650 |
+| Merge sort | about 8,700, and 8,977 at worst |
+| `run_sort` | about 9,350 |
+| Picking the smallest left, again and again | 499,500 |
+
+## Counting losses in a range
+
+<Exercise id="build-count-between" />
+
+</Reveal>
+
+<Reveal for="build-count-between">
+
+A search for the first slot whose item is more than `x` is `bisect.bisect_right` in Python's `bisect` module, and `count_between` is how a sorted list answers questions about ranges, which a set cannot. NumPy, which E2.1 introduces, has the same two searches for whole arrays at once, as `np.searchsorted`.
+
+## A set of your own
+
+<Exercise id="build-hash-set" />
+
+</Reveal>
+
+<Reveal for="build-hash-set">
+
+Python's own `set` and `dict` are this class written in C, with the refinements that the Explore phase described: a slot of their own for each key, with other slots tried in a fixed order when one is taken, and growth well before they are full. A dict keeps a value beside each key, in the same place, which is how `counts[word]` finds a word's count in about one look.
+
+## A hash from one field
+
+<Exercise id="breakit-one-field" />
+
+</Reveal>
+
+<Reveal for="breakit-one-field">
+
+The rule runs one way only: equal keys must have equal hashes, but unequal keys may share one. A `__hash__` that returned 0 for every config would still give right answers, with every config in one bucket, so every lookup would compare with every key, as a search of a list does. A good hash uses every field that `__eq__` compares, so that keys which differ seldom share a bucket.
+
+## A search that never ends
+
+<Exercise id="debug-bisect" />
+
+</Reveal>
+
+<Reveal for="debug-bisect">
+
+This is how Python's `bisect` module writes the search, and it is the Explore phase's search in other clothes: its `lo` is one more than `first_at_least`'s, since it counts the slots known to be less than `x` instead of naming the last of them. Both forms need the same two things to be right: an invariant that holds before the first pass and that every pass keeps, and a gap between `lo` and `hi` that every pass makes smaller.
+
+</Reveal>

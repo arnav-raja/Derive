@@ -7,8 +7,11 @@ import { ExerciseCard } from "@/components/exercise/exercise-card";
 import {
   ExpressionTree,
   FloatLine,
+  FourTriangles,
   FunctionPlot,
+  HashBuckets,
   MappingDiagram,
+  MergeLevels,
   OrderedChoices,
   PartialSums,
   PascalTriangle,
@@ -16,10 +19,13 @@ import {
   QuantifierGrid,
   ScaleLine,
   SetDiagram,
+  ShuffleBuffer,
   Staircase,
   TextBytes,
   TieLists,
   TileGrid,
+  UnitCircle,
+  VectorPlane,
 } from "@/components/figures";
 import { HintIcon, LockIcon } from "@/components/ui/icons";
 import { loadLesson, type LoadedLesson } from "@/lib/content/lesson";
@@ -317,5 +323,11 @@ export function phaseComponents(ctx: PhaseContext): MDXComponents {
     TieLists,
     OrderedChoices: OrderedChoicesSlot,
     PascalTriangle: PascalTriangleSlot,
+    MergeLevels,
+    HashBuckets,
+    UnitCircle,
+    VectorPlane,
+    FourTriangles,
+    ShuffleBuffer,
   };
 }

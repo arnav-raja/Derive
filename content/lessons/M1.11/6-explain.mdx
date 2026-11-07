@@ -1,0 +1,27 @@
+The test of understanding is explaining it simply to someone who was not there. Your friend knows school algebra and a little Python. They typed `math.sin(30)`, wanting the sine of 30 degrees, got `-0.9880316240928618`, and have decided that Python's sine is broken. They also want to turn a point $(x, y)$ about the origin through an angle $\theta$, and plan to multiply both of its coordinates by $\cos\theta$. And to find the third side of a triangle from the other two, they always square the two, add, and take the square root.
+
+<Exercise id="explain-rotation" />
+
+## Where this leads
+
+Cosine and sine are the two coordinates of turning. Every formula in this lesson, from the schedule to the law of cosines, came from that picture and Pythagoras' theorem.
+
+<Foreshadow lesson="M1.12">
+
+Complex numbers are points of the plane that can be multiplied. Multiplying by $\cos\theta + i\sin\theta$ turns a point through $\theta$, so turning twice is multiplying twice, and the angle-addition formulas fall out of one line of algebra. M1.12 also meets Euler's formula, $e^{i\theta} = \cos\theta + i\sin\theta$.
+
+</Foreshadow>
+
+<Foreshadow lesson="M2.2">
+
+A list of numbers is a point in a space of many dimensions, and the law of cosines gives the angle between two such lists from their lengths and the distance between them. M2.2 turns it into the dot product, and the cosine of that angle, the *cosine similarity*, is how a search engine, or the retrieval step that feeds a language model, measures whether two embeddings point the same way.
+
+</Foreshadow>
+
+<Foreshadow lesson="L4.7">
+
+A Transformer needs to know where each word sits. Rotary position embeddings take the numbers that attention compares for each word, its query and key, in pairs, and turn each pair through an angle that grows with the word's position, at its own rate for each pair, so that the comparison of two words depends on where they sit only through how far apart they are, by the rule that turning by one angle and then by another is turning by their sum.
+
+</Foreshadow>
+
+<MixedCheck />

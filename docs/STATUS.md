@@ -1,6 +1,6 @@
 # Status
 
-Updated 7 November 2026 at about 01:50 UTC, when M1.10 went live. On "Pause" or "Resume",
+Updated 7 November 2026 at about 06:05 UTC, when E1.11 went live. On "Pause" or "Resume",
 follow CLAUDE.md and carry on from "Resume here" (phase 1) and "Phase 2: resume here" (phase 2).
 
 ## Where things stand
@@ -27,8 +27,10 @@ components, the set diagram and the quantifier grid. E1.7 Classes and objects is
 reviewed by both, every finding applied, walked and tested end to end. M1.8 Proof I is live
 too, on the same terms, and so are E1.8 Debugging as an experiment, M1.9 Proof II:
 induction and recursion, E1.9 Testing and property-based testing, and M1.10 Counting:
-permutations, combinations and the binomial theorem. E1.10 Algorithms: sorting, searching and
-hashing is next.
+permutations, combinations and the binomial theorem, E1.10 Algorithms: sorting, searching
+and hashing, M1.11 Angles, trigonometry and rotation, and E1.11 Iterators, generators and
+streaming data. M1.12 Complex numbers and Euler's formula is next (written and checked; its
+simulated learner is done and its independent review was running), then E1.12.
 
 ### Done
 
@@ -563,20 +565,144 @@ Done so far:
   whole number (where SymPy gives complex infinity), and plain text writes $\binom{a}{b}$ as
   C(a, b) for screen readers. The content check knows `tilesAfter`, `groupsAfter` and
   `setsAfter`.
+- E1.10 Algorithms: sorting, searching and hashing, live (`ready`) since 7 November: all six
+  phases and 25 exercises (a puzzle on how many comparisons Python's `sorted` makes on 1,000
+  losses already in order, 5 recall, 7 explore predictions, 2 proofs of rules, 2 expression
+  steps, a prediction and an estimate, 3 builds, a break-it and a debug, and the explain-back),
+  two step-through figures and two new figure components (merge sort level by level, and keys in
+  buckets), tutor notes with 17 misconceptions, and checks.json (47 items). It requires E1.4,
+  E1.5 and E1.7, builds on M1.9 and E1.9, applies E1.8 and M1.6, and foreshadows M11.3, E9.3 and
+  L4.10; E1.8's bisection and M1.6's counts now list E1.10 among their uses, and curriculum.json's
+  `leadsTo` gains L4.10. Reviewed by both (the simulated learner, 25 of 25 right with 15
+  findings; the independent reviewer, 1 blocker, 11 should-fix findings and nits; in
+  `derive-resume/review/E1.10-*.md`, with the learner's in `E1.10-fix-plan.md`), and every
+  finding applied: the explain-back's prompt asks for everything its rubric checks (an example,
+  and why for the looks and for equal hashes); the puzzle's 8,650 moved to after explore-three,
+  so it no longer gives away a placement item; a heading and a title that answered their items
+  are gone ("Equal losses", "Two searches"); the training runs are now models, so "run" means
+  only a stretch in order; seven Reveals no longer repeat their cards; the changed key's account
+  says that a set keeps each key's hash and compares hashes before `__eq__`, which the lesson's
+  own buckets do not; binary search is named where it is first used, `hash(c)` is tied to
+  `__hash__`, and the adversary comes before the proof that uses it; the worst case says how the
+  three worst cases happen at once; the reference `HashSet` doubles before adding, as the figure
+  does, so "fewer than 2 moves a key" holds, with a worked example for 40 keys; a table compares
+  the five sorts' counts on 1,000 losses; build-runs has a test for the empty list and one item,
+  and its own-work test follows `run_sort` through the functions it calls (and catches
+  `run_sort = sorted`) without failing a learner's own check against `sorted`; the look-counting
+  tests count different items, so a correct search that reads an item twice passes; four test
+  messages that named the wrong cause now name the right one; three over-long right options were
+  shortened and two moved; 13 rungs and one cue were rewritten; and explore-three is now a
+  placement item, with each placement question's last variant asking the idea itself. The
+  references, starters and wrong programs, the reviewer's 38 other programs and the learner's 9
+  were run against the final tests (`derive-resume/e110walk/codes.log`): every right one passes
+  and every slip fails with a message that names its cause. `check:exercises` passes all 47
+  items; the lesson was walked in all six phases with the mixed check and no page errors other
+  than the grader's 503 in local mode (store `derive-resume/e110walk/store-before-E1.10-walk.json`;
+  the store after it is `store-after-E1.10-walk.json`); and its end-to-end tests pass at all three
+  widths, with the performance budget.
+- Engine changes with E1.10: two new figure components. `MergeLevels` draws a list of 8 to
+  1,024 losses as bars and sorts it as `merge_sort` does, a level at a time, with each level's
+  comparisons, for four orders (shuffled, in order, the wrong way round, and the order with the
+  most comparisons, which gives the worst case $W(k)$); its words come from `merge.ts`, with unit
+  tests. `HashBuckets` keeps whole-number keys in numbered buckets; the learner adds a key, or 5
+  at random, and looks one up, which marks its bucket and the keys compared (with a ring as well
+  as a colour), and a switch doubles the buckets before a new key would make the keys outnumber
+  them; its words come from `buckets.ts`, with unit tests, and count moves, not keys.
+  `scripts/learner-view.py` no longer writes "Answer: ." for an item with no stated answer.
+
+- M1.11 Angles, trigonometry and rotation, live (`ready`) since 7 November: all six phases and
+  26 exercises (a puzzle on how much of a cosine schedule's learning rate is left a quarter of
+  the way through, 5 recall, 8 explore predictions, a proof of Pythagoras' theorem, four
+  expression steps and an estimate, 3 builds, a debug and a break-it, and the explain-back),
+  three new figure components (below), two function plots, tutor notes with 20 misconceptions,
+  and checks.json (62 items). It requires M1.4, applies M1.1 and M1.3, and foreshadows M1.12,
+  M2.2 and L4.7; M1.2's field axioms and M1.4's linear functions gained it as a use. Reviewed
+  by both (the simulated learner, 26 of 26 right with 16 findings; the independent reviewer, a
+  blocker, 13 should-fix findings and nits; in `derive-resume/review/M1.11-*.md`), and every
+  finding applied: the explain-back's prompt now asks for everything its rubric needs, and the
+  rubric no longer asks that scaling by $\cos\theta$ never turns a point (it does for a half
+  turn); the account of `math.radians(30)`'s last digit is now true; four sentences that gave
+  away the next item no longer do; the four-triangles figure calls the middle shape "the middle"
+  until the proof shows it is a square, shows only the tilted square while the proof is asked,
+  and the second proof, with the two rectangles, sits in the Reveal; derive-sum's review no
+  longer accepts the question typed back; derive-double can be answered as `2cos^2(alpha) - 1`;
+  the schedule's $\frac{1 + \cos\theta}{2}$ is derived before it is used; build-polar's tests
+  report a division by 0 in words, accept $-\pi$ for $(-2, 0)$, name degrees, and no longer
+  fail a right distance; `math.atan` is described as the inverse of the narrowed slope; three
+  Reveals no longer repeat their cards; the right options are spread over every position; 21
+  rungs rewritten; and nine misconceptions corrected, with a new one for taking
+  $1 - \cos^2\theta$ as the sine. `check:exercises` passes all 62 items; the lesson was walked
+  in all six phases with the mixed check and no page errors other than the grader's 503 in local
+  mode (store `derive-resume/m111walk/store-before-M1.11-walk-moved.json`, the store after the
+  E1.10 walk with E1.9, M1.10 and E1.10 started a week earlier; the store after it is
+  `store-after-M1.11-walk.json`); and its end-to-end tests pass at all three widths, with the
+  performance budget.
+- Engine changes with M1.11: three new figure components. `UnitCircle` draws the point at an
+  angle from $-360°$ to $360°$ on the circle of radius 1, the arc to it with its length in
+  radians, and its coordinates, with a table of the usual angles. `VectorPlane` turns a flag, a
+  marked point and the arrows to $(1, 0)$ and $(0, 1)$ about the origin by one angle and then by
+  a second, and says where each went and the one turn they make together. `FourTriangles` lays
+  four copies of a triangle with a right angle in a square of side $a + b$, tilted or as two
+  rectangles (`arrangements` limits the choice), and gives the areas. Their words come from
+  `rotation.ts` and `squares.ts`, with unit tests. The expression checker now reads a power
+  written straight after a function's name, so `cos^2(alpha)` is `cos(alpha)^2`, and refuses a
+  negative one, such as `cos^-1(x)`, with a message that says to write `1/cos(x)` for one over
+  the cosine; `check:exercises` passes on every lesson with it.
+
+- E1.11 Iterators, generators and streaming data, live (`ready`) since 7 November: all six
+  phases and 24 exercises (a puzzle on how many examples a second epoch sees when both read one
+  open file, 5 recall, 8 explore predictions, two expression steps, a proof by a loop invariant
+  that `batches` loses and repeats nothing, an estimate of a list's memory, 3 builds, a debug
+  and a break-it, and the explain-back), the `ShuffleBuffer` figure, a step-through of a
+  two-stage pipeline, tutor notes with 21 misconceptions, and checks.json (49 items). It
+  requires E1.4, E1.6 and E1.7, applies M1.3 (a pipeline is a composition), and leads to E5.5
+  and E9.1, with its generators used in E4.5 and E9.5 too. Reviewed by both (the simulated learner, 24 of 24 right with 16 findings;
+  the independent reviewer, 2 blockers, 15 should-fix findings and 13 nits; in
+  `derive-resume/review/E1.11-*.md`), and every finding applied: the proof's second review
+  question had two right answers and now has one; the step-through shows a generator yield,
+  pause and resume (below) instead of returning and being called again; debug-epochs' tests now
+  fail a program that holds every line or reads the file once, and pass every right one; the
+  filter cost is exact (32,000 items about, 31,001 exactly, for `multiples`); the Build phase
+  explains its tests, `assert`, `break` and the step limit before they are used; the `None`
+  caveat of `next(it, None)` and the shape of a generator expression are stated; three Reveals
+  no longer repeat their cards; tolerances, option orders and placement items corrected; and
+  rungs, notes and a new misconception (taking `b = a` for a copy of an iterator) rewritten.
+  `check:exercises` passes all 49 items; the lesson was walked in all six phases with the
+  mixed check and no page errors other than the grader's 503 in local mode (store
+  `derive-resume/e111walk/store-before-E1.11-walk.json`; the store after it is
+  `store-after-E1.11-walk.json`); and its end-to-end tests pass at all three widths, with the
+  performance budget.
+- Engine changes with E1.11: the step-through follows generators. `harness.py`'s trace numbers
+  each call (`id`), flags a generator's frames, records a step where a generator hands out a
+  value (`yielded`) or ends (`ended`), marks a frame that carries on after a `yield`
+  (`resumed`), lists the generators paused at a `yield` with their names (`paused`), and drops
+  memory addresses from the values it shows; every other lesson's trace is unchanged.
+  `trace-frames.ts` says "yields ... and pauses", "resumes ... after its `yield`", "starts" for
+  a generator's first run, "ends, so the `next` that asked it raises `StopIteration`", and
+  "waiting for ... to give its next value", with unit tests, and `ProgramTrace` shows a "Paused
+  generators" list. `ShuffleBuffer` shuffles 36 items in three topics with a buffer of 1 to 36
+  and says how many of each topic the first output row holds; its words come from `shuffle.ts`,
+  with unit tests.
 
 Next, in order:
 
-1. E1.10 Algorithms: sorting, searching and hashing (first design notes in
-   `derive-resume/e110plan.md`, and drafts of its lesson.yaml and puzzle in
-   `derive-resume/e110-draft/`), then M1.11, E1.11, M1.12 and E1.12, then the start of
-   stage 2, each written, checked, reviewed by both and walked
-   before it goes live, adding the remaining figure components as the lessons need them. The phase 2 features (item 3) come first once the
-   hosting pull request has landed. E1.9 picks up E1.8's preview: tests that run on every change,
-   and property-based tests. E1.10 must show how to give a class a `__hash__` that agrees with
-   its `__eq__` (E1.7 promises it, and E1.10 now requires E1.7); the E1.8 reviewer suggests E1.8
-   as a requirement of E1.10 too, with E1.10 among the uses of `E1.8/bisection`, since binary
-   search is E1.8's search on a sorted list. The E1.7 reviewer suggests E1.7 as a requirement of
-   E1.11, if E1.11 writes an iterator class, and of E3.4, if its configuration is a class.
+1. M1.12 Complex numbers and Euler's formula: written and checked in a worktree at 3df9a23,
+   with its tutor notes and two figure components, `ComplexPlane`
+   (a product mode and a powers mode) and `EulerSteps` (the chain of $n$ small turns against the
+   circle), whose words are in `complex.ts` with unit tests; the lesson and figures are backed
+   up in `derive-resume/m112-draft/` (`lesson/`, `figures/`, and `shared.patch` for the
+   registrations, other lessons' `usedBy` and the harness's `close`, which compares complex
+   numbers). Its simulated learner is done (23 of 23 right, 20 findings, in
+   `derive-resume/review/M1.12-learner-findings.md`) and its independent review was running.
+   Apply both on top of main (apply `shared.patch` with `git apply --3way`; in `harness.py` keep
+   E1.11's `import opcode` and `import re` and trace changes beside M1.12's `import cmath` and
+   complex `close`), check, test end to end, walk it (move E1.11's start in the walk store back a
+   day so that the pace governor lets M1.12 start) and release it. It requires M1.5 and
+   M1.11. Then E1.12 Project: a tested text-statistics tool (requires E1.6 and E1.9; leads to
+   L4.1), then the start of stage 2, each written, checked, reviewed by both and walked before
+   it goes live, adding the remaining figure components as the lessons need them. The phase 2
+   features (item 3) come first once the hosting pull request has landed. The E1.7 reviewer
+   suggests E1.7 as a requirement of E3.4, if its configuration is a class.
 2. When the hosting pull request lands: pages move to `src/server/app/` (a new page needs a line
    in `src/server/routes.ts` and a static shell in `src/app/`, copied from
    `src/app/today/page.tsx`); server components cannot use state or effects; client components
@@ -632,6 +758,19 @@ Next, in order:
   and `peek.cjs` to print a card's end. Copy `store-before-M1.10-walk.json` to a store folder as
   `store.json` and start the production build on it at port 3100. A break-it's right option has
   no `correct` list; the walk names it by its id.
+- Walking E1.10: `derive-resume/e110walk/` holds `walk-e110.cjs` (`node walk-e110.cjs overview
+  puzzle recall explore derive build explain`), which loads `walk-lib.cjs` beside it,
+  `walk-extra.cjs` for the explain phase's written answer, and `mixed.cjs` for the mixed check
+  and the finish. Copy `store-before-E1.10-walk.json` to a store folder as `store.json` and
+  start the production build on it at port 3100; `store-after-E1.10-walk.json` is the store
+  after the walk, and the start for M1.11's.
+- Walking M1.11: `derive-resume/m111walk/` holds `walk-m111.cjs` (`node walk-m111.cjs overview
+  puzzle recall explore derive build explain`), which loads `walk-lib.cjs` beside it,
+  `mixed.cjs` for the mixed check and the finish, and `peek-polar.cjs`, which prints the whole
+  test report of four wrong programs. Copy `store-before-M1.11-walk-moved.json` to a store folder
+  as `store.json` and start the production build on it at port 3100. The pace governor counts
+  three new lessons a week from Monday, so a walk late in the week moves the week's starts back
+  with `prep-store.py` first.
 - Walking E1.7: copy `derive-resume/store-before-E1.7-walk.json` into a store folder with
   `prep-store.py <snapshot> <folder>/store.json M1.7=<yesterday>`, so that a new lesson can
   begin today, start the production build on it as above, and run `walk-e17.cjs` and

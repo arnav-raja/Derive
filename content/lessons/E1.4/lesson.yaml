@@ -44,7 +44,7 @@ concepts:
         same object, and == whether their values are equal. A function given a list can change its
         caller's list, a default value is made once and shared by every call that uses it, and
         list(a) makes a copy.
-      usedBy: [E2.3, E5.2]
+      usedBy: [E2.3, E5.2, E1.11]
     - id: E1.4/cost-of-operations
       name: The cost of operations
       summary: >-
@@ -55,7 +55,7 @@ concepts:
         makes n(n - 1)/2 comparisons, so doubling n nearly quadruples the time. Counting the steps
         and dividing by the steps a second the machine manages estimates the running time before
         the program runs.
-      usedBy: [E1.10, E2.7, E6.2]
+      usedBy: [E1.10, E2.7, E6.2, E1.11]
   used:
     - E1.1/variables-as-names
     - E1.2/loops

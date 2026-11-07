@@ -1,0 +1,400 @@
+misconceptions:
+  - id: file-starts-over
+    belief: A second loop over an open file starts again from its first line, as a second loop over a list does.
+    why: >-
+      An open file is its own iterator, with one place in its text that every line read moves on.
+      A loop over it carries on from that place, so once one loop has read to the end, the next
+      loop asks for a line, gets none and ends at once. A list makes a fresh iterator, starting at
+      its first item, for every loop.
+    cue: >-
+      The learner chooses `epoch 1 saw 3` in puzzle-epochs, or expects the later epochs of
+      debug-epochs to see every line while the generator is made once, before the epochs.
+  - id: last-line-again
+    belief: A file that has been read to its end still gives its last line again.
+    why: >-
+      The place in the file is after the last line, not on it, so nothing is left to give. An
+      iterator hands out each value once and never repeats one.
+    cue: The learner chooses `epoch 1 saw 1` in puzzle-epochs, or "bird, and then bird again" in explore-past-the-end.
+  - id: used-up-is-an-error
+    belief: Looping over a file or an iterator that has been used up raises an error.
+    why: >-
+      A `for` loop takes `StopIteration` as its signal to stop, so a loop over a used-up iterator
+      gets that signal at its first `next` and ends quietly after no passes. Only a bare call of
+      `next` shows the error, since nothing is there to catch it.
+    cue: The learner chooses the error in puzzle-epochs, or expects the second `sum` in explore-sum-twice to fail.
+  - id: iterator-wraps
+    belief: An iterator that runs out starts again from the beginning.
+    why: >-
+      An iterator only moves forward and never starts over. To go round again, a loop asks the
+      iterable for a new iterator, which a list, a string or a range can make and a file or a
+      generator cannot.
+    cue: >-
+      The learner chooses "bird, then cat, starting over" in explore-past-the-end, or a last batch
+      of `[6, 0, 1]` in explore-batches.
+  - id: next-gives-none
+    belief: '`next` gives `None` when nothing is left.'
+    why: >-
+      `next(it)` raises `StopIteration` when nothing is left. `next(it, default)` gives `default`
+      instead, and a stream may hold `None` as a value, so `None` is not a safe sign of the end. A
+      new `object()` is, since it equals nothing else.
+    cue: >-
+      The learner chooses "bird, then None" in explore-past-the-end, or writes `next(it, None)` and
+      `if x is None` in build-interleave.
+  - id: iterators-share-a-place
+    belief: Two iterators over one list share one place, so the second carries on where the first stopped.
+    why: >-
+      Each call of `iter` on a list makes a new iterator with a place of its own, starting at the
+      first item. Two names for one iterator do share its place, as two names for one list share
+      its items.
+    cue: The learner chooses `1 2 3` or `1 2 2` in explore-two-iterators.
+  - id: assignment-copies-iterator
+    belief: '`b = a` makes a second iterator over the same list, with a place of its own.'
+    why: >-
+      Assignment never copies, for an iterator as for a list: after `b = a` both names refer to
+      one iterator with one place, so `next(b)` carries on from where `next(a)` stopped. Only a new
+      call of `iter` on the list makes a new iterator.
+    cue: The learner chooses `1 1` in the first review of explore-two-iterators.
+  - id: body-runs-at-call
+    belief: Calling a generator function runs its body, or runs it as far as the first `yield`.
+    why: >-
+      Calling a generator function runs none of its body. It gives back a generator, and the body
+      starts only when the first value is asked for, which is why `made` is printed before `start`.
+    cue: >-
+      The learner chooses "start, made, 3, 2" in explore-yield, or says that two calls of `f` in
+      its review print `hi` twice.
+  - id: body-restarts
+    belief: Each `next` runs a generator's body again from the top.
+    why: >-
+      A generator pauses at each `yield` with its local names as they were, and the next `next`
+      carries on from just after that `yield`. Only a new call of the generator function starts the
+      body from the top.
+    cue: The learner chooses "made, start, 3, start, 2" in explore-yield.
+  - id: generator-reused
+    belief: A generator, like a list, can be summed or looped over again and again.
+    why: >-
+      A generator is an iterator, so it is used up after one loop over it: a second `sum` or `list`
+      finds nothing left. A list holds its values and makes a fresh iterator for every loop.
+    cue: >-
+      The learner gives 14 in explore-sum-twice, or chooses `[3, 4] [3, 4]` in its review, or makes
+      `data = examples(path)` once and loops over it in every epoch of debug-epochs.
+  - id: filter-makes-only-kept
+    belief: A stream that a filter takes from makes only the values the filter keeps.
+    why: >-
+      The filter has to look at every value to decide whether to keep it, so the stream before it
+      makes every value up to the last one kept: 0 to 4 for the first three even numbers, kept or
+      not.
+    cue: The learner gives 3 in explore-pulled, or $k$ in derive-pulled.
+  - id: endless-hangs
+    belief: A generator whose body is `while True` runs for ever as soon as it is used.
+    why: >-
+      The body runs only as far as the next `yield` each time a value is asked for, so an endless
+      generator makes as many values as are asked for and no more. A program hangs only if it asks
+      for all of them, as `list` or `sum` would.
+    cue: The learner says that `naturals()` cannot be used, or answers explore-pulled with a very large number.
+  - id: stages-run-in-turn
+    belief: In a pipeline of generators, each stage finishes all its items before the next stage starts, as with lists.
+    why: >-
+      Each stage asks the stage before it for one item only when it needs one, so each item passes
+      through every stage before the next item is read. That is why a pipeline holds about one item
+      for each stage, however long the stream.
+    cue: The learner chooses the order that reads all four words first in explore-pipeline.
+  - id: batch-padding
+    belief: A short last batch is filled from the start of the stream, or an empty batch is handed out at the end.
+    why: >-
+      `batches` reads the stream once and never goes back. The final `if` hands out what is left,
+      which may be fewer than `size` items, and hands out nothing when nothing is left.
+    cue: >-
+      The learner chooses `[6, 0, 1]` or a final `[]` in explore-batches, or
+      `[[0, 1, 2], [3, 4, 5], []]` in its review.
+  - id: buffer-shuffles-all
+    belief: A shuffle buffer shuffles the whole stream, so any example can come out first.
+    why: >-
+      The buffer holds only $k$ items. Each output is chosen from the items that have arrived so
+      far, so an example far down the file cannot come out until it has arrived. Only a buffer at
+      least as large as the stream shuffles all of it.
+    cue: The learner chooses "Any of the 100,000 examples" in explore-first-batch.
+  - id: buffer-mixes-a-little
+    belief: A small shuffle buffer still puts a few examples of every topic into each batch.
+    why: >-
+      An item cannot come out before it arrives, and the file holds every cooking example before
+      any other, so with a buffer of 1,000 every output up to the 9,001st is chosen from cooking
+      examples alone: the first 281 batches of 32 hold nothing else. The mixing is local.
+    cue: The learner chooses "Some of every topic" in explore-first-batch.
+  - id: buffer-first-k
+    belief: The first batch from a shuffle buffer is exactly the first examples of the stream, in a random order.
+    why: >-
+      Each item handed out is replaced by the next to arrive, which can then be chosen too, so the
+      32nd output is chosen from the first 1,031 items, not the first 32.
+    cue: The learner chooses "Exactly the first 32 examples" in explore-first-batch.
+  - id: clear-is-new-list
+    belief: '`batch.clear()` and `batch = []` do the same thing.'
+    why: >-
+      `batch = []` makes a new list and points the name at it, leaving the list handed out as it
+      was. `batch.clear()` empties the list that `batch` already names, which is the list just
+      handed out, so the next appends change it.
+    cue: >-
+      The learner chooses "as before" in breakit-clear, or uses `seq.clear()` in build-pack and
+      fails test_new_lists.
+  - id: cleared-batches-empty
+    belief: After `clear`, the batches already handed out are left empty.
+    why: >-
+      Every batch handed out is the one list that `batch` names. `clear` empties it, but the next
+      items go straight back into it, so at the end every entry shows that list's last contents,
+      `[6]`.
+    cue: The learner chooses `[[], [], [6]]` in breakit-clear.
+  - id: next-returns-none
+    belief: An iterator's `__next__` ends a loop by returning `None` or by returning nothing.
+    why: >-
+      Returning `None` hands out the value `None`, and the loop carries on. A `for` loop stops only
+      when `__next__` raises `StopIteration`, with the line `raise StopIteration`.
+    cue: The learner's `Countdown` in build-countdown returns `None` or 0 at the end, and a loop over it never ends.
+  - id: list-costs-numbers-only
+    belief: A list of numbers takes about as many bytes as the numbers themselves, so a hundred million squares fit easily.
+    why: >-
+      Each item of a list costs a slot of 8 bytes that points to it, and each int is an object of
+      its own, of 28 bytes or more, so a hundred million squares take about 4 GB. A generator of the
+      same squares holds one at a time.
+    cue: The learner answers derive-list-memory with 0.8 GB or less, or says that a list is as cheap as a generator.
+exercises:
+  derive-pulled:
+    rungs:
+      - >-
+        Which number is the $k$th multiple of $m$ to come out of `multiples`, and which numbers has
+        `naturals()` handed out by the time it does?
+      - >-
+        The Explore phase took the first three even numbers, 0, 2 and 4, and counted the numbers
+        `naturals()` had handed out, kept or not. E1.2 counted the values of `range(3, 10)` as
+        $10 - 3$, since it stops before 10.
+      - >-
+        Take $m = 3$ and try $k = 1$, $k = 2$ and $k = 3$: which multiple comes out each time, and
+        how many numbers has `naturals()` handed out by then? Set the three counts beside $k$.
+      - >-
+        If your answer grows by $m$ for each extra multiple, that part is right. Check it at
+        $k = 1$: the first multiple of any $m$ comes out of `multiples` at once, so how many numbers
+        has `naturals()` handed out then, and does your answer give that?
+      - >-
+        A program reads the letters of `streaming` one at a time and stops at the third vowel. The
+        vowels it meets are e, a and i, and i is the 7th letter, so it has read 7 letters: every
+        letter up to and including the one it stopped at, whether it was a vowel or not.
+    notes: >-
+      $km$ takes the $k$th multiple to be $km$, forgetting that the first is 0. $(k - 1)m$ finds
+      the right last number but does not count 0 itself. $km + 1$ counts 0 but still takes the
+      $k$th multiple to be $km$, so it is $m$ too many. $k$ counts only the multiples kept. The checker compares values at whole numbers from 1 to 9.
+  derive-batches-proof:
+    rungs:
+      - >-
+        For each line, what does it conclude, and what in the code of `batches` makes that true?
+      - >-
+        E1.2 proved a running total right with an invariant: true before the first check, kept by
+        every pass, and so true when the loop ends, where it joins the reason the loop stopped. E1.4
+        found that a change made through one name for a list shows through every other name for it.
+      - >-
+        Follow `batches(range(4), 3)` by hand. Before each check of the loop, write down the
+        batches handed out so far and `batch`, and then do the same after the loop ends. Which lines
+        of the proof describe what you wrote at each moment?
+      - >-
+        Proving $P$ before the loop, keeping it through one pass and carrying it past the loop's
+        end is the right frame. If a line about one pass cites a rule about the start or the end of
+        the loop, or the other way round, say in your own words what that line concludes before you
+        look at the menu, and find the rule whose words say exactly that: a rule fits a line
+        because of what the line concludes, not because the line mentions the same code.
+      - >-
+        E1.2's running total is proved the same way. $P$: `total` is the sum of the items read so
+        far. Before the loop nothing has been read and `total` is 0, so $P$ holds. A pass reads one
+        item and adds it, so $P$ still holds. So $P$ holds when the loop ends, and the loop ends only
+        when every item has been read, so `total` is the sum of them all.
+    notes: >-
+      The size test for line 3 mistakes appending for handing out: line 3 only adds the item just
+      read. Appending for line 4 misses the `if`, which is what keeps `batch` short of `size`. How
+      a loop stops for line 5 confuses why the loop stopped with why $P$ still holds. Loop
+      invariant for line 6 confuses $P$ with the fact that every item has been read, which comes
+      from how a `for` loop stops. Generators wait is never needed: the proof is about what the
+      loop does once it runs, not about when it starts. Line 2, A new list, is the one most often
+      missed.
+  derive-earliest:
+    rungs:
+      - >-
+        When item $p$ arrives, which output is being chosen at that moment, and is item $p$ in the
+        buffer yet when that choice is made?
+      - >-
+        The paragraph above the question says that output $j$ is chosen when item $k + j$ arrives,
+        from items that arrived before it. In the Explore phase, a buffer of 1,000 handed out its
+        first item when the 1,001st arrived, choosing among the first 1,000.
+      - >-
+        Take a buffer of $k = 2$ and follow items 0 to 5 by hand: which output is chosen as each item
+        arrives, and which items could it be chosen from? At which output could item 4 first come
+        out?
+      - >-
+        Counting from the moment item $p$ arrives is the right way in. If your answer is $p - k$,
+        look at the order of the two things that happen when item $p$ arrives, and at whether item
+        $p$ is among the items that choice is made from. If it is less than $p - k$, look at which
+        items are in the buffer when each output is chosen. If it is $p$ or more, look at whether
+        the buffer can let an item out ahead of items that arrived before it.
+      - >-
+        A lift leaves the ground floor every 5 minutes, at minutes 0, 5, 10 and so on, and the doors
+        close just as each one leaves. Someone who reaches the doors at minute 10, the moment a lift
+        leaves, misses it and takes the next, at minute 15: arriving at the moment of a departure is
+        too late for that departure.
+    notes: >-
+      $p - k$ lets item $p$ take the very output whose choice it arrives for, but that choice is made
+      before it enters the buffer. $p$ or $p + k - 1$ thinks of the buffer as holding items back,
+      not letting them forward. $k - 1$ is how far forward an item can move, not the place it moves
+      to. $p - k - 1$ counts one place too far. The checker compares values at whole numbers from 1
+      to 9.
+  derive-list-memory:
+    rungs:
+      - >-
+        How many squares does the list hold, and how many bytes does each one cost? Is there more
+        than one part to that cost?
+      - >-
+        E1.4 found that a list is a row of slots side by side in memory, each referring to a value,
+        that Python keeps each value as an object of its own, and that a list built by appending
+        keeps some spare slots at its end. M1.1 multiplied powers of ten by adding their exponents.
+      - >-
+        Try 1,000 squares first: how many bytes do their slots take, how many do the ints take, and
+        how many is that in all? Then scale up to $10^8$ squares.
+      - >-
+        If you counted $10^8$ squares, that is right. If your answer is near 0.8 GB or near 3.2 GB,
+        look at the cost of one square again: does it count both the slot in the list and the int
+        that the slot points to?
+      - >-
+        A shelf holds 2,000 books, each in a plastic sleeve. Each book weighs 400 g and each sleeve
+        50 g, so the shelf carries $2{,}000 \times 450$ g, about 900 kg: the weight of each item is
+        the item and what holds it, together.
+    notes: >-
+      0.8 GB counts only the slots, and 3.2 GB only the ints. 40 GB or 0.4 GB slips a power of ten.
+      Answers from 3.34 GB to 4.8 GB pass, since the check allows a factor of 1.2 either way, so
+      3.2 GB does not.
+  build-countdown:
+    rungs:
+      - >-
+        What must `__next__` give each time it is called, and what must it do once no numbers are
+        left? Where does a `Countdown` keep its place between one call and the next?
+      - >-
+        The Explore phase's `countdown` generator kept its place in `n`, handed out `n` and then made
+        it one less, and its loop ended when `n` reached 0. E1.7's methods read and change an
+        object's own names through `self`.
+      - >-
+        Try `Countdown(2)` by hand: what should three calls of `next` on it do, one after another,
+        and what is `self.n` before and after each call?
+      - >-
+        If your `__next__` reads `self.n` and makes it one less, that is the right frame. If
+        `Countdown(3)` gives `[2, 1, 0]`, look at whether the number is handed out before or after
+        `self.n` changes. If a loop over it never ends, look at what `__next__` does once the
+        numbers have run out, and remember that returning a value, `None` included, hands that value
+        out.
+      - >-
+        In a canteen, clean plates stand in a stack and each diner takes the top one. A diner first
+        looks whether any plate is left; if none is, they say so and take nothing. Otherwise they
+        lift the top plate off, which leaves the stack one plate shorter, and keep the plate they
+        lifted. So with three plates, three diners get the top, middle and bottom plates, and a
+        fourth is told there are none: each gets the plate that was on top before they took it.
+    notes: >-
+      Taking 1 off before saving the value gives 2, 1 and 0. Never raising `StopIteration` counts on
+      through 0 and the negative numbers: the starter prints `3 2 1 0` and `-1`, test_three shows
+      the values going below 1, and test_for_loop stops after 200 passes. Returning `None` at the
+      end hands out `None` as a value, which test_three shows as `[3, 2, 1, None, ...]`. An
+      `__iter__` that makes a new `Countdown` fails test_iter_is_self, though the starter already
+      has the right `__iter__`. Raising `StopIteration` only when `self.n < 0` hands out 0 first,
+      which test_three names, and testing `self.n == 0` never ends on `Countdown(-2)`, which
+      test_zero_and_one names.
+  debug-epochs:
+    rungs:
+      - >-
+        What does `seen_per_epoch("train.txt", 3)` give, and what is different about the epochs
+        whose counts are wrong?
+      - >-
+        The puzzle's file was used up by the first epoch's loop. The Explore phase found that a
+        generator is used up after one loop over it too, and that every call of a generator function makes
+        a new generator that starts from the top.
+      - >-
+        Run `seen_per_epoch("train.txt", 2)` with a `print(epoch, seen)` at the end of each epoch.
+        Which epoch reads the lines, and what does the other one see?
+      - >-
+        The count in each epoch and the generator function `examples` are both right. If the second
+        and third counts are 0, look at where `data` is made, set beside where each epoch's loop
+        starts. If test_streams_each_epoch fails though the counts look right, look at how many
+        times your code opens the file, and when. If test_one_line_at_a_time fails, look at whether
+        your code keeps an epoch's lines in a list.
+      - >-
+        A class reads a story aloud each morning, keeping its place with one bookmark. If the
+        bookmark is left at the last page after the first morning, the second morning's reading
+        starts at the end and reads nothing. Each morning's reading needs the book opened afresh at
+        its first page.
+    notes: >-
+      The bug is `data = examples(path)`, made once before the epochs, so the first epoch uses it up
+      and the others see nothing. Calling `examples(path)` in the epoch loop mends it. Reading
+      `list(examples(path))` once gives the right counts but opens the file once and holds all of
+      it, which test_streams_each_epoch and test_one_line_at_a_time catch. Moving `seen = 0` out
+      of the epoch loop hides the bug behind a running count, which test_streams_each_epoch
+      catches, since the file is opened only once. `len(list(examples(path)))` in each epoch opens
+      the file afresh but holds all its lines, which test_one_line_at_a_time catches.
+  build-pack:
+    rungs:
+      - >-
+        What does `pack` need to keep between one token and the next, and at what moment does it
+        hand a list out? What should happen to the tokens left when the documents run out?
+      - >-
+        The Explore phase's `batches` cut a stream into lists of one size, and the Derive phase
+        proved why it needs `batch = []` after each list it hands out.
+      - >-
+        Try `pack([[1, 2], [3]], 2, 0)` by hand: write out the stream of tokens with each end token
+        in place, then cut it into lists of 2. What is left over, and what should `pack` do with it?
+      - >-
+        If you go through each document's tokens and then its end token, adding them one at a time
+        to a list that you hand out when it is full, that is the right frame. If
+        test_leftovers_dropped fails, look at what your code does after the loop over the
+        documents. If test_new_lists fails, look at how the list starts again after one is handed
+        out. If test_endless_stream fails, look at whether anything waits for the documents to run
+        out before the first list is handed out.
+      - >-
+        A generator that yields every word of a stream of lines, in order, needs only two loops:
+        `for line in lines:`, and inside it `for w in line.split():` with `yield w`. It turns a
+        stream of lists into a stream of single items, and it never waits for the lines to run out,
+        so it works on an endless stream.
+    notes: >-
+      Handing out the leftover tokens as a short last list fails test_leftovers_dropped. Leaving out
+      the end token fails test_example and test_empty_documents. Collecting every token first, with
+      `tokens = tokens + doc + [end]`, fails test_endless_stream, which stops after 1,000 documents.
+      `seq.clear()` in place of `seq = []` fails test_new_lists and test_example. Cutting each
+      document separately, so that no list holds the end of one and the start of the next, fails
+      test_example and test_lengths_and_order.
+  build-interleave:
+    rungs:
+      - >-
+        How will `interleave` ask each stream for its next item, so that a list is not started again
+        and a file or a generator keeps its place? And how will it tell that a stream has run dry?
+      - >-
+        The Explore phase found that each call of `iter` on a list makes a new iterator that starts
+        at the first item, and that `next(it, default)` gives `default` when nothing is left. The
+        paragraph above the exercise explains `done = object()`.
+      - >-
+        Try `[[1, 2], "a"]` by hand: write down the iterators you would make, and what each turn asks
+        of each of them. When does the string's iterator run dry, and what should the turns after
+        that do?
+      - >-
+        If you make one iterator for each stream with `iter`, once, before the turns begin, that is
+        the right start. If test_none_is_a_value fails, look at the default you give `next`. If
+        test_example loses the items of a longer stream, look at what your code does when one stream
+        runs dry: does it stop everything? If a test runs too long, look at what ends your loop, and
+        at whether `iter` is called on a stream more than once.
+      - >-
+        A teacher takes questions from three groups in turn, one from each group in every round. A
+        group with no questions left is skipped from then on, and the class ends when no group has
+        a question. The teacher keeps a list of the groups still asking, and after each round keeps
+        only those that asked one.
+    notes: >-
+      `next(it, None)` with `if x is None` drops a stream at its first `None`, which
+      test_none_is_a_value names. Stopping at the first used-up stream, as `zip` does, fails
+      test_example, since an empty stream stops everything. Calling `iter(s)` afresh on every turn
+      hands out a list's first item again and again, which test_example shows as
+      `[1, 'a', 1, 'a', ...]`, and loses a generator's place. Building a list of every item first never finishes on an endless stream, which
+      test_endless stops after 1,000 items. Removing a used-up iterator from the list while looping
+      over that same list skips the next stream, so its items come out in a different order, which
+      test_one_pass_streams catches.
+novice:
+  - Why does a second loop over an open file see nothing, when a second loop over a list sees every item?
+  - What does a for loop actually call on the thing it loops over, and how does it know when to stop?
+  - When does the body of a generator function run, and where does it pause?
+  - How can a generator be endless without making the program hang?
+  - Why does a shuffle buffer much smaller than the data leave the data nearly in order?

@@ -46,7 +46,7 @@ concepts:
         `lo` stays good and `hi` bad, until the two are next to each other and `hi` is the first
         bad one. Each check halves the gap, so a gap of $N$ takes the smallest $k$ with $2^k$ at
         least $N$: 10 checks for a thousand, 20 for a million and 40 for $10^{12}$.
-      usedBy: [E3.2, E7.10, E10.3]
+      usedBy: [E3.2, E7.10, E10.3, E1.10]
     - id: E1.8/assertion
       name: Assertions
       summary: >-

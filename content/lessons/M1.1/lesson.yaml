@@ -21,7 +21,7 @@ concepts:
       summary: >-
         A quantity is a number times a unit, and units multiply, divide and cancel like symbols, so
         converting a unit means multiplying by a factor equal to one.
-      usedBy: [M1.4, E6.3, E7.1]
+      usedBy: [M1.4, E6.3, E7.1, M1.11]
     - id: M1.1/powers-of-ten
       name: Powers of ten
       summary: >-
@@ -33,13 +33,13 @@ concepts:
       summary: >-
         Checking a formula, or finding one, by requiring both sides to have the same units. It rules
         out formulas whose units do not match, but it cannot supply pure numbers such as 2π.
-      usedBy: [E6.3, E7.1, L6.2]
+      usedBy: [E6.3, E7.1, L6.2, M1.11]
     - id: M1.1/fermi-estimation
       name: Fermi estimation
       summary: >-
         Estimating a quantity by breaking it into factors you can guess, taking the geometric mean of
         your bounds, and judging the result by the factor it might be off by.
-      usedBy: [E1.4, E7.1, L6.10]
+      usedBy: [E1.4, E7.1, L6.10, M1.11]
       skill: 2
   used: []
 links:

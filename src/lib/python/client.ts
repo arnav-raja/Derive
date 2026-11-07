@@ -43,6 +43,12 @@ export type TraceFrame = {
   digests?: Record<string, number>;
   /** Each attribute, one by one, of an object that a name refers to, so that a question can ask for `self.count`. */
   attrs?: Record<string, Record<string, string>>;
+  /** The call's number, in the order the calls began, the main program's 0, so that one call can be followed from step to step. */
+  id?: number;
+  /** A generator's call, which pauses at each `yield` and goes on when it is asked for its next value. */
+  generator?: boolean;
+  /** At a generator's first step after it was asked for its next value, going on after its `yield`. */
+  resumed?: boolean;
 };
 export type TraceStep = {
   event: "line" | "return";
@@ -53,6 +59,12 @@ export type TraceStep = {
   returned?: string;
   /** The error that stopped the call, at a return that gave nothing back. */
   raised?: string;
+  /** The value a generator hands out at a `yield`, where it pauses. */
+  yielded?: string;
+  /** At the end of a generator's body, when the `next` that asked it raises `StopIteration`. */
+  ended?: boolean;
+  /** The generators paused at a `yield`, in the order they began, each with its line and its names. */
+  paused?: TraceFrame[];
 };
 export type TraceResult = { steps: TraceStep[]; error: PyError | null; output: string };
 

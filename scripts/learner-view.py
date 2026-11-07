@@ -127,7 +127,9 @@ def shown_after(e):
             said = f"{format_number(ans['value'])}{(' ' + ans['unit']) if ans.get('unit') else ''}"
         else:
             said = ""
-        return (f"\n[ONCE YOU HAVE ANSWERED {e['id']}, THE APP SHOWS: The answer, and why. Answer: {said}. {why}]\n")
+        # The app states the answer only for choices and numbers; an expression's comes in the explanation.
+        line = f"Answer: {said}. " if said else ""
+        return (f"\n[ONCE YOU HAVE ANSWERED {e['id']}, THE APP SHOWS: The answer, and why. {line}{why}]\n")
     if why:
         return f"\n[ONCE YOU HAVE SOLVED {e['id']}, THE APP SHOWS: Why. {why}]\n"
     return ""

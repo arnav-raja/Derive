@@ -1,0 +1,398 @@
+{
+  "version": 1,
+  "expressions": {
+    "derive-cosines": {
+      "source": "60be7ef808b34012",
+      "points": [
+        {
+          "a": "22/3",
+          "b": "7",
+          "C": "25/4"
+        },
+        {
+          "a": "25/3",
+          "b": "8",
+          "C": "-11"
+        },
+        {
+          "a": "23/5",
+          "b": "3/2",
+          "C": "-5/6"
+        },
+        {
+          "a": "18/7",
+          "b": "1",
+          "C": "8"
+        },
+        {
+          "a": "1",
+          "b": "37/7",
+          "C": "1"
+        },
+        {
+          "a": "6",
+          "b": "8",
+          "C": "-23/6"
+        }
+      ],
+      "values": [
+        "0.16763750672917176050",
+        "132.85435137937100634",
+        "14.130711031653817664",
+        "8.3605307861177675208",
+        "23.227008276740890334",
+        "173.93313661631154969"
+      ]
+    },
+    "derive-double": {
+      "source": "46300382093da565",
+      "points": [
+        {
+          "alpha": "-8"
+        },
+        {
+          "alpha": "14"
+        },
+        {
+          "alpha": "-5"
+        },
+        {
+          "alpha": "7/6"
+        },
+        {
+          "alpha": "-38/3"
+        },
+        {
+          "alpha": "21/4"
+        }
+      ],
+      "values": [
+        "-0.95765948032338464190",
+        "-0.96260586631356660198",
+        "-0.83907152907645245226",
+        "-0.69075813974987629273",
+        "0.97994877302077039747",
+        "-0.47553692799599253552"
+      ]
+    },
+    "derive-double#0": {
+      "source": "1b5422a25e02a852",
+      "points": [
+        {
+          "alpha": "-23"
+        },
+        {
+          "alpha": "8"
+        },
+        {
+          "alpha": "10/7"
+        },
+        {
+          "alpha": "-16"
+        },
+        {
+          "alpha": "-19/3"
+        },
+        {
+          "alpha": "16"
+        }
+      ],
+      "values": [
+        "-0.90178834764880918503",
+        "-0.28790331666506529478",
+        "0.28062939951435690209",
+        "-0.55142668124169055066",
+        "-0.10012798554657334794",
+        "0.55142668124169055066"
+      ]
+    },
+    "derive-rotation": {
+      "source": "d61834c45f8f5fb4",
+      "points": [
+        {
+          "x": "6",
+          "y": "37",
+          "theta": "-20"
+        },
+        {
+          "x": "1/4",
+          "y": "-36/5",
+          "theta": "-31/7"
+        },
+        {
+          "x": "2/7",
+          "y": "20",
+          "theta": "-5"
+        },
+        {
+          "x": "-37/3",
+          "y": "-31/6",
+          "theta": "-30/7"
+        },
+        {
+          "x": "-4",
+          "y": "7/3",
+          "theta": "33"
+        },
+        {
+          "x": "26/5",
+          "y": "-6",
+          "theta": "33/4"
+        }
+      ],
+      "values": [
+        "36.227466647802575128",
+        "6.8419471116032448631",
+        "-19.097439154558990445",
+        "9.8075588249706964525",
+        "-2.2800206846913854244",
+        "3.5297359866844881308"
+      ]
+    },
+    "derive-rotation#0": {
+      "source": "b708ef04451bf292",
+      "points": [
+        {
+          "x": "1",
+          "y": "6",
+          "theta": "-7/5"
+        },
+        {
+          "x": "-23/2",
+          "y": "18",
+          "theta": "-27/7"
+        },
+        {
+          "x": "13",
+          "y": "-38",
+          "theta": "14/3"
+        },
+        {
+          "x": "-20",
+          "y": "21/2",
+          "theta": "-33/7"
+        },
+        {
+          "x": "-3",
+          "y": "21/5",
+          "theta": "37/5"
+        },
+        {
+          "x": "-17/5",
+          "y": "-4/7",
+          "theta": "29/4"
+        }
+      ],
+      "values": [
+        "0.034353127412985451041",
+        "-21.129560153179914580",
+        "-11.249571302206999708",
+        "-19.980048329996569610",
+        "-0.85422551162243955145",
+        "-3.1230030876612299097"
+      ]
+    },
+    "derive-sum": {
+      "source": "86fd717677af3d30",
+      "points": [
+        {
+          "alpha": "-7",
+          "beta": "-8"
+        },
+        {
+          "alpha": "-21/4",
+          "beta": "10/3"
+        },
+        {
+          "alpha": "-22/5",
+          "beta": "-15"
+        },
+        {
+          "alpha": "-19",
+          "beta": "-22"
+        },
+        {
+          "alpha": "9/5",
+          "beta": "1"
+        },
+        {
+          "alpha": "-20",
+          "beta": "22"
+        }
+      ],
+      "values": [
+        "-0.75968791285882127385",
+        "-0.33901560454258937457",
+        "0.85229232386546360478",
+        "-0.98733927752382645823",
+        "-0.94222234066865815259",
+        "-0.41614683654714238700"
+      ]
+    },
+    "derive-sum#0": {
+      "source": "5e19ebb03370ec6b",
+      "points": [
+        {
+          "alpha": "14",
+          "beta": "-21/4"
+        },
+        {
+          "alpha": "-5",
+          "beta": "3/5"
+        },
+        {
+          "alpha": "-6",
+          "beta": "-15/4"
+        },
+        {
+          "alpha": "-11/5",
+          "beta": "-4"
+        },
+        {
+          "alpha": "-1",
+          "beta": "5/3"
+        },
+        {
+          "alpha": "-1/6",
+          "beta": "27/4"
+        }
+      ],
+      "values": [
+        "0.62472395375419241214",
+        "0.95160207388951595404",
+        "0.31951919362227363990",
+        "0.083089402817496578001",
+        "0.61836980306973700775",
+        "0.29566161820916113866"
+      ]
+    }
+  },
+  "runs": {
+    "build-cosine-schedule": {
+      "tests": [
+        {
+          "name": "test_start_and_end",
+          "description": "The rate is top at step 0 and bottom at the last step.",
+          "passed": false,
+          "message": "cosine_lr(10000, 10000, 0.001, 0) gave 0.000770151, not bottom, 0. At the last step the wheel has turned half a turn, math.pi radians, where the cosine is -1."
+        },
+        {
+          "name": "test_halfway",
+          "description": "Halfway through, the rate is halfway between top and bottom.",
+          "passed": false,
+          "message": "cosine_lr(5000, 10000, 0.001, 0) gave 0.000938791, not 0.0005, halfway between top and bottom."
+        },
+        {
+          "name": "test_never_rises",
+          "description": "The rate never goes up from one step to the next.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_cosine_shape",
+          "description": "It stays above a straight line from top to bottom for the first half, and below it for the second.",
+          "passed": false,
+          "message": "At step 5,100 of 10,000 the rate is 0.000936372, not below the straight line's 0.00049: a cosine schedule falls fast in the middle."
+        }
+      ],
+      "error": null,
+      "output": ""
+    },
+    "build-polar": {
+      "tests": [
+        {
+          "name": "test_distance",
+          "description": "The distance is the square root of x squared plus y squared.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_four_quarters",
+          "description": "The angle is right in every quarter of the plane.",
+          "passed": false,
+          "message": "polar(-1, 1) gave the angle -0.785398, not 3 pi / 4, about 2.35619. The angle -0.785398 points the opposite way: check which quarter of the plane (-1, 1) is in."
+        },
+        {
+          "name": "test_on_the_axes",
+          "description": "Points on the axes have the angles 0, pi / 2, pi (or -pi, the same angle) and -pi / 2.",
+          "passed": false,
+          "message": "polar(0, 2) stopped with a ZeroDivisionError, a division by 0: (0, 2) is on the second axis, where x is 0, and its angle is pi / 2."
+        },
+        {
+          "name": "test_round_trip",
+          "description": "Turning (r, 0) through the angle gives back the point.",
+          "passed": false,
+          "message": "polar(-5, 12) gave (13, -1.17601), and turning (13, 0) through -1.17601 gives (5, -12), not (-5, 12)."
+        }
+      ],
+      "error": null,
+      "output": ""
+    },
+    "build-rotate-about": {
+      "tests": [
+        {
+          "name": "test_example",
+          "description": "A quarter turn of (2, 1) about (1, 1) gives (1, 2).",
+          "passed": false,
+          "message": "rotate_about(2, 1, 1, 1, math.pi / 2) gave (0, 1), not (1, 2)."
+        },
+        {
+          "name": "test_centre_stays",
+          "description": "The centre itself does not move.",
+          "passed": false,
+          "message": "Turning the centre (1, 1) about itself gave (0, 0): the centre should stay where it is."
+        },
+        {
+          "name": "test_keeps_distance",
+          "description": "Every point keeps its distance from the centre.",
+          "passed": false,
+          "message": "rotate_about(2, 1, 1, 1, 0.5) gave (0.877583, 0.479426), 0.534775 from the centre, but (2, 1) is 1 from it."
+        },
+        {
+          "name": "test_quarter_and_half_turns",
+          "description": "Quarter and half turns about a centre land where they should.",
+          "passed": false,
+          "message": "rotate_about(5, -1, -2, 3, math.pi / 2) gave (4, 7), not (2, 10)."
+        },
+        {
+          "name": "test_turns_by_the_angle",
+          "description": "Seen from the centre, the point turns anticlockwise through exactly the angle.",
+          "passed": false,
+          "message": "Seen from the centre (-2, 3), rotate_about(5, -1, -2, 3, 0.7) turned the point through 0.36433 radians, not 0.7."
+        }
+      ],
+      "error": null,
+      "output": ""
+    },
+    "debug-rotate": {
+      "tests": [
+        {
+          "name": "test_quarter_turn",
+          "description": "A quarter turn takes (1, 0) to (0, 1).",
+          "passed": false,
+          "message": "rotate(1, 0, math.pi / 2) gave (0, 0), not (0, 1)."
+        },
+        {
+          "name": "test_three_one",
+          "description": "A quarter turn takes (3, 1) to (-1, 3).",
+          "passed": false,
+          "message": "rotate(3, 1, math.pi / 2) gave (-1, -1), not (-1, 3)."
+        },
+        {
+          "name": "test_keeps_distance",
+          "description": "Turning keeps a point's distance from the origin.",
+          "passed": false,
+          "message": "rotate(1, 0, 0.3) gave (0.955336, 0.282321), 0.996179 from the origin, but (1, 0) is 1 from it."
+        },
+        {
+          "name": "test_two_turns",
+          "description": "Turning by one angle and then by another is turning by their sum.",
+          "passed": false,
+          "message": "Turning (2, 1) by 0.4 and then by 0.9 gave (-0.261612, 0.719263), but turning it by 1.3 at once gave (-0.428561, -0.145444)."
+        }
+      ],
+      "error": null,
+      "output": ""
+    }
+  }
+}

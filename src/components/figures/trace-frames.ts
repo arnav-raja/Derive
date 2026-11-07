@@ -21,20 +21,32 @@ export function sameCall(prev: TraceStep | undefined, cur: TraceStep, index: num
   const before = prev?.stack[index];
   const now = cur.stack[index];
   if (!prev || !before || !now || before.function !== now.function) return false;
-  // A call that returned at the step before, at this depth, is gone: the frame here now is a new call.
-  return !(prev.event === "return" && index === prev.stack.length - 1 && index > 0);
+  // A call that returned at the step before, at this depth, is gone, and a generator that yielded
+  // there has paused: the frame here now is a new call, or the generator going on after its yield.
+  if (prev.event === "return" && index === prev.stack.length - 1 && index > 0) return false;
+  // A trace that numbers its calls tells apart a generator that left the stack at a yield and
+  // another call of the same function in its place.
+  return before.id === undefined || now.id === undefined || before.id === now.id;
+}
+
+/** A call by its number, among the calls in progress and the generators paused at the step. */
+function findCall(step: TraceStep, id: number): TraceFrame | undefined {
+  return step.stack.find((f) => f.id === id) ?? step.paused?.find((f) => f.id === id);
 }
 
 /**
- * The names of one frame that are new or changed since the step before. A name is changed when
- * its value is, or when it now refers to another list, dict, set or object, even one with an
- * equal value. A long value is cut where it is shown, so its fingerprint is compared as well.
+ * The frame at this depth as it stood at the step before: the same call at the same depth, or, for
+ * a generator going on after its yield, the generator as it paused.
  */
-export function frameMarks(prev: TraceStep | undefined, cur: TraceStep | undefined, index: number): Record<string, "new" | "changed"> {
+export function earlierFrame(prev: TraceStep | undefined, cur: TraceStep, index: number): TraceFrame | undefined {
+  if (!prev) return undefined;
+  if (sameCall(prev, cur, index)) return prev.stack[index];
+  const now = cur.stack[index];
+  return now?.resumed && now.id !== undefined ? findCall(prev, now.id) : undefined;
+}
+
+function marksAgainst(was: TraceFrame | undefined, now: TraceFrame): Record<string, "new" | "changed"> {
   const marks: Record<string, "new" | "changed"> = {};
-  const now = cur?.stack[index];
-  if (!cur || !now || !prev) return marks;
-  const was = sameCall(prev, cur, index) ? prev.stack[index] : undefined;
   const before = was?.variables ?? {};
   for (const [name, value] of Object.entries(now.variables)) {
     if (!(name in before)) marks[name] = "new";
@@ -43,6 +55,26 @@ export function frameMarks(prev: TraceStep | undefined, cur: TraceStep | undefin
     }
   }
   return marks;
+}
+
+/**
+ * The names of one frame that are new or changed since the step before. A name is changed when
+ * its value is, or when it now refers to another list, dict, set or object, even one with an
+ * equal value. A long value is cut where it is shown, so its fingerprint is compared as well.
+ */
+export function frameMarks(prev: TraceStep | undefined, cur: TraceStep | undefined, index: number): Record<string, "new" | "changed"> {
+  const now = cur?.stack[index];
+  if (!cur || !now || !prev) return {};
+  return marksAgainst(earlierFrame(prev, cur, index), now);
+}
+
+/**
+ * The names of a paused generator that changed since the step before: none, unless a list or
+ * object it refers to was changed in place while it waited.
+ */
+export function pausedMarks(prev: TraceStep | undefined, frame: TraceFrame): Record<string, "new" | "changed"> {
+  const was = prev && frame.id !== undefined ? findCall(prev, frame.id) : undefined;
+  return was ? marksAgainst(was, frame) : {};
 }
 
 /** Names as a list in words: "`a`", "`a` and `b`", "`a`, `b` and `c`". */
@@ -81,7 +113,7 @@ export function changesBetween(a: TraceStep, b: TraceStep | undefined): string {
   b.stack.forEach((frame, i) => {
     const marks = frameMarks(a, b, i);
     const same = sameCall(a, b, i);
-    const was = same ? a.stack[i] : undefined;
+    const was = earlierFrame(a, b, i);
     const names: string[] = [];
     for (const name of Object.keys(marks)) {
       const tag = frame.refs?.[name];
@@ -96,8 +128,14 @@ export function changesBetween(a: TraceStep, b: TraceStep | undefined): string {
     if (same) {
       if (!names.length) return;
       parts.push(assignments(frame, names, marks) + (i === 0 ? "" : ` in \`${callName(frame)}\``));
+    } else if (i > 0 && was) {
+      // A generator asked for its next value goes on after its yield, with the names it kept.
+      parts.push(`resumes \`${callName(frame)}\` after its \`yield\``);
+      if (names.length) parts.push(`${assignments(frame, names, marks)} in \`${callName(frame)}\``);
     } else if (i > 0) {
-      parts.push(names.length ? `calls \`${frame.function}\` with ${assignments(frame, names, marks, true)}` : `calls \`${frame.function}\``);
+      // A generator's body starts at the first `next`, not when the generator is made.
+      const verb = frame.generator ? "starts" : "calls";
+      parts.push(names.length ? `${verb} \`${frame.function}\` with ${assignments(frame, names, marks, true)}` : `${verb} \`${frame.function}\``);
     } else if (names.length) {
       parts.push(assignments(frame, names, marks));
     }
@@ -148,17 +186,42 @@ export function runningIn(step: TraceStep | undefined): string {
   return top ? (top.function === MAIN ? MAIN : callName(top)) : MAIN;
 }
 
-/** What a step that is not a line does, in words with code in backticks: a call returns, or an error stops it. */
+/**
+ * What a step that is not a line does, in words with code in backticks: a call returns, a
+ * generator yields a value and pauses, or reaches the end of its body, or an error stops it.
+ */
 export function returnText(step: TraceStep): string {
   const fn = runningIn(step);
-  if (step.raised) return fn === MAIN ? `the program stops with \`${step.raised}\`` : `\`${fn}\` stops with \`${step.raised}\``;
+  if (step.raised) {
+    if (fn === MAIN) return `the program stops with \`${step.raised}\``;
+    // close(), or a generator dropped while it is paused, ends it at its yield with GeneratorExit.
+    return step.raised === "GeneratorExit" ? `\`${fn}\` is closed while paused` : `\`${fn}\` stops with \`${step.raised}\``;
+  }
+  if (step.yielded !== undefined) return `\`${fn}\` yields \`${step.yielded}\` and pauses`;
+  if (step.ended) return `\`${fn}\` ends, so the \`next\` that asked it raises \`StopIteration\``;
   return fn === MAIN ? "the program has finished" : `\`${fn}\` returns \`${step.returned ?? "None"}\``;
 }
 
-/** What the call running at a step is doing, for its frame: running, returning a value, or stopping with an error. */
+/**
+ * What the call running at a step is doing, for its frame: running, returning a value, yielding
+ * one, ending, or stopping with an error.
+ */
 export function frameStatus(step: TraceStep | undefined): string {
   if (step?.event !== "return") return "running";
-  return step.raised ? `stopping with \`${step.raised}\`` : `returning \`${step.returned ?? "None"}\``;
+  if (step.raised) return `stopping with \`${step.raised}\``;
+  if (step.yielded !== undefined) return `yielding \`${step.yielded}\``;
+  if (step.ended) return "ending, with nothing more to yield";
+  return `returning \`${step.returned ?? "None"}\``;
+}
+
+/** What a call below the running one is doing: waiting for the call it made to return, or for the generator it asked to give its next value. */
+export function waitingText(next: TraceFrame): string {
+  return next.generator ? `waiting for \`${callName(next)}\` to give its next value` : `waiting for \`${callName(next)}\` to return`;
+}
+
+/** Where a paused generator waits, for its frame. */
+export function pausedStatus(frame: TraceFrame): string {
+  return `paused at its \`yield\` on line ${frame.line}`;
 }
 
 /** The heading over one frame of the stack. */

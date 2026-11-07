@@ -1,0 +1,460 @@
+misconceptions:
+  - id: radians-as-turns
+    belief: An angle in radians counts turns, or is the arc divided by the whole circle.
+    why: >-
+      A radian is the arc divided by the radius, not by the circumference, so a whole turn is $2\pi$
+      radians, not 1. Rolling 1 m on a wheel of radius 0.5 m turns it $\frac{1}{0.5} = 2$ radians,
+      which is $\frac{2}{2\pi} \approx 0.32$ of a turn.
+    cue: >-
+      The learner answers about 0.32 in explore-wheel, the number of turns, or 0.25 for the radians
+      in a quarter turn in its first review.
+  - id: degrees-in-python
+    belief: Python's `math.sin` and `math.cos` take degrees, so `math.sin(30)` is $\frac{1}{2}$.
+    why: >-
+      They read radians. `math.sin(30)` is the sine of 30 radians, about 4.77 turns, which ends near
+      the bottom of the circle, so it is close to $-1$. An angle in degrees must be converted first,
+      with `math.radians` or by multiplying by $\frac{\pi}{180}$, inside the call.
+    cue: >-
+      The learner chooses `0.5` or `0.49999999999999994` in explore-python-sine, converts the result
+      instead of the angle in its review, or writes `math.cos(180 * step / total)` in
+      build-cosine-schedule.
+  - id: convert-twice
+    belief: Every angle should go through `math.radians` before `math.sin` or `math.cos` sees it.
+    why: >-
+      `math.radians` turns degrees into radians. An angle that is already in radians, such as
+      `math.pi / 2`, comes out about 57 times too small, so a quarter turn becomes a turn of about
+      $1.6°$.
+    cue: The learner adds `math.radians` inside `rotate` in debug-rotate, and the tests report a quarter turn that barely moves the point.
+  - id: halve-the-sine
+    belief: Halving an angle halves its sine, so $\sin 30° = \frac{1}{2}\sin 60° = \frac{\sqrt{3}}{4}$.
+    why: >-
+      The sine is a coordinate of a point on a circle, not in proportion to the angle. The point at
+      $30°$ is the point at $60°$ reflected in the line $y = x$, which swaps the coordinates, so
+      $\sin 30° = \cos 60° = \frac{1}{2}$.
+    cue: The learner chooses $\frac{\sqrt{3}}{4}$ in explore-thirty.
+  - id: sine-cosine-swapped
+    belief: The sine is the first coordinate of the point and the cosine the second.
+    why: >-
+      The point at angle $\theta$ is $(\cos\theta, \sin\theta)$: the cosine is the distance across
+      and the sine the height. At $0$ the point is $(1, 0)$, so $\cos 0 = 1$ and $\sin 0 = 0$.
+    cue: >-
+      The learner chooses $\frac{\sqrt{3}}{2}$ for $\sin 30°$ in explore-thirty, $\frac{1}{2}$ for
+      $\cos 30°$ in its review, or $\left(-\frac{1}{2}, \frac{\sqrt{3}}{2}\right)$ in
+      explore-hundred-fifty.
+  - id: no-negative-cosines
+    belief: A cosine or a sine is a length, so it is never negative.
+    why: >-
+      They are coordinates, and coordinates are negative to the left of the second axis and below
+      the first. Past a quarter turn the point is left of the second axis, so the cosine is
+      negative there; a clockwise turn of less than a half turn, a negative angle, gives a negative
+      sine.
+    cue: >-
+      The learner chooses $\left(\frac{\sqrt{3}}{2}, \frac{1}{2}\right)$ in explore-hundred-fifty,
+      answers 0.8 for $\cos\theta$ in the review of explore-sine-of-one, or says that an angle cannot
+      be negative.
+  - id: coordinates-add-to-one
+    belief: $\cos\theta + \sin\theta = 1$, so $\sin\theta = 1 - \cos\theta$.
+    why: >-
+      Their squares add to 1, by Pythagoras' theorem, since the point is at distance 1 from the
+      centre. The coordinates themselves need not: at $45°$ each is about 0.707, and they add to
+      about 1.414.
+    cue: The learner chooses $0.4597$ in explore-sine-of-one.
+  - id: square-for-sine
+    belief: $1 - \cos^2\theta$ is the sine itself.
+    why: >-
+      $1 - \cos^2\theta$ is $\sin^2\theta$, the square of the sine. For 1 radian it is 0.7081, and
+      the sine is its square root, 0.8415, with the sign that the quarter of the plane gives.
+    cue: The learner chooses $0.7081$ in explore-sine-of-one.
+  - id: small-angle-any-unit
+    belief: The sine of a small angle is close to the angle in any unit.
+    why: >-
+      For a small angle the height of the point is close to the length of the arc, and the arc's
+      length is the angle only in radians. In degrees, $\sin 1°$ is about 0.0175, not 1.
+    cue: The learner chooses 0.0175 or 57.3 in explore-small-angle, or "About 1" for $\sin 1°$ in its review.
+  - id: quarter-turn-swaps
+    belief: A quarter turn swaps the two coordinates, so $(3, 1)$ goes to $(1, 3)$.
+    why: >-
+      Swapping the coordinates reflects in the line $y = x$, which turns the drawing over. A quarter
+      turn anticlockwise sends "to the right" to "up" and "up" to "to the left", so $(x, y)$ goes to
+      $(-y, x)$.
+    cue: >-
+      The learner chooses $(1, 3)$ in explore-quarter-turn, or $(\sin\theta, \cos\theta)$ in
+      explore-second-axis.
+  - id: turn-by-scaling
+    belief: Turning a point through $\theta$ multiplies its coordinates by $\cos\theta$, or adds $\theta$ to each of them.
+    why: >-
+      Multiplying both coordinates by $\cos\theta$ keeps the point on its own line through the
+      origin, and brings it nearer the origin unless $\cos\theta$ is 1 or $-1$. A turn keeps the
+      point's distance and, unless it is a whole or a half turn, moves it off that line, so the two
+      agree only for whole and half turns: a quarter turn of $(1, 0)$ should give $(0, 1)$, not
+      $(0, 0)$. The turned point is $x$ along the turned first axis and $y$ along the turned second.
+    cue: The learner answers `x*cos(theta)` in derive-rotation, or agrees with the friend's plan in the Explain phase.
+  - id: sum-of-cosines
+    belief: $\cos(\alpha + \beta) = \cos\alpha + \cos\beta$.
+    why: >-
+      Turning twice adds the angles, not the coordinates. At $\alpha = \beta = 0$ the left side is 1
+      and the right side 2. Turning $(\cos\alpha, \sin\alpha)$ through $\beta$ by the rule gives the
+      cosine of the sum.
+    cue: >-
+      The learner answers `cos(alpha) + cos(beta)` in derive-sum, or chooses "Yes: turning twice adds
+      the angles, so it adds the cosines too" in its review.
+  - id: lost-minus
+    belief: The rule for turning, and the cosine of a sum, have a plus where they have a minus.
+    why: >-
+      The minus comes from the turned second axis, $(-\sin\theta, \cos\theta)$: going $y$ along it
+      moves $-y\sin\theta$ across. With a plus the point turns clockwise, by $-\theta$.
+    cue: >-
+      The learner answers `x*cos(theta) + y*sin(theta)` in derive-rotation, or
+      `cos(alpha)*cos(beta) + sin(alpha)*sin(beta)` in derive-sum, or swaps the signs of the sine
+      terms in debug-rotate.
+  - id: one-name-at-a-time
+    belief: Setting `x` and then working out `y` from it is the same as working out both at once.
+    why: >-
+      After `x = ...` the name `x` holds the new value, so a later line that reads `x` gets the new
+      one. When each new value depends on the old values, work all of them out first, in one
+      `return` or with new names, and only then replace anything.
+    cue: The learner swaps the two assignment lines in debug-rotate, and the tests report $(-1, 1)$ for a quarter turn of $(1, 0)$.
+  - id: forget-to-move-back
+    belief: Turning about a centre is turning the point less the centre.
+    why: >-
+      Taking the centre away moves the whole picture so that the centre sits at the origin. After
+      the turn the picture must be moved back, by adding the centre, or every answer is off by the
+      centre itself.
+    cue: >-
+      In build-rotate-about, test_centre_stays reports the centre moved to the origin, or to the point
+      opposite it across the origin.
+  - id: angle-from-slope
+    belief: The angle of the point $(x, y)$ is `math.atan(y / x)`.
+    why: >-
+      $(1, 1)$ and $(-1, -1)$ have the same slope, so a function given only the slope cannot tell
+      them apart: `math.atan` gives angles between $-\frac{\pi}{2}$ and $\frac{\pi}{2}$ only, and
+      dividing fails when $x$ is 0. `math.atan2(y, x)` is given both, so it sees the quarter of the
+      plane.
+    cue: >-
+      In build-polar, test_on_the_axes says the program stopped with a `ZeroDivisionError` for a
+      point on the second axis, or test_four_quarters says an angle points the opposite way while
+      $(2, 0)$ gets the angle 0.
+  - id: exact-float-pi
+    belief: "`math.sin(math.pi)` is exactly 0."
+    why: >-
+      `math.pi` is the float nearest to $\pi$, short of it by about $1.22 \times 10^{-16}$, and the
+      sine of an angle that close to $\pi$ is that tiny gap, not 0. Floats are compared within a
+      tolerance.
+    cue: The learner predicts `0.0 True` in breakit-sine-pi.
+  - id: straight-schedule
+    belief: A cosine schedule lowers the rate by the same amount at every step.
+    why: >-
+      The rate follows the height of a mark on a wheel turning at a steady speed. The mark moves
+      almost sideways at first and last, so the rate falls slowly then, and fastest in the middle. A
+      quarter of the way through, about 85% is left, not 75%.
+    cue: The learner chooses 0.00075 in the puzzle, or writes a straight line in build-cosine-schedule, which test_cosine_shape reports.
+  - id: pythagoras-for-all
+    belief: $c^2 = a^2 + b^2$ holds for every triangle.
+    why: >-
+      It holds when the angle between $a$ and $b$ is a right angle. Otherwise the third side is
+      $c^2 = a^2 + b^2 - 2ab\cos C$: shorter than Pythagoras gives when the angle is less than a
+      right angle, and longer when it is more.
+    cue: >-
+      The learner answers `a**2 + b**2` in derive-cosines, or chooses "The same, since Pythagoras
+      holds for every triangle" in its review.
+  - id: four-sides-square
+    belief: A shape with four equal sides is a square.
+    why: >-
+      A rhombus has four equal sides and is not a square unless its corners are right angles. In the
+      proof each corner of the middle shape is $180°$ less the two smaller angles of a triangle, which
+      add up to $90°$.
+    cue: >-
+      The learner chooses "Four equal sides always make a square, whatever its corners" in the review
+      of derive-pythagoras, or gives line 1 the rule for the area of a square.
+
+exercises:
+  derive-pythagoras:
+    rungs:
+      - >-
+        For each line, what does it conclude, and what would you need to know to be sure of it?
+        Which lines above, or which parts of the picture, does it lean on?
+      - >-
+        The Explore phase used the fact that the angles of a triangle add up to $180°$ to find the
+        point at $60°$. M1.2 multiplied out brackets term by term, and took the same amount from both
+        sides of an equation.
+      - >-
+        Take $a = 3$ and $b = 4$, as in the figure, so that the middle shape has four sides of length
+        5. Work through the lines with those numbers, and for each one say what you used to get it.
+        What had to be true of the middle shape before its area could be $5^2$?
+      - >-
+        If your rules for lines 2, 3 and 4 are right, the trouble is in line 1 or in the last three.
+        For each of those, say in your own words what it adds to the line above before you look at
+        the menu, and then find the rule whose label says exactly that.
+      - >-
+        A rectangle $p$ by $q$, cut along a diagonal, makes two triangles, each with a right angle
+        between sides $p$ and $q$. That each has area $\frac{1}{2}pq$ comes from the rule for one
+        shape, Area of a triangle. That $pq = \frac{1}{2}pq + \frac{1}{2}pq$ comes from Areas add,
+        since the two triangles are the pieces that make up the rectangle.
+    notes: >-
+      Line 1 is the one most often missed: it needs Angle sums, since at each corner of the middle
+      shape a straight line's $180°$ holds the corner and the two smaller angles of a triangle, which
+      add up to $90°$. Areas add for lines 2 to 4 mistakes one shape's area for a sum; each of those
+      lines works out one area from its own shape's rule. Same angles is never needed. Multiply out
+      and Both sides are easily swapped: line 6 multiplies out $(a + b)^2$, and line 7 takes $2ab$
+      from both sides.
+  derive-rotation:
+    rungs:
+      - >-
+        Going $x$ towards $(\cos\theta, \sin\theta)$ moves you how far across, along the first axis?
+        And going $y$ towards $(-\sin\theta, \cos\theta)$?
+      - >-
+        The Explore phase found that a turn through $\theta$ takes $(1, 0)$ to
+        $(\cos\theta, \sin\theta)$ and $(0, 1)$ to $(-\sin\theta, \cos\theta)$, and that a quarter
+        turn takes $(3, 1)$ to $(-1, 3)$.
+      - >-
+        Try a quarter turn, with $\cos\theta = 0$ and $\sin\theta = 1$, and the point $(3, 1)$. The
+        turned point is $(-1, 3)$. Does your expression give $-1$?
+      - >-
+        For a quarter turn of $(3, 1)$: if your expression gives $-1$, it is right there, so try a
+        half turn as well, which takes $(3, 1)$ to $(-3, -1)$. If it gives 0 or 1, the move of 3
+        along the turned first axis, towards $(0, 1)$, rightly adds nothing across; look at what the
+        move of 1 along the turned second axis adds across, and with which sign. If it gives 3,
+        check which coordinate of each direction your expression takes.
+      - >-
+        Going 2 towards $(0.6, 0.8)$ and then 5 towards $(1, 0)$ ends at
+        $(2 \times 0.6 + 5 \times 1,\; 2 \times 0.8 + 5 \times 0) = (6.2, 1.6)$: each coordinate of
+        the end collects that coordinate of each direction, times the distance gone.
+    notes: >-
+      `x*cos(theta) + y*sin(theta)` has the wrong sign on the second move, which is a turn the other
+      way. `x*cos(theta)` alone forgets the second move. `x*cos(theta) - y*cos(theta)` takes the
+      wrong coordinate of the second direction. `x*sin(theta) - y*cos(theta)` mixes up the two
+      coordinates. The checker accepts any equal expression, comparing values at sample points.
+  derive-sum:
+    rungs:
+      - >-
+        Which point is $(1, 0)$ turned through $\alpha$? What does the rule for turning give when you
+        turn that point on through $\beta$, and which coordinate of it is $\cos(\alpha + \beta)$?
+      - >-
+        The rule just found takes $(x, y)$ to
+        $(x\cos\theta - y\sin\theta,\; x\sin\theta + y\cos\theta)$, and the Explore phase found that
+        turning by one angle and then another is turning by their sum.
+      - >-
+        Try $\alpha = \beta = 45°$: the two turns make a quarter turn, so $\cos(\alpha + \beta) = 0$.
+        With $\cos 45° = \sin 45° = \frac{1}{\sqrt{2}}$, does your expression give 0?
+      - >-
+        At $\alpha = \beta = 45°$: if your expression gives 0, that check is passed, so try
+        $\alpha = 30°$ and $\beta = 60°$ as well, which also make a quarter turn. If it gives 1 or
+        $\frac{1}{2}$, it is built from the right kind of pieces, a cosine or sine of $\alpha$ times
+        one of $\beta$; check that it is the first coordinate of the turned point and not the
+        second, that both of the rule's terms are there, and that the sign between them is the
+        rule's. If it gives $\sqrt{2}$, it has both cosines in it, as it should; compare what turning
+        twice adds with what your expression adds.
+      - >-
+        Turning $(3, 1)$ through a quarter turn, with $\cos 90° = 0$ and $\sin 90° = 1$, the rule
+        gives $(3 \times 0 - 1 \times 1,\; 3 \times 1 + 1 \times 0) = (-1, 3)$, and turning that
+        through another quarter turn gives $(0 - 3,\; -1 + 0) = (-3, -1)$. One half turn, with
+        $\cos 180° = -1$ and $\sin 180° = 0$, gives
+        $(3 \times (-1) - 1 \times 0,\; 3 \times 0 + 1 \times (-1)) = (-3, -1)$: the same point,
+        since two turns are one turn by their sum.
+    notes: >-
+      `cos(alpha)*cos(beta) + sin(alpha)*sin(beta)` is $\cos(\alpha - \beta)$, a turn the wrong
+      way. `cos(alpha) + cos(beta)` treats the cosine as if it added. `cos(alpha)*cos(beta)` drops
+      the second term. `sin(alpha)*cos(beta) + cos(alpha)*sin(beta)` is the sine of the sum, the
+      other coordinate. An answer written with `cos(alpha + beta)` is turned away for its form.
+  derive-double:
+    rungs:
+      - What does the formula for $\cos(\alpha + \beta)$ become when both angles are $\alpha$, and what is left to replace?
+      - >-
+        The step before, "Two turns as one", found
+        $\cos(\alpha + \beta) = \cos\alpha\cos\beta - \sin\alpha\sin\beta$, and the Explore phase
+        found $\cos^2\alpha + \sin^2\alpha = 1$ for every angle.
+      - >-
+        Try $\alpha = 60°$, where $\cos 2\alpha = \cos 120° = -\frac{1}{2}$ and
+        $\cos 60° = \frac{1}{2}$. What does your expression give?
+      - >-
+        At $60°$: if your expression gives $-\frac{1}{2}$, it is right there. If it gives
+        $-\frac{3}{4}$ or $\frac{1}{2}$, you have rightly put $\beta = \alpha$ and replaced
+        $\sin^2\alpha$; look at the sign of each term that the replacement brought in. If it gives 0,
+        look at whether each cosine in it is squared.
+      - >-
+        $2 - \sin^2\alpha$ can be written with $\cos\alpha$ alone: replacing $\sin^2\alpha$ by
+        $1 - \cos^2\alpha$ gives $2 - (1 - \cos^2\alpha) = 2 - 1 + \cos^2\alpha = 1 + \cos^2\alpha$,
+        and at $\alpha = 0$ both are 2.
+    notes: >-
+      `cos(alpha)**2 - sin(alpha)**2` is equal but still has $\sin\alpha$, so the form refuses it.
+      `1 - 2*cos(alpha)**2` has the signs reversed. `cos(alpha)**2 - 1` lost a $\cos^2\alpha$ when
+      a bracket was dropped. `2*cos(alpha) - 1` forgets the squares.
+  derive-cosines:
+    rungs:
+      - >-
+        How far across and how far up is it from $(a, 0)$ to $(b\cos C, b\sin C)$? What does
+        Pythagoras' theorem do with those two distances?
+      - >-
+        Pythagoras' theorem gives the distance between two points as
+        $\sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}$, as found above; M1.2 multiplied out $(a + b)^2$ term
+        by term, and the Recall phase did the same for $(x - a)^2$; and the Explore phase found
+        $\cos^2 C + \sin^2 C = 1$ for every angle.
+      - >-
+        Try a right angle, where $\cos C = 0$: the answer should be Pythagoras' $a^2 + b^2$. Then try
+        $a = b = 1$ and $C = 60°$, a triangle with three equal sides, where $c^2$ must be 1. Does your
+        expression give both?
+      - >-
+        Use the two checks. If your expression gives $a^2 + b^2$ at a right angle but not 1 for
+        $a = b = 1$ and $C = 60°$, its squares are right, and the trouble is the term with
+        $\cos C$: is it there, with which sign, and how many times does multiplying out
+        $(b\cos C - a)^2$ give it? If it fails at the right angle too, which of its terms should be 0
+        when $\cos C = 0$?
+      - >-
+        The point $(\cos\theta + \sin\theta,\; \sin\theta - \cos\theta)$ is at squared distance
+        $(\cos\theta + \sin\theta)^2 + (\sin\theta - \cos\theta)^2$ from the origin, which multiplies
+        out to $\cos^2\theta + 2\cos\theta\sin\theta + \sin^2\theta + \sin^2\theta -
+        2\sin\theta\cos\theta + \cos^2\theta$. The middle terms cancel, and the rest is
+        $2(\cos^2\theta + \sin^2\theta) = 2$, whatever $\theta$ is.
+    notes: >-
+      `a**2 + b**2` is Pythagoras' theorem, right only for a right angle. `+ 2*a*b*cos(C)` has the
+      middle term's sign wrong. `a**2 + b**2 - 2*a*b` forgets the cosine and is right only at
+      $C = 0$. `a**2 + b**2 - a*b*cos(C)` loses the 2 from multiplying out. The squares written out,
+      `(b*cos(C) - a)**2 + (b*sin(C))**2`, are right but keep $\sin C$, so the form refuses them.
+  derive-degree:
+    rungs:
+      - What fraction of a whole turn is $1°$, and how long is the whole circle round the Earth's centre at the Earth's radius?
+      - >-
+        The Explore phase found that an angle of $\theta$ radians cuts an arc of length $r\theta$
+        from a circle of radius $r$, and that $1°$ is $\frac{\pi}{180}$ radians, about
+        $\frac{1}{57}$.
+      - >-
+        Try a quarter turn first: from the pole to the equator is $90°$. How long is that arc,
+        roughly, and what is one ninetieth of it?
+      - >-
+        If your answer is near 6,371 km, you have rightly taken the arc as the radius times the
+        angle; check what $1°$ is in radians. If it is near 365,000 km, 6,371 and 57 are the right
+        numbers; check which way the 57 should go, since a degree is much less than a radian. If it
+        is near 40,000 km, you have rightly found the whole circle; what part of it does $1°$ take?
+      - >-
+        A wheel of radius 30 cm turns through $10°$. Its rim moves
+        $30 \times 10 \times \frac{\pi}{180} \approx \frac{300}{57} \approx 5$ cm.
+    notes: >-
+      6,371 uses 1 radian for $1°$. About 365,000 multiplies by 57 instead of dividing. About 40,000
+      is the whole circumference. Answers within a factor of 1.2 of 111 km are accepted.
+  debug-rotate:
+    rungs:
+      - >-
+        Run it. A quarter turn should take $(1, 0)$ to $(0, 1)$: which coordinate of what it gives is
+        wrong? What could you print inside `rotate`, and where, to see that coordinate go wrong?
+      - >-
+        M1.4's `roots` gave back two values at once from one `return`, separated by a comma. The
+        Derive phase's rule works out both new coordinates from the old ones.
+      - >-
+        Work it by hand for a quarter turn, with `c` as 0 and `s` as 1, and the point (1, 0). What is
+        `x` after the first assignment, and what does the second assignment then make `y`?
+      - >-
+        If a quarter turn of $(1, 0)$ gives about $(0, 0)$ or $(-1, 1)$, `c` and `s` are right, and
+        the trouble is in the two assignment lines: which value of `x` and of `y` does each of them
+        read? If it gives $(0, -1)$, each coordinate is made from the right values; look at the signs
+        of the terms with `s`. If the point barely moves, look at what happens to `angle` before
+        `math.cos` sees it.
+      - >-
+        To swap the values of `a` and `b`, writing `a = b` and then `b = a` leaves both holding the
+        old `b`, since the second line reads the new `a`. `a, b = b, a` works out both new values from
+        the old ones before it sets either.
+    notes: >-
+      The bug left in sends $(1, 0)$ to about $(0, 0)$ and fails all four tests. Swapping the two
+      assignment lines sends $(1, 0)$ to $(-1, 1)$ and fails all four as well. Swapping the signs of
+      the sine terms turns clockwise: distances are kept and two turns still add, so
+      test_keeps_distance and test_two_turns pass, and a quarter turn sends $(1, 0)$ to $(0, -1)$.
+      Adding `math.radians` makes every angle about 57 times too small: the same two tests pass, and
+      a quarter turn barely moves $(1, 0)$. Working out both coordinates in one `return`, or into new
+      names before `x` and `y` change, mends it, and so does keeping the old `x` in a name of its
+      own.
+  build-rotate-about:
+    rungs:
+      - >-
+        Where should the centre itself be after the turn? What does your function give for
+        `rotate_about(1, 1, 1, 1, 1.0)`?
+      - >-
+        M1.3 composed functions and undid a function with its inverse. `rotate` turns about the
+        origin only, so the centre has to be at the origin while it turns.
+      - >-
+        Work the prompt's example by hand: the point $(2, 1)$, the centre $(1, 1)$ and a quarter
+        turn. Where is the point after each of the three moves, and does the last one land on
+        $(1, 2)$?
+      - >-
+        Look at where test_centre_stays says the centre went. If it went to the origin, the first
+        move and the turn are right; what is left to do to the turned point? If it went to the point
+        opposite it across the origin, the turn is right; compare your move back with your first
+        move. If it went anywhere else, look at what your function does with the centre before it
+        turns.
+      - >-
+        To scale a point by 2 away from the centre (1, 1) instead of from the origin, take the centre
+        away, scale, and add the centre back: (3, 2) becomes (2, 1), then (4, 2), then (5, 3).
+    notes: >-
+      The starter gives the point back unchanged, which keeps the centre and every distance, so it
+      fails only test_example, test_quarter_and_half_turns and test_turns_by_the_angle. Leaving out the move back sends the centre
+      to the origin, and moving back the wrong way sends it to $(-cx, -cy)$. Ignoring the centre, or
+      adding it before the turn and taking it away after, turns about the wrong point; every one of
+      these fails every test. Catching `rotate(x - cx, y - cy, angle)` in two names and adding the
+      centre to each is right, and so is writing the turn out in full instead of calling `rotate`.
+  build-polar:
+    rungs:
+      - >-
+        How far is $(3, 4)$ from the origin, and through what angle must $(1, 0)$ turn to point at
+        it? Which of the two do you need a new function for?
+      - >-
+        Pythagoras' theorem gives a point's distance from the origin, and the paragraph above the
+        exercise introduced `math.hypot(x, y)` and `math.atan2(y, x)`, which takes $y$ first.
+      - >-
+        Try $(-1, -1)$: it is $\sqrt{2}$ from the origin, and its angle is $-\frac{3\pi}{4}$, three
+        eighths of a turn clockwise. What does your function give for it?
+      - >-
+        If test_distance passes, your distance is right. If test_on_the_axes says $(2, 0)$ gave the
+        angle 1.5708, which is $\frac{\pi}{2}$, look at the order in which your function hands $x$
+        and $y$ on. If it stopped with a `ZeroDivisionError`, look at what your angle divides by, and
+        at what a function given only $\frac{y}{x}$ can know about the point. If test_four_quarters
+        says an angle points the opposite way, its slope is right but its quarter is not: which of
+        the inputs your function uses can tell the quarters apart?
+      - >-
+        Going the other way, from a distance and an angle to the point: distance 2 and angle
+        $\frac{2\pi}{3}$, a third of a turn, give
+        $\left(2\cos\frac{2\pi}{3},\; 2\sin\frac{2\pi}{3}\right) = \left(2 \times \left(-\frac{1}{2}\right),\; 2 \times \frac{\sqrt{3}}{2}\right) = (-1, \sqrt{3})$,
+        left of the second axis and above the first, as a third of a turn should be.
+    notes: >-
+      `math.atan(y / x)` gets the distance right but gives the opposite angle for points left of the
+      second axis, which test_four_quarters and test_round_trip report, and divides by 0 for
+      $(0, 2)$, which test_on_the_axes reports in words. `math.atan2(x, y)` has its arguments the
+      wrong way round and gives $\frac{\pi}{2}$ for $(2, 0)$. Returning $x^2 + y^2$ as the distance
+      fails test_distance and test_round_trip only. An angle in degrees fails every test about the
+      angle, and test_four_quarters names degrees. `math.sqrt(x**2 + y**2)` is as good as
+      `math.hypot(x, y)`, and $-\pi$ for $(-2, 0)$ is accepted.
+  build-cosine-schedule:
+    rungs:
+      - >-
+        Through what angle has the wheel turned at step 0, halfway, and at the last step? What
+        fraction of the way from `bottom` to `top` is the rate at each?
+      - >-
+        The puzzle's wheel turns through half a turn, $\pi$ radians, over the run, and the rate is
+        the fraction $\frac{1 + \cos\theta}{2}$ of the way from the bottom rate up to the top.
+        `math.cos` reads radians.
+      - >-
+        Try the halfway step, where the wheel has turned a quarter turn and the cosine is 0. What
+        should the rate be for `top` 0.003 and `bottom` 0.0003, and what does yours give?
+      - >-
+        If the first rate is `bottom`, look at the sign in front of the cosine. If it is `top`, the
+        start is right. Then, if the last rate is 0 although `bottom` is not, look at where `bottom`
+        comes into your formula; if it is any other number but `bottom`, work out the angle your code
+        turns through at the last step and compare it with half a turn, $\pi$ radians. If
+        test_never_rises fails, the rate came back up: how far round does your wheel turn over the
+        run, and in which unit is the angle when `math.cos` reads it?
+      - >-
+        A rate that falls along a straight line from `top` to `bottom` is
+        `bottom + (top - bottom) * (1 - step / total)`: the fraction
+        $1 - \frac{\text{step}}{\text{total}}$ of the way from `bottom` up to `top`.
+    notes: >-
+      `math.cos(step / total)` turns the wheel through 1 radian only, so the rate ends at about
+      0.00077 of a top of 0.001, and test_start_and_end, test_halfway and test_cosine_shape report
+      it.
+      `math.cos(180 * step / total)` reads degrees as radians, so the rate goes up and down, and
+      test_never_rises reports the first rise. $1 - \cos\theta$ starts at `bottom` and climbs.
+      Leaving out `bottom` passes the checks whose bottom is 0 and fails those whose bottom is
+      0.0003. `top - (top - bottom) * (1 - math.cos(angle)) / 2` is equal and passes.
+
+novice:
+  - Why measure an angle by an arc at all, when degrees are so convenient?
+  - How can the cosine of an angle be negative, if it is a length in a triangle?
+  - Why is there a minus sign in the rule for turning a point?
+  - Why does turning twice add the angles, but not the cosines?
+  - Why does `math.sin(math.pi)` not give exactly 0?

@@ -1,0 +1,27 @@
+The test of understanding is explaining it simply to someone who was not there. Your friend has written loops, functions, lists, dicts and sets with you, from E1.1 to E1.4, and has just told you two things: that a set finds a key at once because the computer checks every key at the same moment, and that sorting a million losses must take about a million times a million steps.
+
+<Exercise id="explain-algorithms" />
+
+## Where this leads
+
+Two ideas carry well beyond sorting. Splitting a problem in halves, solving each half the same way and joining the answers, makes a problem of size $n$ cost about $n$ times the number of halvings, not $n^2$, whenever joining two halves costs about as much as their size, as merging does. And counting the answers that are possible, $2^k$ for $k$ answers of yes or no, bounds what any method can do, before anyone has thought of the method.
+
+<Foreshadow lesson="M11.3">
+
+A code for a set of symbols gives each one a string of 0s and 1s, and $k$ bits can tell apart at most $2^k$ symbols, as $k$ comparisons can tell apart at most $2^k$ orders. M11.3 builds such codes, among them arithmetic coding, whose decoder finds each symbol by searching the running totals of the symbols' chances by halving, as this lesson's binary search does.
+
+</Foreshadow>
+
+<Foreshadow lesson="E9.3">
+
+Finding repeated documents among billions compares hashes instead of documents: equal documents have equal hashes, so only documents whose hashes are equal need comparing. E9.3 builds on this with MinHash, which makes documents that are nearly the same likely to have equal hashes too.
+
+</Foreshadow>
+
+<Foreshadow lesson="L4.10">
+
+A language model picks its next token at random, each with its own chance. Adding up the chances in order and searching the running totals for a random number between 0 and 1 picks a token with exactly its chance, in about as many looks as there are halvings of the number of tokens, by this lesson's binary search.
+
+</Foreshadow>
+
+<MixedCheck />

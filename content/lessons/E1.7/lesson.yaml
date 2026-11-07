@@ -26,7 +26,7 @@ concepts:
         back the object, and `__init__` itself must return `None`. `a.lr` reads an attribute and `a.lr = 0.1`
         sets one, and each instance keeps attributes of its own. Names refer to objects as they
         refer to lists, so after `b = a` a change made through `b` shows through `a`.
-      usedBy: [L3.4, E5.4]
+      usedBy: [L3.4, E5.4, E1.11]
     - id: E1.7/methods-and-self
       name: Methods and self
       summary: >-
@@ -36,7 +36,7 @@ concepts:
         name assigned without `self.` is local to the call and is gone when it returns. An object
         keeps its attributes from one call to the next, which is how a meter, a model or an
         optimiser carries its state.
-      usedBy: [L3.4, L3.9, E5.4]
+      usedBy: [L3.4, L3.9, E5.4, E1.11]
     - id: E1.7/special-methods
       name: Special methods
       summary: >-
@@ -48,7 +48,7 @@ concepts:
         need. Operators keep Python's order of working out an expression, so the expression's tree
         decides the order of the calls, and operators that make new objects leave their inputs as
         they were.
-      usedBy: [M6.5, L3.4, E5.1, E5.5, E1.10]
+      usedBy: [M6.5, L3.4, E5.1, E5.5, E1.10, E1.11]
     - id: E1.7/attribute-lookup
       name: Looking up an attribute
       summary: >-

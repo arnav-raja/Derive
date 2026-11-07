@@ -21,13 +21,13 @@ concepts:
       summary: >-
         Rules of the form mx + c, which change at the same rate everywhere. Their graphs are straight
         lines, two points fix one, and the rate carries units.
-      usedBy: [M2.6, L1.2, M3.1]
+      usedBy: [M2.6, L1.2, M3.1, M1.11]
     - id: M1.4/average-rate-of-change
       name: Average rate of change
       summary: >-
         The change in a function's output divided by the change in its input between two points: the
         slope of the chord that joins them.
-      usedBy: [M3.1, M3.8]
+      usedBy: [M3.1, M3.8, M1.11]
     - id: M1.4/quadratics
       name: Quadratic functions
       summary: >-

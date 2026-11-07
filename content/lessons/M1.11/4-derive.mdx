@@ -1,0 +1,93 @@
+The Explore phase named the coordinates of a point on a circle and turned the plane. Now prove what it took on trust, Pythagoras' theorem, and use it with the turned axes to turn any point, to find the cosine of a sum of two angles, to explain the puzzle's schedule exactly, and to find the third side of any triangle.
+
+## Pythagoras' theorem
+
+Take a triangle with a right angle, whose two shorter sides are $a$ and $b$ and whose longest side, opposite the right angle, is $c$. Four copies of it fit inside a square of side $a + b$, one in each corner, each a quarter turn from the one before, so that along each side of the square a side $a$ of one triangle meets a side $b$ of the next. Their longest sides make a four-sided shape in the middle, each of its sides of length $c$.
+
+<FourTriangles
+  title="Four triangles in a square"
+  description="A square of side a + b, at first 3 + 4 = 7, holds four copies of a triangle with a right angle and shorter sides a and b, one in each corner, each a quarter turn from the one before, so that along each side of the square a side a of one triangle meets a side b of the next. Their longest sides enclose a tilted four-sided shape in the middle, shaded and named with its area. Sliders set a and b from 1 to 6, and a sentence gives the areas."
+  a={3}
+  b={4}
+  arrangements={["tilted"]}
+/>
+
+<Exercise id="derive-pythagoras" />
+
+<Reveal for="derive-pythagoras">
+
+The same four triangles give a second proof. Moved into two rectangles $a$ by $b$, they leave a square of side $a$ and a square of side $b$ uncovered, so $a^2 + b^2$ is what the triangles leave of the big square either way, and that is $c^2$.
+
+<FourTriangles
+  title="The same four triangles as two rectangles"
+  description="The square of side a + b, at first 3 + 4 = 7, with the same four triangles moved into two rectangles a by b, which leave a square of side a and a square of side b uncovered, shaded and named with their areas. Sliders set a and b from 1 to 6, buttons switch back to one triangle in each corner, and a sentence gives the areas."
+  a={3}
+  b={4}
+  arrangement="rectangles"
+/>
+
+With the theorem proved, the Explore phase's $\cos^2\theta + \sin^2\theta = 1$ holds for every angle, since the point $(\cos\theta, \sin\theta)$ is at distance 1 from the centre. In the same way two points $(x_1, y_1)$ and $(x_2, y_2)$ are at distance $\sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}$, the longest side of a triangle with a right angle whose shorter sides are parallel to the axes.
+
+## Turning any point
+
+The point $(x, y)$ is reached from the origin by going $x$ along the first axis, to $(x, 0)$, and then $y$ in the direction of the second. Turn the whole picture through $\theta$: the route turns with it, keeping its lengths, so the turned point is reached by going $x$ along the turned first axis, towards $(\cos\theta, \sin\theta)$, and then $y$ along the turned second axis, towards $(-\sin\theta, \cos\theta)$.
+
+<Exercise id="derive-rotation" />
+
+</Reveal>
+
+<Reveal for="derive-rotation">
+
+The second coordinate collects the second coordinates of the same two moves, $x\sin\theta + y\cos\theta$, so turning through $\theta$ takes
+$$(x, y) \text{ to } (x\cos\theta - y\sin\theta,\; x\sin\theta + y\cos\theta).$$
+A quarter turn, with $\cos\theta = 0$ and $\sin\theta = 1$, takes $(x, y)$ to $(-y, x)$, as the Explore phase found for $(3, 1)$.
+
+## Turning twice
+
+Turning $(1, 0)$ through $\alpha$ (alpha) gives $(\cos\alpha, \sin\alpha)$, and turning that point on through $\beta$ (beta) gives the point that the rule above makes from $x = \cos\alpha$ and $y = \sin\alpha$, with $\beta$ as the angle. But the two turns together are one turn through $\alpha + \beta$, which takes $(1, 0)$ to $(\cos(\alpha + \beta), \sin(\alpha + \beta))$. The two points are the same point, so their first coordinates are equal.
+
+<Exercise id="derive-sum" />
+
+</Reveal>
+
+<Reveal for="derive-sum">
+
+The second coordinates give the same for the sine, $\sin(\alpha + \beta) = \sin\alpha\cos\beta + \cos\alpha\sin\beta$. These two are the *angle-addition formulas*, and M1.12 finds them again with one line of algebra.
+
+## The puzzle's schedule, exactly
+
+<Exercise id="derive-double" />
+
+</Reveal>
+
+<Reveal for="derive-double">
+
+Solved for $\cos^2\alpha$, this says $\cos^2\alpha = \frac{1 + \cos 2\alpha}{2}$. Lay the puzzle's wheel on its side, with its top at $(1, 0)$. The mark, turned through $\theta$ from the top, is the point at angle $\theta$, or at $-\theta$ if it goes down the other side, which has the same first coordinate, and its height above the centre has become that first coordinate, $\cos\theta$. Its height above the bottom is $1 + \cos\theta$ of the full $2$. The puzzle's schedule kept the fraction $\frac{1 + \cos\theta}{2}$ of the starting rate after the wheel turned through $\theta$, so it keeps $\cos^2\frac{\theta}{2}$: at a quarter of the run, $\theta = 45°$, that is $\cos^2 22.5° = \frac{2 + \sqrt{2}}{4}$, about 0.854.
+
+## The third side of a triangle
+
+Two sides of a triangle, of lengths $a$ and $b$, meet at a corner with angle $C$. How long is the third side, $c$? Put the corner at the origin and the side of length $a$ along the first axis, so that it ends at $(a, 0)$. The side of length $b$ leaves the origin at angle $C$, so it ends at $(b\cos C, b\sin C)$, the point at angle $C$ on the circle of radius $b$. The third side joins these two ends.
+
+<Exercise id="derive-cosines" />
+
+</Reveal>
+
+<Reveal for="derive-cosines">
+
+This is the *law of cosines*. When $C$ is a right angle, $\cos C = 0$ and it is Pythagoras' theorem again. When $C$ is less than a right angle, $\cos C$ is positive and the third side is shorter than Pythagoras would make it; when $C$ is more, it is longer. Read the other way, it gives the angle from the three sides: $\cos C = \frac{a^2 + b^2 - c^2}{2ab}$. A triangle's angles lie between $0°$ and $180°$, where the point runs along the top half of the circle from $(1, 0)$ to $(-1, 0)$ and its first coordinate falls all the way, so each cosine belongs to one angle, as M1.3 narrowed squaring: $\cos C = -\frac{1}{2}$ gives $C = 120°$, the $60°$ point mirrored in the second axis. Python's `math.acos` gives that angle, in radians. M2.2 uses it to find the angle between two lists of numbers.
+
+## How long is a degree?
+
+<Exercise id="derive-degree" />
+
+</Reveal>
+
+<Reveal for="derive-degree">
+
+<Definition term="The law of cosines">
+
+In a triangle whose sides $a$ and $b$ meet at an angle $C$, the third side $c$ has $c^2 = a^2 + b^2 - 2ab\cos C$. With $C$ a right angle it is Pythagoras' theorem, $c^2 = a^2 + b^2$.
+
+</Definition>
+
+</Reveal>
