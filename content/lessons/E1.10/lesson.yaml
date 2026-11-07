@@ -1,0 +1,149 @@
+code: E1.10
+title: "Algorithms: sorting, searching and hashing"
+course: E1
+status: ready
+summary: >-
+  Python's sorted is given 1,000 losses that are already in order. How many comparisons does it
+  make? Sorting by merging, proved right by induction and costed by a recurrence; the fewest
+  comparisons any sort can manage; searching a sorted list by halving; and hashing, which finds a
+  key by working out where it must be.
+sittings: 2
+minutes:
+  puzzle: 10
+  recall: 10
+  explore: 45
+  derive: 40
+  build: 60
+  explain: 25
+concepts:
+  taught:
+    - id: E1.10/merge-sort
+      name: Merge sort
+      summary: >-
+        Merging two sorted lists takes the smaller of their front items again and again, and makes
+        at most one comparison for each item it places but the last, so fewer than the two lengths
+        added. *Merge sort* splits a list in halves, sorts each half with the same function and
+        merges them; strong induction on the length proves that it sorts. A list of $2^k$ items is
+        split through $k$ levels, each level's merges make fewer than $2^k$ comparisons, and the
+        worst case is $(k - 1)2^k + 1$: just under 20 million for a million items, against
+        499,999,500,000 for a sort that picks the smallest item left each time. Merging takes from
+        the first list when two items are equal, so equal items keep their order, which makes the
+        sort *stable*.
+      usedBy: [L4.10, E9.3]
+    - id: E1.10/comparison-bound
+      name: The fewest comparisons
+      summary: >-
+        A sort that learns about the order of its items only by comparing two at a time must tell
+        apart all $n!$ orders of $n$ different items. Each comparison has two outcomes, so $k$
+        comparisons tell apart at most $2^k$ orders, and some order needs at least $k$ comparisons,
+        where $2^k$ is the first power of 2 that reaches $n!$: 22 for 10 items, and 8,530 for
+        1,000, against Python's 8,650 or so on a shuffled list. No sort that only compares can do
+        much better than merge sort.
+      usedBy: [M11.3, M11.4]
+    - id: E1.10/binary-search
+      name: Binary search
+      summary: >-
+        A sorted list is searched by halving the stretch that must hold the answer, as E1.8's
+        bisection halved the versions. To find the first slot whose item is at least $x$, `lo`
+        starts at $-1$ and `hi` at the length of the list, as if slots sat just before and just
+        after it, and every item up to `lo` stays less than $x$ while every item from `hi` on stays
+        at least $x$. Each look at the item midway moves `lo` or `hi` to it. The invariant proves
+        the answer right, and a million items take 20 looks. Python's `bisect` module does this,
+        and two searches count the items of a sorted list that lie in a range.
+      usedBy: [L4.10, M11.3]
+    - id: E1.10/hash-tables
+      name: Hash tables
+      summary: >-
+        A hash table keeps its keys in buckets and puts each key in the bucket given by its *hash*,
+        a whole number worked out from the key, taken modulo the number of buckets, so that a lookup
+        searches one short bucket instead of every key. Python's sets and dictionaries are hash
+        tables. Equal keys must have equal hashes,
+        though unequal keys may share one, so a class that defines `__eq__` needs a `__hash__`
+        worked out from the fields that `__eq__` compares, and a key must not change while it is
+        stored. Moving to twice as many buckets whenever a new key would make the keys outnumber
+        them keeps the buckets short, and the moves cost fewer than 2 for each key added.
+      usedBy: [E9.3, L4.2, E8.5]
+  used:
+    - M1.9/induction
+    - M1.9/strong-induction
+    - M1.9/recurrences
+    - M1.9/structural-induction
+    - E1.9/properties
+    - E1.8/bisection
+    - E1.7/classes-and-instances
+    - E1.7/methods-and-self
+    - E1.7/special-methods
+    - E1.5/base-and-recursive-case
+    - E1.5/call-stack
+    - E1.5/recursive-structures
+    - E1.4/lists
+    - E1.4/dicts-and-sets
+    - E1.4/aliasing-and-mutation
+    - E1.4/cost-of-operations
+    - E1.3/defining-functions
+    - E1.2/loops
+    - E1.2/loop-invariants
+    - M1.6/product-notation
+    - M1.6/geometric-series
+links:
+  requires:
+    - lesson: E1.4
+      bridge: >-
+        E1.4 found that `x in xs` on a list checks the items one by one, while a set finds a key by
+        working out where it is from the key itself, a fact it took on trust, and that removing
+        repeats from $n$ different documents with a list makes $\frac{n(n - 1)}{2}$ comparisons. This lesson opens the set up,
+        with hashing, and sorts a million items in under 20 million comparisons instead of 500
+        billion.
+    - lesson: E1.5
+      bridge: >-
+        E1.5's `total` split its list in halves, so that 512 numbers took 1,023 calls but never
+        more than 10 in progress at once. Merge sort splits the same way, sorts each half with
+        itself and merges them, so a million items need calls only about 20 deep.
+    - lesson: E1.7
+      bridge: >-
+        E1.7 found that a class which defines `__eq__` loses the `__hash__` that sets and
+        dictionary keys need, and left a list to do the search. This lesson shows what the hash is
+        for and gives such a class a `__hash__` that agrees with its `__eq__`; and `<` calls
+        `__lt__`, so a class can count the comparisons a sort makes.
+  buildsOn:
+    - lesson: M1.9
+      bridge: >-
+        M1.9 proved `power` right by strong induction on its argument and solved recurrences by
+        guessing a closed form and proving it. Merge sort is proved right by strong induction on
+        the length of its list, and its worst case, $W(k + 1) = 2W(k) + 2^{k + 1} - 1$, is solved
+        the same way.
+    - lesson: E1.9
+      bridge: >-
+        E1.9 tested a sort by its properties: its output is in order and holds the same items, on
+        random lists from a range narrow enough to make ties. The Build phase's tests check its
+        sort, its search and its set in the same way, against Python's own `sorted`, `bisect` and
+        `set`.
+  applies:
+    - lesson: E1.8
+      bridge: >-
+        E1.8's bisection kept `lo` good and `hi` bad and halved the gap between them. Binary
+        search is bisection on the question "is this item at least $x$?", which a sorted list
+        answers no for a first stretch of items and yes for the rest.
+    - lesson: M1.6
+      bridge: >-
+        M1.6 counted the $n!$ orders of $n$ things and summed geometric series. The orders give
+        the least number of comparisons a sort can need, and the series $1 + 2 + 4 + \dots$
+        counts the moves a hash table makes as it doubles.
+  foreshadows:
+    - lesson: M11.3
+      bridge: >-
+        Arithmetic coding's decoder finds each symbol by a binary search of the running totals of
+        the symbols' chances, and the count of yes or no answers needed to tell $N$ things apart,
+        which bounds sorting here, bounds the length of any code there.
+    - lesson: E9.3
+      bridge: >-
+        Finding repeated documents among billions compares hashes instead of documents: equal
+        documents have equal hashes, so only documents whose hashes are equal need comparing. E9.3
+        builds on this with MinHash, which makes documents that are nearly the same likely to have
+        equal hashes too.
+    - lesson: L4.10
+      bridge: >-
+        A model picks its next token by adding up the tokens' chances in order and searching the
+        running totals for a random number between 0 and 1, a binary search that picks each token
+        with exactly its chance.
+skills: []

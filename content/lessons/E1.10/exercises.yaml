@@ -1,0 +1,2148 @@
+exercises:
+  # Puzzle ---------------------------------------------------------------------
+  - id: puzzle-sorted-already
+    phase: puzzle
+    kind: predict
+    concept: E1.10/merge-sort
+    title: A list already in order
+    prompt: What will `Loss.count` be once `sorted` has finished with the 1,000 losses?
+    answer:
+      type: choice
+      options:
+        - { id: none, label: '0, since a list already in order needs no comparisons' }
+        - { id: pass, label: '999, one for each loss after the first' }
+        - { id: halvings, label: 'About 10,000, some 10 for each loss' }
+        - { id: pairs, label: '499,500, one for each pair of losses' }
+      correct: [pass]
+    explanation: >-
+      To know that the list is in order, `sorted` must compare each loss with the one before it,
+      since a pair of neighbours it never compared could be the wrong way round. It walks along the
+      list doing exactly that, finds the whole list in order after 999 comparisons, and has nothing
+      left to do.
+
+  # Recall ---------------------------------------------------------------------
+  - id: recall-halves
+    phase: recall
+    kind: recall
+    concept: E1.5/call-stack
+    prompt: |
+      E1.5 added up a list by halving it:
+
+      ```python
+      def total(xs):
+          if len(xs) == 0:
+              return 0
+          if len(xs) == 1:
+              return xs[0]
+          h = len(xs) // 2
+          return total(xs[:h]) + total(xs[h:])
+      ```
+
+      While `total` adds up a list of 8 numbers, how many calls of `total` are in progress at once,
+      at most?
+    answer:
+      type: choice
+      options:
+        - { id: three, label: '3' }
+        - { id: four, label: '4' }
+        - { id: eight, label: '8' }
+        - { id: fifteen, label: '15' }
+      correct: [four]
+    explanation: >-
+      The calls in progress at once are a chain, each with a list half as long as its caller's: 8
+      numbers, 4, 2 and 1, so 4 calls. The call for the second half of a list starts only after the
+      call for the first half has returned. In all, `total` makes 15 calls, but never more than 4 at
+      once.
+
+  - id: recall-invariant
+    phase: recall
+    kind: recall
+    concept: E1.2/loop-invariants
+    prompt: |
+      `xs` is a list of numbers with at least one number in it.
+
+      ```python
+      best = xs[0]
+      i = 1
+      while i < len(xs):
+          if xs[i] > best:
+              best = xs[i]
+          i = i + 1
+      ```
+
+      Which statement is true before the first pass, and after every pass?
+    answer:
+      type: choice
+      options:
+        - { id: whole, label: '`best` is the largest number in the whole of `xs`' }
+        - { id: next, label: '`best` is the number in `xs[i]`' }
+        - { id: right, label: '`best` is the largest of `xs[0]` to `xs[i - 1]`' }
+        - { id: above, label: '`best` is larger than every number after slot `i`' }
+      correct: [right]
+    explanation: >-
+      Before the first pass `i` is 1 and `best` is `xs[0]`, the largest of the one number
+      `xs[0]`. Each pass keeps the larger of `best` and `xs[i]`, then adds 1 to `i`, so the
+      statement stays true. When the loop ends, `i` is `len(xs)`, and it says that `best` is the
+      largest number in the list. Before then, numbers after slot `i - 1` have not been looked at.
+
+  - id: recall-unhashable
+    phase: recall
+    kind: recall
+    concept: E1.7/special-methods
+    prompt: |
+      What happens when this program runs?
+
+      ```python
+      class Config:
+          def __init__(self, lr, batch):
+              self.lr = lr
+              self.batch = batch
+
+          def __eq__(self, other):
+              return self.lr == other.lr and self.batch == other.batch
+
+      seen = set()
+      seen.add(Config(0.01, 32))
+      print(len(seen))
+      ```
+    answer:
+      type: choice
+      options:
+        - { id: one, label: 'It prints 1' }
+        - { id: zero, label: 'It prints 0, since the config was not kept' }
+        - { id: attribute, label: 'It stops with `AttributeError`' }
+        - { id: right, label: 'It stops with `TypeError`' }
+      correct: [right]
+    explanation: >-
+      A set needs a `__hash__` to know where to keep a value. Once a class defines `__eq__`,
+      Python takes away the `__hash__` it would otherwise give the class, so `seen.add` stops with
+      `TypeError: cannot use 'Config' as a set element (unhashable type: 'Config')`.
+
+  - id: recall-strong
+    phase: recall
+    kind: recall
+    concept: M1.9/strong-induction
+    prompt: >-
+      A proof by strong induction that $P(n)$ holds for every whole number $n \ge 1$ proves $P(1)$.
+      In its step, what may it suppose in order to prove $P(k + 1)$?
+    answer:
+      type: choice
+      options:
+        - { id: one, label: '$P(k)$ alone, and no other case' }
+        - { id: every, label: '$P(n)$ for every whole number $n$' }
+        - { id: next, label: '$P(k + 1)$ itself, as a hypothesis' }
+        - { id: right, label: 'Every case from $P(1)$ up to $P(k)$' }
+      correct: [right]
+    explanation: >-
+      Strong induction's step may suppose every case from the first up to $k$, which is what a
+      function that calls itself on half its argument needs: the half can be any earlier case.
+      Supposing $P(k + 1)$, or every $P(n)$, would assume what is to be proved.
+
+  - id: recall-doubling
+    phase: recall
+    kind: recall
+    concept: M1.6/geometric-series
+    prompt: Write $1 + 2 + 4 + \dots + 2^{k - 1}$, the sum of the first $k$ powers of 2, without dots.
+    answer:
+      type: expression
+      symbols:
+        - { name: k, positive: true, integer: true }
+      lhs: '1 + 2 + 4 + \dots + 2^{k - 1} ='
+      reference: 2**k - 1
+      accept: ['2^k - 1', '-1 + 2**k', '(2**k) - 1', '2*2**(k-1) - 1']
+      reject: ['2**k', '2**(k-1)', '2**(k+1) - 1', '2**k + 1', '2**(k - 1) - 1', 'k**2 - 1', '2*k - 1']
+    explanation: >-
+      Call the sum $S$. Doubling it gives $2 + 4 + \dots + 2^k$, which shares every term with $S$
+      but the last, so $2S - S = 2^k - 1$. For $k = 3$, $1 + 2 + 4 = 7$.
+
+  # Explore --------------------------------------------------------------------
+  - id: explore-merge-count
+    phase: explore
+    kind: predict
+    concept: E1.10/merge-sort
+    title: Two merges
+    prompt: >-
+      How many comparisons does merging `[1, 2, 3, 4]` with `[5, 6, 7, 8]` make, and how many does
+      merging `[1, 3, 5, 7]` with `[2, 4, 6, 8]` make?
+    placement: true
+    answer:
+      type: choice
+      options:
+        - { id: same, label: '8 and 8, one for each item' }
+        - { id: seven, label: '7 and 7, one for each item but the last' }
+        - { id: right, label: '4 and 7' }
+        - { id: swapped, label: '7 and 4' }
+      correct: [right]
+    explanation: >-
+      Merging `[1, 2, 3, 4]` with `[5, 6, 7, 8]` compares each of 1, 2, 3 and 4 with 5 and moves
+      it, and then the first list is used up, so 5 to 8 follow with no more comparisons: 4. When
+      the items take turns, as 1, 2, 3, ... do between the second pair of lists, every item but the
+      last is moved by a comparison: 7.
+    review:
+      variants:
+        - prompt: Merging two sorted lists of 5 items each makes at most how many comparisons?
+          answer:
+            type: choice
+            options:
+              - { id: five, label: '5' }
+              - { id: right, label: '9' }
+              - { id: ten, label: '10' }
+              - { id: product, label: '25' }
+            correct: [right]
+          explanation: >-
+            Each comparison moves one item, and once 9 of the 10 items have moved, one list is used
+            up and the last item follows without a comparison, so at most 9.
+        - prompt: >-
+            When the front items of the two lists are equal, which one does this lesson's `merge`
+            move first?
+          answer:
+            type: choice
+            options:
+              - { id: second, label: 'The one from the second list' }
+              - { id: right, label: 'The one from the first list' }
+              - { id: both, label: 'Both of them, in one step' }
+              - { id: neither, label: 'Neither: it stops with an error' }
+            correct: [right]
+          explanation: >-
+            `merge` moves an item from the second list only when `b[j] < a[i]`, which is false for
+            equal items, so the item from the first list moves first.
+        - prompt: How many comparisons does merging `[4, 8]` with `[1, 2, 3, 9]` make?
+          answer:
+            type: choice
+            options:
+              - { id: two, label: '2' }
+              - { id: four, label: '4' }
+              - { id: right, label: '5' }
+              - { id: six, label: '6' }
+            correct: [right]
+          explanation: >-
+            4 is compared with 1, 2, 3 and 9, which moves 1, 2, 3 and then 4, and 8 is compared
+            with 9, which moves 8. The first list is then used up, and 9 follows: 5 comparisons.
+
+  - id: explore-sort-count
+    phase: explore
+    kind: predict
+    concept: E1.10/merge-sort
+    title: Sorting 1,024 losses
+    prompt: About how many comparisons does `merge_sort` make on a list of 1,024 losses in a random order?
+    placement: true
+    answer:
+      type: choice
+      options:
+        - { id: thousand, label: 'About 1,000, one for each loss' }
+        - { id: right, label: 'About 9,000, under 10 for each loss' }
+        - { id: hundred, label: 'About 100,000, some 100 for each loss' }
+        - { id: pairs, label: '523,776, one for each pair of losses' }
+      correct: [right]
+    explanation: >-
+      1,024 is $2^{10}$, so the list is halved 10 times on the way down to single items, and on
+      the way back up each of the 10 levels of merges moves every loss once, with fewer than 1,024
+      comparisons. That is under 10,240 in all, and about 8,950 for a random order.
+    review:
+      variants:
+        - prompt: A sort that picks the smallest item left, again and again, sorts 1,000 items. How many comparisons does it make?
+          answer:
+            type: choice
+            options:
+              - { id: pass, label: '999' }
+              - { id: levels, label: 'About 10,000' }
+              - { id: right, label: '499,500' }
+              - { id: square, label: '1,000,000' }
+            correct: [right]
+          explanation: >-
+            Finding the smallest of $k$ items takes $k - 1$ comparisons, so the sort makes
+            $999 + 998 + \dots + 1 = \frac{1{,}000 \times 999}{2} = 499{,}500$, whatever the order.
+        - prompt: While `merge_sort` sorts a million items, how many of its calls are in progress at once, at most?
+          answer:
+            type: choice
+            options:
+              - { id: all, label: '1,000,000, one for each item' }
+              - { id: pairs, label: '500,000, one for each pair' }
+              - { id: limit, label: 'About 1,000, as many as Python allows' }
+              - { id: right, label: 'About 20, one for each halving' }
+            correct: [right]
+          explanation: >-
+            The calls in progress at once are a chain, each with half its caller's list: a million
+            items, half a million, and so on down to one, which is 21 calls.
+        - prompt: Merge sort sorts a list of $2^{20}$ items, just over a million. How many levels of merges does it make?
+          answer:
+            type: choice
+            options:
+              - { id: thousand, label: '1,000' }
+              - { id: all, label: '1,048,576' }
+              - { id: right, label: '20' }
+              - { id: ten, label: '10' }
+            correct: [right]
+          explanation: >-
+            Each level of merges doubles the length of the runs, from 1 item to $2^{20}$, so there
+            are 20 levels, each of fewer than $2^{20}$ comparisons.
+
+  - id: explore-stable
+    phase: explore
+    kind: predict
+    concept: E1.10/merge-sort
+    title: Models with equal losses
+    prompt: What does the program print?
+    answer:
+      type: choice
+      options:
+        - { id: reversed, label: "`['d', 'e', 'b', 'c', 'a']`" }
+        - { id: mixed, label: "`['d', 'b', 'e', 'c', 'a']`" }
+        - { id: first-tie, label: "`['d', 'e', 'b', 'a', 'c']`" }
+        - { id: right, label: "`['d', 'b', 'e', 'a', 'c']`" }
+      correct: [right]
+    explanation: >-
+      By loss, `d` (0.25) comes first, then the two models with 0.27, then the two with 0.31.
+      Whenever two equal losses meet in a merge, the one from the first list moves first, and the
+      first list always holds models from earlier in the list given, so `b` stays ahead of `e`,
+      and `a` ahead of `c`.
+    review:
+      variants:
+        - prompt: >-
+            A stable sort is given models, each with a name and a loss, and sorts them by loss.
+            Two of them, `p` and `q`, have the same loss, and `p` comes first in the list it is
+            given. Where are they after sorting?
+          answer:
+            type: choice
+            options:
+              - { id: right, label: '`p` and then `q`, in the order they came' }
+              - { id: swapped, label: '`q` and then `p`, since a sort turns ties round' }
+              - { id: halves, label: 'Either way, depending on where the halves split' }
+              - { id: random, label: 'Either way, as Python picks one at random' }
+            correct: [right]
+          explanation: >-
+            A stable sort keeps equal items in the order they came, wherever the halves split, so
+            `p` stays ahead of `q`.
+        - prompt: >-
+            In `merge`, the test `if b[j] < a[i]:` is changed to `if not (a[i] < b[j]):`, which
+            moves the item from the second list when the two are equal. What changes in what
+            `merge_sort` gives?
+          answer:
+            type: choice
+            options:
+              - { id: right, label: 'Equal items can come out the other way round' }
+              - { id: nothing, label: 'Nothing at all, for any list' }
+              - { id: order, label: 'The losses no longer come out in order' }
+              - { id: error, label: 'It stops with an error at the first tie' }
+            correct: [right]
+          explanation: >-
+            The losses still come out in order, since an equal item may go first either way, but
+            of two equal items the later one now moves first, so the sort is no longer stable.
+        - prompt: >-
+            Models are sorted by name, and the result is sorted again by loss with a stable sort.
+            Which models end up in order of name?
+          answer:
+            type: choice
+            options:
+              - { id: all, label: 'All of them' }
+              - { id: none, label: 'None of them, since the second sort undoes the first' }
+              - { id: right, label: 'Models with equal losses, among themselves' }
+              - { id: ends, label: 'Only the first and the last models' }
+            correct: [right]
+          explanation: >-
+            The second sort puts the models in order of loss, and, being stable, keeps models with
+            equal losses in the order the first sort left them, which is by name.
+
+  - id: explore-three
+    phase: explore
+    kind: predict
+    concept: E1.10/comparison-bound
+    title: Sorting three items
+    prompt: >-
+      A sort is given 3 different numbers, in any of their 6 orders, and learns about them only by
+      comparing two of them at a time. What is the fewest comparisons in which it can promise to
+      sort every one of the 6 orders?
+    placement: true
+    answer:
+      type: choice
+      options:
+        - { id: two, label: '2' }
+        - { id: right, label: '3' }
+        - { id: five, label: '5' }
+        - { id: six, label: '6' }
+      correct: [right]
+    explanation: >-
+      Two comparisons can come out in only 4 ways, yes and yes, yes and no, no and yes, or no and
+      no, so two of the 6 orders give the same answers, and the sort moves both in the same way,
+      which leaves one of them out of order. Three are enough: compare the first two, then the
+      third with the larger of them, and if the third is not the largest, with the smaller.
+    review:
+      variants:
+        - prompt: >-
+            A sort that only compares is given 4 different items, which have 24 orders. What is the
+            fewest comparisons that can be enough for every order?
+          answer:
+            type: choice
+            options:
+              - { id: three, label: '3' }
+              - { id: four, label: '4' }
+              - { id: right, label: '5' }
+              - { id: six, label: '6' }
+            correct: [right]
+          explanation: >-
+            4 comparisons give at most $2^4 = 16$ different sets of answers, fewer than 24, while 5
+            give 32, and merge sort sorts 4 items in at most 5.
+        - prompt: Each comparison is answered yes or no. How many orders can 10 comparisons tell apart, at most?
+          answer:
+            type: choice
+            options:
+              - { id: twenty, label: '20' }
+              - { id: hundred, label: '100' }
+              - { id: right, label: '1,024' }
+              - { id: factorial, label: '3,628,800' }
+            correct: [right]
+          explanation: >-
+            Each comparison doubles the number of ways the answers can come out, so 10 comparisons
+            can come out in $2^{10} = 1{,}024$ ways, and can tell apart at most that many orders.
+        - prompt: Why can no sort that only compares always sort 3 different items in 2 comparisons?
+          answer:
+            type: choice
+            options:
+              - { id: twice, label: 'It would have to compare some pair twice' }
+              - { id: right, label: 'Two answers come out only 4 ways, for 6 orders' }
+              - { id: neighbours, label: 'A comparison can only check two neighbours' }
+              - { id: each-pair, label: 'Every pair of the 3 items must be compared' }
+            correct: [right]
+          explanation: >-
+            Two orders that give the same answers are moved the same way, and only one of them can
+            end in order. Every pair need not be compared: when $a < b$ and $b < c$, the sort knows
+            $a < c$ without asking.
+
+  - id: explore-search
+    phase: explore
+    kind: predict
+    concept: E1.10/binary-search
+    title: Two searches
+    prompt: What does the program print?
+    placement: true
+    answer:
+      type: choice
+      options:
+        - { id: right, label: '`3 1`' }
+        - { id: before, label: '`2 1`' }
+        - { id: last, label: '`3 2`' }
+        - { id: none, label: '`None 1`' }
+      correct: [right]
+    explanation: >-
+      0.25 is not in the list. The items less than 0.25 fill slots 0 to 2, so the first item that
+      is at least 0.25 is 0.3, in slot 3, where 0.25 would go. 0.2 is in slots 1 and 2, and the
+      search gives the first of them, since every slot before 1 holds an item less than 0.2.
+    review:
+      variants:
+        - prompt: What does `first_at_least([5, 8, 8, 13], 9)` give?
+          answer:
+            type: choice
+            options:
+              - { id: two, label: '2' }
+              - { id: right, label: '3' }
+              - { id: four, label: '4' }
+              - { id: none, label: '`None`' }
+            correct: [right]
+          explanation: >-
+            5, 8 and 8 are less than 9, in slots 0 to 2, so the first item that is at least 9 is
+            13, in slot 3.
+        - prompt: A sorted list holds a million items. At most how many of them does `first_at_least` look at?
+          answer:
+            type: choice
+            options:
+              - { id: one, label: '1' }
+              - { id: thousand, label: '1,000' }
+              - { id: half, label: '500,000' }
+              - { id: right, label: '20' }
+            correct: [right]
+          explanation: >-
+            Each look halves the stretch between `lo` and `hi`, and a stretch of about a million
+            slots halves to 1 in 20 steps, since $2^{20}$ is just over a million.
+        - prompt: What does `first_at_least(xs, x)` give when `x` is larger than every item of `xs`?
+          answer:
+            type: choice
+            options:
+              - { id: last, label: '`len(xs) - 1`, the last slot' }
+              - { id: right, label: '`len(xs)`, just past the last slot' }
+              - { id: minus, label: '-1, to say that it is not there' }
+              - { id: none, label: '`None`, to say that it is not there' }
+            correct: [right]
+          explanation: >-
+            Every item is less than `x`, so `lo` moves up to the last slot and `hi` never moves from
+            the imagined slot `len(xs)`, which is where `x` would go.
+
+  - id: explore-bucket
+    phase: explore
+    kind: predict
+    concept: E1.10/hash-tables
+    title: Looking up 35
+    prompt: >-
+      A table of 8 buckets holds the keys 3, 11, 19, 27 and 13. How many keys does looking up 35,
+      which is not there, compare it with?
+    placement: true
+    answer:
+      type: choice
+      options:
+        - { id: zero, label: '0' }
+        - { id: one, label: '1' }
+        - { id: right, label: '4' }
+        - { id: five, label: '5' }
+      correct: [right]
+    explanation: >-
+      `35 % 8` is 3, so the lookup goes to bucket 3, which holds 3, 11, 19 and 27, since each of
+      them leaves 3 when divided by 8. It compares 35 with all four, finds none equal, and says it
+      is not there. 13 is in bucket 5 and is never looked at.
+    review:
+      variants:
+        - prompt: A table has 8 buckets, and a small whole number is its own hash. Which bucket does 21 go in?
+          answer:
+            type: choice
+            options:
+              - { id: two, label: '2' }
+              - { id: three, label: '3' }
+              - { id: right, label: '5' }
+              - { id: itself, label: '21' }
+            correct: [right]
+          explanation: '`21 % 8` is 5, since $21 = 2 \times 8 + 5$, so 21 goes in bucket 5.'
+        - prompt: A table holds 1,000 keys spread evenly over 1,024 buckets. About how many keys does a lookup compare with?
+          answer:
+            type: choice
+            options:
+              - { id: right, label: 'About 1' }
+              - { id: ten, label: 'About 10' }
+              - { id: half, label: 'About 500' }
+              - { id: all, label: '1,000' }
+            correct: [right]
+          explanation: >-
+            Spread evenly, 1,000 keys in 1,024 buckets leave fewer than one key in a bucket on
+            average, and a lookup compares only with the keys in its own bucket.
+        - prompt: >-
+            A table starts with 8 buckets and doubles them whenever a new key would make its keys
+            outnumber them. How many buckets does it have once 20 keys are in it?
+          answer:
+            type: choice
+            options:
+              - { id: sixteen, label: '16' }
+              - { id: twenty, label: '20' }
+              - { id: right, label: '32' }
+              - { id: sixty-four, label: '64' }
+            correct: [right]
+          explanation: >-
+            The 9th key makes 16 buckets, and the 17th makes 32, which is enough for keys 18 to 32.
+
+  - id: explore-changed-key
+    phase: explore
+    kind: predict
+    concept: E1.10/hash-tables
+    title: A key that changes
+    prompt: What does the program print?
+    placement: true
+    answer:
+      type: choice
+      options:
+        - { id: c-found, label: '`True True False`' }
+        - { id: old-found, label: '`False False True`' }
+        - { id: right, label: '`False False False`' }
+        - { id: all, label: '`True True True`' }
+      correct: [right]
+    explanation: >-
+      `c` sits in the slot for the hash of `(0.01, 32)`, and the set keeps that hash beside it.
+      `c in seen` and `Config(0.01, 64) in seen` both work out the hash of `(0.01, 64)`, which
+      differs from the hash kept beside `c`, and Python compares hashes before it calls
+      `__eq__`, so neither finds `c`. `Config(0.01, 32) in seen` has the right hash, but the
+      config there now has batch 64, so `__eq__` says they differ.
+    review:
+      variants:
+        - prompt: >-
+            A class's `__eq__` compares `self.name` and `self.step`, and nothing else. Which
+            `__hash__` agrees with it?
+          answer:
+            type: choice
+            options:
+              - { id: extra, label: '`return hash((self.name, self.step, self.loss))`' }
+              - { id: loss, label: '`return hash(self.loss)`' }
+              - { id: step-loss, label: '`return hash((self.step, self.loss))`' }
+              - { id: right, label: '`return hash((self.name, self.step))`' }
+            correct: [right]
+          explanation: >-
+            Two equal objects have the same `name` and `step`, but may differ in `loss`, so a hash
+            that looks at `loss` could give them different hashes. A hash of exactly the fields
+            that `__eq__` compares always agrees.
+        - prompt: Why can a tuple be a key of a dict, while a list cannot?
+          answer:
+            type: choice
+            options:
+              - { id: shorter, label: 'A tuple is usually shorter than a list' }
+              - { id: sorted, label: 'A tuple keeps its items sorted' }
+              - { id: right, label: 'A tuple cannot change once it is made' }
+              - { id: empty, label: 'A list has no items that can be hashed' }
+            correct: [right]
+          explanation: >-
+            A key that changed while it was stored would sit in the slot for its old hash, where
+            no lookup would find it. A tuple cannot change, so Python can hash it, and refuses to
+            hash a list, which can.
+
+  # Derive ---------------------------------------------------------------------
+  - id: derive-sorts
+    phase: derive
+    kind: proof
+    concept: E1.10/merge-sort
+    title: Merge sort sorts every list
+    prompt: >-
+      Here is a proof by strong induction on $n$, the length of the list, that `merge_sort` sorts
+      every list. Each line follows from the lines above it. Choose the rule that justifies each
+      line. A rule may be used more than once or not at all.
+    answer:
+      type: steps
+      rules:
+        - { id: merging, name: Merging, label: 'Given two lists that are each in order, `merge` gives one list in order that holds the items of both, each as many times.' }
+        - { id: conclude, name: Strong induction, label: 'If $P(0)$ and $P(1)$ hold, and for every $n \ge 2$ the cases $P(0)$ to $P(n - 1)$ together give $P(n)$, then $P(n)$ holds for every whole number $n$.' }
+        - { id: base, name: Base cases, label: '`merge_sort` gives a list of 0 or 1 items back as it is, and such a list is in order.' }
+        - { id: slices, name: The two slices, label: '`xs[:h]` and `xs[h:]` together hold the items of `xs`, each as many times.' }
+        - { id: hypothesis, name: The hypothesis, label: 'In the step for $n$, $P(m)$ may be assumed for every $m < n$.' }
+        - { id: halves, name: Shorter halves, label: 'When $n \ge 2$, `h`, which is `n // 2`, is at least 1 and less than $n$, so `xs[:h]` and `xs[h:]` each have fewer than $n$ items.' }
+        - { id: invariant, name: Loop invariant, label: 'A statement that is true before the first pass of a loop, and that each pass keeps true, is true after every pass.' }
+        - { id: equal-halves, name: Equal halves, label: 'When $n$ is even, `xs[:h]` and `xs[h:]` each have $\frac{n}{2}$ items.' }
+      start: 'P(n)\text{: for every list } \texttt{xs} \text{ of } n \text{ items, } \texttt{merge\_sort(xs)} \text{ gives the items of } \texttt{xs} \text{, each as many times, in order.}'
+      lines:
+        - math: 'P(0) \text{ and } P(1) \text{: a list of 0 or 1 items is given back as it is, and is in order.}'
+          rule: base
+        - math: '\text{Take } n \ge 2 \text{. Then } \texttt{xs[:h]} \text{ and } \texttt{xs[h:]} \text{ are both shorter than } n \text{.}'
+          rule: halves
+        - math: '\text{So } \texttt{merge\_sort} \text{ gives the items of each half in order.}'
+          rule: hypothesis
+        - math: '\texttt{merge} \text{ of the two gives one list in order, with the items of both halves.}'
+          rule: merging
+        - math: '\text{The halves hold the items of } \texttt{xs} \text{, so } \texttt{merge\_sort(xs)} \text{ gives the items of } \texttt{xs} \text{ in order: } P(n) \text{.}'
+          rule: slices
+        - math: 'P(n) \text{ holds for every whole number } n \text{.}'
+          rule: conclude
+    explanation: >-
+      Lists of 0 and 1 items are the base cases. For $n \ge 2$, both halves are shorter than $n$,
+      so the hypothesis says that `merge_sort` sorts them; merging two sorted lists gives a sorted
+      list of the items of both; and the halves together hold the items of the list, so the
+      result is the list in order. Strong induction then gives every length. The loop invariant
+      rule is not needed here: it is what proves `merge` itself right.
+      Equal halves holds only when $n$ is even, so it cannot give line 2, which must hold for
+      every $n \ge 2$.
+
+  - id: derive-merges
+    phase: derive
+    kind: step
+    concept: E1.10/merge-sort
+    title: How many merges
+    prompt: >-
+      How many merges does `merge_sort` make on a list of $n$ items, for any whole number
+      $n \ge 1$ and any order of the items? M1.9's count of the numbers and the operations in a
+      tree may help.
+    answer:
+      type: expression
+      symbols:
+        - { name: n, positive: true, integer: true }
+      lhs: '\text{merges} ='
+      reference: n - 1
+      accept: ['-1 + n', '(n - 1)']
+      reject: ['n', 'n + 1', 'n/2', '2*n - 1', 'n - 2', 'n**2', '2*n']
+    explanation: >-
+      The calls form a tree whose leaves are the calls on one item, $n$ of them, and each call on
+      two or more items joins the trees of its two halves with one merge. M1.9 proved by
+      structural induction that a tree in which each operation joins two parts has one more number
+      than operations, so this tree has one more leaf than merges: $n - 1$ merges. Or count runs:
+      there are $n$ runs of one item to begin with, each merge turns two runs into one, and one
+      run is left at the end.
+
+  - id: derive-worst
+    phase: derive
+    kind: step
+    concept: E1.10/merge-sort
+    covers: [E1.10/comparison-bound]
+    title: The worst case, exactly
+    prompt: >-
+      Work out $W(1)$, $W(2)$, $W(3)$ and $W(4)$ from the recurrence, guess a closed form for
+      $W(k)$ that fits them and $W(0) = 0$, and check it in the recurrence, as M1.9 did. Setting
+      each value beside $k \times 2^k$, the bound from the levels, may help. What is $W(k)$?
+    answer:
+      type: expression
+      symbols:
+        - { name: k, integer: true }
+      lhs: 'W(k) ='
+      reference: (k - 1)*2**k + 1
+      accept: ['k*2**k - 2**k + 1', '2**k*(k - 1) + 1', '1 + (k - 1)*2^k', 'k*2^k - (2^k - 1)']
+      reject: ['k*2**k', '(k - 1)*2**k', 'k*2**k - 1', '2**k - 1', 'k*2**k + 1', '(k + 1)*2**k - 1', 'k*2**(k - 1)', '(k - 1)*2**k - 1']
+    explanation: >-
+      $W(1) = 2 \times 0 + 2 - 1 = 1$, $W(2) = 2 + 3 = 5$, $W(3) = 10 + 7 = 17$ and
+      $W(4) = 34 + 15 = 49$. Each is one more than a multiple of its power of 2:
+      $0 \times 2 + 1$, $1 \times 4 + 1$, $2 \times 8 + 1$ and $3 \times 16 + 1$, which suggests
+      $W(k) = (k - 1)2^k + 1$, and $W(0) = -1 + 1 = 0$ fits too. If it holds for $k$, then
+      $W(k + 1) = 2\big((k - 1)2^k + 1\big) + 2^{k + 1} - 1 = (k - 1)2^{k + 1} + 2^{k + 1} + 1 = k \times 2^{k + 1} + 1$,
+      the formula for $k + 1$, so by induction it holds for every $k$.
+
+  - id: derive-bound
+    phase: derive
+    kind: proof
+    concept: E1.10/comparison-bound
+    title: The fewest comparisons
+    prompt: >-
+      Here is a proof that a sort that only compares, and always finishes within $k$ comparisons
+      on lists of $n$ different items, must have $2^k \ge n!$. Each line follows from the lines
+      above it. Choose the rule that justifies each line. A rule may be used more than once or not
+      at all.
+    answer:
+      type: steps
+      rules:
+        - { id: one-order, name: One way to sort, label: 'Moving the items of two different orders of the same items in the same way leaves them in two different orders, so at most one of them ends in order.' }
+        - { id: invariant, name: Invariant, label: 'A statement that is true before the first comparison, and that each comparison keeps true, is true after every comparison, as with a loop in E1.2.' }
+        - { id: multiply, name: Multiply both sides, label: 'Both sides of an inequality may be multiplied by the same positive number, and $2^j \le 2^k$ when $j \le k$.' }
+        - { id: two-answers, name: Two answers, label: 'A comparison of two different items has one of two answers, yes or no, and which one depends only on the order of the items.' }
+        - { id: pairs, name: Pairs, label: '$n$ items make $\frac{n(n - 1)}{2}$ pairs, as E1.4 counted.' }
+        - { id: same-moves, name: 'Same answers, same moves', label: 'A sort that learns only by comparing makes the same moves for two lists that give the same answers to its comparisons.' }
+        - { id: larger-part, name: The larger part, label: 'When a collection is split into two parts, one of the parts holds at least half of it.' }
+        - { id: orders, name: Orders, label: '$n$ different things can be put in $n!$ orders, as M1.6 counted.' }
+      start: '\text{Before its first comparison, all } n! \text{ orders of the } n \text{ items are possible.}'
+      lines:
+        - math: '\text{Each comparison splits the orders still possible into two groups: those for which its answer is yes, and those for which it is no.}'
+          rule: two-answers
+        - math: '\text{Give each comparison the answer of the larger group, so at least half of the orders still possible stay possible.}'
+          rule: larger-part
+        - math: '\text{So after } j \text{ comparisons, at least } \frac{n!}{2^j} \text{ orders are still possible.}'
+          rule: invariant
+        - math: '\text{Any two orders still possible gave the same answers, so the sort has moved their items in the same way.}'
+          rule: same-moves
+        - math: '\text{So the sort cannot finish while two orders are possible: when it does, after } j \le k \text{ comparisons, } \frac{n!}{2^j} \le 1 \text{.}'
+          rule: one-order
+        - math: '\text{So } n! \le 2^j \le 2^k \text{.}'
+          rule: multiply
+    explanation: >-
+      Each comparison has two answers, and answering with the larger group keeps at least half of
+      the possible orders possible, so by the invariant at least $\frac{n!}{2^j}$ remain after $j$
+      comparisons. Orders still possible gave the same answers, so they were moved the same way,
+      and at most one of them can end in order: the sort cannot finish until one order is left, so
+      $\frac{n!}{2^j} \le 1$ when it does, and multiplying by $2^j$ gives $n! \le 2^j \le 2^k$.
+      Pairs and Orders are not needed, since the $n!$ orders are given before the first line.
+
+  - id: derive-ten
+    phase: derive
+    kind: predict
+    concept: E1.10/comparison-bound
+    title: Ten items
+    prompt: >-
+      By the bound just proved, a sort that only compares needs at least $k$ comparisons on some
+      order of 10 different items, where $2^k$ is the first power of 2 that is at least
+      $10! = 3{,}628{,}800$. What is that $k$?
+    answer: { type: number, value: 22, tolerance: { abs: 0 } }
+    explanation: >-
+      $2^{21} = 2{,}097{,}152$ is less than $3{,}628{,}800$, and $2^{22} = 4{,}194{,}304$ is
+      more, so $k = 22$: with only 21 comparisons, some two of the $10!$ orders would give the same
+      answers.
+    review:
+      variants:
+        - prompt: >-
+            A sort that only compares is given 5 different items. By the bound, it needs at least
+            $k$ comparisons on some order of them, where $2^k$ is the first power of 2 that is at
+            least $5!$. What is that $k$?
+          answer: { type: number, value: 7, tolerance: { abs: 0 } }
+          explanation: >-
+            $5! = 120$, and $2^6 = 64$ is less while $2^7 = 128$ is more, so $k = 7$.
+        - prompt: >-
+            A sort that only compares is given 6 different items. By the bound, it needs at least
+            $k$ comparisons on some order of them, where $2^k$ is the first power of 2 that is at
+            least $6!$. What is that $k$?
+          answer: { type: number, value: 10, tolerance: { abs: 0 } }
+          explanation: >-
+            $6! = 720$, and $2^9 = 512$ is less while $2^{10} = 1{,}024$ is more, so $k = 10$.
+
+  - id: derive-sort-first
+    phase: derive
+    kind: estimate
+    concept: E1.10/binary-search
+    covers: [E1.10/merge-sort]
+    title: When sorting first pays
+    prompt: >-
+      A list of a million losses, in no order, is to be searched $m$ times, each time for a loss
+      that is in it. Scanning from the start finds a loss after about half a million comparisons,
+      on average. Sorting first costs about 20 million comparisons, and then each search takes
+      about 20 looks by binary search. About how many searches make sorting first the cheaper? An
+      answer within a factor of 1.5 counts.
+    answer: { type: number, value: 40, tolerance: { factor: 1.5 } }
+    explanation: >-
+      $m$ scans cost about $500{,}000\,m$ comparisons, and sorting first about
+      $20{,}000{,}000 + 20m$. The two are equal when $m$ is about
+      $\frac{20{,}000{,}000}{500{,}000} = 40$, since the $20m$ is tiny beside the rest, so beyond
+      about 40 searches sorting first is cheaper.
+
+  # Build ----------------------------------------------------------------------
+  - id: build-runs
+    phase: build
+    kind: build
+    concept: E1.10/merge-sort
+    title: A sort that merges runs
+    prompt: >-
+      Write `find_runs(xs)`, which splits a list into its runs, the longest stretches in which no
+      item is less than the item before it, and gives them as a list of lists:
+      `find_runs([3, 5, 2, 2, 7, 1])` gives `[[3, 5], [2, 2, 7], [1]]`. Then write `run_sort(xs)`,
+      which gives a new list of the items of `xs` in order. It finds the runs and merges them in
+      pairs, the first with the second, the third with the fourth and so on, carrying an odd run at
+      the end over as it is, and does the same again with the merged runs until one run is left.
+      Of two equal items, the one that comes first in `xs` should come first in the result, as
+      with `merge_sort`. Compare items only with `<`, as `merge` does. A list already in order is one run, so
+      `run_sort` should sort it in one comparison fewer than its length, as `sorted` did in the
+      puzzle.
+    answer:
+      type: code
+      starter: |
+        def merge(a, b):
+            """The items of the sorted lists a and b, as one sorted list. Of two
+            equal items, the one from a comes first."""
+            out = []
+            i = 0
+            j = 0
+            while i < len(a) and j < len(b):
+                if b[j] < a[i]:
+                    out.append(b[j])
+                    j = j + 1
+                else:
+                    out.append(a[i])
+                    i = i + 1
+            return out + a[i:] + b[j:]
+
+
+        def find_runs(xs):
+            """The runs of xs, in order, as a list of lists: the longest stretches
+            in which no item is less than the one before it."""
+            return []
+
+
+        def run_sort(xs):
+            """A new list of the items of xs in order, made by merging its runs in
+            pairs, again and again, until one run is left."""
+            return []
+
+
+        print(find_runs([3, 5, 2, 2, 7, 1]))
+        print(run_sort([3, 5, 2, 2, 7, 1]))
+      tests: |
+        import random
+
+
+        class Item:
+            """A loss with a tag that says where it began, compared by loss alone. Each < is counted, and any other comparison stops the test, since the sort uses only <."""
+            count = 0
+
+            def __init__(self, loss, tag):
+                self.loss = loss
+                self.tag = tag
+
+            def __lt__(self, other):
+                Item.count = Item.count + 1
+                return self.loss < other.loss
+
+            def __le__(self, other):
+                raise AssertionError("Compare items only with <. Write a <= b as not (b < a).")
+
+            def __gt__(self, other):
+                raise AssertionError("Compare items only with <. Write a > b as b < a.")
+
+            def __ge__(self, other):
+                raise AssertionError("Compare items only with <. Write a >= b as not (a < b).")
+
+            def __repr__(self):
+                return repr(self.loss)
+
+
+        def items(losses):
+            """An Item for each loss, tagged 0, 1, 2 and so on, in order."""
+            out = []
+            for k in range(len(losses)):
+                out.append(Item(losses[k], k))
+            return out
+
+
+        def losses_of(given):
+            out = []
+            for x in given:
+                out.append(x.loss)
+            return out
+
+
+        def test_find_runs():
+            """find_runs([3, 5, 2, 2, 7, 1]) gives [[3, 5], [2, 2, 7], [1]], and it handles an empty list, one item, a list that only falls, and equal items, which stay in one run."""
+            cases = [
+                ([3, 5, 2, 2, 7, 1], [[3, 5], [2, 2, 7], [1]]),
+                ([], []),
+                ([4], [[4]]),
+                ([4, 3, 2, 1], [[4], [3], [2], [1]]),
+                ([2, 2, 2], [[2, 2, 2]]),
+            ]
+            for given, want in cases:
+                got = find_runs(given)
+                assert got == want, f"find_runs({given}) gives {got!r}, not {want}."
+
+
+        def test_small():
+            """run_sort gives [] for an empty list, and [7] for a list holding the one item 7."""
+            for losses in ([], [7]):
+                got = run_sort(items(losses))
+                assert type(got) is list, f"run_sort({losses}) gives {got!r}, not a list."
+                assert losses_of(got) == losses, f"run_sort({losses}) gives {losses_of(got)}, not {losses}."
+
+
+        def test_in_order():
+            """A list of 1,000 items already in order is one run, so run_sort gives it back in order after 999 comparisons."""
+            given = items(list(range(1000)))
+            Item.count = 0
+            got = run_sort(given)
+            n = Item.count
+            assert type(got) is list, f"run_sort gives {got!r}, not a list."
+            assert len(got) == 1000, f"For 1,000 items already in order, run_sort gives {len(got):,} items, not 1,000."
+            assert losses_of(got) == list(range(1000)), "run_sort gives a list that was already in order back in a different order."
+            assert n == 999, f"run_sort made {n:,} comparisons on 1,000 items already in order, not 999: one for each item after the first finds that the whole list is one run, and one run needs no merging."
+
+
+        def test_sorts():
+            """On 300 random lists of 0 to 12 losses, each a whole number from 1 to 4 so that many are equal, run_sort gives the losses in order, each item once, and equal losses in the order they came."""
+            random.seed(10)
+            for trial in range(300):
+                losses = []
+                for k in range(random.randint(0, 12)):
+                    losses.append(random.randint(1, 4))
+                got = run_sort(items(losses))
+                assert type(got) is list, f"run_sort({losses}) gives {got!r}, not a list."
+                assert losses_of(got) == sorted(losses), f"run_sort({losses}) gives {losses_of(got)}, not {sorted(losses)}."
+                tags = []
+                for x in got:
+                    tags.append(x.tag)
+                assert sorted(tags) == list(range(len(losses))), f"run_sort({losses}) does not give back each of the items exactly once."
+                for i in range(len(got) - 1):
+                    if got[i].loss == got[i + 1].loss:
+                        assert got[i].tag < got[i + 1].tag, f"run_sort({losses}) puts two equal losses, {got[i].loss}, the other way round from the order they came in. Of two equal items, merge takes the one from its first list, so merge each pair of runs in the order they lie in the list."
+
+
+        def test_pairs():
+            """On 512 shuffled losses it makes at most 5,120 comparisons: merging the runs in pairs, round after round, keeps the work close to merge sort's."""
+            random.seed(4)
+            losses = list(range(512))
+            random.shuffle(losses)
+            Item.count = 0
+            got = run_sort(items(losses))
+            n = Item.count
+            assert losses_of(got) == list(range(512)), "run_sort does not sort 512 shuffled losses."
+            assert n <= 5120, f"run_sort made {n:,} comparisons on 512 shuffled losses, more than 5,120. Merging each run into one growing list makes about 43,500, since the growing list is compared again and again: merge the runs in pairs, the first with the second, the third with the fourth and so on, and then the merged runs in the same way."
+
+
+        def test_new_list():
+            """run_sort gives a new list, and leaves the list it was given as it was, even when that list is already in order."""
+            given = items([3, 1, 2])
+            before = list(given)
+            got = run_sort(given)
+            assert given == before, "run_sort changed the list it was given. Build new lists, as merge does, and leave the list given as it was."
+            assert got is not given, "run_sort gives back the very list it was given, not a new list."
+            ordered = items([1, 2, 3])
+            got = run_sort(ordered)
+            assert got is not ordered, "For a list already in order, run_sort gives back the very list it was given, not a new list of its items."
+
+
+        def test_own_work():
+            """run_sort does the sorting itself: neither it nor any function it calls uses Python's sorted or a list's sort."""
+            assert type(run_sort).__name__ == "function", "run_sort should be a function of your own, made with def, that finds the runs and merges them in pairs."
+            home = run_sort.__globals__
+
+            def names(code):
+                """The names that code uses, with those of any function written inside it."""
+                out = set(code.co_names)
+                for c in code.co_consts:
+                    if type(c).__name__ == "code":
+                        out = out | names(c)
+                return out
+
+            used = []
+            seen = set()
+            todo = ["run_sort"]
+            while todo:
+                name = todo.pop()
+                f = home.get(name)
+                if name in seen or type(f).__name__ != "function":
+                    continue
+                seen.add(name)
+                called = names(f.__code__)
+                for bad in ("sorted", "sort"):
+                    if bad in called and bad not in used and type(home.get(bad)).__name__ != "function":
+                        used.append(bad)
+                todo = todo + sorted(called)
+            assert not used, f"run_sort, or a function it calls, uses {' and '.join(used)}, which does the sorting for it. Find the runs, and merge them in pairs with merge."
+      reference: |
+        def merge(a, b):
+            """The items of the sorted lists a and b, as one sorted list. Of two
+            equal items, the one from a comes first."""
+            out = []
+            i = 0
+            j = 0
+            while i < len(a) and j < len(b):
+                if b[j] < a[i]:
+                    out.append(b[j])
+                    j = j + 1
+                else:
+                    out.append(a[i])
+                    i = i + 1
+            return out + a[i:] + b[j:]
+
+
+        def find_runs(xs):
+            """The runs of xs, in order, as a list of lists: the longest stretches
+            in which no item is less than the one before it."""
+            runs = []
+            if len(xs) == 0:
+                return runs
+            run = [xs[0]]
+            i = 1
+            while i < len(xs):
+                if xs[i] < xs[i - 1]:
+                    runs.append(run)
+                    run = [xs[i]]
+                else:
+                    run.append(xs[i])
+                i = i + 1
+            runs.append(run)
+            return runs
+
+
+        def run_sort(xs):
+            """A new list of the items of xs in order, made by merging its runs in
+            pairs, again and again, until one run is left."""
+            runs = find_runs(xs)
+            if len(runs) == 0:
+                return []
+            while len(runs) > 1:
+                merged = []
+                k = 0
+                while k + 1 < len(runs):
+                    merged.append(merge(runs[k], runs[k + 1]))
+                    k = k + 2
+                if k < len(runs):
+                    merged.append(runs[k])
+                runs = merged
+            return runs[0]
+
+
+        print(find_runs([3, 5, 2, 2, 7, 1]))
+        print(run_sort([3, 5, 2, 2, 7, 1]))
+      wrong:
+        - code: |
+            def merge(a, b):
+                out = []
+                i = 0
+                j = 0
+                while i < len(a) and j < len(b):
+                    if b[j] < a[i]:
+                        out.append(b[j])
+                        j = j + 1
+                    else:
+                        out.append(a[i])
+                        i = i + 1
+                return out + a[i:] + b[j:]
+
+
+            def find_runs(xs):
+                runs = []
+                if len(xs) == 0:
+                    return runs
+                run = [xs[0]]
+                i = 1
+                while i < len(xs):
+                    if not (xs[i - 1] < xs[i]):
+                        runs.append(run)
+                        run = [xs[i]]
+                    else:
+                        run.append(xs[i])
+                    i = i + 1
+                runs.append(run)
+                return runs
+
+
+            def run_sort(xs):
+                runs = find_runs(xs)
+                if len(runs) == 0:
+                    return []
+                while len(runs) > 1:
+                    merged = []
+                    k = 0
+                    while k + 1 < len(runs):
+                        merged.append(merge(runs[k], runs[k + 1]))
+                        k = k + 2
+                    if k < len(runs):
+                        merged.append(runs[k])
+                    runs = merged
+                return runs[0]
+          why: Starts a new run at an equal item as well as at a smaller one, so `[2, 2, 2]` is three runs.
+        - code: |
+            def merge(a, b):
+                out = []
+                i = 0
+                j = 0
+                while i < len(a) and j < len(b):
+                    if b[j] < a[i]:
+                        out.append(b[j])
+                        j = j + 1
+                    else:
+                        out.append(a[i])
+                        i = i + 1
+                return out + a[i:] + b[j:]
+
+
+            def find_runs(xs):
+                runs = []
+                if len(xs) == 0:
+                    return runs
+                run = [xs[0]]
+                i = 1
+                while i < len(xs):
+                    if xs[i] < xs[i - 1]:
+                        runs.append(run)
+                        run = [xs[i]]
+                    else:
+                        run.append(xs[i])
+                    i = i + 1
+                runs.append(run)
+                return runs
+
+
+            def run_sort(xs):
+                out = []
+                for run in find_runs(xs):
+                    out = merge(out, run)
+                return out
+          why: Merges each run into one growing list, which compares the growing list again and again, about 43,500 comparisons for 512 shuffled items.
+        - code: |
+            def merge(a, b):
+                out = []
+                i = 0
+                j = 0
+                while i < len(a) and j < len(b):
+                    if b[j] < a[i]:
+                        out.append(b[j])
+                        j = j + 1
+                    else:
+                        out.append(a[i])
+                        i = i + 1
+                return out + a[i:] + b[j:]
+
+
+            def find_runs(xs):
+                runs = []
+                if len(xs) == 0:
+                    return runs
+                run = [xs[0]]
+                i = 1
+                while i < len(xs):
+                    if xs[i] < xs[i - 1]:
+                        runs.append(run)
+                        run = [xs[i]]
+                    else:
+                        run.append(xs[i])
+                    i = i + 1
+                runs.append(run)
+                return runs
+
+
+            def run_sort(xs):
+                runs = find_runs(xs)
+                if len(runs) == 0:
+                    return []
+                while len(runs) > 1:
+                    merged = []
+                    k = 0
+                    while k + 1 < len(runs):
+                        merged.append(merge(runs[k], runs[k + 1]))
+                        k = k + 2
+                    runs = merged
+                return runs[0]
+          why: Drops an odd run left over at the end of a round, so its items are lost.
+        - code: |
+            def merge(a, b):
+                out = []
+                i = 0
+                j = 0
+                while i < len(a) and j < len(b):
+                    if b[j] < a[i]:
+                        out.append(b[j])
+                        j = j + 1
+                    else:
+                        out.append(a[i])
+                        i = i + 1
+                return out + a[i:] + b[j:]
+
+
+            def find_runs(xs):
+                runs = []
+                if len(xs) == 0:
+                    return runs
+                run = [xs[0]]
+                i = 1
+                while i < len(xs):
+                    if xs[i] < xs[i - 1]:
+                        runs.append(run)
+                        run = [xs[i]]
+                    else:
+                        run.append(xs[i])
+                    i = i + 1
+                runs.append(run)
+                return runs
+
+
+            def run_sort(xs):
+                runs = find_runs(xs)
+                if len(runs) <= 1:
+                    return xs
+                while len(runs) > 1:
+                    merged = []
+                    k = 0
+                    while k + 1 < len(runs):
+                        merged.append(merge(runs[k], runs[k + 1]))
+                        k = k + 2
+                    if k < len(runs):
+                        merged.append(runs[k])
+                    runs = merged
+                return runs[0]
+          why: Gives back the very list it was given when that list is one run, not a new list.
+        - code: |
+            def find_runs(xs):
+                runs = []
+                if len(xs) == 0:
+                    return runs
+                run = [xs[0]]
+                i = 1
+                while i < len(xs):
+                    if xs[i] < xs[i - 1]:
+                        runs.append(run)
+                        run = [xs[i]]
+                    else:
+                        run.append(xs[i])
+                    i = i + 1
+                runs.append(run)
+                return runs
+
+
+            def run_sort(xs):
+                return sorted(xs)
+          why: Lets Python's `sorted` do the work.
+    explanation: >-
+      `find_runs` keeps a current run and starts a new one only when an item is less than the one
+      before it, so equal items stay in one run, and a list of $n$ items costs $n - 1$
+      comparisons. `run_sort` then merges neighbouring runs in pairs, carrying an odd run over,
+      round after round, so each round halves the number of runs and moves every item once, as a
+      level of merge sort does. Merging the first list from the left keeps equal items in the order
+      they came, so the sort is stable.
+
+  - id: build-count-between
+    phase: build
+    kind: build
+    concept: E1.10/binary-search
+    title: Losses in a range
+    prompt: >-
+      A leaderboard keeps its losses in a sorted list. Write `count_between(xs, low, high)`, which
+      gives how many items of the sorted list `xs` are at least `low` and at most `high`. It should
+      search by halving, so that it looks at no more than about 40 different items of a list of
+      a million.
+      `first_at_least` from the Explore phase is in the starter, and a search for the first slot
+      whose item is more than a value can be written in the same way. When `low` is more than
+      `high`, no item lies between them, and the count is 0.
+    answer:
+      type: code
+      starter: |
+        def first_at_least(xs, x):
+            """The first slot of the sorted list xs whose item is at least x, or
+            len(xs) when there is none."""
+            lo = -1
+            hi = len(xs)
+            while hi - lo > 1:
+                mid = (lo + hi) // 2
+                if xs[mid] >= x:
+                    hi = mid
+                else:
+                    lo = mid
+            return hi
+
+
+        def count_between(xs, low, high):
+            """How many items of the sorted list xs are at least low and at most high."""
+            return 0
+
+
+        losses = [0.12, 0.2, 0.2, 0.25, 0.3, 0.31, 0.4]
+        print(count_between(losses, 0.2, 0.3))
+      tests: |
+        import random
+
+
+        class Looks:
+            """A sorted list that counts the different items looked at, and stops a search that looks far too often."""
+
+            def __init__(self, items):
+                self.items = items
+                self.reads = 0
+                self.seen = set()
+
+            def __len__(self):
+                return len(self.items)
+
+            def __getitem__(self, i):
+                assert type(i) is int, "count_between should look at single items, xs[i], not slices of the list."
+                self.reads = self.reads + 1
+                assert self.reads <= 1000, "count_between looked at items of a list of a million more than 1,000 times. A search by halving finds each end of the range in about 20 looks."
+                self.seen.add(i)
+                return self.items[i]
+
+
+        def counted(given, low, high):
+            """The count, worked out by looking at every item."""
+            n = 0
+            for x in given:
+                if low <= x <= high:
+                    n = n + 1
+            return n
+
+
+        def test_example():
+            """count_between([0.12, 0.2, 0.2, 0.25, 0.3, 0.31, 0.4], 0.2, 0.3) is 4: 0.2, 0.2, 0.25 and 0.3, since both ends count."""
+            got = count_between([0.12, 0.2, 0.2, 0.25, 0.3, 0.31, 0.4], 0.2, 0.3)
+            assert got == 4, f"count_between([0.12, 0.2, 0.2, 0.25, 0.3, 0.31, 0.4], 0.2, 0.3) gives {got!r}, not 4: 0.2, 0.2, 0.25 and 0.3."
+
+
+        def test_against_counting():
+            """On 300 random sorted lists of up to 10 whole numbers from 1 to 6, with many repeats, it agrees with counting the items one by one, for ends below, inside and above the list, low above high among them."""
+            random.seed(5)
+            for trial in range(300):
+                given = []
+                for k in range(random.randint(0, 10)):
+                    given.append(random.randint(1, 6))
+                given.sort()
+                low = random.randint(0, 7)
+                high = random.randint(0, 7)
+                want = counted(given, low, high)
+                got = count_between(given, low, high)
+                assert got == want, f"count_between({given}, {low}, {high}) gives {got!r}, not {want}."
+
+
+        def test_edges():
+            """An empty list, a range around every item, a low equal to the high, and a low above the high."""
+            cases = [([], 1, 5, 0), ([2, 4, 6], 0, 10, 3), ([2, 4, 4, 6], 4, 4, 2), ([2, 4, 6], 5, 3, 0), ([1, 2, 3], 3, 1, 0), ([5], 1, 3, 0)]
+            for given, low, high, want in cases:
+                got = count_between(given, low, high)
+                assert got == want, f"count_between({given}, {low}, {high}) gives {got!r}, not {want}."
+
+
+        def test_looks():
+            """On a sorted list of a million even numbers it gives the right counts, looking at no more than 42 different items each time."""
+            given = Looks(list(range(0, 2000000, 2)))
+            for low, high, want in ((1000, 3000, 1001), (-5, 10, 6), (1999990, 3000000, 5), (777777, 777777, 0), (500000, 499998, 0)):
+                given.reads = 0
+                given.seen = set()
+                got = count_between(given, low, high)
+                shown = f"{got:,}" if type(got) is int else repr(got)
+                assert got == want, f"For the million even numbers from 0 to 1,999,998, count_between(xs, {low}, {high}) gives {shown}, not {want:,}."
+                looked = len(given.seen)
+                assert looked <= 42, f"count_between looked at {looked:,} different items of a list of a million, more than 42: a search by halving needs at most 20 for each end."
+      reference: |
+        def first_at_least(xs, x):
+            """The first slot of the sorted list xs whose item is at least x, or
+            len(xs) when there is none."""
+            lo = -1
+            hi = len(xs)
+            while hi - lo > 1:
+                mid = (lo + hi) // 2
+                if xs[mid] >= x:
+                    hi = mid
+                else:
+                    lo = mid
+            return hi
+
+
+        def first_above(xs, x):
+            """The first slot of the sorted list xs whose item is more than x, or
+            len(xs) when there is none."""
+            lo = -1
+            hi = len(xs)
+            while hi - lo > 1:
+                mid = (lo + hi) // 2
+                if xs[mid] > x:
+                    hi = mid
+                else:
+                    lo = mid
+            return hi
+
+
+        def count_between(xs, low, high):
+            """How many items of the sorted list xs are at least low and at most high."""
+            if low > high:
+                return 0
+            return first_above(xs, high) - first_at_least(xs, low)
+
+
+        losses = [0.12, 0.2, 0.2, 0.25, 0.3, 0.31, 0.4]
+        print(count_between(losses, 0.2, 0.3))
+      wrong:
+        - code: |
+            def first_at_least(xs, x):
+                lo = -1
+                hi = len(xs)
+                while hi - lo > 1:
+                    mid = (lo + hi) // 2
+                    if xs[mid] >= x:
+                        hi = mid
+                    else:
+                        lo = mid
+                return hi
+
+
+            def count_between(xs, low, high):
+                if low > high:
+                    return 0
+                return first_at_least(xs, high) - first_at_least(xs, low)
+          why: Ends the range at the first item that is at least `high`, so items equal to `high` are left out.
+        - code: |
+            def count_between(xs, low, high):
+                n = 0
+                for x in xs:
+                    if low <= x <= high:
+                        n = n + 1
+                return n
+          why: Looks at every item, a million looks for a list of a million.
+        - code: |
+            def first_at_least(xs, x):
+                lo = -1
+                hi = len(xs)
+                while hi - lo > 1:
+                    mid = (lo + hi) // 2
+                    if xs[mid] >= x:
+                        hi = mid
+                    else:
+                        lo = mid
+                return hi
+
+
+            def first_above(xs, x):
+                lo = -1
+                hi = len(xs)
+                while hi - lo > 1:
+                    mid = (lo + hi) // 2
+                    if xs[mid] > x:
+                        hi = mid
+                    else:
+                        lo = mid
+                return hi
+
+
+            def count_between(xs, low, high):
+                return first_above(xs, high) - first_at_least(xs, low)
+          why: Gives a negative count when `low` is more than `high` and some items lie between them.
+        - code: |
+            def first_at_least(xs, x):
+                lo = -1
+                hi = len(xs)
+                while hi - lo > 1:
+                    mid = (lo + hi) // 2
+                    if xs[mid] >= x:
+                        hi = mid
+                    else:
+                        lo = mid
+                return hi
+
+
+            def first_above(xs, x):
+                lo = 0
+                hi = len(xs)
+                while hi - lo > 1:
+                    mid = (lo + hi) // 2
+                    if xs[mid] > x:
+                        hi = mid
+                    else:
+                        lo = mid
+                return hi
+
+
+            def count_between(xs, low, high):
+                if low > high:
+                    return 0
+                return first_above(xs, high) - first_at_least(xs, low)
+          why: Starts the second search with `lo` at slot 0, which it never looks at, so a list whose first item is above `high` is miscounted.
+    explanation: >-
+      The items at least `low` start at `first_at_least(xs, low)`, and the items more than `high`
+      start at the first slot whose item is more than `high`, found by the same search with `>` in
+      place of `>=`. The items between are the slots from the first up to, but not including, the
+      second, so the count is the second slot less the first. Each search halves its stretch, so a
+      million items need at most 20 looks each. When `low` is more than `high` the difference can
+      be negative, so that case gives 0 first.
+
+  - id: build-hash-set
+    phase: build
+    kind: build
+    concept: E1.10/hash-tables
+    title: A set of your own
+    prompt: >-
+      Write a class `HashSet` that keeps its keys as this lesson's hash table does. A new one has 8
+      empty buckets, kept as a list of 8 lists in `self.buckets`. `s.add(key)` puts `key` at the
+      end of bucket `hash(key) % len(self.buckets)`, unless a key equal to it is in that bucket
+      already. When a new key would make the keys outnumber the buckets, `add` first doubles the
+      number of buckets, moving every key already stored to its bucket among the new ones, and
+      then puts the new key in its own bucket among them. Python works out `key in s`
+      as `s.__contains__(key)`, and `len(s)` as `s.__len__()`, as it works out `==` with `__eq__`:
+      write both, so that `key in s` searches only the key's own bucket.
+    answer:
+      type: code
+      starter: |
+        class HashSet:
+            """A set of keys, kept in buckets: each key is in bucket
+            hash(key) % len(self.buckets)."""
+
+            def __init__(self):
+                self.buckets = []
+                for k in range(8):
+                    self.buckets.append([])
+                self.count = 0
+
+            def add(self, key):
+                """Puts key in its bucket, unless an equal key is there already. When
+                a new key would make the keys outnumber the buckets, first doubles the
+                buckets and moves every key already stored to its new bucket."""
+                pass
+
+            def __contains__(self, key):
+                """True when a key equal to key is in the set: key in s calls this."""
+                return False
+
+            def __len__(self):
+                """How many keys the set holds: len(s) calls this."""
+                return 0
+
+
+        s = HashSet()
+        for k in [3, 11, 19, 27, 13]:
+            s.add(k)
+        print(len(s), 19 in s, 35 in s)
+        print(s.buckets)
+      tests: |
+        import random
+
+
+        class Key:
+            """A key with a value and a hash chosen by the test, whose == counts its calls."""
+            eqs = 0
+
+            def __init__(self, value, h):
+                self.value = value
+                self.h = h
+
+            def __hash__(self):
+                return self.h
+
+            def __eq__(self, other):
+                Key.eqs = Key.eqs + 1
+                return isinstance(other, Key) and self.value == other.value
+
+            def __repr__(self):
+                return f"Key({self.value})"
+
+
+        def all_keys(table):
+            """Every key in the buckets, in bucket order."""
+            out = []
+            for b in table.buckets:
+                for k in b:
+                    out.append(k)
+            return out
+
+
+        def test_starts_empty():
+            """A new HashSet has a list of 8 empty buckets, and len 0."""
+            t = HashSet()
+            assert type(t.buckets) is list and len(t.buckets) == 8, f"A new HashSet's buckets are {t.buckets!r}, not a list of 8 empty lists."
+            assert all_keys(t) == [], f"A new HashSet's buckets are {t.buckets!r}, not 8 empty lists."
+            assert len(t) == 0, f"len of a new HashSet gives {len(t)!r}, not 0."
+
+
+        def test_example():
+            """After adding 3, 11, 19, 27 and 13, bucket 3 holds [3, 11, 19, 27] and bucket 5 holds [13]; 19 is in the set, 35 is not, and len gives 5."""
+            t = HashSet()
+            for k in [3, 11, 19, 27, 13]:
+                t.add(k)
+            assert t.buckets[3] == [3, 11, 19, 27], f"After adding 3, 11, 19, 27 and 13, bucket 3 holds {t.buckets[3]!r}, not [3, 11, 19, 27]."
+            assert t.buckets[5] == [13], f"After adding 3, 11, 19, 27 and 13, bucket 5 holds {t.buckets[5]!r}, not [13]."
+            assert len(t) == 5, f"len gives {len(t)!r} after adding five different keys, not 5."
+            assert 19 in t, "19 in s gives False, though 19 was added."
+            assert 35 not in t, "35 in s gives True, though 35 was never added."
+
+
+        def test_like_a_set():
+            """Adding 60 random whole numbers from 0 to 40, many of them more than once, gives the same answers to in and len as Python's own set."""
+            random.seed(8)
+            t = HashSet()
+            real = set()
+            for trial in range(60):
+                k = random.randint(0, 40)
+                t.add(k)
+                real.add(k)
+                want = len(real)
+                if len(t) > want:
+                    hint = "Count a key only when it is new: not when it is added again, and not when it is moved because the buckets doubled. add must find a key that is already there in its own bucket, hash(key) % the number of buckets, even after the buckets have doubled."
+                else:
+                    hint = "Count each new key once, as it is added."
+                added = "1 different key has" if want == 1 else f"{want} different keys have"
+                assert len(t) == want, f"After adding {k}, len gives {len(t)}, but {added} been added. {hint}"
+            for k in range(-3, 45):
+                assert (k in t) == (k in real), f"{k} in s gives {k in t}, but {k} {'was' if k in real else 'was never'} added."
+
+
+        def test_strings():
+            """Strings are keys too: each word added is found once, and other words are not found."""
+            t = HashSet()
+            for w in ["the", "loss", "fell", "the", "rate", "rose", "loss"]:
+                t.add(w)
+            assert len(t) == 5, f"After adding the, loss, fell, the, rate, rose and loss, len gives {len(t)}, not 5."
+            for w in ["the", "loss", "fell", "rate", "rose"]:
+                assert w in t, f"{w!r} in s gives False, though {w!r} was added."
+            for w in ["lost", "The", ""]:
+                assert w not in t, f"{w!r} in s gives True, though {w!r} was never added."
+
+
+        def test_doubles():
+            """The buckets double when a new key would make the keys outnumber them: 8 buckets for up to 8 keys, 16 for 9 to 16, 32 for 17 to 32 and 64 for 33 to 40, and adding a key again changes nothing."""
+            t = HashSet()
+            for k in range(40):
+                t.add(k)
+                t.add(k)
+                n = k + 1
+                want = 8
+                while want < n:
+                    want = want * 2
+                keys = "1 key" if n == 1 else f"{n} keys"
+                assert len(t.buckets) == want, f"With {keys} the set has {len(t.buckets)} buckets, not {want}. Double the buckets only when a new key, not one already there, would make the keys outnumber them."
+                added = "1 key twice" if n == 1 else f"{n} different keys, each of them twice"
+                assert len(t) == n, f"After adding {added}, len gives {len(t)}, not {n}."
+
+
+        def test_moved():
+            """After 43 different keys the buckets have doubled to 64, and every key is in bucket hash(key) % 64, once only, and the buckets are all different lists."""
+            t = HashSet()
+            for k in range(0, 300, 7):
+                t.add(k)
+            m = len(t.buckets)
+            assert m == 64, f"After adding 43 different keys the set has {m} buckets, not 64, so this check cannot see whether keys move when the buckets double. Double the buckets when a new key would make the keys outnumber them."
+            ids = set()
+            for b in t.buckets:
+                ids.add(id(b))
+            assert len(ids) == m, "Some buckets are one and the same list, so a key put in one is in the others too: two names for one list, as in E1.4. Make each new bucket with a [] of its own, as __init__ does."
+            for i in range(m):
+                for k in t.buckets[i]:
+                    assert hash(k) % m == i, f"Key {k} is in bucket {i} of {m}, but hash({k}) % {m} is {hash(k) % m}. When the buckets double, move every key to its bucket among the new ones."
+            got = sorted(all_keys(t))
+            assert got == list(range(0, 300, 7)), f"The buckets hold {got}, not each of 0, 7, 14 and so on up to 294 exactly once."
+
+
+        def test_one_bucket():
+            """A lookup compares the key only with the keys in its own bucket: looking up a key that was never added, among 40 keys, compares it with no more keys than that bucket holds."""
+            t = HashSet()
+            for k in range(40):
+                t.add(Key(k, k))
+            m = len(t.buckets)
+            own = len(t.buckets[104 % m])
+            Key.eqs = 0
+            found = Key(1000, 104) in t
+            n = Key.eqs
+            assert not found, "A key that was never added is found."
+            assert n <= own, f"Looking up a key that was never added compared it with {n:,} {'key' if n == 1 else 'keys'}, but its own bucket, {104 % m} of {m}, holds {own:,}. Search only the bucket hash(key) % the number of buckets."
+            Key.eqs = 0
+            assert Key(5, 5) in t, "Key(5) was added, but Key(5) in s gives False."
+            mine = len(t.buckets[5 % m])
+            assert Key.eqs <= mine, f"Looking up Key(5) compared it with {Key.eqs:,} keys, but its own bucket, {5 % m} of {m}, holds {mine:,}. Search only the bucket hash(key) % the number of buckets."
+
+
+        def test_configs():
+            """Keys of a class whose __hash__ agrees with its __eq__ work: two equal configs count once."""
+            class Config:
+                def __init__(self, lr, batch):
+                    self.lr = lr
+                    self.batch = batch
+
+                def __eq__(self, other):
+                    return self.lr == other.lr and self.batch == other.batch
+
+                def __hash__(self):
+                    return hash((self.lr, self.batch))
+
+            t = HashSet()
+            for c in [Config(0.01, 32), Config(0.1, 32), Config(0.01, 32)]:
+                t.add(c)
+            assert len(t) == 2, f"After adding Config(0.01, 32), Config(0.1, 32) and Config(0.01, 32) again, len gives {len(t)}, not 2."
+            assert Config(0.1, 32) in t, "Config(0.1, 32) was added, but a new Config(0.1, 32) is not found."
+            assert Config(0.1, 64) not in t, "Config(0.1, 64) was never added, but it is found."
+      reference: |
+        class HashSet:
+            """A set of keys, kept in buckets: each key is in bucket
+            hash(key) % len(self.buckets)."""
+
+            def __init__(self):
+                self.buckets = []
+                for k in range(8):
+                    self.buckets.append([])
+                self.count = 0
+
+            def add(self, key):
+                """Puts key in its bucket, unless an equal key is there already. When
+                a new key would make the keys outnumber the buckets, first doubles the
+                buckets and moves every key already stored to its new bucket."""
+                if key in self.buckets[hash(key) % len(self.buckets)]:
+                    return
+                if self.count + 1 > len(self.buckets):
+                    old = self.buckets
+                    self.buckets = []
+                    for k in range(2 * len(old)):
+                        self.buckets.append([])
+                    for b in old:
+                        for k in b:
+                            self.buckets[hash(k) % len(self.buckets)].append(k)
+                self.buckets[hash(key) % len(self.buckets)].append(key)
+                self.count = self.count + 1
+
+            def __contains__(self, key):
+                """True when a key equal to key is in the set: key in s calls this."""
+                return key in self.buckets[hash(key) % len(self.buckets)]
+
+            def __len__(self):
+                """How many keys the set holds: len(s) calls this."""
+                return self.count
+
+
+        s = HashSet()
+        for k in [3, 11, 19, 27, 13]:
+            s.add(k)
+        print(len(s), 19 in s, 35 in s)
+        print(s.buckets)
+      wrong:
+        - code: |
+            class HashSet:
+                def __init__(self):
+                    self.buckets = []
+                    for k in range(8):
+                        self.buckets.append([])
+                    self.count = 0
+
+                def add(self, key):
+                    bucket = self.buckets[hash(key) % len(self.buckets)]
+                    if key in bucket:
+                        return
+                    bucket.append(key)
+                    self.count = self.count + 1
+
+                def __contains__(self, key):
+                    return key in self.buckets[hash(key) % len(self.buckets)]
+
+                def __len__(self):
+                    return self.count
+          why: Never doubles the buckets, so they grow longer and longer as keys are added.
+        - code: |
+            class HashSet:
+                def __init__(self):
+                    self.buckets = []
+                    for k in range(8):
+                        self.buckets.append([])
+                    self.count = 0
+
+                def add(self, key):
+                    bucket = self.buckets[hash(key) % len(self.buckets)]
+                    if key in bucket:
+                        return
+                    bucket.append(key)
+                    self.count = self.count + 1
+                    if self.count > len(self.buckets):
+                        for k in range(len(self.buckets)):
+                            self.buckets.append([])
+
+                def __contains__(self, key):
+                    return key in self.buckets[hash(key) % len(self.buckets)]
+
+                def __len__(self):
+                    return self.count
+          why: Doubles the buckets but leaves every key where it was, so later lookups search the wrong bucket.
+        - code: |
+            class HashSet:
+                def __init__(self):
+                    self.buckets = []
+                    for k in range(8):
+                        self.buckets.append([])
+                    self.count = 0
+
+                def add(self, key):
+                    bucket = self.buckets[hash(key) % len(self.buckets)]
+                    if key in bucket:
+                        return
+                    bucket.append(key)
+                    self.count = self.count + 1
+                    if self.count > len(self.buckets):
+                        old = self.buckets
+                        self.buckets = [[]] * (2 * len(old))
+                        for b in old:
+                            for k in b:
+                                self.buckets[hash(k) % len(self.buckets)].append(k)
+
+                def __contains__(self, key):
+                    return key in self.buckets[hash(key) % len(self.buckets)]
+
+                def __len__(self):
+                    return self.count
+          why: Makes the new buckets with `[[]] * n`, which is n names for one list, so every key is in every bucket.
+        - code: |
+            class HashSet:
+                def __init__(self):
+                    self.buckets = []
+                    for k in range(8):
+                        self.buckets.append([])
+                    self.count = 0
+
+                def add(self, key):
+                    bucket = self.buckets[hash(key) % len(self.buckets)]
+                    if key in bucket:
+                        return
+                    bucket.append(key)
+                    self.count = self.count + 1
+                    if self.count > len(self.buckets):
+                        old = self.buckets
+                        self.buckets = []
+                        for k in range(2 * len(old)):
+                            self.buckets.append([])
+                        for b in old:
+                            for k in b:
+                                self.buckets[hash(k) % len(self.buckets)].append(k)
+
+                def __contains__(self, key):
+                    for b in self.buckets:
+                        if key in b:
+                            return True
+                    return False
+
+                def __len__(self):
+                    return self.count
+          why: Searches every bucket for a key, as a search of a list would, instead of only the key's own bucket.
+        - code: |
+            class HashSet:
+                def __init__(self):
+                    self.buckets = []
+                    for k in range(8):
+                        self.buckets.append([])
+                    self.count = 0
+
+                def add(self, key):
+                    self.buckets[hash(key) % len(self.buckets)].append(key)
+                    self.count = self.count + 1
+                    if self.count > len(self.buckets):
+                        old = self.buckets
+                        self.buckets = []
+                        for k in range(2 * len(old)):
+                            self.buckets.append([])
+                        for b in old:
+                            for k in b:
+                                self.buckets[hash(k) % len(self.buckets)].append(k)
+
+                def __contains__(self, key):
+                    return key in self.buckets[hash(key) % len(self.buckets)]
+
+                def __len__(self):
+                    return self.count
+          why: Adds a key again even when an equal key is already in its bucket, so repeats are kept and counted.
+    explanation: >-
+      `add` works out the key's bucket from its hash, does nothing if an equal key is there, and
+      otherwise appends the key and counts it. When the count passes the number of buckets, it makes
+      twice as many new, separate buckets and moves every key to the bucket its hash now gives,
+      since `hash(key) % m` changes with `m`. `__contains__` works out the same bucket and searches
+      only it, which is why a lookup costs about one comparison when the buckets are short, and
+      `__len__` gives the count.
+
+  - id: breakit-one-field
+    phase: build
+    kind: breakit
+    concept: E1.10/hash-tables
+    title: A hash from one field
+    prompt: >-
+      Configs are tried only once each, with a set to remember which have been tried. Predict what
+      happens after the change, then run both versions to see.
+    answer:
+      type: breakit
+      code: |
+        class Config:
+            def __init__(self, lr, batch):
+                self.lr = lr
+                self.batch = batch
+
+            def __eq__(self, other):
+                return self.lr == other.lr and self.batch == other.batch
+
+            def __hash__(self):
+                return hash((self.lr, self.batch))
+
+        configs = [Config(0.01, 32), Config(0.1, 32), Config(0.01, 32), Config(0.1, 64), Config(0.1, 32)]
+        tried = set()
+        for c in configs:
+            if c not in tried:
+                tried.add(c)
+        print(len(tried), "configs trained")
+      broken: |
+        class Config:
+            def __init__(self, lr, batch):
+                self.lr = lr
+                self.batch = batch
+
+            def __eq__(self, other):
+                return self.lr == other.lr and self.batch == other.batch
+
+            def __hash__(self):
+                return hash(self.lr)
+
+        configs = [Config(0.01, 32), Config(0.1, 32), Config(0.01, 32), Config(0.1, 64), Config(0.1, 32)]
+        tried = set()
+        for c in configs:
+            if c not in tried:
+                tried.add(c)
+        print(len(tried), "configs trained")
+      change: '`__hash__` works out the hash from the learning rate alone: `return hash(self.lr)`.'
+      options:
+        - { id: two, label: 'It prints `2 configs trained`, one for each learning rate', when: "error is None and len(tried) == 2" }
+        - { id: same, label: 'It prints `3 configs trained`, as before', when: "error is None and len(tried) == 3" }
+        - { id: five, label: 'It prints `5 configs trained`, as no two configs now meet', when: "error is None and len(tried) == 5" }
+        - { id: error, label: 'It stops with a `TypeError`, as the hash and `==` disagree', when: "error is not None" }
+        - { id: other, label: 'Something else happens', when: "error is None and len(tried) not in (2, 3, 5)" }
+    explanation: >-
+      Equal configs have equal learning rates, so they still have equal hashes, and a lookup still
+      finds an equal config in its bucket: 3 configs, as before. `Config(0.1, 32)` and
+      `Config(0.1, 64)` now share a hash, so a lookup for either may meet the other first, which
+      costs an extra comparison, but
+      `__eq__` still tells them apart. Python never checks that a hash agrees with `==`; it only
+      relies on it.
+
+  - id: debug-bisect
+    phase: build
+    kind: debug
+    concept: E1.10/binary-search
+    title: A search that never ends
+    prompt: >-
+      `bisect_left(xs, x)` should give the first slot of the sorted list `xs` whose item is at least
+      `x`, as `first_at_least` does, but it is written as Python's `bisect` module writes it: every
+      slot before `lo` holds an item less than `x`, every slot from `hi` on holds an item at least
+      `x`, so `lo` starts at 0, and the search ends when `lo` and `hi` meet. For `[10, 20, 30]` and
+      25 it never finishes. Find which line keeps the loop from ending, and why, using the gap
+      `hi - lo`, then mend it; once the tests pass, the answer says whether you were right.
+    answer:
+      type: code
+      maxSteps: 300000
+      starter: |
+        def bisect_left(xs, x):
+            """The first slot of the sorted list xs whose item is at least x, or
+            len(xs) when there is none."""
+            lo = 0
+            hi = len(xs)
+            while lo < hi:
+                mid = (lo + hi) // 2
+                if xs[mid] < x:
+                    lo = mid
+                else:
+                    hi = mid
+            return lo
+
+
+        print(bisect_left([10, 20, 30], 25))
+      tests: |
+        import bisect
+        import random
+
+
+        class Looks:
+            """A sorted list that counts the different items looked at, and stops a search that looks far too often."""
+
+            def __init__(self, items):
+                self.items = items
+                self.reads = 0
+                self.seen = set()
+
+            def __len__(self):
+                return len(self.items)
+
+            def __getitem__(self, i):
+                self.reads = self.reads + 1
+                assert self.reads <= 100, "bisect_left looked at items of a list of a million more than 100 times, where halving needs about 20. Check that every pass makes the gap hi - lo smaller."
+                self.seen.add(i)
+                return self.items[i]
+
+
+        def test_example():
+            """bisect_left([10, 20, 30], 25) is 2, the slot where 25 would go."""
+            got = bisect_left([10, 20, 30], 25)
+            assert got == 2, f"bisect_left([10, 20, 30], 25) gives {got!r}, not 2."
+
+
+        def test_against_bisect():
+            """On 300 random sorted lists of up to 10 whole numbers from 1 to 6, with many repeats, it agrees with Python's bisect.bisect_left for x from 0 to 7."""
+            random.seed(6)
+            for trial in range(300):
+                given = []
+                for k in range(random.randint(0, 10)):
+                    given.append(random.randint(1, 6))
+                given.sort()
+                x = random.randint(0, 7)
+                want = bisect.bisect_left(given, x)
+                got = bisect_left(given, x)
+                assert got == want, f"bisect_left({given}, {x}) gives {got!r}, not {want}."
+
+
+        def test_edges():
+            """An empty list gives 0, x below every item gives 0, x above every item gives len(xs), and x equal to an end gives that end's slot."""
+            for given, x, want in (([], 5, 0), ([10, 20, 30], 5, 0), ([10, 20, 30], 35, 3), ([10, 20, 30], 10, 0), ([10, 20, 30], 30, 2), ([10], 5, 0)):
+                got = bisect_left(given, x)
+                assert got == want, f"bisect_left({given}, {x}) gives {got!r}, not {want}."
+
+
+        def test_looks():
+            """On a sorted list of a million even numbers it gives the right slots, looking at no more than 21 different items each time."""
+            given = Looks(list(range(0, 2000000, 2)))
+            for x in (-1, 0, 1, 777777, 1999998, 1999999, 3000000):
+                given.reads = 0
+                given.seen = set()
+                got = bisect_left(given, x)
+                want = bisect.bisect_left(given.items, x)
+                shown = f"{got:,}" if type(got) is int else repr(got)
+                assert got == want, f"In the million even numbers from 0 to 1,999,998, bisect_left gives slot {shown} for {x:,}, not {want:,}."
+                looked = len(given.seen)
+                assert looked <= 21, f"bisect_left looked at {looked:,} different items of a list of a million, more than 21."
+      reference: |
+        def bisect_left(xs, x):
+            """The first slot of the sorted list xs whose item is at least x, or
+            len(xs) when there is none."""
+            lo = 0
+            hi = len(xs)
+            while lo < hi:
+                mid = (lo + hi) // 2
+                if xs[mid] < x:
+                    lo = mid + 1
+                else:
+                    hi = mid
+            return lo
+
+
+        print(bisect_left([10, 20, 30], 25))
+      wrong:
+        - code: |
+            def bisect_left(xs, x):
+                lo = 0
+                hi = len(xs)
+                while lo < hi:
+                    mid = (lo + hi) // 2
+                    if xs[mid] < x:
+                        lo = mid
+                    else:
+                        hi = mid
+                return lo
+          why: The bug itself. When `hi` is one more than `lo`, `mid` is `lo`, so `lo = mid` changes nothing and the loop never ends.
+        - code: |
+            def bisect_left(xs, x):
+                lo = 0
+                hi = len(xs)
+                while lo < hi:
+                    mid = (lo + hi) // 2
+                    if xs[mid] < x:
+                        lo = mid + 1
+                    else:
+                        hi = mid - 1
+                return lo
+          why: Moves `hi` past `mid`, though the item in slot `mid` is at least `x` and may be the answer.
+        - code: |
+            def bisect_left(xs, x):
+                lo = 0
+                hi = len(xs)
+                while lo <= hi:
+                    mid = (lo + hi) // 2
+                    if xs[mid] < x:
+                        lo = mid + 1
+                    else:
+                        hi = mid
+                return lo
+          why: Keeps going when `lo` and `hi` meet, so `mid` is the slot already known, and the loop never ends, or it looks past the end of the list.
+        - code: |
+            def bisect_left(xs, x):
+                lo = 0
+                hi = len(xs)
+                while lo < hi:
+                    mid = (lo + hi) // 2
+                    if xs[mid] <= x:
+                        lo = mid + 1
+                    else:
+                        hi = mid
+                return lo
+          why: Moves past items equal to `x`, so it gives the slot after them, as `bisect_right` does.
+        - code: |
+            def bisect_left(xs, x):
+                lo = 0
+                hi = len(xs)
+                while lo < hi:
+                    if hi - lo == 1:
+                        return hi
+                    mid = (lo + hi) // 2
+                    if xs[mid] < x:
+                        lo = mid
+                    else:
+                        hi = mid
+                return lo
+          why: Stops the loop when the gap is 1 and gives `hi`, but slot `lo` has not been looked at then, so `bisect_left([10], 5)` gives 1.
+    explanation: >-
+      The loop ends only if every pass makes `hi - lo` smaller. When `hi` is `lo + 1`, `mid` is
+      `(2 * lo + 1) // 2`, which is `lo`, so if `xs[mid] < x`, the line `lo = mid` leaves `lo` where
+      it was, and nothing changes. But `xs[mid] < x` says that slot `mid` itself holds an item less
+      than `x`, so the invariant still holds with `lo` one past it: `lo = mid + 1`. Then each pass
+      either raises `lo` above `mid`, which is at least `lo`, or brings `hi` down to `mid`, which is
+      below `hi`, so the gap falls every time and the loop ends. For `[10, 20, 30]` and 25, `lo` was
+      stuck at 1 with `hi` at 2.
+
+  # Explain --------------------------------------------------------------------
+  - id: explain-algorithms
+    phase: explain
+    kind: explain
+    concept: E1.10/merge-sort
+    covers: [E1.10/comparison-bound, E1.10/binary-search, E1.10/hash-tables]
+    title: Sorting, searching and sets, simply
+    prompt: >-
+      Explain to your friend why sorting a million losses does not take a million times a million
+      steps, and how a set really finds a key. Cover how merging two sorted lists works and what it
+      costs; how merge sort uses it, and how many comparisons it makes for a million items; why no
+      sort that only compares can do much better; how binary search finds a place in a sorted list,
+      in how many looks, and why; and how a set uses hashes and buckets to find a key without
+      looking at every key, with an example, what must be true of the hashes of equal keys and why,
+      and how the set stays fast as it grows.
+    answer:
+      type: text
+      rubric:
+        - { id: merging, criterion: 'Explains how two sorted lists are merged, and how many comparisons a merge makes for the items it moves.' }
+        - { id: merge-sort, criterion: 'Explains how merge sort uses merging, and works out about how many comparisons it makes for a million items, against the slow way.' }
+        - { id: bound, criterion: 'Explains why no sort that only compares can do much better, from the number of orders and the answers each comparison can give.' }
+        - { id: search, criterion: 'Explains how binary search finds a place in a sorted list, and how many looks a million items need, and why.' }
+        - { id: hashing, criterion: 'Explains how a set uses a hash and buckets to find a key without looking at every key, with an example.' }
+        - { id: rules, criterion: 'Says what must be true of the hashes of equal keys and why, and how the set stays fast as more keys are added.' }
+      reference: >-
+        Sorting a million losses does not need a million times a million steps, because of merging.
+        Two lists that are each in order can be merged into one: compare their front items, move the
+        smaller to the result, and repeat, and when one list runs out the rest of the other follows.
+        Each comparison moves one item, so merging costs at most one comparison per item. Merge sort
+        splits a list in half, sorts each half the same way, and merges the halves. A million items
+        halve about 20 times down to single items, and each of the 20 levels of merges costs at most
+        a million comparisons, so the whole sort takes under 20 million comparisons, where picking
+        the smallest item left, again and again, takes about 500 billion. No sort that only compares
+        can do much better. A million items can be in an astronomical number of orders, a million
+        factorial, and the sort must end up treating each of them differently. Each comparison has
+        only two answers, so k comparisons can tell apart at most 2 to the power k orders, and some
+        list needs enough comparisons for 2 to the k to reach the number of orders. For 1,000 items
+        that is 8,530 comparisons, close to what merge sort and Python's own sort make. Once a list
+        is sorted, binary search finds where a value belongs: look at the middle item, and if it is
+        less than the value, the answer is in the upper half, otherwise in the lower half. Each look
+        halves the stretch, so a million items need only 20 looks, since 2 to the 20 is about a
+        million. A set is cleverer still: it does not search at all, and it certainly does not check
+        every key at once. It keeps a row of buckets, and works out from each key a number, its
+        hash, and puts the key in the bucket given by the remainder when the hash is divided by the
+        number of buckets. With 8 buckets, the number 11 has hash 11 and goes in bucket 3. To look a
+        key up, the set works out the same bucket and compares the key only with the few keys there.
+        That only works if equal keys always have equal hashes, or a lookup would search the wrong
+        bucket, so a class that defines equality must define its hash from the same fields, and a
+        key must not change while it is in the set. As keys are added, the set doubles its buckets
+        whenever a new key would make the keys outnumber them, moving every key to its new bucket,
+        so the buckets stay
+        about one key long, and all the moving averages out to fewer than two moves per key.
+      minWords: 120
+      maxWords: 500

@@ -10,7 +10,9 @@ import {
   ExpressionTree,
   FloatLine,
   FunctionPlot,
+  HashBuckets,
   MappingDiagram,
+  MergeLevels,
   OrderedChoices,
   PartialSums,
   PascalTriangle,
@@ -319,5 +321,7 @@ export function phaseComponents(ctx: PhaseContext): MDXComponents {
     TieLists,
     OrderedChoices: OrderedChoicesSlot,
     PascalTriangle: PascalTriangleSlot,
+    MergeLevels,
+    HashBuckets,
   };
 }

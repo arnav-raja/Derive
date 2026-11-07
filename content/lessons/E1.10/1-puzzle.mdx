@@ -1,0 +1,25 @@
+A leaderboard keeps the validation losses of 1,000 models in order, from the smallest up. A script hands the list, already in order, to Python's `sorted`, and counts the comparisons that `sorted` makes. Each loss is kept in an object of this class, whose method `__lt__` is the one that `<` calls, as E1.7's `__eq__` is the one that `==` calls:
+
+```python
+class Loss:
+    count = 0
+
+    def __init__(self, value):
+        self.value = value
+
+    def __lt__(self, other):
+        Loss.count = Loss.count + 1
+        return self.value < other.value
+```
+
+`count` is kept in the class and assigned through it, as E1.7's `Run.count` was, so every comparison adds 1 to the same `Loss.count`. `sorted` compares two items only with `<`, so once it has finished, `Loss.count` is the number of comparisons it made.
+
+<Exercise id="puzzle-sorted-already" />
+
+<Reveal for="puzzle-sorted-already">
+
+That walk is how `sorted` finds *runs*: stretches of the list that are already in order. A list in order is a single run, so `sorted` has nothing more to do.
+
+On the same 1,000 losses shuffled, `sorted` has more to do, though far less than a sort that picks the smallest item left, again and again, which makes 499,500 comparisons whatever the order, as many as there are pairs of losses, E1.4's $\frac{n(n - 1)}{2}$. Python's sort is *Timsort*, which Tim Peters wrote for Python in 2002: it finds the runs and *merges* them, two at a time, into longer runs, until one run is left. Merging is where this lesson starts. It then proves a sort right and counts its work, finds the fewest comparisons that any sort can manage, searches a sorted list by halving, and opens up E1.4's set, which finds a key without searching at all.
+
+</Reveal>

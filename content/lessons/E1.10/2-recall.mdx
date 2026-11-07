@@ -1,0 +1,61 @@
+This lesson builds on E1.5's recursion, E1.2's loop invariants, E1.7's special methods, M1.9's strong induction and M1.6's sums. Five quick questions check that they are ready. Answer from memory, without running anything. A miss opens a short re-teach straight away.
+
+<Exercise id="recall-halves" />
+
+<Reteach for="recall-halves">
+
+<Callback lesson="E1.5">
+
+A call that makes a call waits until that call returns, so the calls in progress at once form a chain, each with a list half as long as its caller's: 8 numbers, then 4, then 2, then 1, which is a base case. That is 4 calls. The call for the second half of a list starts only after the call for the first half has returned, so the two halves are never in progress together. E1.5 found 10 for 512 numbers, one more than the 9 halvings from 512 down to 1.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-invariant" />
+
+<Reteach for="recall-invariant">
+
+<Callback lesson="E1.2">
+
+An invariant is a statement that is true before the first pass of a loop and that each pass keeps true, so it is true after every pass. Before the first pass, `best` is `xs[0]`, the largest of the one number `xs[0]` to `xs[i - 1]` with `i` at 1. A pass looks at `xs[i]`, keeps the larger of it and `best`, and adds 1 to `i`, so `best` is again the largest of `xs[0]` to `xs[i - 1]`. When the loop ends, `i` is `len(xs)`, and the invariant says that `best` is the largest number in the whole list.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-unhashable" />
+
+<Reteach for="recall-unhashable">
+
+<Callback lesson="E1.7">
+
+A set works out from each value where to keep it, with a method named `__hash__`. Python gives a class such a method, but once the class defines `__eq__`, Python takes `__hash__` away, since the one it gave would let two equal configs land in different places. So `seen.add(...)` stops with `TypeError: cannot use 'Config' as a set element (unhashable type: 'Config')`. This lesson shows how to give the class a `__hash__` of its own that agrees with its `__eq__`.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-strong" />
+
+<Reteach for="recall-strong">
+
+<Callback lesson="M1.9">
+
+In strong induction the step may suppose every case up to $k$, not only $P(k)$, and must then prove $P(k + 1)$. That is what a function that calls itself on half its argument needs, since the half can be any of the earlier cases: M1.9 proved `power` right this way, leaning on the case for $n$ halved.
+
+</Callback>
+
+</Reteach>
+
+<Exercise id="recall-doubling" />
+
+<Reteach for="recall-doubling">
+
+<Callback lesson="M1.6">
+
+Each term of $1 + 2 + 4 + \dots + 2^{k - 1}$ is twice the one before. Call the sum $S$. Then $2S = 2 + 4 + \dots + 2^k$, and taking $S$ from $2S$ leaves the last term of $2S$ less the first of $S$, so $S = 2^k - 1$: for $k = 3$, $1 + 2 + 4 = 7 = 8 - 1$. E1.4 used this sum to show that a list that doubles its room when it fills up copies fewer than two values for each value appended.
+
+</Callback>
+
+</Reteach>

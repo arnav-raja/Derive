@@ -37,14 +37,14 @@ concepts:
         Sums whose terms are each the same multiple $r$ of the one before. Subtracting $r$ times the
         sum gives $1 + r + \dots + r^{n-1} = \frac{1 - r^n}{1 - r}$ for $r \ne 1$, and for $r$
         between $-1$ and 1 the sum with no last term is $\frac{1}{1 - r}$.
-      usedBy: [L7.3, M14.2]
+      usedBy: [L7.3, M14.2, E1.10]
     - id: M1.6/product-notation
       name: Product notation
       summary: >-
         $\prod_{k=1}^{n} a_k$ is short for $a_1 \times a_2 \times \dots \times a_n$, and
         $n! = \prod_{k=1}^{n} k$ counts the orders of $n$ different things. A product can telescope,
         cancelling down to its two ends.
-      usedBy: [M1.10, M9.2]
+      usedBy: [M1.10, M9.2, E1.10]
   used: [M1.2/field-axioms, M1.2/solving-equations, M1.2/exponent-rules, M1.3/function-as-mapping]
 links:
   requires:

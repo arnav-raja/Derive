@@ -1,7 +1,9 @@
 export { ExpressionTree } from "./expression-tree";
 export { FloatLine } from "./float-line";
 export { FunctionPlot } from "./function-plot";
+export { HashBuckets } from "./hash-buckets";
 export { MappingDiagram } from "./mapping-diagram";
+export { MergeLevels } from "./merge-levels";
 export { OrderedChoices } from "./ordered-choices";
 export { PartialSums } from "./partial-sums";
 export { PascalTriangle } from "./pascal-triangle";

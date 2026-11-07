@@ -1,0 +1,234 @@
+## Merging two sorted lists
+
+The puzzle's `sorted` found a single run and was done. When it finds several, it *merges* them. Two lists that are each in order can be made into one list in order in a single pass, moving each item only once. Compare the front items of the two lists, move the smaller one to the end of the result, and repeat. When the two front items are equal, move the one from the first list. Once either list is used up, the rest of the other follows as it is, already in order, with no more comparisons.
+
+Merging `[2, 5, 9]` with `[3, 4]`, for example, compares 2 with 3 and moves 2, compares 5 with 3 and moves 3, and compares 5 with 4 and moves 4. The second list is now used up, so 5 and 9 follow as they are: 3 comparisons for 5 items.
+
+<Exercise id="explore-merge-count" />
+
+<Reveal for="explore-merge-count">
+
+Each comparison moves one item, so merging lists of $p$ and $q$ items makes at most $p + q - 1$ comparisons: by the time all but one item have moved, one list is used up, and the last item follows without a comparison. A merge can stop much sooner, when one list runs out early, as `[1, 2, 3, 4]` did, but it always makes at least as many comparisons as the list that runs out first has items. Here is merging in Python:
+
+```python
+def merge(a, b):
+    out = []
+    i = 0
+    j = 0
+    while i < len(a) and j < len(b):
+        if b[j] < a[i]:
+            out.append(b[j])
+            j = j + 1
+        else:
+            out.append(a[i])
+            i = i + 1
+    return out + a[i:] + b[j:]
+```
+
+`a[i]` and `b[j]` are the front items of what is left of each list. The test `b[j] < a[i]` moves an item from the second list only when it is strictly smaller, so of two equal items the one from the first list moves first, and the test uses only `<`, as `sorted` does, so it works for the puzzle's `Loss` objects too. When the loop ends, one of `a[i:]` and `b[j:]` is empty and the other holds what is left. Step through the merge from above:
+
+<ProgramTrace
+  title="Merging two sorted lists"
+  description="The program makes the function `merge`, merges the lists 2, 5, 9 and 3, 4, and prints the result. Each step of the figure shows the line about to run, the names as they stand, with each call's names listed apart from the main program's, and what has been printed so far."
+  code={"def merge(a, b):\n    out = []\n    i = 0\n    j = 0\n    while i < len(a) and j < len(b):\n        if b[j] < a[i]:\n            out.append(b[j])\n            j = j + 1\n        else:\n            out.append(a[i])\n            i = i + 1\n    return out + a[i:] + b[j:]\n\nprint(merge([2, 5, 9], [3, 4]))"}
+/>
+
+## Sorting by merging
+
+A list of no items or one item is already in order. A longer list can be split in halves, as E1.5's `total` split its list, each half sorted by the same function, and the two sorted halves merged:
+
+```python
+def merge_sort(xs):
+    if len(xs) <= 1:
+        return xs
+    h = len(xs) // 2
+    return merge(merge_sort(xs[:h]), merge_sort(xs[h:]))
+```
+
+E1.5 trusted a recursive function on the smaller cases. If `merge_sort` sorts every list shorter than `xs`, both halves come back sorted, and merging two sorted lists gives a sorted list, so `merge_sort(xs)` is sorted too. The Derive phase makes this a proof. This sort is *merge sort*, which John von Neumann described in 1945, for one of the first computers that kept its program in its memory.
+
+<Exercise id="explore-sort-count" />
+
+</Reveal>
+
+<Reveal for="explore-sort-count">
+
+The figure sorts a list as `merge_sort` does, drawn a level at a time from the single items at the top: each level merges the runs of the level above in pairs, and says how many comparisons its merges made. Try 1,024 losses, then other orders.
+
+<MergeLevels
+  title="Merge sort, level by level"
+  description="A list of losses, drawn as bars as tall as the losses, sorted by merge sort. The top row holds the list as given, split into single items, and each row below merges the runs of the row above in pairs, so its runs are twice as long, until the bottom row is one run in order. Beside each row is the number of comparisons its merges made. Controls set how many losses there are, from 8 to 1,024, and their order to begin with: shuffled, already in order, the wrong way round, or the order that makes the most comparisons."
+  size={16}
+  order="random"
+  seed={3}
+/>
+
+In general a list of $2^k$ items has $k$ levels of merging, each making fewer comparisons than there are items. Picking the smallest left each time makes 523,776 comparisons on 1,024 items. A million items need 20 levels, so merge sort makes under 20 million comparisons where picking the smallest makes 499,999,500,000, about 25,000 times as many. The levels also keep the calls shallow, as E1.5 found for `total`: the calls in progress at once are a chain of halves, at most 21 of them for a million items, far inside Python's limit of about 1,000.
+
+Merge sort barely notices a list that is already in order: it still makes all 10 levels of merges, 5,120 comparisons for 1,024 items. Timsort looks for runs first, as the puzzle showed, which is why it needs only 1,023.
+
+## Equal losses
+
+Losses are often equal, once rounded. Here are five models, each kept with its name, and compared by loss alone:
+
+```python
+class Model:
+    def __init__(self, name, loss):
+        self.name = name
+        self.loss = loss
+
+    def __lt__(self, other):
+        return self.loss < other.loss
+
+models = [Model("a", 0.31), Model("b", 0.27), Model("c", 0.31), Model("d", 0.25), Model("e", 0.27)]
+names = []
+for m in merge_sort(models):
+    names.append(m.name)
+print(names)
+```
+
+<Exercise id="explore-stable" />
+
+</Reveal>
+
+<Reveal for="explore-stable">
+
+A sort that keeps equal items in the order they came, as `merge_sort` does, is *stable*. Python's `sorted` is stable too. That makes it safe to sort in stages: sort the models by name first, then by loss, and models with equal losses stay in order of name.
+
+## The fewest comparisons
+
+Merge sort makes fewer than $k \times 2^k$ comparisons for $2^k$ items. Could a cleverer sort do far better? A sort that only compares learns about its items one answer at a time, yes or no, so the question is how many answers it needs.
+
+<Exercise id="explore-three" />
+
+</Reveal>
+
+<Reveal for="explore-three">
+
+The answer rests on counting alone, whatever the sort does: M1.6's $3! = 6$ orders against the $2 \times 2 = 4$ ways that two answers can come out.
+
+The same count works for any number of items. $n$ different items have $n!$ orders, and $k$ answers, each yes or no, can tell apart at most $2^k$ of them, so some order needs at least $k$ comparisons, where $2^k$ is the first power of 2 that reaches $n!$. For 1,000 items that is 8,530 comparisons, worked out by computer, and Python's `sorted` makes about 8,650 on the puzzle's losses shuffled: no sort that only compares can do much better. The Derive phase proves the bound.
+
+## Searching a sorted list
+
+A sorted list is quick to search. In the list `xs`, in order from the smallest up, the items less than `x` all come first, and the items that are at least `x` all come after them. So the question "is `xs[i]` at least `x`?" has the answer no for the first stretch of slots and yes for the rest, as E1.8's versions were good up to some point and bad from then on. E1.8's bisection finds the first slot whose answer is yes: keep `lo` where the answer is no and `hi` where it is yes, look at the slot midway, and move `lo` or `hi` to it.
+
+Before looking at anything, the search knows no slot's answer, so it starts from two imagined slots: slot $-1$, before the first, where the answer is taken as no, and slot `len(xs)`, after the last, where it is taken as yes. They are never looked at, since the slot midway between `lo` and `hi` is always strictly between them.
+
+```python
+def first_at_least(xs, x):
+    lo = -1
+    hi = len(xs)
+    while hi - lo > 1:
+        mid = (lo + hi) // 2
+        if xs[mid] >= x:
+            hi = mid
+        else:
+            lo = mid
+    return hi
+
+losses = [0.1, 0.2, 0.2, 0.3]
+print(first_at_least(losses, 0.25), first_at_least(losses, 0.2))
+```
+
+<Exercise id="explore-search" />
+
+</Reveal>
+
+<Reveal for="explore-search">
+
+The slot found is where `x` would go to keep the list in order, just before any items equal to it. The invariant, that every slot up to `lo` holds an item less than `x` and every slot from `hi` on an item at least `x`, proves it, as E1.8's proof did for versions. Step through the first search:
+
+<ProgramTrace
+  title="Halving a sorted list"
+  description="The program makes the function `first_at_least`, searches the list 0.1, 0.2, 0.2, 0.3 for 0.25 and prints the slot it gives. Each step of the figure shows the line about to run, the names as they stand, with each call's names listed apart from the main program's, and what has been printed so far."
+  code={"def first_at_least(xs, x):\n    lo = -1\n    hi = len(xs)\n    while hi - lo > 1:\n        mid = (lo + hi) // 2\n        if xs[mid] >= x:\n            hi = mid\n        else:\n            lo = mid\n    return hi\n\nprint(first_at_least([0.1, 0.2, 0.2, 0.3], 0.25))"}
+/>
+
+Each look halves the stretch between `lo` and `hi`, so a million items take 20 looks, as E1.8's million versions took 20 checks. A search that halves a sorted list in this way is called a *binary search*. When `x` is less than every item the search gives 0, and when it is more than every item it gives `len(xs)`. Python's `bisect` module does the same search: after `import bisect`, `bisect.bisect_left(xs, x)` gives the slot that `first_at_least` gives, and `bisect.insort(xs, x)` puts `x` into `xs` at a slot that keeps it in order, so a list kept sorted that way can be searched at any time.
+
+Binary search is short, and famously easy to get wrong. In 2006 Joshua Bloch reported that the binary search in Java's own library, which he had written, failed on lists of more than about a billion items: `lo + hi` could be larger than the largest number that Java's `int` holds. Python's whole numbers have no such limit.
+
+## Finding a key without searching
+
+E1.4 found that `x in s` on a set looks in about one place however many keys the set holds, and took that on trust. A set is a *hash table*. In its simplest form, a hash table keeps a row of *buckets*, 8 to begin with, and puts each key in one bucket, chosen by arithmetic on the key. Python's `hash(key)` works out a whole number from the key, its *hash*, and the bucket is `hash(key) % 8`, the remainder from E1.1. A small whole number is its own hash, so `hash(11)` is 11, and 11 goes in bucket 3. A string's hash is worked out from all of its characters. To look a key up, `x in s` works out the bucket in the same way and compares `x` only with the keys in that bucket.
+
+<Exercise id="explore-bucket" />
+
+</Reveal>
+
+<Reveal for="explore-bucket">
+
+Keys that share a bucket are said to *collide*, and these five were chosen badly, four of them in bucket 3. Add keys to the figure, look keys up, and watch what happens when a new key would make the keys outnumber the buckets.
+
+<HashBuckets
+  title="Keys in buckets"
+  description="A row of buckets, numbered from 0, each holding the keys whose remainder, divided by the number of buckets, is its number. It starts with 8 buckets and the keys 3, 11, 19, 27 and 13, four of them in bucket 3. Controls add a key, add a few keys picked at random, look a key up, which picks out its bucket and counts the keys compared, and start again. When the switch is on, the buckets double in number before a new key would make the keys outnumber them, and every key already stored moves to its new bucket."
+  keys={[3, 11, 19, 27, 13]}
+  buckets={8}
+/>
+
+Keys spread over the buckets keep each bucket short: $n$ keys in $m$ buckets average $\frac{n}{m}$ keys a bucket. Doubling the buckets whenever a new key would make the keys outnumber them keeps that at most 1, so when the hashes spread the keys out, a lookup compares with about one key, however many the set holds. Each doubling moves every key to its new bucket, as E1.4's list copied its values when its row filled up, and the same sum, $8 + 16 + 32 + \dots$, keeps the moves to fewer than 2 for each key added. With 40 keys, for example, the buckets double as the 9th, 17th and 33rd keys arrive, moving the 8, 16 and 32 keys already there: 56 moves, fewer than twice the 32 keys stored at the last doubling. Python's own sets and dicts keep each key in a slot of its own, trying other slots in a fixed order when one is taken, rather than a list in each bucket, and they grow well before they are full; but the idea is the same.
+
+## Equal keys, equal hashes
+
+A lookup compares `x` only with the keys in `x`'s own bucket, so two keys that are equal must have equal hashes, or a lookup could search the wrong bucket. That is why E1.7's `Config`, which defined `__eq__`, lost its `__hash__`. `hash(c)` calls `c.__hash__()`, as `c == d` calls `c.__eq__(d)`, so a class chooses its own hash by defining `__hash__`. The easiest way to give `Config` one back uses a *tuple*: `(0.01, 32)`, with round brackets, holds values in order as a list does, but cannot be changed once it is made, and Python works out a tuple's hash from the hashes of its items. In `hash((self.lr, self.batch))` below, the inner brackets make the tuple and the outer ones call `hash` on it. Python will hash a tuple, but not a list.
+
+```python
+class Config:
+    def __init__(self, lr, batch):
+        self.lr = lr
+        self.batch = batch
+
+    def __eq__(self, other):
+        return self.lr == other.lr and self.batch == other.batch
+
+    def __hash__(self):
+        return hash((self.lr, self.batch))
+```
+
+Equal configs have the same `lr` and `batch`, so the same tuple, so the same hash: `__hash__` uses exactly the fields that `__eq__` compares. Now a config can go in a set. Here is one that changes after it has been put in:
+
+```python
+c = Config(0.01, 32)
+seen = set()
+seen.add(c)
+c.batch = 64
+print(c in seen, Config(0.01, 64) in seen, Config(0.01, 32) in seen)
+```
+
+<Exercise id="explore-changed-key" />
+
+</Reveal>
+
+<Reveal for="explore-changed-key">
+
+So the set holds a config that no lookup can find, though `len(seen)` still counts it. A set keeps each key's hash beside it, so a key whose hash has changed is passed over even in the slot where it sits; this lesson's buckets keep no hashes, and would find `c` whenever its old and new hashes chose the same bucket. A key must not change, in anything that its `__eq__` and `__hash__` look at, while it is stored. That is why Python refuses to hash a list, which can change, and hashes a tuple, which cannot.
+
+## The names
+
+<Definition term="Merge sort">
+
+*Merging* two sorted lists moves the smaller front item to the result again and again, taking from the first list when the two are equal, and makes at most one comparison for each item it moves. *Merge sort* splits a list in halves, sorts each half with itself, and merges the two. For $2^k$ items it makes $k$ levels of merges, each of fewer than $2^k$ comparisons, so under 20 million comparisons for a million items, against 499,999,500,000 for picking the smallest item left each time. A sort that keeps equal items in the order they came, as merge sort and Python's `sorted` do, is *stable*.
+
+</Definition>
+
+<Definition term="The fewest comparisons">
+
+$n$ different items have $n!$ orders, and $k$ comparisons, each answered yes or no, can tell apart at most $2^k$ of them, so a sort that only compares needs at least $k$ comparisons on some order, where $2^k$ is the first power of 2 that reaches $n!$: 3 for 3 items, and 8,530 for 1,000.
+
+</Definition>
+
+<Definition term="Binary search">
+
+In a sorted list, "is `xs[i]` at least `x`?" is no for a first stretch of slots and yes for the rest, so bisection finds the first slot where it is yes, starting from the imagined slots $-1$ and `len(xs)`. The slot it gives is where `x` would go to keep the list in order, and a million items take 20 looks. Python's `bisect.bisect_left` does the same search, and `bisect.insort` keeps a list sorted.
+
+</Definition>
+
+<Definition term="Hash table">
+
+A hash table keeps its keys in buckets, and puts each key in the bucket `hash(key) % m`, for $m$ buckets, so that a lookup searches one short bucket instead of every key. Python's sets and dicts are hash tables, with a slot for each key in place of a bucket. Keys that share a bucket *collide*. Equal keys must have equal hashes, so a class's `__hash__` uses the fields its `__eq__` compares, often as the hash of a tuple, and a key must not change while it is stored. Doubling the buckets whenever a new key would make the keys outnumber them keeps the buckets short, and costs fewer than 2 moves for each key added.
+
+</Definition>
+
+</Reveal>

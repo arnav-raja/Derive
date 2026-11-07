@@ -1,0 +1,262 @@
+{
+  "version": 1,
+  "expressions": {
+    "derive-merges": {
+      "source": "4e26e4a6342f0289",
+      "points": [
+        {
+          "n": "7"
+        },
+        {
+          "n": "6"
+        },
+        {
+          "n": "4"
+        },
+        {
+          "n": "3"
+        },
+        {
+          "n": "9"
+        },
+        {
+          "n": "8"
+        }
+      ],
+      "values": [
+        "6.0000000000000000000",
+        "5.0000000000000000000",
+        "3.0000000000000000000",
+        "2.0000000000000000000",
+        "8.0000000000000000000",
+        "7.0000000000000000000"
+      ]
+    },
+    "derive-worst": {
+      "source": "5056dbf49fc167e6",
+      "points": [
+        {
+          "k": "-2"
+        },
+        {
+          "k": "-9"
+        },
+        {
+          "k": "6"
+        },
+        {
+          "k": "7"
+        },
+        {
+          "k": "8"
+        },
+        {
+          "k": "-8"
+        }
+      ],
+      "values": [
+        "0.25000000000000000000",
+        "0.98046875000000000000",
+        "321.00000000000000000",
+        "769.00000000000000000",
+        "1793.0000000000000000",
+        "0.96484375000000000000"
+      ]
+    },
+    "recall-doubling": {
+      "source": "abd976c419bc5d8f",
+      "points": [
+        {
+          "k": "9"
+        },
+        {
+          "k": "8"
+        },
+        {
+          "k": "5"
+        },
+        {
+          "k": "6"
+        },
+        {
+          "k": "2"
+        },
+        {
+          "k": "7"
+        }
+      ],
+      "values": [
+        "511.00000000000000000",
+        "255.00000000000000000",
+        "31.000000000000000000",
+        "63.000000000000000000",
+        "3.0000000000000000000",
+        "127.00000000000000000"
+      ]
+    }
+  },
+  "runs": {
+    "build-count-between": {
+      "tests": [
+        {
+          "name": "test_example",
+          "description": "count_between([0.12, 0.2, 0.2, 0.25, 0.3, 0.31, 0.4], 0.2, 0.3) is 4: 0.2, 0.2, 0.25 and 0.3, since both ends count.",
+          "passed": false,
+          "message": "count_between([0.12, 0.2, 0.2, 0.25, 0.3, 0.31, 0.4], 0.2, 0.3) gives 3, not 4: 0.2, 0.2, 0.25 and 0.3."
+        },
+        {
+          "name": "test_against_counting",
+          "description": "On 300 random sorted lists of up to 10 whole numbers from 1 to 6, with many repeats, it agrees with counting the items one by one, for ends below, inside and above the list, low above high among them.",
+          "passed": false,
+          "message": "count_between([1, 1, 2, 5, 5, 6], 3, 6) gives 2, not 3."
+        },
+        {
+          "name": "test_edges",
+          "description": "An empty list, a range around every item, a low equal to the high, and a low above the high.",
+          "passed": false,
+          "message": "count_between([2, 4, 4, 6], 4, 4) gives 0, not 2."
+        },
+        {
+          "name": "test_looks",
+          "description": "On a sorted list of a million even numbers it gives the right counts, looking at no more than 42 different items each time.",
+          "passed": false,
+          "message": "For the million even numbers from 0 to 1,999,998, count_between(xs, 1000, 3000) gives 1,000, not 1,001."
+        }
+      ],
+      "error": null,
+      "output": ""
+    },
+    "build-hash-set": {
+      "tests": [
+        {
+          "name": "test_starts_empty",
+          "description": "A new HashSet has a list of 8 empty buckets, and len 0.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_example",
+          "description": "After adding 3, 11, 19, 27 and 13, bucket 3 holds [3, 11, 19, 27] and bucket 5 holds [13]; 19 is in the set, 35 is not, and len gives 5.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_like_a_set",
+          "description": "Adding 60 random whole numbers from 0 to 40, many of them more than once, gives the same answers to in and len as Python's own set.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_strings",
+          "description": "Strings are keys too: each word added is found once, and other words are not found.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_doubles",
+          "description": "The buckets double when a new key would make the keys outnumber them: 8 buckets for up to 8 keys, 16 for 9 to 16, 32 for 17 to 32 and 64 for 33 to 40, and adding a key again changes nothing.",
+          "passed": false,
+          "message": "With 9 keys the set has 8 buckets, not 16. Double the buckets only when a new key, not one already there, would make the keys outnumber them."
+        },
+        {
+          "name": "test_moved",
+          "description": "After 43 different keys the buckets have doubled to 64, and every key is in bucket hash(key) % 64, once only, and the buckets are all different lists.",
+          "passed": false,
+          "message": "After adding 43 different keys the set has 8 buckets, not 64, so this check cannot see whether keys move when the buckets double. Double the buckets when a new key would make the keys outnumber them."
+        },
+        {
+          "name": "test_one_bucket",
+          "description": "A lookup compares the key only with the keys in its own bucket: looking up a key that was never added, among 40 keys, compares it with no more keys than that bucket holds.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_configs",
+          "description": "Keys of a class whose __hash__ agrees with its __eq__ work: two equal configs count once.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": ""
+    },
+    "build-runs": {
+      "tests": [
+        {
+          "name": "test_find_runs",
+          "description": "find_runs([3, 5, 2, 2, 7, 1]) gives [[3, 5], [2, 2, 7], [1]], and it handles an empty list, one item, a list that only falls, and equal items, which stay in one run.",
+          "passed": false,
+          "message": "find_runs([3, 5, 2, 2, 7, 1]) gives [[3, 5], [2], [2, 7], [1]], not [[3, 5], [2, 2, 7], [1]]."
+        },
+        {
+          "name": "test_small",
+          "description": "run_sort gives [] for an empty list, and [7] for a list holding the one item 7.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_in_order",
+          "description": "A list of 1,000 items already in order is one run, so run_sort gives it back in order after 999 comparisons.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_sorts",
+          "description": "On 300 random lists of 0 to 12 losses, each a whole number from 1 to 4 so that many are equal, run_sort gives the losses in order, each item once, and equal losses in the order they came.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_pairs",
+          "description": "On 512 shuffled losses it makes at most 5,120 comparisons: merging the runs in pairs, round after round, keeps the work close to merge sort's.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_new_list",
+          "description": "run_sort gives a new list, and leaves the list it was given as it was, even when that list is already in order.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_own_work",
+          "description": "run_sort does the sorting itself: neither it nor any function it calls uses Python's sorted or a list's sort.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": ""
+    },
+    "debug-bisect": {
+      "tests": [
+        {
+          "name": "test_example",
+          "description": "bisect_left([10, 20, 30], 25) is 2, the slot where 25 would go.",
+          "passed": false,
+          "message": "Stopped on line 5, in bisect_left: The code ran for too long and was stopped. Is there a loop that never ends, or code that runs a very large number of times?"
+        },
+        {
+          "name": "test_against_bisect",
+          "description": "On 300 random sorted lists of up to 10 whole numbers from 1 to 6, with many repeats, it agrees with Python's bisect.bisect_left for x from 0 to 7.",
+          "passed": false,
+          "message": "Stopped on line 4, in bisect_left: The code ran for too long and was stopped. Is there a loop that never ends, or code that runs a very large number of times?"
+        },
+        {
+          "name": "test_edges",
+          "description": "An empty list gives 0, x below every item gives 0, x above every item gives len(xs), and x equal to an end gives that end's slot.",
+          "passed": false,
+          "message": "Stopped on line 6, in bisect_left: The code ran for too long and was stopped. Is there a loop that never ends, or code that runs a very large number of times?"
+        },
+        {
+          "name": "test_looks",
+          "description": "On a sorted list of a million even numbers it gives the right slots, looking at no more than 21 different items each time.",
+          "passed": false,
+          "message": "bisect_left looked at items of a list of a million more than 100 times, where halving needs about 20. Check that every pass makes the gap hi - lo smaller."
+        }
+      ],
+      "error": null,
+      "output": ""
+    }
+  }
+}

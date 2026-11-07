@@ -1,0 +1,75 @@
+The Explore phase watched merge sort, binary search and a hash table at work. Now reason about merge sort on paper: prove that it sorts every list, count its merges and its comparisons exactly, prove that no sort that only compares can do much better, and work out when sorting a list first pays for itself.
+
+## Why merge sort sorts
+
+The Explore phase trusted `merge_sort` on its halves. A proof turns that trust into an argument that covers every list at once, by strong induction on the length of the list, as M1.9 proved `power` right by strong induction on its argument.
+
+<Exercise id="derive-sorts" />
+
+<Reveal for="derive-sorts">
+
+The proof leans on `merge` being right, and that has a proof of its own, by an invariant of its loop, as in E1.2: before every pass, `out` is in order, it holds exactly the items moved so far, and none of its items is larger than any item still waiting in `a[i:]` or `b[j:]`. Each pass moves the smaller of the two front items, which is no larger than anything still waiting, since each list is in order, so the pass keeps all three parts true. When the loop ends, one list is used up, and the rest of the other is in order and no smaller than anything in `out`, so joining them gives the whole result in order.
+
+The proof also shows why the base case must cover lists of one item, not only the empty list: the halves are shorter than the list only when it has at least two items. With `if len(xs) == 0:` as the only base case, a list of one item would have `h` of 0, so `xs[h:]` would be the whole list again, and the call would call itself on the same list until Python stopped it with `RecursionError`.
+
+## Counting the merges
+
+Each call of `merge_sort` on two or more items makes two calls and one merge, and each call on one item makes no merge, so the calls form a tree, as E1.5's calls of `total` did.
+
+<Exercise id="derive-merges" />
+
+</Reveal>
+
+<Reveal for="derive-merges">
+
+The count does not depend on the order of the items, or on how the halves fall. What depends on the order is how many comparisons each merge makes.
+
+## The worst case
+
+Merging two lists of $m$ items each makes at most $2m - 1$ comparisons, and exactly that many when their items take turns, as `[1, 3, 5, 7]` and `[2, 4, 6, 8]` did. Write $W(k)$ for the most comparisons that merge sort makes on a list of $2^k$ items. A list of one item needs none, so $W(0) = 0$. A list of $2^{k + 1}$ items is sorted as two halves of $2^k$ items and one merge, and the worst case of each half and of the merge can all happen at once: put the 1st, 3rd, 5th and so on smallest items in one half and the others in the other, so that the last merge takes turns, and arrange each half in its own worst order in the same way, as the Explore phase's figure does for its order with the most comparisons. So
+
+$$W(k + 1) = 2W(k) + 2^{k + 1} - 1.$$
+
+<Exercise id="derive-worst" />
+
+</Reveal>
+
+<Reveal for="derive-worst">
+
+So 1,024 items, with $k = 10$, take at most $9 \times 1{,}024 + 1 = 9{,}217$ comparisons, and $2^{20}$ items, just over a million, at most $19 \times 2^{20} + 1$, just under 20 million. The closed form is $k \times 2^k$, the bound from the levels, less $2^k - 1$: each of the $2^k - 1$ merges saves one comparison on its last item.
+
+## No sort can do much better
+
+The Explore phase counted the answers that a sort of three items needs. The same argument covers every $n$, and it shows something stronger than counting: however a sort chooses its comparisons, some list makes it use many. In the proof below, the answers come from an *adversary*, who decides each answer only when the sort asks, always keeping as many orders possible as it can. Every answer it gives is true of some list, the one order still possible at the end, so that list really does make the sort use all those comparisons.
+
+<Exercise id="derive-bound" />
+
+</Reveal>
+
+<Reveal for="derive-bound">
+
+The adversary is E1.8's bisection seen from the other side: each comparison can at best halve what is still possible, so it takes as many comparisons as halvings of $n!$ down to 1.
+
+## Ten items
+
+<Exercise id="derive-ten" />
+
+</Reveal>
+
+<Reveal for="derive-ten">
+
+Merge sort makes 25 comparisons on 10 items in its worst case, 3 more than the bound. In 1959 Lester Ford and Selmer Johnson found a sort, *merge insertion*, that never needs more than 22 for 10 items, so for 10 the bound is reached exactly. For large $n$ the bound grows like $n$ times the number of halvings from $n$ down to 1, as merge sort's count does, so merge sort is never far above it: for 1,000 items the bound is 8,530 and merge sort's worst case is 8,977.
+
+## When sorting first pays
+
+Sorting costs far more than one search, but it makes every later search quick.
+
+<Exercise id="derive-sort-first" />
+
+</Reveal>
+
+<Reveal for="derive-sort-first">
+
+So for a handful of searches, scanning is cheaper, and beyond a few dozen, sorting first wins by more with every search: a thousand searches cost about 500 million comparisons by scanning, and about 20 million by sorting first. A set does better still for asking whether a key is there, about one look each after one pass to build it, but a sorted list can answer questions that a set cannot, such as how many losses lie between 0.2 and 0.3, or which is the smallest loss above 0.25. The Build phase writes such a search.
+
+</Reveal>
