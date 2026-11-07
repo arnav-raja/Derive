@@ -6,7 +6,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { inputClasses } from "@/components/ui/field";
 import { HintIcon } from "@/components/ui/icons";
-import { Meter } from "@/components/ui/page";
 
 import { Conversation, asLearnerHtml, post, type TutorEntry } from "./tutor";
 
@@ -19,17 +18,14 @@ import { Conversation, asLearnerHtml, post, type TutorEntry } from "./tutor";
 export function SocraticChat({
   cardId,
   configured,
-  budget,
 }: {
   cardId: string;
   configured: boolean;
-  budget: { spentUsd: number; limitUsd: number };
 }) {
   const [entries, setEntries] = useState<TutorEntry[]>([]);
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [spend, setSpend] = useState(budget);
 
   if (!configured) {
     return <p className="text-sm text-ink-muted">The tutor is not connected yet, so read the explanation above and try saying in one sentence where your answer went wrong.</p>;
@@ -47,7 +43,6 @@ export function SocraticChat({
     }
     setEntries((prev) => [...prev, ...(text ? [{ role: "learner" as const, html: asLearnerHtml(text) }] : []), { role: "tutor" as const, html: reply.html, source: reply.source }]);
     setMessage("");
-    setSpend(reply.budget);
   }
 
   return (
@@ -91,12 +86,6 @@ export function SocraticChat({
               <Button type="submit" size="sm" disabled={pending || !message.trim()}>
                 {pending ? "Thinking" : "Reply"}
               </Button>
-              <div className="flex w-28 flex-col gap-1">
-                <Meter value={spend.spentUsd} max={spend.limitUsd} label="Today's tutor budget used" tone={spend.spentUsd >= spend.limitUsd ? "warning" : "accent"} />
-                <p className="tabular text-right text-xs text-ink-muted">
-                  ${spend.spentUsd.toFixed(2)} of ${spend.limitUsd.toFixed(2)} today
-                </p>
-              </div>
             </div>
           </form>
         </>

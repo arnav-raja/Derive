@@ -223,8 +223,9 @@ async function buildEdge() {
   const pack = await writeContentPack();
   const clientModules = new Set<string>();
   const outfile = path.join(ROOT, "supabase/functions/derive-api/bundle.js");
-  await esbuild.build({
+  const result = await esbuild.build({
     ...common,
+    metafile: true,
     entryPoints: [path.join(SRC, "server/edge.ts")],
     outfile,
     platform: "browser",
@@ -251,6 +252,20 @@ async function buildEdge() {
     },
     plugins: [derivePlugin(clientModules, true)],
   });
+  // The deployed server has no files and no MDX compiler: its content and its
+  // compiled phases must come from the pack, so the swaps above must have held.
+  const inputs = new Set(Object.keys(result.metafile!.inputs).map((p) => path.resolve(ROOT, p)));
+  const swaps: [string, string][] = [
+    ["src/lib/content/mdx-precompiled.ts", "src/server/edge/mdx-precompiled.ts"],
+    ["src/lib/content/files.ts", "src/server/edge/content-fs.ts"],
+  ];
+  for (const [swapped, by] of swaps) {
+    const original = path.join(ROOT, swapped);
+    if (swapped.endsWith("mdx-precompiled.ts") && inputs.has(original)) {
+      throw new Error(`The edge bundle includes ${swapped}; it must use ${by}. Import it as "@/lib/content/mdx-precompiled".`);
+    }
+    if (!inputs.has(path.join(ROOT, by))) throw new Error(`The edge bundle is missing ${by}.`);
+  }
   const size = statSync(outfile).size;
   console.log(
     `build-api: edge function in supabase/functions/derive-api/bundle.js, ${(size / 1e6).toFixed(2)} MB ` +

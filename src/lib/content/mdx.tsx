@@ -4,7 +4,8 @@ import type { MDXComponents, MDXContent } from "mdx/types";
 import * as runtime from "react/jsx-runtime";
 
 import { compileMdxCode, mdxKey } from "./mdx-core";
-import { precompiledMdx } from "./mdx-precompiled";
+// By this exact name: the edge build swaps this module for the phases compiled into its bundle.
+import { precompiledMdx } from "@/lib/content/mdx-precompiled";
 
 /*
  * Lesson phases are MDX files in the repository, rendered on Derive's server as

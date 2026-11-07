@@ -17,7 +17,6 @@ import { loadLesson } from "@/lib/content/lesson";
 import { variantView } from "@/lib/content/views";
 import { orderDue } from "@/lib/learning/review-queue";
 import { dueLabel, parseCardId } from "@/lib/learning/service";
-import { tutorBudget } from "@/lib/tutor/budget";
 
 export const metadata: Metadata = { title: "Review" };
 
@@ -30,11 +29,7 @@ export default async function ReviewPage({ searchParams }: Props) {
   const query = await searchParams;
   const store = await getStore();
   const now = new Date();
-  const [cards, recent, budget] = await Promise.all([
-    store.cards(),
-    store.attempts({ kinds: ["review"], limit: 100 }),
-    tutorBudget(store, now),
-  ]);
+  const [cards, recent] = await Promise.all([store.cards(), store.attempts({ kinds: ["review"], limit: 100 })]);
   const due = cards.filter((c) => new Date(c.due) <= now);
   const reviewedToday = recent.filter((a) => now.getTime() - Date.parse(a.createdAt) < 18 * 3600 * 1000).length;
   const last = typeof query.last === "string" ? query.last : null;
@@ -101,7 +96,7 @@ export default async function ReviewPage({ searchParams }: Props) {
               <div className="[&>section]:my-0">
                 <ExerciseCard key={view.key} view={view} />
               </div>
-              {attempt.correct === false ? <SocraticChat cardId={last} configured={configured} budget={budget} /> : null}
+              {attempt.correct === false ? <SocraticChat cardId={last} configured={configured} /> : null}
               <div className="flex flex-wrap items-center justify-end gap-3">
                 {due.length ? (
                   <Link href="/review" className={buttonClasses("primary", "lg")}>

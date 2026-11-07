@@ -1,4 +1,5 @@
 import { loadLesson, writtenLessons } from "@/lib/content/lesson";
+import { compileMdx } from "@/lib/content/mdx";
 import { anthropicKey, buildCommit, isLocalMode } from "@/lib/env";
 import { accountExists } from "@/lib/supabase/signup";
 
@@ -35,6 +36,19 @@ export async function GET() {
     }
   }
 
+  // Loads one compiled lesson phase, which on the deployed server must come from its bundle.
+  let phases: true | string = "no lesson";
+  const first = writtenLessons()[0];
+  const source = first ? Object.values(loadLesson(first)?.sources ?? {})[0] : undefined;
+  if (source !== undefined) {
+    try {
+      await compileMdx(source);
+      phases = true;
+    } catch (error) {
+      phases = String(error).slice(0, 120);
+    }
+  }
+
   return Response.json(
     {
       ok: true,
@@ -46,6 +60,7 @@ export async function GET() {
       lessons: {
         written: writtenLessons().length,
         ready: writtenLessons().filter((code) => loadLesson(code)?.file.status === "ready").length,
+        phases,
       },
       time: new Date().toISOString(),
     },

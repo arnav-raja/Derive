@@ -6,7 +6,6 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 
 import { Button } from "@/components/ui/button";
 import { CrossIcon, HintIcon, PanelRightIcon, SendIcon, SparkIcon } from "@/components/ui/icons";
-import { ProgressBar } from "@/components/ui/progress";
 import { apiFetch, type ApiRoute } from "@/lib/api-client";
 import { refreshPage } from "@/lib/wire/client";
 import { useMedia, usePreference } from "@/lib/use-preference";
@@ -238,23 +237,6 @@ function Ladder({ used }: { used: number }) {
   );
 }
 
-export function BudgetMeter({ budget }: { budget: { spentUsd: number; limitUsd: number } }) {
-  return (
-    <div className="flex w-32 flex-col gap-1">
-      <ProgressBar
-        value={budget.spentUsd}
-        max={budget.limitUsd}
-        size="sm"
-        label="Today's tutor budget used"
-        tone={budget.spentUsd >= budget.limitUsd ? "warning" : "accent"}
-      />
-      <p className="tabular text-right text-xs text-ink-muted">
-        ${budget.spentUsd.toFixed(2)} of ${budget.limitUsd.toFixed(2)} today
-      </p>
-    </div>
-  );
-}
-
 /**
  * One conversation: about an exercise (hints, or a discussion once it is
  * solved) or about the phase as a whole. `forKey` pins it to one exercise,
@@ -418,11 +400,6 @@ export function TutorThread({ forKey, scroll = false }: { forKey?: string; scrol
               </Button>
             </div>
           </div>
-          {tutor.configured ? (
-            <div className="flex justify-end">
-              <BudgetMeter budget={tutor.budget} />
-            </div>
-          ) : null}
         </form>
       ) : (
         <p className="rounded-lg bg-inset px-3 py-2 text-sm text-ink-muted">

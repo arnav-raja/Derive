@@ -59,6 +59,7 @@ const checks = [
   ["the browser's preflight", () => call("OPTIONS", "/page"), (r) => r.status === 204 && r.cors === origin],
   ["the health route", () => call("GET", "/api/health"), (r) => r.status === 200 && r.json?.ok === true && r.json?.localMode === false],
   ["the lessons packed in", () => call("GET", "/api/health"), (r) => r.json?.lessons?.written > 0 && r.json?.lessons?.ready > 0],
+  ["a compiled lesson phase", () => call("GET", "/api/health"), (r) => r.json?.lessons?.phases === true],
   ["a page", () => call("POST", "/page", { path: "/", search: "" }), (r) => r.status === 200 && r.json?.kind === "redirect"],
   ["a lesson without a session", () => call("POST", "/page", { path: "/lessons/M1.1", search: "" }), (r) => r.status === 200 && r.json?.kind === "redirect"],
   ["an unknown page", () => call("POST", "/page", { path: "/no/such/page", search: "" }), (r) => r.status === 200 && r.json?.kind === "not-found"],

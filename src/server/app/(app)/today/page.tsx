@@ -13,13 +13,11 @@ import {
   ClockIcon,
   NotebookIcon,
   ReviewIcon,
-  SparkIcon,
   TargetIcon,
 } from "@/components/ui/icons";
 import { EmptyState, Page, Panel } from "@/components/ui/page";
 import { ProgressBar } from "@/components/ui/progress";
 import { getStore } from "@/lib/auth";
-import { anthropicKey } from "@/lib/env";
 import { loadLesson } from "@/lib/content/lesson";
 import { allLessons, course as courseMeta, curriculum, lesson as lessonMeta } from "@/lib/curriculum/data";
 import { SUBJECT_STYLE, subjectOf } from "@/lib/design/subject";
@@ -30,7 +28,6 @@ import { TIME_ZONE, dueLabel, overview } from "@/lib/learning/service";
 import { PHASE_TITLES } from "@/lib/learning/state";
 import { longDate } from "@/lib/learning/time";
 import { PHASES } from "@/lib/store/types";
-import { tutorBudget } from "@/lib/tutor/budget";
 
 export const metadata: Metadata = { title: "Today" };
 
@@ -42,7 +39,7 @@ function greeting(now: Date): string {
 export default async function TodayPage() {
   const store = await getStore();
   const now = new Date();
-  const [ov, budget, notes] = await Promise.all([overview(store, now), tutorBudget(store, now), store.notebook({ status: "open" })]);
+  const [ov, notes] = await Promise.all([overview(store, now), store.notebook({ status: "open" })]);
   const { governor, dueNow, cards } = ov;
   const revisit = notes.filter((n) => n.revisitAt && new Date(n.revisitAt) <= now);
   const recall = ov.lastWeekReviews.total ? Math.round((100 * ov.lastWeekReviews.correct) / ov.lastWeekReviews.total) : null;
@@ -333,29 +330,6 @@ export default async function TodayPage() {
               <p className="text-xs text-ink-muted">
                 {recall === null ? "Shown once you have done some reviews." : `Over ${ov.lastWeekReviews.total} reviews. Below 85% pauses new lessons.`}
               </p>
-            </div>
-            <div className="flex flex-col gap-2">
-              <div className="flex items-baseline justify-between gap-3">
-                <p className="flex items-center gap-1.5 text-sm text-ink-muted">
-                  <SparkIcon className="size-3.5" /> Tutor today
-                </p>
-                {anthropicKey() ? (
-                  <p className="tabular text-sm font-semibold text-ink">
-                    ${budget.spentUsd.toFixed(2)} of ${budget.limitUsd.toFixed(2)}
-                  </p>
-                ) : null}
-              </div>
-              {anthropicKey() ? (
-                <ProgressBar
-                  value={budget.spentUsd}
-                  max={budget.limitUsd}
-                  size="sm"
-                  label="Today's tutor budget used"
-                  tone={budget.exhausted ? "warning" : "accent"}
-                />
-              ) : (
-                <p className="text-xs text-ink-muted">Not connected yet; hints come from the lessons&apos; own notes.</p>
-              )}
             </div>
           </Panel>
 
