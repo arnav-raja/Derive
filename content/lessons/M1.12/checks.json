@@ -1,0 +1,362 @@
+{
+  "version": 1,
+  "expressions": {
+    "derive-divide": {
+      "source": "c09a7d27b19a4458",
+      "points": [
+        {
+          "a": "3",
+          "b": "16"
+        },
+        {
+          "a": "2",
+          "b": "26/7"
+        },
+        {
+          "a": "-6/7",
+          "b": "33/5"
+        },
+        {
+          "a": "-29/3",
+          "b": "-8/5"
+        },
+        {
+          "a": "25",
+          "b": "-29"
+        },
+        {
+          "a": "15/7",
+          "b": "-1/3"
+        }
+      ],
+      "values": [
+        "0.011320754716981132075",
+        "0.11238532110091743119",
+        "-0.019350915021838889810",
+        "-0.10068978288042220268",
+        "0.017053206002728512960",
+        "0.45564127290260366442"
+      ]
+    },
+    "derive-divide#0": {
+      "source": "2c5984695be49bbb",
+      "points": [
+        {
+          "a": "-13/7",
+          "b": "-14/5"
+        },
+        {
+          "a": "38",
+          "b": "30/7"
+        },
+        {
+          "a": "2",
+          "b": "-40/7"
+        },
+        {
+          "a": "-38/3",
+          "b": "-4"
+        },
+        {
+          "a": "3/2",
+          "b": "-39/4"
+        },
+        {
+          "a": "-11/6",
+          "b": "38"
+        }
+      ],
+      "values": [
+        "0.24802950321787547907",
+        "-0.0029306687506977782740",
+        "0.15590200445434298441",
+        "0.022670025188916876574",
+        "0.10019267822736030829",
+        "-0.026254678053929565301"
+      ]
+    },
+    "derive-product": {
+      "source": "41fb663ffaac2720",
+      "points": [
+        {
+          "alpha": "15/7",
+          "beta": "33/5"
+        },
+        {
+          "alpha": "-26/3",
+          "beta": "-11"
+        },
+        {
+          "alpha": "-9/2",
+          "beta": "-20"
+        },
+        {
+          "alpha": "11",
+          "beta": "15/4"
+        },
+        {
+          "alpha": "24/7",
+          "beta": "1"
+        },
+        {
+          "alpha": "-1/6",
+          "beta": "22"
+        }
+      ],
+      "values": [
+        "-0.77636348814705849528",
+        "0.68433082348031822741",
+        "0.80640949391225457090",
+        "-0.57518726908240274371",
+        "-0.28002250482379624009",
+        "-0.98757299875769184173"
+      ]
+    },
+    "derive-product#0": {
+      "source": "6234f804318ac6ee",
+      "points": [
+        {
+          "alpha": "5",
+          "beta": "-9/5"
+        },
+        {
+          "alpha": "-19/6",
+          "beta": "4"
+        },
+        {
+          "alpha": "17/2",
+          "beta": "2"
+        },
+        {
+          "alpha": "-6/5",
+          "beta": "2"
+        },
+        {
+          "alpha": "4",
+          "beta": "5"
+        },
+        {
+          "alpha": "27/5",
+          "beta": "8/5"
+        }
+      ],
+      "values": [
+        "-0.058374143427579909137",
+        "0.74017685319603705644",
+        "-0.87969575997167009802",
+        "0.71735609089952276163",
+        "0.41211848524175656976",
+        "0.65698659871878909040"
+      ]
+    },
+    "derive-product#1": {
+      "source": "54470fc75cb09f87",
+      "points": [
+        {
+          "theta": "-13/4"
+        },
+        {
+          "theta": "14"
+        },
+        {
+          "theta": "-3/2"
+        },
+        {
+          "theta": "11"
+        },
+        {
+          "theta": "-1/3"
+        },
+        {
+          "theta": "15"
+        }
+      ],
+      "values": [
+        "-0.21511998808781552430",
+        "0.27090578830786901999",
+        "-0.14112000805986722210",
+        "-0.0088513092904038759217",
+        "-0.61836980306973700775",
+        "-0.98803162409286178999"
+      ]
+    },
+    "derive-turn": {
+      "source": "b708ef04451bf292",
+      "points": [
+        {
+          "x": "-1",
+          "y": "-24/7",
+          "theta": "6"
+        },
+        {
+          "x": "16",
+          "y": "39/5",
+          "theta": "-19/5"
+        },
+        {
+          "x": "-17/2",
+          "y": "14/3",
+          "theta": "-10"
+        },
+        {
+          "x": "-32/3",
+          "y": "-34/7",
+          "theta": "-31/7"
+        },
+        {
+          "x": "-37/5",
+          "y": "11/6",
+          "theta": "9"
+        },
+        {
+          "x": "-25/6",
+          "y": "8/5",
+          "theta": "-38/7"
+        }
+      ],
+      "values": [
+        "-3.0125969131737576262",
+        "3.6201781021510549518",
+        "-8.5398465782497548578",
+        "-8.8798206727953933867",
+        "-4.7200822709109064282",
+        "-2.0925737926718918103"
+      ]
+    },
+    "derive-turn#0": {
+      "source": "d61834c45f8f5fb4",
+      "points": [
+        {
+          "x": "38/5",
+          "y": "-17",
+          "theta": "-37/4"
+        },
+        {
+          "x": "-31/7",
+          "y": "-6",
+          "theta": "-10/3"
+        },
+        {
+          "x": "1",
+          "y": "16",
+          "theta": "39/5"
+        },
+        {
+          "x": "-6/5",
+          "y": "33/4",
+          "theta": "22/3"
+        },
+        {
+          "x": "29/2",
+          "y": "-18/5",
+          "theta": "21/2"
+        },
+        {
+          "x": "-36/7",
+          "y": "-27",
+          "theta": "-6"
+        }
+      ],
+      "values": [
+        "-10.440336569819029862",
+        "5.4908212266876901273",
+        "-15.922738105431029842",
+        "-7.7537803436956897927",
+        "-10.062190191839904118",
+        "2.6061998343119733174"
+      ]
+    }
+  },
+  "runs": {
+    "build-rope": {
+      "tests": [
+        {
+          "name": "test_position_zero",
+          "description": "At position 0 nothing turns.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_turns",
+          "description": "rope turns q through position times theta.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_score",
+          "description": "score is a * c + b * d for q = a + bi and k = c + di.",
+          "passed": false,
+          "message": "score((3+1j), (2+5j)) gave 1, not 11."
+        },
+        {
+          "name": "test_only_the_gap_matters",
+          "description": "Moving two words along by the same number of places leaves their score as it was.",
+          "passed": false,
+          "message": "Words at positions 5 and 2 score -2.67071, but at positions 105 and 102, the same distance apart, they score 4.53931."
+        }
+      ],
+      "error": null,
+      "output": ""
+    },
+    "build-turn-about": {
+      "tests": [
+        {
+          "name": "test_example",
+          "description": "A quarter turn of 2 + i about 1 + i gives 1 + 2i.",
+          "passed": false,
+          "message": "turn_about(2+1j, 1+1j, math.pi / 2) gave (-1+2j), not (1+2j)."
+        },
+        {
+          "name": "test_centre_stays",
+          "description": "The centre does not move.",
+          "passed": false,
+          "message": "turn_about((1+1j), (1+1j), 0.7) moved the centre to (0.120625+1.40906j)."
+        },
+        {
+          "name": "test_keeps_distance",
+          "description": "A turn keeps the point's distance from the centre.",
+          "passed": false,
+          "message": "turn_about((3+1j), (1+1j), 0.3) gave (2.57049+1.8419j), 1.78192 from the centre, but (3+1j) is 2 from it."
+        },
+        {
+          "name": "test_turns_by_the_angle",
+          "description": "The point turns anticlockwise about the centre through the angle in radians.",
+          "passed": false,
+          "message": "turn_about((3+1j), (1+1j), math.pi) gave (-3-1j), not (-1+1j)."
+        }
+      ],
+      "error": null,
+      "output": ""
+    },
+    "debug-roots": {
+      "tests": [
+        {
+          "name": "test_complex_roots",
+          "description": "x² + 4x + 5 = 0 has the solutions -2 - i and -2 + i.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_real_roots",
+          "description": "x² - 3x + 2 = 0 has the solutions 1 and 2.",
+          "passed": false,
+          "message": "roots(1, -3, 2) gave (1.5-0.5j) and (1.5+0.5j), not 1 and 2. Here b² - 4ac is 1, which is positive."
+        },
+        {
+          "name": "test_one_root",
+          "description": "x² - 2x + 1 = 0 has the one solution 1, given twice.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_put_back",
+          "description": "Each solution, put back into ax² + bx + c, gives 0.",
+          "passed": false,
+          "message": "roots(2, -7, 3) gave (1.75-1.25j), but 2x² - 7x + 3 is (-6.25+0j) there, not 0."
+        }
+      ],
+      "error": null,
+      "output": ""
+    }
+  }
+}

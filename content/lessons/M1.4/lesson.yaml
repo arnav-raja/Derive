@@ -33,7 +33,7 @@ concepts:
       summary: >-
         Rules built from x², x and a number, with a number other than 0 in front of x². Their graphs
         are bowls, and their zeros come from one formula.
-      usedBy: [M3.7, M10.4]
+      usedBy: [M3.7, M10.4, M1.12]
     - id: M1.4/completing-the-square
       name: Completing the square
       summary: >-

@@ -1,0 +1,28 @@
+No real number has a negative square, so M1.4's quadratic formula stopped when $b^2 - 4ac$ was negative, and `math.sqrt(-4)` stops with a `ValueError`. Yet Python has a number whose square is $-1$. It writes the number `1j`, and
+
+```python
+print(1j * 1j)
+```
+
+prints `(-1+0j)`. That is $-1$ written as Python writes these numbers, in two parts: a first part, here $-1$, and a second part, here 0, that goes with the `j`. Mathematicians call the number $i$; Python follows the engineers, who write $j$ because they keep $i$ for electric current. Python adds and multiplies such numbers by the ordinary rules of algebra, with one new rule: $i \times i = -1$.
+
+<Exercise id="puzzle-eighth-power" />
+
+<Reveal for="puzzle-eighth-power">
+
+Here are all the powers on the way, as Python works them out.
+
+| Power | Value |
+| --- | --- |
+| $(1 + i)^1$ | $1 + i$ |
+| $(1 + i)^2$ | $2i$ |
+| $(1 + i)^3$ | $-2 + 2i$ |
+| $(1 + i)^4$ | $-4$ |
+| $(1 + i)^5$ | $-4 - 4i$ |
+| $(1 + i)^6$ | $-8i$ |
+| $(1 + i)^7$ | $8 - 8i$ |
+| $(1 + i)^8$ | $16$ |
+
+Draw each number $a + bi$ as the point $(a, b)$, and the powers wind once round 0, getting longer as they go, and land on the positive first axis again at the eighth. This lesson finds out why. These *complex numbers* are how most open language models, Llama among them, keep track of where each word sits in a sentence. A language model holds each word as a long list of numbers, and rotary position embeddings, proposed by Jianlin Su and others in 2021, take those numbers in pairs as complex numbers and multiply each pair by a complex number that depends on the word's position. The same numbers give every quadratic two solutions, and they lead to Euler's formula, which joins the number $e$ to turning.
+
+</Reveal>

@@ -1,6 +1,6 @@
 # Status
 
-Updated 7 November 2026 at about 06:05 UTC, when E1.11 went live. On "Pause" or "Resume",
+Updated 7 November 2026 at about 07:05 UTC, when M1.12 went live. On "Pause" or "Resume",
 follow CLAUDE.md and carry on from "Resume here" (phase 1) and "Phase 2: resume here" (phase 2).
 
 ## Where things stand
@@ -28,9 +28,9 @@ reviewed by both, every finding applied, walked and tested end to end. M1.8 Proo
 too, on the same terms, and so are E1.8 Debugging as an experiment, M1.9 Proof II:
 induction and recursion, E1.9 Testing and property-based testing, and M1.10 Counting:
 permutations, combinations and the binomial theorem, E1.10 Algorithms: sorting, searching
-and hashing, M1.11 Angles, trigonometry and rotation, and E1.11 Iterators, generators and
-streaming data. M1.12 Complex numbers and Euler's formula is next (written and checked; its
-simulated learner is done and its independent review was running), then E1.12.
+and hashing, M1.11 Angles, trigonometry and rotation, E1.11 Iterators, generators and
+streaming data, and M1.12 Complex numbers and Euler's formula. E1.12 Project: a tested
+text-statistics tool is next (being written), then stage 2.
 
 ### Done
 
@@ -683,23 +683,47 @@ Done so far:
   generators" list. `ShuffleBuffer` shuffles 36 items in three topics with a buffer of 1 to 36
   and says how many of each topic the first output row holds; its words come from `shuffle.ts`,
   with unit tests.
+- M1.12 Complex numbers and Euler's formula, live (`ready`) since 7 November: all six phases and
+  23 exercises (a puzzle on `(1 + 1j) ** 8`, 5 recall, 7 explore predictions, three expression
+  steps, a proof that every solution of $z^n = 1$ is one of $n$ evenly spaced points, an estimate
+  of how far $\left(1 + \frac{i\theta}{n}\right)^n$ drifts from the circle, 2 builds (turning
+  about any centre in one line, and rotary position embeddings), a debug, a break-it on
+  `(-8) ** (1 / 3)`, and the explain-back), tutor notes with 22 misconceptions, and checks.json
+  (52 items). It requires M1.5 and M1.11, applies M1.2 and M1.4, and foreshadows M7.3, L4.7 and
+  M12.5. Reviewed by both (the simulated learner, 23 of 23 right with 20 findings; the
+  independent reviewer, 1 blocker, 17 should-fix findings and nits; in
+  `derive-resume/review/M1.12-*.md`, with what was applied in `M1.12-fix-plan.md`), and every
+  finding applied: the explain-back's rubric asks only for what its prompt asks; no passage
+  gives a later prediction away; the division step no longer hands over the conjugate; the
+  argument that $\left(1 + \frac{x}{n}\right)^n$ settles on $e^x$ says what it assumes;
+  Reveals no longer repeat their cards; sines and cosines say how to type them; Euler's formula
+  has reviews and a placement question; the Build tests say in words when a function gives two
+  numbers or a complex score; ten rungs and seven misconceptions rewritten, with two new ones;
+  option lengths evened; and $-1$ gets its logarithm $i\pi$, as M1.5 promised.
+  `check:exercises` passes all 52 items; the lesson was walked in all six phases with the
+  mixed check and no page errors other than the grader's 503 in local mode (store
+  `derive-resume/m112walk/store-before-M1.12-walk.json`; the store after it is
+  `store-after-M1.12-walk.json`); and its end-to-end tests pass at all three widths, with the
+  performance budget.
+- Engine changes with M1.12: two new figure components. `ComplexPlane` multiplies two numbers
+  set by length and angle, with their angles drawn as two arcs, w's outside z's (product mode),
+  or draws the powers of one number up to the 24th (powers mode), with axis numbers 1, 2 or 5
+  times a power of ten apart and a Start again button. `EulerSteps` draws the chain of $n$
+  small turns $\left(1 + \frac{i\theta}{n}\right)^n$ against the circle of radius 1. Their
+  words come from `complex.ts`, with unit tests. The harness's `close` compares complex numbers;
+  the expression checker reads raised digits (`a²`) as powers, and when the only unknown name in
+  an answer is `i`, says that the answer is a real number, so the `i` should be left out.
 
 Next, in order:
 
-1. M1.12 Complex numbers and Euler's formula: written and checked in a worktree at 3df9a23,
-   with its tutor notes and two figure components, `ComplexPlane`
-   (a product mode and a powers mode) and `EulerSteps` (the chain of $n$ small turns against the
-   circle), whose words are in `complex.ts` with unit tests; the lesson and figures are backed
-   up in `derive-resume/m112-draft/` (`lesson/`, `figures/`, and `shared.patch` for the
-   registrations, other lessons' `usedBy` and the harness's `close`, which compares complex
-   numbers). Its simulated learner is done (23 of 23 right, 20 findings, in
-   `derive-resume/review/M1.12-learner-findings.md`) and its independent review was running.
-   Apply both on top of main (apply `shared.patch` with `git apply --3way`; in `harness.py` keep
-   E1.11's `import opcode` and `import re` and trace changes beside M1.12's `import cmath` and
-   complex `close`), check, test end to end, walk it (move E1.11's start in the walk store back a
-   day so that the pace governor lets M1.12 start) and release it. It requires M1.5 and
-   M1.11. Then E1.12 Project: a tested text-statistics tool (requires E1.6 and E1.9; leads to
-   L4.1), then the start of stage 2, each written, checked, reviewed by both and walked before
+1. E1.12 Project: a tested text-statistics tool (requires E1.6 and E1.9; leads to L4.1):
+   being written in a worktree, with its design notes in `derive-resume/e112-draft/plan.md`.
+   The puzzle, recall, explore, derive and build phases are written, and the build exercises
+   pass their checks; the other exercises, the Explain phase, the tutor notes and two figures
+   (`WordRanks` and `NextWords`, which reads `public/texts/alice.txt`, a path the hosting
+   branch must wrap in `withBase`) are next. Walk it from `store-after-M1.12-walk.json`
+   (move M1.12's start back a day first, and mark M1.12's concepts provisional with
+   `provisional.py`). Then the start of stage 2, each written, checked, reviewed by both and walked before
    it goes live, adding the remaining figure components as the lessons need them. The phase 2
    features (item 3) come first once the hosting pull request has landed. The E1.7 reviewer
    suggests E1.7 as a requirement of E3.4, if its configuration is a class.
@@ -771,6 +795,13 @@ Next, in order:
   as `store.json` and start the production build on it at port 3100. The pace governor counts
   three new lessons a week from Monday, so a walk late in the week moves the week's starts back
   with `prep-store.py` first.
+- Walking M1.12: `derive-resume/m112walk/` holds `walk-m112.cjs` (the same phases), with
+  `walk-lib.cjs`, `mixed.cjs`, `phone-roots.cjs` (the proof's lines at phone width) and
+  `rope-again.cjs` (build-rope's test reports). Its store, `store-before-M1.12-walk.json`, is
+  the store after E1.11's walk with E1.11 moved back a day and M1.11's concepts marked
+  provisional with `derive-resume/provisional.py`, as the app does once an Explain phase is
+  submitted without a grade: a lesson opens only when what it requires is mastered or
+  provisional.
 - Walking E1.7: copy `derive-resume/store-before-E1.7-walk.json` into a store folder with
   `prep-store.py <snapshot> <folder>/store.json M1.7=<yesterday>`, so that a new lesson can
   begin today, start the production build on it as above, and run `walk-e17.cjs` and

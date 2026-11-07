@@ -5,6 +5,8 @@ import type { ComponentProps, ReactNode } from "react";
 
 import { ExerciseCard } from "@/components/exercise/exercise-card";
 import {
+  ComplexPlane,
+  EulerSteps,
   ExpressionTree,
   FloatLine,
   FourTriangles,
@@ -329,5 +331,7 @@ export function phaseComponents(ctx: PhaseContext): MDXComponents {
     VectorPlane,
     FourTriangles,
     ShuffleBuffer,
+    ComplexPlane,
+    EulerSteps,
   };
 }

@@ -41,6 +41,8 @@ export const MDX_COMPONENT_NAMES = [
   "VectorPlane",
   "FourTriangles",
   "ShuffleBuffer",
+  "ComplexPlane",
+  "EulerSteps",
 ] as const;
 
 export type MdxComponentName = (typeof MDX_COMPONENT_NAMES)[number];

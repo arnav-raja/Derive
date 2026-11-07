@@ -1,0 +1,49 @@
+The Derive phase proved that multiplying by a complex number turns and stretches, and that $e^{i\theta}$ is the turn through $\theta$. Now build with complex numbers in Python: mend a quadratic solver, turn a point about any centre in one line, write the rotary position embeddings of a language model, and predict what Python makes of the cube root of $-8$.
+
+Python's complex numbers work with `+`, `-`, `*`, `/` and `**` like any other numbers, and mix freely with ints and floats. A complex number `z` has `z.real`, `z.imag` and `z.conjugate()`, and `abs(z)` is its length. After `import cmath`, the functions `cmath.sqrt`, `cmath.phase`, `cmath.polar`, `cmath.rect` and `cmath.exp` do for complex numbers what `math`'s functions do for real ones. A zero part can print as `-0j` or `-0.0`, a zero with a minus sign, which floats keep track of and which equals 0. Each exercise has tests of its own, in the tab `tests.py`. Each test's first line says in words what it checks, which is all you need to read of it, and the tests compare numbers, real or complex, within a tolerance, with `close`, as M1.4's tests did.
+
+## Roots that are always complex
+
+M1.4's `roots` stopped with a `ValueError` whenever $b^2 - 4ac$ was negative. Someone has changed it to give complex solutions.
+
+<Exercise id="debug-roots" />
+
+<Reveal for="debug-roots">
+
+With `cmath.sqrt`, the mended `roots` prints `((1-0j), (2+0j))` for $x^2 - 3x + 2 = 0$, complex numbers whose imaginary parts are 0, and with `** 0.5` it prints `(1.0, 2.0)`, since the power 0.5 of a positive number is a float. With `cmath.sqrt` one formula serves every quadratic, whatever the sign of $b^2 - 4ac$, and when $b^2 - 4ac$ is negative the two solutions are always a number and its conjugate, as $-2 - i$ and $-2 + i$ are: mirror images in the first axis.
+
+## Turning about any centre
+
+<Exercise id="build-turn-about" />
+
+</Reveal>
+
+<Reveal for="build-turn-about">
+
+Complex numbers fold a point's two coordinates into one number, and the four multiplications of M1.11's rule for turning into one product. Programs that turn things often keep a turn as a number of length 1 for that reason. In three dimensions they use *quaternions*, a larger kind of number that William Rowan Hamilton found in 1843 while looking for complex numbers with three parts.
+
+## Rotary position embeddings
+
+A language model holds each word as a long list of numbers. A Transformer, the kind of network inside it, decides how much each word should draw on each other word, how much it *attends* to it, by giving the pair a *score*. Each word has a list of numbers for asking, its *query*, and one for being found, its *key*, and the score of two words multiplies the query of one by the key of the other, number by number, and adds up. Unless something adds it, nothing in that sum says where the two words are. Rotary position embeddings put the positions in by turning: before the score, each pair of numbers in a query or a key is turned through an angle in proportion to its word's position.
+
+<Exercise id="build-rope" />
+
+</Reveal>
+
+<Reveal for="build-rope">
+
+So the score sees how far apart two words are, wherever they sit in the passage. A real model turns many pairs at once, each at its own rate: in Su's paper the $j$th of the $\frac{d}{2}$ pairs in a list of $d$ numbers turns through $10{,}000^{-2(j - 1)/d}$ radians per position, from 1 radian for the first pair to about a ten-thousandth of a radian for the last, so that some pairs tell neighbouring words apart and others tell apart words a long way off. Llama 3 raised the 10,000 to 500,000 so that it could read longer passages.
+
+## Break it: the cube root of −8
+
+`8 ** (1 / 3)` gives `2.0`: raising to the power $\frac{1}{3}$ takes a cube root, since $\left(8^{1/3}\right)^3 = 8^1$ by the rule that a power of a power multiplies the exponents.
+
+<Exercise id="breakit-cube-root" />
+
+</Reveal>
+
+<Reveal for="breakit-cube-root">
+
+Python raises a negative number to a power that is not whole by way of the complex numbers, so `(-1) ** 0.5` gives `(6.123233995736766e-17+1j)`, which is $i$ up to rounding, and not an error. When you want the real cube root of a negative number, ask for it by name: `math.cbrt(-8)` gives `-2.0`.
+
+</Reveal>

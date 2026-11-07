@@ -1,0 +1,71 @@
+The Explore phase watched complex numbers multiply their lengths and add their angles, and watched $\left(1 + \frac{i\pi}{n}\right)^n$ come to $-1$. Now prove both: that multiplying by $\cos\theta + i\sin\theta$ turns the plane, that the angle-addition formulas follow in one line, how to divide, where the solutions of $z^n = 1$ lie, and why $\left(1 + \frac{i\theta}{n}\right)^n$ ends on the circle at angle $\theta$.
+
+## Multiplying is turning
+
+The number of length 1 at angle $\theta$ is $\cos\theta + i\sin\theta$. Multiply a point $x + iy$ by it.
+
+<Exercise id="derive-turn" />
+
+<Reveal for="derive-turn">
+
+So multiplying by $r(\cos\theta + i\sin\theta)$ turns through $\theta$ and then stretches every length by $r$. Every complex number is $r(\cos\theta + i\sin\theta)$ for its own length $r$ and angle $\theta$, so multiplying by it multiplies lengths by $r$ and adds $\theta$ to angles: what the Explore phase saw, now for every pair of numbers. In particular $z^n$, which is $n$ copies of $z$ multiplied together, has length $r^n$ and angle $n\theta$.
+
+## Two turns in one line
+
+Multiplying by $\cos\alpha + i\sin\alpha$ turns through $\alpha$ (alpha), and then multiplying by $\cos\beta + i\sin\beta$ turns on through $\beta$ (beta). The two turns together are one turn through $\alpha + \beta$. Now multiply the two numbers out.
+
+<Exercise id="derive-product" />
+
+</Reveal>
+
+<Reveal for="derive-product">
+
+The imaginary part gives the sine in the same line: $\sin(\alpha + \beta) = \sin\alpha\cos\beta + \cos\alpha\sin\beta$. M1.11 found these two formulas by turning a point twice with its rule for turning; complex numbers give both from one product. With $\alpha = \beta = \theta$ the same product gives $\cos 2\theta = \cos^2\theta - \sin^2\theta$ and $\sin 2\theta = 2\sin\theta\cos\theta$.
+
+## Dividing
+
+To divide by a complex number, make the bottom of the fraction real, by multiplying the top and the bottom by the same number. The Explore phase met a number that does that.
+
+<Exercise id="derive-divide" />
+
+</Reveal>
+
+<Reveal for="derive-divide">
+
+So $\frac{1}{z} = \frac{\bar z}{|z|^2}$: mirror $z$ in the first axis and divide by the square of its length. Its length is $\frac{1}{r}$ and its angle is $-\theta$, which is what undoes a stretch by $r$ and a turn by $\theta$. Python divides complex numbers with `/`, as it divides any others.
+
+## Every solution of zⁿ = 1
+
+The Explore phase found three cube roots of 1. Here is the proof that finds every solution of $z^n = 1$, for any whole number $n$ of at least 1.
+
+<Exercise id="derive-roots" />
+
+</Reveal>
+
+<Reveal for="derive-roots">
+
+Each of these numbers is a solution too: its length is 1, and $n$ times its angle is $2\pi k$, a whole number of turns. These $n$ numbers are the $n$th *roots of unity*. For $n = 2$ they are $1$ and $-1$, and for $n = 4$ they are $1$, $i$, $-1$ and $-i$.
+
+## Why the steps end on the circle
+
+The Explore phase watched $\left(1 + \frac{i\theta}{n}\right)^n$ end near the point at angle $\theta$ on the circle of radius 1. Each factor $1 + \frac{i\theta}{n}$ is the point $\left(1, \frac{\theta}{n}\right)$, a short step straight up from 1, or straight down for a negative $\theta$, and multiplying by it turns through its angle and stretches by its length. Its length is $\sqrt{1 + \frac{\theta^2}{n^2}}$, by Pythagoras' theorem, a hair over 1. So the point of the circle of radius 1 in the same direction is only a hair lower, at a height of nearly $\frac{\theta}{n}$, and for a small angle M1.11 found that height nearly equal to the angle itself: their ratio comes closer and closer to 1 as the angle shrinks. So each factor turns through $\frac{\theta}{n}$ times a number close to 1, the same number for every factor, and the $n$ factors turn through $\theta$ times that number in all, which comes to $\theta$ as $n$ grows. Each factor falls short by a small fraction of its own turn, so together they fall short by the same small fraction of $\theta$, and the shortfalls do not pile up. The question is whether $n$ stretches of a hair each add up to anything.
+
+<Exercise id="derive-drift" />
+
+</Reveal>
+
+<Reveal for="derive-drift">
+
+A thousand times as many steps leave a gap a thousand times smaller. So as $n$ grows, the length of $\left(1 + \frac{i\theta}{n}\right)^n$ settles on 1 and its angle on $\theta$: it settles on the point at angle $\theta$ on the circle of radius 1, and
+$$e^{i\theta} = \cos\theta + i\sin\theta.$$
+With $\theta = \pi$, half a turn from 1, $e^{i\pi} = -1$. So among the complex numbers $-1$ has a natural logarithm, a power of $e$ that gives it, $i\pi$, though M1.5 found none among the real numbers: `cmath.log(-1)` gives `3.141592653589793j`. 0 still has none.
+
+M1.2's rule for powers holds here too. $e^{i\alpha}e^{i\beta}$ turns through $\alpha$ and then through $\beta$, which is one turn through $\alpha + \beta$, so $e^{i\alpha}e^{i\beta} = e^{i(\alpha + \beta)}$, as $b^{x + y} = b^x b^y$ says. Every complex number is its length times a turn, $re^{i\theta}$, so the polar form is often written that way, and multiplying $re^{i\theta}$ by $se^{i\phi}$ (phi) gives $rse^{i(\theta + \phi)}$: lengths multiply and angles add, in one line of exponent rules. In Python, `cmath.exp(1j * theta)` is $e^{i\theta}$, and `cmath.rect(r, theta)` is $re^{i\theta}$.
+
+<Definition term="Euler's formula">
+
+For every angle $\theta$, $e^{i\theta} = \cos\theta + i\sin\theta$, the point at angle $\theta$ on the circle of radius 1. It is where $\left(1 + \frac{i\theta}{n}\right)^n$ settles as $n$ grows, $n$ small turns that add up to $\theta$ and stretch by about $\frac{\theta^2}{2n}$ in all. So $e^{i\pi} = -1$, $e^{i\alpha}e^{i\beta} = e^{i(\alpha + \beta)}$, and multiplying by $e^{i\theta}$ turns the plane through $\theta$ about 0. Python's `cmath.exp` gives it.
+
+</Definition>
+
+</Reveal>

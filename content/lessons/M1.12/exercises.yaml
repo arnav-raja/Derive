@@ -1,0 +1,1202 @@
+exercises:
+  # Puzzle ---------------------------------------------------------------------
+  - id: puzzle-eighth-power
+    phase: puzzle
+    kind: predict
+    concept: M1.12/polar-form
+    title: The eighth power
+    prompt: What does `print((1 + 1j) ** 8)` show?
+    answer:
+      type: choice
+      options:
+        - { id: linear, label: '`(1+8j)`' }
+        - { id: right, label: '`(16+0j)`' }
+        - { id: axis, label: '`(0+16j)`' }
+        - { id: lengths, label: '`(256+0j)`' }
+      correct: [right]
+    explanation: >-
+      Square three times. $(1 + i)^2 = 1 + 2i + i^2 = 1 + 2i - 1 = 2i$, then $(2i)^2 = 4i^2 = -4$,
+      and $(-4)^2 = 16$. So $(1 + i)^8 = 16$, which Python prints as `(16+0j)`: 16, with nothing
+      along $i$. `(1+8j)` treats the eighth power as eight times the $i$ part, `(256+0j)` is $2^8$,
+      from taking $i$ as 1, or the length of $1 + i$ as 2, and `(0+16j)` slips a factor of $i$ on
+      the way.
+
+  # Recall ---------------------------------------------------------------------
+  - id: recall-expand
+    phase: recall
+    kind: recall
+    concept: M1.2/equivalence
+    prompt: Which of these is equal to $(a + b)(c + d)$ for all numbers $a$, $b$, $c$ and $d$?
+    answer:
+      type: choice
+      options:
+        - { id: pairs, label: '$ac + bd$' }
+        - { id: neighbours, label: '$ab + ac + bd + cd$' }
+        - { id: right, label: '$ac + ad + bc + bd$' }
+        - { id: twice, label: '$ac + 2ad + bd$' }
+      correct: [right]
+    explanation: >-
+      Each term of the first bracket times each term of the second: $a$ times $c$ and $d$, then $b$
+      times $c$ and $d$. With $a = b = c = d = 1$ the brackets give $2 \times 2 = 4$, and so does
+      $ac + ad + bc + bd$, while $ac + bd$ gives 2.
+
+  - id: recall-no-real
+    phase: recall
+    kind: recall
+    concept: M1.4/quadratics
+    prompt: How many real numbers $x$ solve $x^2 + 4x + 5 = 0$?
+    answer: { type: number, value: 0, tolerance: { abs: 0 } }
+    explanation: >-
+      None. $b^2 - 4ac = 16 - 20 = -4$ is negative. Completing the square,
+      $x^2 + 4x + 5 = (x + 2)^2 + 1$, which is at least 1 for every real $x$, so it is never 0.
+
+  - id: recall-quarter-turn
+    phase: recall
+    kind: recall
+    concept: M1.11/rotation
+    prompt: Turning the plane a quarter turn anticlockwise about the origin takes the point $(x, y)$ to which point?
+    answer:
+      type: choice
+      options:
+        - { id: swap, label: '$(y, x)$' }
+        - { id: clockwise, label: '$(y, -x)$' }
+        - { id: half, label: '$(-x, -y)$' }
+        - { id: right, label: '$(-y, x)$' }
+      correct: [right]
+    explanation: >-
+      The turn through $\theta$ takes $(x, y)$ to
+      $(x\cos\theta - y\sin\theta,\; x\sin\theta + y\cos\theta)$, and a quarter turn has
+      $\cos\theta = 0$ and $\sin\theta = 1$, so $(x, y)$ goes to $(-y, x)$: $(2, 5)$ goes to
+      $(-5, 2)$.
+
+  - id: recall-exponent
+    phase: recall
+    kind: recall
+    concept: M1.2/exponent-rules
+    prompt: $2^5 \times 2^3 = 2^n$. What is $n$?
+    answer: { type: number, value: 8, tolerance: { abs: 0 } }
+    explanation: >-
+      $2^5$ is five 2s multiplied together and $2^3$ is three more, so the product is eight 2s:
+      $2^{5 + 3} = 2^8 = 256$. Multiplying powers of the same base adds the exponents.
+
+  - id: recall-angle-point
+    phase: recall
+    kind: recall
+    concept: M1.11/sine-and-cosine
+    prompt: Turning $(1, 0)$ anticlockwise about the origin through $60°$ reaches which point?
+    answer:
+      type: choice
+      options:
+        - { id: right, label: '$\left(\frac{1}{2}, \frac{\sqrt{3}}{2}\right)$' }
+        - { id: swapped, label: '$\left(\frac{\sqrt{3}}{2}, \frac{1}{2}\right)$' }
+        - { id: forty-five, label: '$\left(\frac{1}{\sqrt{2}}, \frac{1}{\sqrt{2}}\right)$' }
+        - { id: halves, label: '$\left(\frac{1}{2}, \frac{1}{2}\right)$' }
+      correct: [right]
+    explanation: >-
+      Turning $(1, 0)$ through $\theta$ reaches $(\cos\theta, \sin\theta)$, and
+      $\cos 60° = \frac{1}{2}$, $\sin 60° = \frac{\sqrt{3}}{2}$. $\left(\frac{\sqrt{3}}{2}, \frac{1}{2}\right)$
+      is the point at $30°$, and $\left(\frac{1}{2}, \frac{1}{2}\right)$ is not on the circle of
+      radius 1 at all.
+
+  # Explore --------------------------------------------------------------------
+  - id: explore-times-i
+    phase: explore
+    kind: predict
+    concept: M1.12/complex-numbers
+    title: Times i
+    prompt: Multiply out $i(3 + i)$, putting $-1$ for $i^2$. What do you get?
+    answer:
+      type: choice
+      options:
+        - { id: plus, label: '$1 + 3i$' }
+        - { id: dropped, label: '$3i$' }
+        - { id: right, label: '$-1 + 3i$' }
+        - { id: swapped, label: '$3 - i$' }
+      correct: [right]
+    explanation: >-
+      $i \times 3 + i \times i = 3i + i^2 = 3i - 1$, so $i(3 + i) = -1 + 3i$, and `1j * (3 + 1j)`
+      prints `(-1+3j)`. $1 + 3i$ takes $i^2$ as 1, $3i$ drops the $i^2$ term, and $3 - i$ swaps the
+      two parts.
+    placement: true
+    review:
+      variants:
+        - prompt: Multiply out $i(2 - 5i)$, putting $-1$ for $i^2$.
+          answer:
+            type: choice
+            options:
+              - { id: plus, label: '$-5 + 2i$' }
+              - { id: right, label: '$5 + 2i$' }
+              - { id: swapped, label: '$2 + 5i$' }
+              - { id: dropped, label: '$2i$' }
+            correct: [right]
+          explanation: >-
+            $i \times 2 - 5i \times i = 2i - 5i^2 = 2i + 5$, so $i(2 - 5i) = 5 + 2i$.
+        - prompt: What is $i^4$?
+          answer: { type: number, value: 1, tolerance: { abs: 0 } }
+          explanation: >-
+            $i^4 = i^2 \times i^2 = (-1) \times (-1) = 1$: four quarter turns make a whole turn.
+        - prompt: Multiplying a complex number $a + bi$ by $i$ does what to the point $(a, b)$?
+          answer:
+            type: choice
+            options:
+              - { id: mirror, label: 'It mirrors it in the first axis, to $(a, -b)$' }
+              - { id: swap, label: 'It swaps its two coordinates, to $(b, a)$' }
+              - { id: stretch, label: 'It doubles its distance from 0, to $(2a, 2b)$' }
+              - { id: right, label: 'It turns it a quarter turn anticlockwise about 0' }
+            correct: [right]
+          explanation: >-
+            $i(a + bi) = ai + bi^2 = -b + ai$, the point $(-b, a)$, which is $(a, b)$ turned a
+            quarter turn anticlockwise about 0.
+
+  - id: explore-product
+    phase: explore
+    kind: predict
+    concept: M1.12/complex-numbers
+    title: Two brackets
+    prompt: Multiply out $(1 + 2i)(3 - i)$. What is it?
+    answer:
+      type: choice
+      options:
+        - { id: added, label: '$4 + i$' }
+        - { id: plus-one, label: '$1 + 5i$' }
+        - { id: ends, label: '$5$' }
+        - { id: right, label: '$5 + 5i$' }
+      correct: [right]
+    explanation: >-
+      $1 \times 3 + 1 \times (-i) + 2i \times 3 + 2i \times (-i) = 3 - i + 6i - 2i^2 = 3 + 5i + 2 = 5 + 5i$,
+      and `(1 + 2j) * (3 - 1j)` prints `(5+5j)`. $4 + i$ adds the two numbers, $1 + 5i$ takes $i^2$
+      as 1, and 5 keeps only the first and last terms.
+    review:
+      variants:
+        - prompt: Multiply out $(2 + i)(2 - i)$.
+          answer: { type: number, value: 5, tolerance: { abs: 0 } }
+          explanation: >-
+            $4 - 2i + 2i - i^2 = 4 + 1 = 5$. A number times its conjugate is a real number, the square
+            of its length.
+        - prompt: Multiply out $(1 + i)(1 + i)$.
+          answer:
+            type: choice
+            options:
+              - { id: plus-one, label: '$2 + 2i$' }
+              - { id: zero, label: '$0$' }
+              - { id: right, label: '$2i$' }
+              - { id: ends-plus, label: '$2$' }
+            correct: [right]
+          explanation: >-
+            $1 + i + i + i^2 = 1 + 2i - 1 = 2i$.
+
+  - id: explore-length
+    phase: explore
+    kind: predict
+    concept: M1.12/complex-numbers
+    title: How long is the product?
+    prompt: >-
+      $|1 + 2i| = \sqrt{5} \approx 2.236$ and $|3 - i| = \sqrt{10} \approx 3.162$, and their product
+      is $5 + 5i$. What is $|5 + 5i|$, to two decimal places?
+    answer: { type: number, value: 7.07, tolerance: { abs: 0.01 } }
+    explanation: >-
+      $|5 + 5i| = \sqrt{25 + 25} = \sqrt{50} \approx 7.07$, and `abs(5 + 5j)` prints
+      `7.0710678118654755`. That is $\sqrt{5} \times \sqrt{10} = \sqrt{50}$, the product of the two
+      lengths, not their sum, about 5.40.
+    review:
+      variants:
+        - prompt: What is $|3 + 4i| \times |3 - 4i|$?
+          answer: { type: number, value: 25, tolerance: { abs: 0 } }
+          explanation: >-
+            Each has length $\sqrt{9 + 16} = 5$, so the product is 25, which is also
+            $(3 + 4i)(3 - 4i) = 9 + 16 = 25$.
+        - prompt: $|z| = 2$ and $|w| = 3$. What is $|zw|$?
+          answer: { type: number, value: 6, tolerance: { abs: 0 } }
+          explanation: >-
+            Multiplying multiplies the lengths: $|zw| = |z||w| = 6$, whatever the angles.
+
+  - id: explore-angle-sum
+    phase: explore
+    kind: predict
+    concept: M1.12/polar-form
+    title: The angle of a product
+    prompt: >-
+      $1 + i$ is at angle $45°$ from the first axis, and $\sqrt{3} + i$ is at angle $30°$. At what
+      angle is their product?
+    answer:
+      type: choice
+      options:
+        - { id: difference, label: '$15°$' }
+        - { id: right, label: '$75°$' }
+        - { id: product, label: '$1{,}350°$' }
+        - { id: unknown, label: 'It cannot be known without their lengths' }
+      correct: [right]
+    explanation: >-
+      $(1 + i)(\sqrt{3} + i) = \sqrt{3} + i + \sqrt{3}i + i^2 = (\sqrt{3} - 1) + (\sqrt{3} + 1)i$,
+      about $0.732 + 2.732i$, and its angle is $75°$, which is $45° + 30°$: the angles add. $15°$ is
+      their difference, and $1{,}350°$ their product.
+    placement: true
+    review:
+      variants:
+        - prompt: $z$ is at angle $100°$ and $w$ at angle $-40°$. At what angle is $zw$?
+          answer: { type: number, value: 60, tolerance: { abs: 0 }, unit: degrees }
+          explanation: >-
+            Multiplying adds the angles: $100° + (-40°) = 60°$.
+        - prompt: $z$ has length 2 and angle $30°$. What are the length and angle of $z^2$?
+          answer:
+            type: choice
+            options:
+              - { id: double, label: 'Length 4 and angle $30°$' }
+              - { id: right, label: 'Length 4 and angle $60°$' }
+              - { id: added, label: 'Length 2 and angle $60°$' }
+              - { id: squared, label: 'Length 4 and angle $900°$' }
+            correct: [right]
+          explanation: >-
+            $z^2 = z \times z$ multiplies the lengths, $2 \times 2 = 4$, and adds the angles,
+            $30° + 30° = 60°$.
+        - prompt: >-
+            `cmath.polar(1 + 1j)` gives `(1.4142135623730951, 0.7853981633974483)`. What does
+            `cmath.polar((1 + 1j) ** 2)` give, to three decimal places?
+          answer:
+            type: choice
+            options:
+              - { id: same-angle, label: '`(2.0, 0.785)`' }
+              - { id: double-length, label: '`(2.828, 1.571)`' }
+              - { id: squared-angle, label: '`(2.0, 0.617)`' }
+              - { id: right, label: '`(2.0, 1.571)`' }
+            correct: [right]
+          explanation: >-
+            Squaring squares the length, $\sqrt{2}^2 = 2$, and doubles the angle,
+            $2 \times \frac{\pi}{4} = \frac{\pi}{2} \approx 1.571$: $(1 + i)^2 = 2i$, and
+            `cmath.polar(2j)` gives `(2.0, 1.5707963267948966)`. `(2.0, 0.785)` keeps the angle,
+            `(2.828, 1.571)` doubles the length, and `(2.0, 0.617)` squares the angle.
+        - prompt: What does multiplying two complex numbers do to their lengths and their angles?
+          answer:
+            type: choice
+            options:
+              - { id: both-add, label: 'It adds the lengths and adds the angles' }
+              - { id: both-multiply, label: 'It multiplies the lengths and multiplies the angles' }
+              - { id: right, label: 'It multiplies the lengths and adds the angles' }
+              - { id: swapped, label: 'It adds the lengths and multiplies the angles' }
+            correct: [right]
+          explanation: >-
+            Multiplying by $r(\cos\theta + i\sin\theta)$ stretches by $r$ and turns through $\theta$,
+            so the lengths multiply and the angles add.
+
+  - id: explore-cube-roots
+    phase: explore
+    kind: predict
+    concept: M1.12/polar-form
+    title: Solving z³ = 1
+    prompt: Among the complex numbers, how many $z$ have $z^3 = 1$?
+    answer: { type: number, value: 3, tolerance: { abs: 0 } }
+    explanation: >-
+      Three. Cubing cubes the length and triples the angle, so $z$ must have length 1 and an angle
+      that, taken three times, makes a whole number of turns: $0°$, $120°$ or $240°$. Those are 1
+      and $-\frac{1}{2} \pm \frac{\sqrt{3}}{2}i$.
+    review:
+      variants:
+        - prompt: How many complex numbers $z$ have $z^4 = 1$?
+          answer: { type: number, value: 4, tolerance: { abs: 0 } }
+          explanation: >-
+            Four: $1$, $i$, $-1$ and $-i$, at $0°$, $90°$, $180°$ and $270°$, since four times each
+            angle is a whole number of turns.
+        - prompt: Which of these is a solution of $z^3 = 1$?
+          answer:
+            type: choice
+            options:
+              - { id: minus-one, label: '$-1$' }
+              - { id: i, label: '$i$' }
+              - { id: right, label: '$-\frac{1}{2} + \frac{\sqrt{3}}{2}i$' }
+              - { id: half, label: '$\frac{1}{2} + \frac{1}{2}i$' }
+            correct: [right]
+          explanation: >-
+            $-\frac{1}{2} + \frac{\sqrt{3}}{2}i$ has length 1 and angle $120°$, and three times
+            $120°$ is $360°$, so its cube is 1. $(-1)^3 = -1$ and $i^3 = -i$.
+
+  - id: explore-compound
+    phase: explore
+    kind: predict
+    concept: M1.12/eulers-formula
+    title: Interest paid more often
+    prompt: >-
+      A year's interest of 100% turns 1 rupee into 2. Paid as two half-yearly payments of 50%, it
+      gives $1.5^2 = 2.25$ rupees. Paid as $n$ payments of $\frac{100}{n}$% each, the year ends with
+      $\left(1 + \frac{1}{n}\right)^n$ rupees. What happens to that as $n$ grows into the millions?
+    answer:
+      type: choice
+      options:
+        - { id: grows, label: 'It grows without limit, since each extra payment adds a little more' }
+        - { id: back, label: 'It falls back towards 2, since each payment gets so small' }
+        - { id: right, label: 'It settles on a number between 2.7 and 2.8' }
+        - { id: three, label: 'It settles on 3, a third more than paying once' }
+      correct: [right]
+    explanation: >-
+      12 payments give $\left(1 + \frac{1}{12}\right)^{12} \approx 2.613$, 365 give about 2.7146,
+      1,000 give 2.7169 and a million give 2.7182805. Each extra payment adds less than the one
+      before, and the total settles on $e = 2.718281828\ldots$, the number M1.5 named as the base of
+      the natural logarithm.
+    review:
+      variants:
+        - prompt: >-
+            To two decimal places, what is $\left(1 + \frac{1}{n}\right)^n$ when $n$ is a million?
+          answer: { type: number, value: 2.72, tolerance: { abs: 0.005 } }
+          explanation: >-
+            It is 2.7182805, close to $e = 2.71828\ldots$, which is where it settles as $n$ grows.
+        - prompt: >-
+            A year's interest of 200%, paid in $n$ parts, gives $\left(1 + \frac{2}{n}\right)^n$. Where
+            does that settle as $n$ grows?
+          answer:
+            type: choice
+            options:
+              - { id: double, label: '$2e$, about 5.44' }
+              - { id: right, label: '$e^2$, about 7.39' }
+              - { id: three, label: '3, as paying once gives' }
+              - { id: grows, label: 'Nowhere: it grows without limit' }
+            correct: [right]
+          explanation: >-
+            $\left(1 + \frac{x}{n}\right)^n$ settles on $e^x$, so 200% gives $e^2 \approx 7.39$; a
+            thousand parts already give 7.374.
+
+  - id: explore-euler
+    phase: explore
+    kind: predict
+    concept: M1.12/eulers-formula
+    title: Interest at an imaginary rate
+    prompt: >-
+      Put $i\pi$ in place of the 1 in $\left(1 + \frac{1}{n}\right)^n$:
+      $\left(1 + \frac{i\pi}{n}\right)^n$, with $n = 1{,}000$. Near which number is it?
+    answer:
+      type: choice
+      options:
+        - { id: right, label: 'Near $-1$' }
+        - { id: linear, label: 'Near $1 + \pi i$' }
+        - { id: real, label: 'Near $e^{\pi}$, about 23' }
+        - { id: one, label: 'Near 1' }
+      correct: [right]
+    explanation: >-
+      `(1 + 1j * math.pi / 1000) ** 1000` prints `(-1.004946973864266+1.0386493134192283e-05j)`,
+      close to $-1$. Each factor $1 + \frac{i\pi}{1{,}000}$ is a hair longer than 1 and points
+      a little above the first axis, so multiplying by it turns a little and barely stretches; 1,000
+      such turns add up to almost exactly half a turn.
+    placement: true
+    review:
+      variants:
+        - prompt: What is $e^{i\pi/3} \times e^{i\pi/3} \times e^{i\pi/3}$?
+          answer: { type: number, value: -1, tolerance: { abs: 0 } }
+          explanation: >-
+            Each factor turns through $\frac{\pi}{3}$, so together they turn through $\pi$, half a
+            turn from 1: $e^{i\pi/3}e^{i\pi/3}e^{i\pi/3} = e^{i\pi} = -1$.
+        - prompt: What is $e^{i\pi/2}$?
+          answer:
+            type: choice
+            options:
+              - { id: right, label: '$i$' }
+              - { id: real, label: '$e^{\pi/2}$, about 4.81' }
+              - { id: linear, label: '$1 + \frac{\pi}{2}i$' }
+              - { id: half, label: '$-1$' }
+            correct: [right]
+          explanation: >-
+            $e^{i\theta}$ is the point at angle $\theta$ on the circle of radius 1, and $\frac{\pi}{2}$
+            is a quarter turn, so $e^{i\pi/2} = \cos\frac{\pi}{2} + i\sin\frac{\pi}{2} = i$.
+            `cmath.exp(1j * math.pi / 2)` prints `(6.123233995736766e-17+1j)`.
+
+  # Derive ---------------------------------------------------------------------
+  - id: derive-turn
+    phase: derive
+    kind: step
+    concept: M1.12/polar-form
+    covers: [M1.12/complex-numbers]
+    title: Multiplying is turning
+    prompt: >-
+      Multiply out $(x + iy)(\cos\theta + i\sin\theta)$, putting $-1$ for $i^2$. What is its
+      imaginary part, the number that multiplies $i$? Type $\sin\theta$ as `sin(theta)`, with its
+      brackets.
+    answer:
+      type: expression
+      symbols:
+        - { name: x }
+        - { name: y }
+        - { name: theta }
+      reference: x*sin(theta) + y*cos(theta)
+      lhs: '\text{imaginary part} ='
+      accept: ['sin(theta)*x + cos(theta)*y', 'y*cos(theta) + x*sin(theta)']
+      reject:
+        - 'x*sin(theta) - y*cos(theta)'
+        - 'x*cos(theta) - y*sin(theta)'
+        - 'x*sin(theta) + y*sin(theta)'
+        - 'y*cos(theta)'
+        - 'x*sin(theta)'
+    explanation: >-
+      $(x + iy)(\cos\theta + i\sin\theta) = x\cos\theta + ix\sin\theta + iy\cos\theta + i^2y\sin\theta
+      = (x\cos\theta - y\sin\theta) + i(x\sin\theta + y\cos\theta)$. Its two parts are M1.11's turn of
+      $(x, y)$ through $\theta$, so multiplying by $\cos\theta + i\sin\theta$ turns the plane through
+      $\theta$ about 0.
+    review:
+      variants:
+        - prompt: >-
+            What is the real part of $(x + iy)(\cos\theta + i\sin\theta)$? Type $\cos\theta$ as
+            `cos(theta)`, with its brackets.
+          answer:
+            type: expression
+            symbols:
+              - { name: x }
+              - { name: y }
+              - { name: theta }
+            reference: x*cos(theta) - y*sin(theta)
+            accept: ['cos(theta)*x - sin(theta)*y']
+            reject: ['x*cos(theta) + y*sin(theta)', 'x*sin(theta) + y*cos(theta)', 'x*cos(theta)']
+          explanation: >-
+            The terms without $i$ are $x\cos\theta$ and $i^2y\sin\theta = -y\sin\theta$.
+        - prompt: What is the real part of $(3 + i)(\cos 90° + i\sin 90°)$?
+          answer: { type: number, value: -1, tolerance: { abs: 0 } }
+          explanation: >-
+            $\cos 90° + i\sin 90° = i$, and $i(3 + i) = -1 + 3i$: $(3, 1)$ turned a quarter turn.
+        - prompt: What does multiplying by $\cos\theta + i\sin\theta$ do to the plane?
+          answer:
+            type: choice
+            options:
+              - { id: stretch, label: 'It stretches it away from 0 by $\cos\theta$' }
+              - { id: right, label: 'It turns it through $\theta$ about 0' }
+              - { id: slide, label: 'It slides it along the first axis by $\theta$' }
+              - { id: mirror, label: 'It mirrors it in the line at angle $\theta$' }
+            correct: [right]
+          explanation: >-
+            Its real and imaginary parts are M1.11's rule for turning $(x, y)$ through $\theta$, and
+            the number has length 1, so it turns without stretching.
+
+  - id: derive-product
+    phase: derive
+    kind: step
+    concept: M1.12/polar-form
+    title: Two turns in one line
+    prompt: >-
+      Multiply out $(\cos\alpha + i\sin\alpha)(\cos\beta + i\sin\beta)$. What is its real part,
+      written with $\cos\alpha$, $\sin\alpha$, $\cos\beta$ and $\sin\beta$? Type $\cos\alpha$ as
+      `cos(alpha)`, with its brackets.
+    answer:
+      type: expression
+      symbols:
+        - { name: alpha }
+        - { name: beta }
+      reference: cos(alpha)*cos(beta) - sin(alpha)*sin(beta)
+      lhs: '\text{real part} ='
+      accept: ['cos(beta)*cos(alpha) - sin(beta)*sin(alpha)', '-sin(alpha)*sin(beta) + cos(alpha)*cos(beta)']
+      reject:
+        - 'cos(alpha)*cos(beta) + sin(alpha)*sin(beta)'
+        - 'cos(alpha)*cos(beta)'
+        - 'sin(alpha)*cos(beta) + cos(alpha)*sin(beta)'
+        - 'cos(alpha) + cos(beta)'
+        - 'cos(alpha + beta)'
+      form:
+        forbid: ['cos(alpha + beta)', 'sin(alpha + beta)']
+        message: That is equal, but this step asks for the product multiplied out, with the cosines and sines of $\alpha$ and $\beta$ on their own.
+    explanation: >-
+      $\cos\alpha\cos\beta + i\cos\alpha\sin\beta + i\sin\alpha\cos\beta + i^2\sin\alpha\sin\beta$ has
+      real part $\cos\alpha\cos\beta - \sin\alpha\sin\beta$. Multiplying by $\cos\beta + i\sin\beta$
+      turns the point at angle $\alpha$ on through $\beta$, to the point at angle $\alpha + \beta$,
+      whose real part is $\cos(\alpha + \beta)$. So
+      $\cos(\alpha + \beta) = \cos\alpha\cos\beta - \sin\alpha\sin\beta$, in one line.
+    review:
+      variants:
+        - prompt: >-
+            What is the imaginary part of $(\cos\alpha + i\sin\alpha)(\cos\beta + i\sin\beta)$,
+            written with $\cos\alpha$, $\sin\alpha$, $\cos\beta$ and $\sin\beta$? Type $\sin\alpha$
+            as `sin(alpha)`, with its brackets.
+          answer:
+            type: expression
+            symbols:
+              - { name: alpha }
+              - { name: beta }
+            reference: sin(alpha)*cos(beta) + cos(alpha)*sin(beta)
+            accept: ['cos(alpha)*sin(beta) + sin(alpha)*cos(beta)']
+            reject: ['sin(alpha)*cos(beta) - cos(alpha)*sin(beta)', 'cos(alpha)*cos(beta) - sin(alpha)*sin(beta)', 'sin(alpha)*sin(beta)', 'sin(alpha + beta)']
+            form:
+              forbid: ['sin(alpha + beta)']
+              message: That is equal, but this asks for the product multiplied out, with the cosines and sines of $\alpha$ and $\beta$ on their own.
+          explanation: >-
+            The terms with $i$ are $\cos\alpha\sin\beta$ and $\sin\alpha\cos\beta$, and they make
+            $\sin(\alpha + \beta)$, the imaginary part of the point at angle $\alpha + \beta$.
+        - prompt: >-
+            Use $(\cos\theta + i\sin\theta)^2 = \cos 2\theta + i\sin 2\theta$ to find $\sin 2\theta$,
+            written with $\cos\theta$ and $\sin\theta$. Type $\sin\theta$ as `sin(theta)`, with its
+            brackets.
+          answer:
+            type: expression
+            symbols:
+              - { name: theta }
+            reference: 2*sin(theta)*cos(theta)
+            accept: ['2*cos(theta)*sin(theta)']
+            reject: ['2*sin(theta)', 'sin(theta)*cos(theta)', 'sin(theta)**2 + cos(theta)**2', 'sin(2*theta)']
+            form:
+              forbid: ['sin(2*theta)']
+              message: That is equal, but this asks for it written with $\cos\theta$ and $\sin\theta$.
+          explanation: >-
+            $(\cos\theta + i\sin\theta)^2 = \cos^2\theta - \sin^2\theta + 2i\sin\theta\cos\theta$, so its
+            imaginary part is $\sin 2\theta = 2\sin\theta\cos\theta$.
+
+  - id: derive-divide
+    phase: derive
+    kind: step
+    concept: M1.12/complex-numbers
+    title: One over a complex number
+    prompt: >-
+      Multiply the top and the bottom of $\frac{1}{a + bi}$ by a number that makes the bottom real.
+      What is the real part of $\frac{1}{a + bi}$, written with $a$ and $b$?
+    answer:
+      type: expression
+      symbols:
+        - { name: a }
+        - { name: b }
+      reference: a/(a**2 + b**2)
+      lhs: '\text{real part} ='
+      accept: ['a/(b**2 + a**2)', 'a*(a**2 + b**2)**(-1)']
+      reject:
+        - '1/a'
+        - 'a/(a**2 - b**2)'
+        - '1/(a**2 + b**2)'
+        - 'a/(a + b)'
+        - 'a/sqrt(a**2 + b**2)'
+    explanation: >-
+      $(a + bi)(a - bi) = a^2 - abi + abi - b^2i^2 = a^2 + b^2$, a real number, so
+      $\frac{1}{a + bi} = \frac{a}{a^2 + b^2} - \frac{b}{a^2 + b^2}i$. For $1 + 2i$ it gives
+      $\frac{1}{5} - \frac{2}{5}i$, and `1 / (1 + 2j)` prints `(0.2-0.4j)`.
+    review:
+      variants:
+        - prompt: What is the imaginary part of $\frac{1}{a + bi}$, written with $a$ and $b$?
+          answer:
+            type: expression
+            symbols:
+              - { name: a }
+              - { name: b }
+            reference: -b/(a**2 + b**2)
+            accept: ['-b*(a**2 + b**2)**(-1)']
+            reject: ['b/(a**2 + b**2)', '-1/b', '-b/(a**2 - b**2)']
+          explanation: >-
+            $\frac{a - bi}{a^2 + b^2}$ has imaginary part $-\frac{b}{a^2 + b^2}$.
+        - prompt: What is the real part of $\frac{1}{3 + 4i}$?
+          answer: { type: number, value: 0.12, tolerance: { abs: 0.0005 } }
+          explanation: >-
+            $\frac{3 - 4i}{9 + 16} = \frac{3}{25} - \frac{4}{25}i$, and $\frac{3}{25} = 0.12$.
+
+  - id: derive-roots
+    phase: derive
+    kind: proof
+    concept: M1.12/polar-form
+    title: Every solution of zⁿ = 1
+    prompt: >-
+      Here is a proof that every solution of $z^n = 1$, for a whole number $n$ of at least 1, is one
+      of the numbers at the angles $\frac{2\pi k}{n}$ on the circle of radius 1. Each line follows from the
+      lines above it. Choose the rule that justifies each line. A rule may be used more than once
+      or not at all.
+    answer:
+      type: steps
+      rules:
+        - { id: turns, name: Whole turns, label: 'Two angles give the same point of the circle of radius 1 exactly when they differ by a whole number of turns, $2\pi k$ for a whole number $k$.' }
+        - { id: conjugate, name: Conjugates, label: 'A complex number times its conjugate is the square of its length: $(a + bi)(a - bi) = a^2 + b^2$.' }
+        - { id: products, name: Products, label: 'Multiplying complex numbers multiplies their lengths and adds their angles.' }
+        - { id: both-sides, name: Both sides, label: 'Both sides of an equation can be divided by the same number, if it is not 0.' }
+        - { id: lengths, name: Equal lengths, label: 'Equal complex numbers have equal lengths, and the length of 1 is 1.' }
+        - { id: positive-root, name: Positive roots, label: 'The only positive number whose $n$th power is 1 is 1.' }
+      start: '\text{Let } z = r(\cos\theta + i\sin\theta) \text{, with length } r > 0 \text{, be a solution of } z^n = 1.'
+      lines:
+        - math: 'z^n = r^n(\cos n\theta + i\sin n\theta)'
+          rule: products
+        - math: 'r^n = 1'
+          rule: lengths
+        - math: 'r = 1'
+          rule: positive-root
+        - math: '\text{With } r = 1 \text{, line 1 says } \cos n\theta + i\sin n\theta = 1 \text{, so } n\theta = 2\pi k \text{ for a whole number } k'
+          rule: turns
+        - math: '\theta = \frac{2\pi k}{n}'
+          rule: both-sides
+        - math: '\text{The points for } k = 0, 1, \ldots, n - 1 \text{ differ, and } k + n \text{ gives the point of } k'
+          rule: turns
+    explanation: >-
+      $z^n$ is $n$ copies of $z$ multiplied together, so it has length $r^n$ and angle $n\theta$. It
+      equals 1, so its length is 1, which forces $r = 1$, and its angle $n\theta$ is a whole number of
+      turns, $2\pi k$. Dividing by $n$ gives $\theta = \frac{2\pi k}{n}$, and the angles for
+      $k = 0$ to $n - 1$ are the different ones: $k = n$ is a whole turn on from $k = 0$. Every one of
+      them is a solution, since $n$ times its angle is a whole number of turns. So $z^n = 1$ has
+      exactly $n$ solutions, evenly spaced round the circle of radius 1, one of them 1. The
+      conjugates rule is not needed.
+    review:
+      variants:
+        - prompt: How many complex numbers $z$ have $z^6 = 1$?
+          answer: { type: number, value: 6, tolerance: { abs: 0 } }
+          explanation: >-
+            Six, at the angles $\frac{2\pi k}{6}$, every $60°$ round the circle of radius 1.
+        - prompt: >-
+            The solutions of $z^8 = 1$ sit round the circle of radius 1. How many degrees apart are
+            neighbouring solutions?
+          answer: { type: number, value: 45, tolerance: { abs: 0 }, unit: degrees }
+          explanation: >-
+            Eight solutions share the whole turn evenly: $\frac{360°}{8} = 45°$.
+        - prompt: Where do the solutions of $z^n = 1$ lie?
+          answer:
+            type: choice
+            options:
+              - { id: line, label: 'On the first axis, spread out between $-1$ and 1' }
+              - { id: two, label: 'Only at 1 and $-1$, whatever the whole number $n$ is' }
+              - { id: spiral, label: 'On a spiral that winds out from 0, one per power' }
+              - { id: right, label: 'Evenly spaced round the circle of radius 1, one at 1' }
+            correct: [right]
+          explanation: >-
+            Each has length 1 and an angle $\frac{2\pi k}{n}$, so they are $n$ points a whole turn
+            divided by $n$ apart, starting at 1.
+
+  - id: derive-drift
+    phase: derive
+    kind: estimate
+    concept: M1.12/eulers-formula
+    title: How far the length drifts
+    prompt: >-
+      Each factor $1 + \frac{i\theta}{n}$ has length $\sqrt{1 + \frac{\theta^2}{n^2}}$. Take
+      $\theta = 2\pi$, a whole turn, and $n = 500$. For a small number $\epsilon$,
+      $\sqrt{1 + \epsilon}$ is about $1 + \frac{\epsilon}{2}$, and a product of $n$ numbers that are
+      each $1 + \delta$ is about $1 + n\delta$ when $n\delta$ is small (when it is not, the rule fails:
+      $\left(1 + \frac{1}{n}\right)^n$, with $n\delta = 1$, settles on $e$, not 2). Without a
+      calculator, estimate by how much the length of $\left(1 + \frac{2\pi i}{500}\right)^{500}$ is
+      more than 1. For a length of 1.5, you would type 0.5.
+    answer: { type: number, value: 0.0403, tolerance: { factor: 1.5 } }
+    explanation: >-
+      Each factor's length is about $1 + \frac{1}{2}\left(\frac{2\pi}{500}\right)^2 = 1 + \frac{2\pi^2}{250{,}000}$,
+      and with $\pi^2 \approx 10$ that is $1 + 0.00008$. Five hundred of them multiply to about
+      $1 + 500 \times 0.00008 = 1.04$, so the product is about 0.04 longer than 1, and Python gives
+      0.0403. In general the gap is about $\frac{\theta^2}{2n}$, which shrinks to 0 as $n$ grows.
+    review:
+      variants:
+        - prompt: >-
+            Estimate by how much the length of $\left(1 + \frac{i\pi}{n}\right)^n$ is more than 1,
+            for $n = 5{,}000$.
+          answer: { type: number, value: 0.000987, tolerance: { factor: 1.5 } }
+          explanation: >-
+            The gap is about $\frac{\theta^2}{2n} = \frac{\pi^2}{10{,}000} \approx \frac{10}{10{,}000} = 0.001$,
+            and Python gives 0.000987.
+        - prompt: >-
+            As $n$ grows, what happens to the length of $\left(1 + \frac{i\theta}{n}\right)^n$, for a
+            fixed angle $\theta$?
+          answer:
+            type: choice
+            options:
+              - { id: grows, label: 'It grows without limit, since every factor is longer than 1' }
+              - { id: right, label: 'It settles on 1, since the gap is about $\frac{\theta^2}{2n}$' }
+              - { id: theta, label: 'It settles on $\theta$, the angle turned' }
+              - { id: e, label: 'It settles on $e$, as compound interest does' }
+            correct: [right]
+          explanation: >-
+            Each factor is longer than 1 by only about $\frac{\theta^2}{2n^2}$, and $n$ of them add
+            up to about $\frac{\theta^2}{2n}$, which shrinks to 0.
+
+  # Build ----------------------------------------------------------------------
+  - id: debug-roots
+    phase: build
+    kind: debug
+    concept: M1.12/complex-numbers
+    title: Roots that are always complex
+    prompt: >-
+      `roots` should give both solutions of $ax^2 + bx + c = 0$, as complex numbers when
+      $b^2 - 4ac$ is negative. It gets $x^2 + 4x + 5 = 0$ right, but run it and see what it gives for
+      $x^2 - 3x + 2 = 0$, whose solutions are 1 and 2. Find the bug and fix it.
+    answer:
+      type: code
+      starter: |
+        import math
+
+
+        def roots(a, b, c):
+            """The two solutions of ax² + bx + c = 0, complex when b² - 4ac is negative."""
+            d = math.sqrt(abs(b**2 - 4*a*c)) * 1j
+            return (-b - d) / (2*a), (-b + d) / (2*a)
+
+
+        print(roots(1, 4, 5))    # should be about ((-2-1j), (-2+1j))
+        print(roots(1, -3, 2))   # should be about (1, 2)
+      tests: |
+        def show(z):
+            """A number as Python writes a complex number, each part to 6 significant figures."""
+            z = complex(z)
+            re = 0.0 if abs(z.real) < 1e-12 else z.real
+            im = 0.0 if abs(z.imag) < 1e-12 else z.imag
+            return f"({re:.6g}{'-' if im < 0 else '+'}{abs(im):.6g}j)"
+
+
+        def written(a, b, c):
+            """ax² + bx + c as it is written on paper, such as 2x² - 7x + 3 or x² - 9."""
+            text = ("" if a == 1 else str(a)) + "x²"
+            for k, name in [(b, "x"), (c, "")]:
+                if k != 0:
+                    size = "" if abs(k) == 1 and name else str(abs(k))
+                    text += (" - " if k < 0 else " + ") + size + name
+            return text
+
+
+        def both(got, p, q):
+            """True when the two numbers in got are p and q, in either order."""
+            return (close(got[0], p, abs_tol=1e-9) and close(got[1], q, abs_tol=1e-9)) or (close(got[0], q, abs_tol=1e-9) and close(got[1], p, abs_tol=1e-9))
+
+
+        def test_complex_roots():
+            """x² + 4x + 5 = 0 has the solutions -2 - i and -2 + i."""
+            got = roots(1, 4, 5)
+            assert both(got, -2 - 1j, -2 + 1j), f"roots(1, 4, 5) gave {show(got[0])} and {show(got[1])}, not (-2-1j) and (-2+1j). Here b² - 4ac is -4, which is negative."
+
+
+        def test_real_roots():
+            """x² - 3x + 2 = 0 has the solutions 1 and 2."""
+            got = roots(1, -3, 2)
+            assert both(got, 1, 2), f"roots(1, -3, 2) gave {show(got[0])} and {show(got[1])}, not 1 and 2. Here b² - 4ac is 1, which is positive."
+
+
+        def test_one_root():
+            """x² - 2x + 1 = 0 has the one solution 1, given twice."""
+            got = roots(1, -2, 1)
+            assert both(got, 1, 1), f"roots(1, -2, 1) gave {show(got[0])} and {show(got[1])}, not 1 twice."
+
+
+        def test_put_back():
+            """Each solution, put back into ax² + bx + c, gives 0."""
+            for a, b, c in [(1, 2, 5), (2, -7, 3), (1, 0, 4), (3, 1, -2), (1, 0, -9), (2, 2, 1)]:
+                for x in roots(a, b, c):
+                    value = a * x**2 + b * x + c
+                    assert close(value, 0, abs_tol=1e-9), f"roots({a}, {b}, {c}) gave {show(x)}, but {written(a, b, c)} is {show(value)} there, not 0."
+      reference: |
+        import cmath
+
+
+        def roots(a, b, c):
+            """The two solutions of ax² + bx + c = 0, complex when b² - 4ac is negative."""
+            d = cmath.sqrt(b**2 - 4*a*c)
+            return (-b - d) / (2*a), (-b + d) / (2*a)
+
+
+        print(roots(1, 4, 5))
+        print(roots(1, -3, 2))
+      wrong:
+        - code: |
+            import math
+
+
+            def roots(a, b, c):
+                d = math.sqrt(abs(b**2 - 4*a*c)) * 1j
+                return (-b - d) / (2*a), (-b + d) / (2*a)
+          why: >-
+            The bug left in: multiplying by `1j` is right only when $b^2 - 4ac$ is negative, so every
+            equation with real solutions gets complex ones, $1.5 \pm 0.5i$ for $x^2 - 3x + 2 = 0$.
+        - code: |
+            import math
+
+
+            def roots(a, b, c):
+                d = math.sqrt(b**2 - 4*a*c)
+                return (-b - d) / (2*a), (-b + d) / (2*a)
+          why: >-
+            `math.sqrt` works only with real numbers, so it stops with a `ValueError` whenever
+            $b^2 - 4ac$ is negative.
+        - code: |
+            import cmath
+
+
+            def roots(a, b, c):
+                d = cmath.sqrt(abs(b**2 - 4*a*c))
+                return (-b - d) / (2*a), (-b + d) / (2*a)
+          why: >-
+            Keeping `abs` throws away the sign of $b^2 - 4ac$, so the complex solutions come out
+            real: $-3$ and $-1$ for $x^2 + 4x + 5 = 0$.
+        - code: |
+            import cmath
+
+
+            def roots(a, b, c):
+                d = cmath.sqrt(b**2 - 4*a*c) * 1j
+                return (-b - d) / (2*a), (-b + d) / (2*a)
+          why: >-
+            Multiplying every square root by `1j` turns it a quarter turn: the imaginary root of a
+            negative number becomes real, and the real root of a positive one imaginary, so
+            $x^2 + 4x + 5 = 0$ gets $-1$ and $-3$, and $x^2 - 3x + 2 = 0$ gets $1.5 \pm 0.5i$.
+    explanation: >-
+      `cmath.sqrt` takes the square root of any number, real or complex: `cmath.sqrt(-4)` is `2j`
+      and `cmath.sqrt(1)` is `(1+0j)`. With it the one formula serves every quadratic, and the
+      answers come back as complex numbers, whose imaginary parts are 0 when the solutions are
+      real.
+
+  - id: build-turn-about
+    phase: build
+    kind: build
+    concept: M1.12/eulers-formula
+    covers: [M1.12/polar-form]
+    title: Turning about any centre, in one line
+    prompt: >-
+      M1.11's `rotate_about` turned a point about a centre in three moves. With points held as
+      complex numbers it takes one line. Write `turn_about(z, centre, angle)`, which turns the point
+      `z` anticlockwise about the point `centre` through `angle`, in radians. A quarter turn of
+      `2 + 1j` about `1 + 1j` gives `1 + 2j`.
+    answer:
+      type: code
+      starter: |
+        import cmath
+        import math
+
+
+        def turn_about(z, centre, angle):
+            """z turned anticlockwise about centre through angle, in radians, with points as complex numbers."""
+            return z
+
+
+        print(turn_about(2 + 1j, 1 + 1j, math.pi / 2))   # should be about (1+2j)
+      tests: |
+        import math
+
+
+        def show(z):
+            """A number as Python writes a complex number, each part to 6 significant figures."""
+            z = complex(z)
+            re = 0.0 if abs(z.real) < 1e-12 else z.real
+            im = 0.0 if abs(z.imag) < 1e-12 else z.imag
+            return f"({re:.6g}{'-' if im < 0 else '+'}{abs(im):.6g}j)"
+
+
+        def turned(z, centre, angle, words):
+            """What turn_about gives, once it is checked to be one number."""
+            got = turn_about(z, centre, angle)
+            assert isinstance(got, (int, float, complex)), f"turn_about({show(z)}, {show(centre)}, {words}) gave {repr(got)}, which is not one number: it should give the turned point as one complex number."
+            return got
+
+
+        def test_example():
+            """A quarter turn of 2 + i about 1 + i gives 1 + 2i."""
+            got = turned(2 + 1j, 1 + 1j, math.pi / 2, "math.pi / 2")
+            assert close(got, 1 + 2j, abs_tol=1e-9), f"turn_about(2+1j, 1+1j, math.pi / 2) gave {show(got)}, not (1+2j)."
+
+
+        def test_centre_stays():
+            """The centre does not move."""
+            for centre in [1 + 1j, -2 + 3j, 0.5 - 4j]:
+                for angle in [0.7, 2, -1.3]:
+                    got = turned(centre, centre, angle, angle)
+                    assert close(got, centre, abs_tol=1e-9), f"turn_about({show(centre)}, {show(centre)}, {angle}) moved the centre to {show(got)}."
+
+
+        def test_keeps_distance():
+            """A turn keeps the point's distance from the centre."""
+            for z, centre in [(3 + 1j, 1 + 1j), (-2 + 5j, 1 - 1j), (0.5 + 0.25j, -3 + 2j)]:
+                for angle in [0.3, 1, 2.5, -1.2, 4]:
+                    got = turned(z, centre, angle, angle)
+                    assert close(abs(got - centre), abs(z - centre)), f"turn_about({show(z)}, {show(centre)}, {angle}) gave {show(got)}, {abs(got - centre):.6g} from the centre, but {show(z)} is {abs(z - centre):.6g} from it."
+
+
+        def test_turns_by_the_angle():
+            """The point turns anticlockwise about the centre through the angle in radians."""
+            for z, centre, angle, words, want in [(3 + 1j, 1 + 1j, math.pi, "math.pi", -1 + 1j), (1 + 3j, 1 + 1j, math.pi / 2, "math.pi / 2", -1 + 1j), (4 + 0j, 0j, math.pi / 2, "math.pi / 2", 4j)]:
+                got = turned(z, centre, angle, words)
+                assert close(got, want, abs_tol=1e-9), f"turn_about({show(z)}, {show(centre)}, {words}) gave {show(got)}, not {show(want)}."
+      reference: |
+        import cmath
+        import math
+
+
+        def turn_about(z, centre, angle):
+            """z turned anticlockwise about centre through angle, in radians, with points as complex numbers."""
+            return centre + (z - centre) * cmath.exp(1j * angle)
+
+
+        print(turn_about(2 + 1j, 1 + 1j, math.pi / 2))
+      wrong:
+        - code: |
+            import cmath
+
+
+            def turn_about(z, centre, angle):
+                return z * cmath.exp(1j * angle)
+          why: >-
+            It ignores the centre and turns about 0, so the centre itself moves.
+        - code: |
+            import cmath
+
+
+            def turn_about(z, centre, angle):
+                return (z - centre) * cmath.exp(1j * angle)
+          why: >-
+            It moves the centre to 0 and turns, but never moves back, so every answer is off by the
+            centre and the centre lands on 0.
+        - code: |
+            import cmath
+
+
+            def turn_about(z, centre, angle):
+                return centre + (z - centre) * cmath.exp(angle)
+          why: >-
+            Without the `1j`, `cmath.exp(angle)` is the real number $e^{\text{angle}}$, which stretches
+            away from the centre instead of turning.
+        - code: |
+            import cmath
+            import math
+
+
+            def turn_about(z, centre, angle):
+                return centre + (z - centre) * cmath.exp(1j * math.radians(angle))
+          why: >-
+            The angle is already in radians, and converting it again as if it were degrees turns
+            about 57 times too little.
+    explanation: >-
+      Taking `centre` away moves the centre to 0; multiplying by `cmath.exp(1j * angle)`, which is
+      $\cos(\text{angle}) + i\sin(\text{angle})$ by Euler's formula, turns about 0; and adding
+      `centre` back moves it home: `centre + (z - centre) * cmath.exp(1j * angle)`.
+      `cmath.rect(1, angle)` gives the same number, and so does
+      `complex(math.cos(angle), math.sin(angle))`.
+
+  - id: build-rope
+    phase: build
+    kind: build
+    concept: M1.12/eulers-formula
+    covers: [M1.12/polar-form, M1.12/complex-numbers]
+    title: Rotary position embeddings
+    prompt: >-
+      A Transformer scores how much one word should attend to another by multiplying the query of
+      one by the key of the other, number by number, and adding up. Rotary position embeddings first turn each pair of a word's numbers
+      through an angle in proportion to the word's position. Hold a pair $(a, b)$ as the complex
+      number $a + bi$. Write `rope(q, position, theta)`, which turns `q` anticlockwise through
+      `position * theta` radians, and `score(q, k)`, which gives $ac + bd$ for $q = a + bi$ and
+      $k = c + di$.
+    answer:
+      type: code
+      starter: |
+        import cmath
+
+
+        def rope(q, position, theta):
+            """The pair q, as a complex number, turned anticlockwise through position * theta radians."""
+            return q
+
+
+        def score(q, k):
+            """The score of the pairs q = a + bi and k = c + di: a * c + b * d."""
+            return 0
+
+
+        print(rope(1, 2, 0.5))          # should be about (0.540302+0.841471j), the point at angle 1
+        print(score(3 + 1j, 2 + 5j))    # should be 11.0, as 3 * 2 + 1 * 5 = 11
+      tests: |
+        import math
+
+
+        def show(z):
+            """A number as Python writes a complex number, each part to 6 significant figures."""
+            z = complex(z)
+            re = 0.0 if abs(z.real) < 1e-12 else z.real
+            im = 0.0 if abs(z.imag) < 1e-12 else z.imag
+            return f"({re:.6g}{'-' if im < 0 else '+'}{abs(im):.6g}j)"
+
+
+        def turned(q, angle):
+            """The tests' own turn of the pair q through angle, by M1.11's rule."""
+            x, y = q.real, q.imag
+            return complex(x * math.cos(angle) - y * math.sin(angle), x * math.sin(angle) + y * math.cos(angle))
+
+
+        def number(x):
+            """A score as Python would print it, to 6 significant figures: a complex score as a complex number."""
+            if isinstance(x, complex):
+                return show(x)
+            try:
+                return f"{float(x):.6g}"
+            except (TypeError, ValueError):
+                return repr(x)
+
+
+        def test_position_zero():
+            """At position 0 nothing turns."""
+            for q in [3 + 1j, -2 + 0.5j]:
+                got = rope(q, 0, 0.1)
+                assert close(got, q, abs_tol=1e-12), f"rope({show(q)}, 0, 0.1) gave {show(got)}, not {show(q)}: at position 0 the angle is 0."
+
+
+        def test_turns():
+            """rope turns q through position times theta."""
+            for q, position, theta in [(1 + 0j, 2, 0.5), (3 + 1j, 5, 0.1), (-2 + 2j, 7, 0.25)]:
+                got = rope(q, position, theta)
+                want = turned(q, position * theta)
+                assert close(got, want, abs_tol=1e-9), f"rope({show(q)}, {position}, {theta}) gave {show(got)}, not {show(want)}, the pair turned through {position} * {theta} radians."
+
+
+        def test_score():
+            """score is a * c + b * d for q = a + bi and k = c + di."""
+            for q, k in [(3 + 1j, 2 + 5j), (1 - 2j, -4 + 0.5j), (0.5 + 0.5j, 0.5 - 0.5j)]:
+                got = score(q, k)
+                want = q.real * k.real + q.imag * k.imag
+                assert close(got, want, abs_tol=1e-12), f"score({show(q)}, {show(k)}) gave {number(got)}, not {want:.6g}."
+
+
+        def test_only_the_gap_matters():
+            """Moving two words along by the same number of places leaves their score as it was."""
+            q, k, theta = 3 + 1j, 2 - 1j, 0.3
+            for m, n in [(5, 2), (10, 3), (0, 4)]:
+                near = score(rope(q, m, theta), rope(k, n, theta))
+                far = score(rope(q, m + 100, theta), rope(k, n + 100, theta))
+                assert close(near, far, abs_tol=1e-9), f"Words at positions {m} and {n} score {number(near)}, but at positions {m + 100} and {n + 100}, the same distance apart, they score {number(far)}."
+      reference: |
+        import cmath
+
+
+        def rope(q, position, theta):
+            """The pair q, as a complex number, turned anticlockwise through position * theta radians."""
+            return q * cmath.exp(1j * position * theta)
+
+
+        def score(q, k):
+            """The score of the pairs q = a + bi and k = c + di: a * c + b * d."""
+            return (q * k.conjugate()).real
+
+
+        print(rope(1, 2, 0.5))
+        print(score(3 + 1j, 2 + 5j))
+      wrong:
+        - code: |
+            import cmath
+
+
+            def rope(q, position, theta):
+                return q * cmath.exp(1j * position * theta)
+
+
+            def score(q, k):
+                return (q * k).real
+          why: >-
+            Without the conjugate the real part of $qk$ is $ac - bd$, not $ac + bd$, and turning both
+            words adds their angles, so the score depends on where they sit and not only on how far
+            apart.
+        - code: |
+            import cmath
+
+
+            def rope(q, position, theta):
+                return q * (1 + 1j * position * theta)
+
+
+            def score(q, k):
+                return (q * k.conjugate()).real
+          why: >-
+            $1 + i \times \text{position} \times \theta$ is only the first of many small steps: it turns
+            by less than the angle and stretches the pair, more and more as the position grows.
+        - code: |
+            import cmath
+
+
+            def rope(q, position, theta):
+                return q * cmath.exp(position * theta)
+
+
+            def score(q, k):
+                return (q * k.conjugate()).real
+          why: >-
+            Without the `1j`, `cmath.exp(position * theta)` is a real number above 1, so it stretches
+            the pair instead of turning it.
+        - code: |
+            import cmath
+
+
+            def rope(q, position, theta):
+                return q * cmath.exp(1j * theta)
+
+
+            def score(q, k):
+                return (q * k.conjugate()).real
+          why: >-
+            It turns every word through `theta` whatever its position, so a word at position 0 is
+            turned too, and the turn no longer grows with the position.
+    explanation: >-
+      `rope` multiplies by `cmath.exp(1j * position * theta)`, a number of length 1 at angle
+      `position * theta`, and `score` is `(q * k.conjugate()).real`, since
+      $(a + bi)(c - di) = (ac + bd) + (bc - ad)i$. For words at positions $m$ and $n$ the score is the
+      real part of $q e^{im\theta} \times \overline{k e^{in\theta}} = q\bar k e^{i(m - n)\theta}$, so
+      it depends on the positions only through $m - n$, how far apart the words are.
+
+  - id: breakit-cube-root
+    phase: build
+    kind: breakit
+    concept: M1.12/polar-form
+    covers: [M1.12/complex-numbers]
+    title: The cube root of −8
+    prompt: >-
+      The working program takes the cube root of 8 by raising it to the power $\frac{1}{3}$. The
+      changed program does the same to $-8$, whose cube root among the real numbers is $-2$.
+      Predict what the changed program prints, then run both.
+    answer:
+      type: breakit
+      code: |
+        value = 8 ** (1 / 3)
+        print(value)
+      broken: |
+        value = (-8) ** (1 / 3)
+        print(value)
+      change: The number 8 becomes $-8$, whose real cube root is $-2$.
+      options:
+        - { id: minus-two, label: 'It prints `-2.0`', when: "error is None and value == -2" }
+        - { id: two, label: 'It prints `2.0`', when: "error is None and value == 2" }
+        - { id: complex, label: 'It prints a complex number that is not $-2$', when: "error is None and isinstance(value, complex) and value != -2" }
+        - { id: error, label: 'It stops with an error', when: "error is not None" }
+    explanation: >-
+      It prints `(1.0000000000000002+1.7320508075688772j)`. $-8$ has three cube roots, at the angles
+      $60°$, $180°$ and $300°$, each with length 2: $1 + \sqrt{3}i$, $-2$ and $1 - \sqrt{3}i$. To
+      raise $-8$ to the power $\frac{1}{3}$, Python takes its length, 8, to the power $\frac{1}{3}$
+      and its angle, $180°$, times $\frac{1}{3}$, which gives the root at $60°$,
+      $2(\cos 60° + i\sin 60°) = 1 + \sqrt{3}i$. `math.cbrt(-8)` gives the real cube root, `-2.0`.
+
+  # Explain --------------------------------------------------------------------
+  - id: explain-euler
+    phase: explain
+    kind: explain
+    concept: M1.12/eulers-formula
+    covers: [M1.12/complex-numbers, M1.12/polar-form]
+    title: Imaginary, simply
+    prompt: >-
+      Explain to your friend what the numbers $a + bi$ are, how they add and multiply, and what
+      multiplying by $i$ does, with an example. Then explain why multiplying two complex numbers
+      multiplies their lengths and adds their angles, with an example. Then say what the number $e$
+      is, from interest paid more and more often, what $\left(1 + \frac{i\theta}{n}\right)^n$ does
+      as $n$ grows and why it ends at $\cos\theta + i\sin\theta$, and what $e^{i\theta}$ therefore
+      means. Last, explain why $e^{i\pi} = -1$, though 2.718 multiplied by itself is never negative,
+      with numbers or Python to show it.
+    answer:
+      type: text
+      rubric:
+        - { id: points, criterion: 'Says that $a + bi$ is the point $(a, b)$, with $i^2 = -1$, and that complex numbers add part by part, with an example.' }
+        - { id: times-i, criterion: 'Says that multiplying by $i$ turns a point a quarter turn about 0, and shows it on an example such as $i(3 + i) = -1 + 3i$.' }
+        - { id: multiply, criterion: 'Says that multiplying multiplies lengths and adds angles, gives a reason, such as that multiplying by $\cos\theta + i\sin\theta$ is the turn through $\theta$, and works an example.' }
+        - { id: e, criterion: 'Says what $e$ is: where $\left(1 + \frac{1}{n}\right)^n$, a year of interest at 100% paid in $n$ parts, settles as $n$ grows, about 2.718.' }
+        - { id: steps, criterion: 'Explains $\left(1 + \frac{i\theta}{n}\right)^n$ as $n$ small turns of about $\frac{\theta}{n}$ each that stretch by almost nothing, so that it ends at the point at angle $\theta$ on the circle of radius 1, $\cos\theta + i\sin\theta$.' }
+        - { id: pi, criterion: 'Says that $e^{i\theta}$ means where $\left(1 + \frac{i\theta}{n}\right)^n$ settles, not 2.718 multiplied by itself, and why $e^{i\pi} = -1$: half a turn from 1 along the circle of radius 1, with the numbers or Python as evidence.' }
+      reference: >-
+        Take the plane and call the point $(a, b)$ the number $a + bi$. The real numbers are the first
+        axis, and $i$ is the point $(0, 1)$. Adding is adding the parts, $(2 + i) + (1 + 3i) = 3 + 4i$:
+        lay the second arrow on the end of the first. Multiplying is multiplying out the brackets, with
+        one new rule, $i^2 = -1$. That rule has a picture: $i(3 + i) = 3i + i^2 = -1 + 3i$, and
+        $(-1, 3)$ is $(3, 1)$ turned a quarter turn. Multiplying by $i$ always turns a quarter turn
+        about 0, and doing it twice turns half a turn, which takes 1 to $-1$: that is all
+        $i^2 = -1$ says. Nothing mystical, just a number that turns. Now any number of length 1 at
+        angle $\theta$ is $\cos\theta + i\sin\theta$, and multiplying $x + iy$ by it gives
+        $(x\cos\theta - y\sin\theta) + i(x\sin\theta + y\cos\theta)$, which is exactly the point
+        $(x, y)$ turned through $\theta$. A number of length $r$ is $r$ times such a number, so
+        multiplying by it stretches by $r$ and turns by $\theta$: lengths multiply and angles add.
+        For example $(1 + i)(\sqrt{3} + i)$ has length $\sqrt{2} \times 2$ and angle
+        $45° + 30° = 75°$. Next, $e$. Interest of 100% a year paid once turns 1 rupee into 2; paid
+        in $n$ parts it gives $\left(1 + \frac{1}{n}\right)^n$, which settles on
+        $e = 2.71828\ldots$ as $n$ grows: a thousand parts give 2.7169. In the same way $e^x$ is
+        where $\left(1 + \frac{x}{n}\right)^n$ settles. So for $e^{i\theta}$, look at
+        $\left(1 + \frac{i\theta}{n}\right)^n$. Each factor is a tiny step from 1 straight up: its
+        length is barely more than 1 and its angle is a little under $\frac{\theta}{n}$. Multiplying
+        by it turns a little and hardly stretches. Do that $n$ times and you turn through almost
+        exactly $\theta$, while the length grows only by about $\frac{\theta^2}{2n}$, which vanishes
+        as $n$ grows. So the limit is the point at angle $\theta$ on the circle of radius 1:
+        $e^{i\theta} = \cos\theta + i\sin\theta$. That is what $e^{i\theta}$ means: not 2.718
+        multiplied by itself $i\theta$ times, which would mean nothing, but where these products
+        settle, and it keeps the rule for powers, $e^{i\alpha}e^{i\beta} = e^{i(\alpha + \beta)}$.
+        With $\theta = \pi$ that is half a turn from 1, so
+        $e^{i\pi} = -1$; Python's `(1 + 1j * math.pi / 1000) ** 1000` is already
+        $-1.005 + 0.00001i$.
+      minWords: 120
+      maxWords: 550
+    explanation: >-
+      A strong answer draws $a + bi$ as the point $(a, b)$; adds part by part; shows that
+      multiplying by $i$ turns a quarter turn, as $i(3 + i) = -1 + 3i$ turns $(3, 1)$ to $(-1, 3)$;
+      explains why lengths multiply and angles add from the turn by $\cos\theta + i\sin\theta$, with
+      an example such as $(1 + i)(\sqrt{3} + i)$ at $75°$; builds $e$ from compound interest; and
+      explains $\left(1 + \frac{i\theta}{n}\right)^n$ as $n$ small turns that add up to $\theta$ and
+      stretch by almost nothing, so that $e^{i\theta} = \cos\theta + i\sin\theta$ and $e^{i\pi} = -1$;
+      and it says that $e^{i\theta}$ means where those products settle, not 2.718 multiplied by itself,
+      which answers the friend's worry that no power of 2.718 can be negative.
