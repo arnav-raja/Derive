@@ -1,6 +1,6 @@
 // Copies the Pyodide runtime into public/ and downloads the pure-Python wheels
 // that lessons need, so in-browser Python is served from Derive's own address.
-// Runs after every `npm install` (locally, in CI and on Vercel).
+// Runs after every `npm install` (locally and in GitHub Actions).
 import { createHash } from "node:crypto";
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";

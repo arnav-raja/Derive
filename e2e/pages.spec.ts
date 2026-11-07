@@ -11,10 +11,9 @@ const APP_PAGES = [
   "/curriculum",
   "/courses/M1",
   "/courses/E1",
-  // A course and a lesson not yet written, and a capstone.
+  // A course and a lesson not yet written.
   "/courses/M2",
   "/lessons/M2.1",
-  "/lessons/X1",
   "/lessons/M1.1",
   "/review",
   "/notebook",
@@ -50,10 +49,15 @@ test.describe("pages outside the app", () => {
     await checkPage(page, testInfo, "/sign-in?mode=create");
   });
 
-  test("a page that does not exist", async ({ page, errors }, testInfo) => {
-    await checkPage(page, testInfo, "/no-such-page", { status: 404 });
-    // The browser reports the 404 itself; that is the page working.
-    const own = errors.filter((e) => !/status of 404/.test(e));
-    errors.splice(0, errors.length, ...own);
-  });
+  // A capstone has no page of its own yet; its address says so, as any unknown address does.
+  // (Until the move to GitHub Pages the not-found page came with status 200, so this test used
+  // to list /lessons/X1 among the pages that open.)
+  for (const path of ["/no-such-page", "/lessons/X1"]) {
+    test(`an address with no page: ${path}`, async ({ page, errors }, testInfo) => {
+      await checkPage(page, testInfo, path, { status: 404 });
+      // The browser reports the 404 itself; that is the page working.
+      const own = errors.filter((e) => !/status of 404/.test(e));
+      errors.splice(0, errors.length, ...own);
+    });
+  }
 });

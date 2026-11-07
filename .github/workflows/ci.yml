@@ -31,6 +31,11 @@ jobs:
       - name: Generate route types
         run: npx next typegen
 
+      - name: Derive's server, and its list of client components is current
+        run: |
+          npm run build:api
+          git diff --exit-code src/generated || (echo "::error::Run npm run build:api and commit src/generated/client-modules.ts." && exit 1)
+
       - name: Type check
         run: npm run typecheck
 
@@ -49,7 +54,7 @@ jobs:
       - name: Exercises
         run: npm run check:exercises
 
-      - name: Build
+      - name: Build the site and the server
         run: npm run build
 
   e2e:

@@ -5,9 +5,8 @@ import { useRouter } from "next/navigation";
 import { Dialog } from "radix-ui";
 import { useEffect, useId, useMemo, useRef, useState, useSyncExternalStore, useTransition } from "react";
 
-import { answerExercise, moveOn } from "@/app/(app)/lessons/actions";
-import { answerPlacement } from "@/app/(app)/placement/actions";
-import { answerCheck, answerReview } from "@/app/(app)/review/actions";
+import { answerCheck, answerExercise, answerPlacement, answerReview, moveOn } from "@/lib/actions";
+import { refreshPage } from "@/lib/wire/client";
 import { TutorThread, useTutor, type TutorEntry } from "@/components/tutor/tutor";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -343,7 +342,7 @@ export function ExerciseCard({ view }: { view: ExerciseView }) {
         if (res.status === 503 || res.status === 409 || res.status === 502) setGraderDown(true);
       } else {
         setGrading(body);
-        router.refresh();
+        void refreshPage();
       }
     } catch {
       setError("The grader could not be reached. Your text is kept here.");

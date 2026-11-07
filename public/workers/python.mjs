@@ -3,6 +3,11 @@
 // SymPy checks. Messages are { id, type, payload }; replies are
 // { id, ok, result } or { id, ok: false, error }, plus { type: "status" } events.
 
+// The site may be served under a base path (GitHub Pages serves it at /Derive),
+// so every address is resolved against where this worker itself was loaded from.
+const SITE = new URL("../", import.meta.url);
+const siteUrl = (path) => new URL(path.replace(/^\/+/, ""), SITE).href;
+
 let pyodide = null;
 let harness = null;
 let manifest = null;
@@ -17,17 +22,18 @@ async function start() {
   if (harness) return;
   starting ??= (async () => {
     status("loading", "Starting Python");
-    manifest = await (await fetch("/pyodide/manifest.json", { cache: "no-cache" })).json();
-    const { loadPyodide } = await import(`${manifest.indexURL}pyodide.mjs`);
+    manifest = await (await fetch(siteUrl("pyodide/manifest.json"), { cache: "no-cache" })).json();
+    const indexURL = siteUrl(manifest.indexURL);
+    const { loadPyodide } = await import(`${indexURL}pyodide.mjs`);
     pyodide = await loadPyodide({
-      indexURL: manifest.indexURL,
+      indexURL,
       stdout: () => {},
       stderr: () => {},
       // A fixed hash seed, so that sets of strings and SymPy's searches come out the
       // same on every run, as they do in the checks (scripts/lib/python-node.ts).
       env: { PYTHONHASHSEED: "0" },
     });
-    const source = await (await fetch("/workers/harness.py", { cache: "no-cache" })).text();
+    const source = await (await fetch(siteUrl("workers/harness.py"), { cache: "no-cache" })).text();
     pyodide.FS.mkdirTree("/home/pyodide/derive");
     pyodide.FS.writeFile("/home/pyodide/derive/derive_harness.py", source);
     pyodide.runPython(
@@ -52,7 +58,7 @@ async function ensureSympy() {
     for (const name of ["mpmath", "sympy"]) {
       const url = manifest.wheels[name];
       if (!url) throw new Error(`The ${name} wheel is missing from the manifest.`);
-      const buffer = await (await fetch(url)).arrayBuffer();
+      const buffer = await (await fetch(siteUrl(url))).arrayBuffer();
       pyodide.unpackArchive(new Uint8Array(buffer), "wheel", { extractDir: site });
     }
     pyodide.runPython("import sympy");

@@ -2,13 +2,13 @@
 
 import { clsx } from "clsx";
 import { Dialog } from "radix-ui";
-import { useRouter } from "next/navigation";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
 import { CrossIcon, HintIcon, PanelRightIcon, SendIcon, SparkIcon } from "@/components/ui/icons";
 import { ProgressBar } from "@/components/ui/progress";
 import { apiFetch, type ApiRoute } from "@/lib/api-client";
+import { refreshPage } from "@/lib/wire/client";
 import { useMedia, usePreference } from "@/lib/use-preference";
 
 /*
@@ -265,7 +265,6 @@ export function TutorThread({ forKey, scroll = false }: { forKey?: string; scrol
   const tutor = useTutor();
   const registry = useContext(RegistryContext);
   const setSpend = useContext(SpendContext);
-  const router = useRouter();
   // Replies shown before the page's own record catches up. A hint is saved on
   // the server and comes back in the exercise's log after a refresh, so its
   // local copy is hidden once the log has grown past where it was sent.
@@ -336,7 +335,7 @@ export function TutorThread({ forKey, scroll = false }: { forKey?: string; scrol
     setMessage("");
     setSpend(reply.budget);
     // A hint changes the exercise's record (hints used), so the page refreshes its state.
-    if (isHint) router.refresh();
+    if (isHint) void refreshPage();
   }
 
   const exhausted = Boolean(hinting && ladderLeft <= 0);

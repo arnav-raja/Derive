@@ -9,4 +9,8 @@ Practice runs in the browser (Python through Pyodide, maths checked with SymPy),
 scheduled with FSRS, and a tutor built on the Claude API gives hints on a five-rung ladder and
 never a solution.
 
+GitHub Actions builds it and publishes the site to GitHub Pages, at
+https://arnav-raja.github.io/Derive/, with its server (pages, progress and the tutor) running as
+a Supabase Edge Function.
+
 See `CLAUDE.md` for how the project is built and `docs/STATUS.md` for where it stands.

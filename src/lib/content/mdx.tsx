@@ -1,42 +1,38 @@
 import "server-only";
 
-import { createHash } from "node:crypto";
-
-import { compile, run } from "@mdx-js/mdx";
 import type { MDXComponents, MDXContent } from "mdx/types";
 import * as runtime from "react/jsx-runtime";
-import rehypeKatex from "rehype-katex";
-import remarkGfm from "remark-gfm";
-import remarkMath from "remark-math";
 
-import { KATEX_OPTIONS } from "./markdown";
+import { compileMdxCode, mdxKey } from "./mdx-core";
+import { precompiledMdx } from "./mdx-precompiled";
 
 /*
- * Lesson phases are MDX files in the repository, compiled on the server and
- * rendered as React Server Components. Lessons never import anything; every
- * component they use is passed in by the page, which is how gated content
- * (reveals, re-teaches) stays on the server until the learner has earned it.
+ * Lesson phases are MDX files in the repository, rendered on Derive's server as
+ * server components. Lessons never import anything; every component they use
+ * is passed in by the page, which is how gated content (reveals, re-teaches)
+ * stays on the server until the learner has earned it. The deployed server
+ * runs phases compiled when it was built; the local server compiles them as
+ * they change.
  */
 
 const compiled = new Map<string, Promise<MDXContent>>();
 
-async function build(source: string): Promise<MDXContent> {
-  const code = await compile(source, {
-    outputFormat: "function-body",
-    remarkPlugins: [remarkGfm, remarkMath],
-    rehypePlugins: [[rehypeKatex, KATEX_OPTIONS]],
-    development: false,
-  });
-  const mod = await run(String(code), { ...runtime, baseUrl: import.meta.url });
+const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor as new (body: string) => (
+  options: unknown,
+) => Promise<{ default: MDXContent }>;
+
+async function build(source: string, key: string): Promise<MDXContent> {
+  const code = precompiledMdx(key) ?? (await compileMdxCode(source));
+  const mod = await new AsyncFunction(code)({ ...runtime, baseUrl: import.meta.url });
   return mod.default;
 }
 
 /** The compiled component for an MDX source, cached by its content. */
 export function compileMdx(source: string): Promise<MDXContent> {
-  const key = createHash("sha256").update(source).digest("hex");
+  const key = mdxKey(source);
   let hit = compiled.get(key);
   if (!hit) {
-    hit = build(source);
+    hit = build(source, key);
     hit.catch(() => compiled.delete(key));
     if (compiled.size > 200) compiled.clear();
     compiled.set(key, hit);

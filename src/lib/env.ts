@@ -1,8 +1,10 @@
 import "server-only";
 
-/**
+/*
  * Server-side configuration. Public values (NEXT_PUBLIC_*) are safe in the
- * browser; everything else stays on the server.
+ * browser; everything else stays on the server. On the Supabase Edge Function
+ * the public values are fixed when the function is built, and the Anthropic
+ * key is a function secret.
  */
 
 export class ConfigError extends Error {
@@ -12,14 +14,19 @@ export class ConfigError extends Error {
   }
 }
 
+/** True on the deployed Supabase Edge Function, where local mode must never run. */
+export function isDeployed(): boolean {
+  return process.env.DERIVE_DEPLOYED === "1";
+}
+
 /**
  * Local mode stores learner data in .derive-local/ and skips sign-in. It exists
- * for development and end-to-end tests only, and refuses to run on Vercel.
+ * for development and end-to-end tests only, and refuses to run when deployed.
  */
 export function isLocalMode(): boolean {
   const on = process.env.DERIVE_LOCAL_STORE === "1";
-  if (on && process.env.VERCEL) {
-    throw new ConfigError("DERIVE_LOCAL_STORE must never be set on Vercel.");
+  if (on && isDeployed()) {
+    throw new ConfigError("DERIVE_LOCAL_STORE must never be set on the deployed server.");
   }
   return on;
 }
@@ -40,7 +47,7 @@ export function anthropicKey(): string | null {
   return key && key.length > 0 ? key : null;
 }
 
-/** The commit this build came from, when Vercel provides it. */
+/** The commit this server was built from, when the build recorded it. */
 export function buildCommit(): string | null {
-  return process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ?? null;
+  return process.env.DERIVE_COMMIT?.slice(0, 7) || null;
 }

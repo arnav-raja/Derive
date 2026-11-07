@@ -4,6 +4,8 @@
  * the worker, which starts again on the next request.
  */
 
+import { withBase } from "@/lib/public-config";
+
 export type PyError = { type: string; message: string; line?: number | null; col?: number | null };
 
 export type TestResult = {
@@ -102,7 +104,7 @@ class PythonRuntime {
 
   private ensureWorker(): Worker {
     if (this.worker) return this.worker;
-    const worker = new Worker("/workers/python.mjs", { type: "module", name: "derive-python" });
+    const worker = new Worker(withBase("/workers/python.mjs"), { type: "module", name: "derive-python" });
     worker.onmessage = (event: MessageEvent) => {
       const data = event.data as
         | { type: "status"; state: RuntimeState; detail?: string }

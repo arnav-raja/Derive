@@ -29,8 +29,11 @@ __pycache__/
 
 # misc
 .DS_Store
-.vercel
 npm-debug.log*
 
 # local learner data (DERIVE_LOCAL_STORE=1)
 .derive-local/
+
+# Derive's server builds (scripts/build-api.ts)
+.derive-build/
+supabase/functions/derive-api/bundle.js

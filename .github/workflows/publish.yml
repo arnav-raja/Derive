@@ -1,0 +1,124 @@
+name: Publish
+
+# Builds Derive and publishes it: the site to GitHub Pages at
+# https://arnav-raja.github.io/Derive/, and Derive's server (which renders the
+# pages, runs the actions and the tutor) to the Supabase Edge Function
+# derive-api. The server goes first, so the pages never call a server older
+# than themselves.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+env:
+  SUPABASE_PROJECT: spivlvrkjsqxjeonnmvd
+  NEXT_PUBLIC_SUPABASE_URL: https://spivlvrkjsqxjeonnmvd.supabase.co
+  # The publishable key is public by design: row-level security guards the data.
+  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_BUtMO-5-xl9mldoaME4BdQ_TduLcstY
+  NEXT_PUBLIC_DERIVE_API_URL: https://spivlvrkjsqxjeonnmvd.supabase.co/functions/v1/derive-api
+  # The database is in Mumbai; the function is asked to run beside it.
+  NEXT_PUBLIC_DERIVE_API_REGION: ap-south-1
+  NEXT_PUBLIC_BASE_PATH: /Derive
+  NEXT_TELEMETRY_DISABLED: "1"
+
+jobs:
+  build:
+    name: Build the site and the server
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Derive's server, with every lesson packed in
+        run: npm run build:edge
+
+      - name: The site
+        run: npx next build
+
+      - name: Keep the server for its deploy
+        uses: actions/upload-artifact@v4
+        with:
+          name: derive-api
+          path: supabase/functions/derive-api/
+          retention-days: 7
+
+      - name: Keep the site for GitHub Pages
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: out/
+
+  server:
+    name: Deploy the server to Supabase
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: The built server
+        uses: actions/download-artifact@v5
+        with:
+          name: derive-api
+          path: supabase/functions/derive-api/
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Deploy derive-api
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: |
+          if [ -z "$SUPABASE_ACCESS_TOKEN" ]; then
+            echo "::error::The repository secret SUPABASE_ACCESS_TOKEN is missing. Create a token at https://supabase.com/dashboard/account/tokens and add it at https://github.com/arnav-raja/Derive/settings/secrets/actions/new."
+            exit 1
+          fi
+          # The function checks the learner's session itself, so that the browser's
+          # preflight requests, which carry none, are answered.
+          supabase functions deploy derive-api --project-ref "$SUPABASE_PROJECT" --no-verify-jwt --use-api
+
+      - name: Check the new server answers
+        run: |
+          for attempt in $(seq 1 12); do
+            body=$(curl -fsS -H "x-region: $NEXT_PUBLIC_DERIVE_API_REGION" "$NEXT_PUBLIC_DERIVE_API_URL/api/health" || true)
+            if echo "$body" | grep -q "\"commit\":\"$GITHUB_SHA\""; then
+              echo "$body"
+              if ! echo "$body" | grep -q '"tutor":{"configured":true}'; then
+                echo "::warning::The tutor has no key. Add the secret ANTHROPIC_API_KEY at https://supabase.com/dashboard/project/$SUPABASE_PROJECT/functions/secrets."
+              fi
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "::error::The deployed server did not report this commit. Its last answer: $body"
+          exit 1
+
+  pages:
+    name: Publish the site to GitHub Pages
+    needs: server
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Publish
+        id: deploy
+        uses: actions/deploy-pages@v4

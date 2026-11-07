@@ -13,10 +13,12 @@ them), and said he must be able to study a phase as soon as it is complete and t
 be an AI chat widget; so the 12 lessons went live without the tests, with the Tutor panel in
 every lesson, and CLAUDE.md now has the rule that a lesson goes live once written, checked,
 reviewed and walked. Phase 1's gate, Arnav finishing three lessons end to end, is his to pass.
-Hosting is moving to GitHub Pages with GitHub Actions, in its own thread ("Move Derive hosting
-to GitHub Pages"), with the tutor, which needs a server for the Anthropic key and the private
-references, in a Supabase Edge Function. Its pull request (PR 2, branch
-`claude/project-thread-ahko0m`) was open on 6 November; that thread merges it once CI is green.
+Hosting moved off Vercel on 6 November, at Arnav's word ("Use GitHub. Use GitHub Actions. Use
+GitHub Pages. Don't use Vercel."), in its own thread ("Move Derive hosting to GitHub Pages"):
+GitHub Actions builds the site for GitHub Pages at https://arnav-raja.github.io/Derive/ and
+deploys Derive's server, tutor included, to the Supabase Edge Function `derive-api` (see
+"Hosting" below and the Stack section of CLAUDE.md). The Vercel project stays up until the new
+site works end to end, and is removed only when Arnav says so.
 
 Phase 2 (the full learning loop, and the lessons after the first slice) began on 6 November in
 its own thread. M1.7 Logic, sets and quantifiers is live (`ready`): written, reviewed by both
@@ -46,8 +48,8 @@ text-statistics tool is next (being written), then stage 2.
   follows the new course codes, with drawings for the five new courses. The approved plan's
   Plan and Lessons tabs follow the new curriculum.
 - App: design tokens, app shell, sign-in, Today, Curriculum, Review, Notebook, Progress,
-  Settings and the health route. Vercel project `derive` (bom1) at https://derive-tan.vercel.app.
-  CI runs the type check, lint, unit tests, graph and content checks, and the build.
+  Settings and the health route. CI runs the type check, lint, unit tests, graph and content
+  checks, and the build.
 - Redesign, 5 November, at Arnav's request that Derive look and work like a professional
   learning product, close to Codecademy and DataCamp in how it works but entirely Derive's own:
   - Design system: a cool neutral palette with one accent (Derive indigo), a mark colour for
@@ -288,9 +290,7 @@ in `derive-resume/review/prompts/`; change the lesson and the paths in them for 
 1. Remove the test address (the row that is not Arnav's) from `private.allowed_emails`.
    Arnav said yes on 6 November; the Supabase tool asks him to confirm the delete, and its first
    prompt timed out, so send it again when he says he is ready.
-2. Agree with the hosting thread who moves the tutor routes (`src/app/api/tutor/`,
-   `src/lib/tutor/`) off Vercel, and keep the Vercel site serving until they have moved.
-3. Tutor leak tests are not run: Arnav declined them on 6 November. If he ever asks for them,
+2. Tutor leak tests are not run: Arnav declined them on 6 November. If he ever asks for them,
    `derive-resume/leaks/` has the proxy fix (`proxy-patch.py`, `proxy.test.ts`), the merge
    script and the steps; `content/lessons/<code>/leaks.json` takes the records, and the content
    check warns about missing ones and fails only a ready lesson whose record failed.
@@ -754,8 +754,10 @@ Next, in order:
 
 ### Working notes
 
-- Local walk-through: `DERIVE_LOCAL_STORE=1 DERIVE_SHOW_DRAFTS=1 npx next dev -p 3100`, driven
-  with Playwright (Chromium is preinstalled). Learner data is in `.derive-local/store.json`.
+- Local walk-through: `DERIVE_LOCAL_STORE=1 DERIVE_SHOW_DRAFTS=1 npm run dev` (the site on
+  port 3000, Derive's server on 3101), driven with Playwright (Chromium is preinstalled). Learner
+  data is in `.derive-local/store.json`. A page is ready to read once `<html>` has
+  `data-page="ready"`; its content arrives from the server after the page loads.
   Since the redesign, phase pages keep their addresses but render full screen. "Start {phase}",
   "Finish {phase}" and "Finish the lesson" keep their labels (the finish button is now in the
   footer), and exercise cards keep `data-exercise`. At 1,280 px and wider the outline is an
@@ -828,7 +830,34 @@ Next, in order:
   before then that names a lesson after M1 or E1 uses the old code; `docs/course-update.md`
   gives the new one.
 
+## Hosting
+
+- The site: a static export (`out/`, 457 pages) on GitHub Pages under `/Derive`. Every page is a
+  shell; once it loads, `WireHost` (`src/lib/wire/client.tsx`) asks Derive's server for the
+  page's content and renders it, loading the client components it names. An address with no
+  file falls to 404.html, which asks the server all the same, so a lesson written after the
+  last build still opens. A new page's content is laid out hidden and shown once every font it
+  uses is in (KaTeX's included), or after 1.5 s, so text does not jump as fonts arrive: M1.8's
+  Explore, which shifted by 0.25 on main before `d4eb2d0`, shifts by 0 at tablet width with the
+  processor slowed four times. That commit's `src/app/fonts/katex.ts` was therefore dropped
+  here, since lesson pages are rendered by the server and its fonts never reached the browser.
+- The server: `src/server/handler.ts`, bundled by `scripts/build-api.ts` with every lesson file
+  and every written phase's compiled MDX packed in (about 3.3 MB, under Supabase's 20 MB). It runs
+  as the Edge Function `derive-api` in Mumbai (`x-region: ap-south-1`), verifies the learner's
+  session itself, and answers only https://arnav-raja.github.io (`DERIVE_ALLOWED_ORIGINS`
+  changes that). Locally the same handler runs in `.derive-build/server.mjs`.
+- Sign-in runs in the browser with Supabase Auth (`src/lib/auth-client.ts`); the session is
+  sent as a bearer token with every call.
+- `.github/workflows/publish.yml` builds both, deploys the server, checks its health route
+  reports the new commit, then publishes the site.
+
 ## Waiting on Arnav
+
+- The three steps for the move to GitHub Pages are done (7 November): Pages builds from GitHub
+  Actions, the Edge Function has its `ANTHROPIC_API_KEY`, and the repository has
+  `SUPABASE_ACCESS_TOKEN` (a token named "Derive publish", limited to the derive project's Edge
+  Functions, that never expires; it can be revoked at https://supabase.com/dashboard/account/tokens).
+- Saying the Vercel project can be deleted, once the GitHub Pages site and its tutor work.
 
 - Confirming the Supabase tool's prompt to delete the test sign-up address (he said yes to the
   removal on 6 November; the first prompt timed out). Sign-up is closed anyway once the one
@@ -848,5 +877,6 @@ no longer matters now that the one account exists.
   `docs/course-update.md`), the Lessons tab after the update, and `plan-excerpts.md` with the
   roadmap, content production, tutor, surfaces, practice types and figure components. Phase 2
   (the next lessons and the phase 2 features) has its own thread, started on 6 November.
-- This container cannot reach `*.supabase.co` or `*.vercel.app`; the deployed site is checked
-  through the Vercel tools.
+- This container cannot reach `*.supabase.co` or `*.github.io`. The Publish workflow checks the
+  deployed server itself (its health route must report the commit just built), and a page can be
+  read through the Exa fetch tool.
