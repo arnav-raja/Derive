@@ -34,6 +34,14 @@ describe("texToText", () => {
   it("handles subscripts", () => {
     expect(texToText("x_1 + x_{n}")).toBe("x₁ + xₙ");
   });
+
+  it("writes n choose k as C(n, k)", () => {
+    expect(texToText(String.raw`\binom{k + 1}{j} = \binom{k}{j - 1} + \binom{k}{j}`)).toBe(
+      "C(k + 1, j) = C(k, j - 1) + C(k, j)",
+    );
+    expect(texToText(String.raw`\tbinom{n}{\frac{n}{2}}`)).toBe("C(n, n/2)");
+    expect(texToText(String.raw`\binom{n}{j} = \binom{n}{n - j}`)).toBe("C(n, j) = C(n, n - j)");
+  });
 });
 
 describe("labelToText", () => {

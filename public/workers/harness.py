@@ -808,6 +808,13 @@ def evaluate_at(expr, table, point, digits=30):
     import sympy
 
     subs = {table[name]: sympy.Rational(value) for name, value in point.items() if name in table}
+    # The factorial of a negative whole number is undefined. SymPy makes it complex infinity, and
+    # a quotient by that comes out as 0, so n!/(n - k)! would look like 0 wherever k > n. Such a
+    # point is left out of the check instead.
+    for f in expr.atoms(sympy.factorial):
+        arg = f.args[0].subs(subs)
+        if arg.is_integer and arg.is_negative:
+            return None
     value = sympy.N(expr.subs(subs), digits)
     if value.has(sympy.zoo, sympy.oo, -sympy.oo, sympy.nan) or not value.is_number:
         return None

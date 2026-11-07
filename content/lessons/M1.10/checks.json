@@ -1,0 +1,292 @@
+{
+  "version": 1,
+  "expressions": {
+    "derive-choose": {
+      "source": "3d88ec5d9a8489e1",
+      "points": [
+        {
+          "n": "9",
+          "k": "1"
+        },
+        {
+          "n": "9",
+          "k": "6"
+        },
+        {
+          "n": "7",
+          "k": "7"
+        },
+        {
+          "n": "4",
+          "k": "2"
+        },
+        {
+          "n": "8",
+          "k": "8"
+        },
+        {
+          "n": "4",
+          "k": "4"
+        }
+      ],
+      "values": [
+        "9.0000000000000000000",
+        "84.000000000000000000",
+        "1.0000000000000000000",
+        "6.0000000000000000000",
+        "1.0000000000000000000",
+        "1.0000000000000000000"
+      ]
+    },
+    "derive-even-sets": {
+      "source": "f891b77a583bbcf5",
+      "points": [
+        {
+          "n": "2"
+        },
+        {
+          "n": "1"
+        },
+        {
+          "n": "5"
+        },
+        {
+          "n": "7"
+        },
+        {
+          "n": "4"
+        },
+        {
+          "n": "9"
+        }
+      ],
+      "values": [
+        "2.0000000000000000000",
+        "1.0000000000000000000",
+        "16.000000000000000000",
+        "64.000000000000000000",
+        "8.0000000000000000000",
+        "256.00000000000000000"
+      ]
+    },
+    "derive-pascal-top": {
+      "source": "de9450c86ff1c5a4",
+      "points": [
+        {
+          "n": "7",
+          "k": "3"
+        },
+        {
+          "n": "3",
+          "k": "6"
+        },
+        {
+          "n": "4",
+          "k": "2"
+        },
+        {
+          "n": "4",
+          "k": "8"
+        },
+        {
+          "n": "6",
+          "k": "5"
+        },
+        {
+          "n": "9",
+          "k": "9"
+        }
+      ],
+      "values": [
+        "5040.0000000000000000",
+        "6.0000000000000000000",
+        "24.000000000000000000",
+        "24.000000000000000000",
+        "720.00000000000000000",
+        "362880.00000000000000"
+      ]
+    }
+  },
+  "runs": {
+    "build-choices": {
+      "tests": [
+        {
+          "name": "test_filled",
+          "description": "choices gives a list, not None.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_pairs",
+          "description": "choices([\"a\", \"b\", \"c\", \"d\"], 2) gives the 6 pairs in this order: [\"a\", \"b\"], [\"a\", \"c\"], [\"a\", \"d\"], [\"b\", \"c\"], [\"b\", \"d\"] and [\"c\", \"d\"].",
+          "passed": false,
+          "message": "choices(['a', 'b', 'c', 'd'], 2) gives [], not the 6 pairs from ['a', 'b'] to ['c', 'd']."
+        },
+        {
+          "name": "test_ends",
+          "description": "Choosing 0 items gives one set, the empty one; choosing all of them gives one set, all of them; and choosing more items than there are gives no sets.",
+          "passed": false,
+          "message": "choices([1, 2, 3], 0) gives [], not [[]]."
+        },
+        {
+          "name": "test_counts",
+          "description": "A list of n items has math.comb(n, k) sets of k items, for every n up to 10 and every k from 0 to n + 1.",
+          "passed": false,
+          "message": "choices(list(range(0)), 0) gives 0 sets, not 1."
+        },
+        {
+          "name": "test_library",
+          "description": "choices(items, k) agrees with Python's itertools.combinations(items, k), set for set and in the same order, for lists of up to 8 items and every k.",
+          "passed": false,
+          "message": "choices([], 0) gives [], not [[]]."
+        },
+        {
+          "name": "test_all_subsets",
+          "description": "A list of 10 items has 1,024 sets of every size together, 2 to the power 10, and none comes twice.",
+          "passed": false,
+          "message": "choices gives 0 sets of the 10 items across every k from 0 to 10, not 1,024."
+        },
+        {
+          "name": "test_unchanged",
+          "description": "choices leaves the list it is given as it was.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": ""
+    },
+    "build-choose": {
+      "tests": [
+        {
+          "name": "test_five_two",
+          "description": "choose(5, 2) is 10, as the Explore phase counted.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_whole",
+          "description": "choose gives an int, a whole number, not a float.",
+          "passed": false,
+          "message": "choose(10, 3) gives 120.0, a float, not an int. The / operator always gives a float, while // keeps whole numbers whole."
+        },
+        {
+          "name": "test_triangle",
+          "description": "choose(n, k) is right for every n from 0 to 12 and every k from 0 to n, checked against Pascal's triangle.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_too_many",
+          "description": "choose(n, k) is 0 when k is more than n, since there is no way to choose more things than there are.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_large",
+          "description": "choose(100, 50) is 100,891,344,545,564,193,334,812,497,256, exactly.",
+          "passed": false,
+          "message": "choose(100, 50) gives 1.0089134454556418e+29, not 100,891,344,545,564,193,334,812,497,256."
+        },
+        {
+          "name": "test_library",
+          "description": "choose(n, k) agrees with Python's math.comb(n, k) for every n up to 60 and every k from 0 to n.",
+          "passed": false,
+          "message": "choose(55, 26) gives 3560597348629859.5, not 3,560,597,348,629,860."
+        },
+        {
+          "name": "test_short_way",
+          "description": "choose(n, k) with n = 1,000,000 and k = 999,998 is 499,999,500,000, found by choosing the 2 left out, in 2 passes of the loop rather than 999,998.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_own_work",
+          "description": "choose works the count out itself, without Python's own counting functions: math.comb, math.perm (which counts ordered choices) or math.factorial.",
+          "passed": true,
+          "message": null
+        }
+      ],
+      "error": null,
+      "output": ""
+    },
+    "build-pascal": {
+      "tests": [
+        {
+          "name": "test_next",
+          "description": "next_row gives the row below: [1] gives [1, 1], [1, 1] gives [1, 2, 1], and [1, 3, 3, 1] gives [1, 4, 6, 4, 1].",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_unchanged",
+          "description": "next_row leaves the row it is given as it was.",
+          "passed": false,
+          "message": "After next_row(row) with row = [1, 3, 3, 1], row has become [1, 4, 6, 4, 1]. Build the new row as a new list, and only read from row."
+        },
+        {
+          "name": "test_rows",
+          "description": "triangle(n) gives rows 0 to n, which is n + 1 rows, and row i has i + 1 entries.",
+          "passed": false,
+          "message": "Row 0 of triangle(1) is [1, 1], not a list of 1 entry."
+        },
+        {
+          "name": "test_counts",
+          "description": "Row n, place k of triangle(30) is math.comb(n, k), for every n up to 30 and every k from 0 to n.",
+          "passed": false,
+          "message": "Row 0 of triangle(30) has 31 entries, not 1."
+        },
+        {
+          "name": "test_sums",
+          "description": "Row n of triangle(20) adds up to 2 to the power n, for every n up to 20.",
+          "passed": false,
+          "message": "Row 0 of triangle(20) adds up to 1,048,576, not 1."
+        },
+        {
+          "name": "test_separate",
+          "description": "The rows of triangle(5) are separate lists, so changing one leaves the others as they were.",
+          "passed": false,
+          "message": "triangle(5) gives [[1, 5, 10, 10, 5, 1], [1, 5, 10, 10, 5, 1], [1, 5, 10, 10, 5, 1], [1, 5, 10, 1…, not rows 0 to 5, so this test cannot change row 2 yet."
+        }
+      ],
+      "error": null,
+      "output": ""
+    },
+    "debug-arrangements": {
+      "tests": [
+        {
+          "name": "test_pairs",
+          "description": "arrangements([\"a\", \"b\", \"c\"], 2) gives the 6 ordered pairs: [\"a\", \"b\"], [\"a\", \"c\"], [\"b\", \"a\"], [\"b\", \"c\"], [\"c\", \"a\"] and [\"c\", \"b\"].",
+          "passed": false,
+          "message": "arrangements(['a', 'b', 'c'], 2) gives [['a', 'b'], ['a', 'c'], ['b', 'c']], not the 6 ordered pairs."
+        },
+        {
+          "name": "test_podiums",
+          "description": "There are 720 podiums of 3 from 10 models, 10 × 9 × 8, each with 3 different models, and none comes twice.",
+          "passed": false,
+          "message": "arrangements of 3 from 10 items gives 120 choices, not 720."
+        },
+        {
+          "name": "test_orders",
+          "description": "4 items have 4! = 24 orders, and arrangements(items, 4) gives every one of them.",
+          "passed": false,
+          "message": "arrangements([1, 2, 3, 4], 4) gives 1 order, not 24."
+        },
+        {
+          "name": "test_too_many",
+          "description": "There is no way to choose more items than there are, so arrangements(items, k) is [] when k is more than the number of items.",
+          "passed": true,
+          "message": null
+        },
+        {
+          "name": "test_library",
+          "description": "arrangements(items, k) agrees with Python's itertools.permutations(items, k), choice for choice and in the same order, for lists of up to 6 items and every k from 0 to 7.",
+          "passed": false,
+          "message": "arrangements([0, 1], 2) gives [[0, 1]], not [[0, 1], [1, 0]]."
+        }
+      ],
+      "error": null,
+      "output": ""
+    }
+  }
+}

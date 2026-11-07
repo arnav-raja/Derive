@@ -1,0 +1,65 @@
+The Derive phase proved the formulas. Now work $\binom{n}{k}$ out exactly without building huge factorials, build Pascal's triangle row by row, list every choice of $k$ things with Pascal's rule, see what a float does to a count, and mend a function that lists ordered choices. Python has its own versions in its `math` and `itertools` modules, and the tests compare yours with them.
+
+Each exercise in this phase has tests, in the tab `tests.py`. You need not read their code, which uses Python that this lesson does not teach: when they run, each test says in words what it checks, and one that fails says what went wrong, with the values it found.
+
+## Choosing, exactly
+
+$\binom{n}{k} = \frac{n(n - 1) \cdots (n - k + 1)}{k!}$ has $k$ factors on top and $k$ below, so the count can be built up a pair of factors at a time, one from the top and one from below. Start from $\binom{n}{0} = 1$. After $i$ passes of a loop, keep the running value equal to $\binom{n}{i}$, the first $i$ factors on top over $i!$; then one more pass brings in the next factor on top and the next one below. Multiply first and then divide, and every division comes out exact, since its answer is a count, $\binom{n}{i + 1}$, a whole number. That is a loop invariant, as in E1.2. Python's `//` divides one whole number by another and gives a whole number, an `int`, which is exact however large it is, as E1.1 showed.
+
+Choosing $k$ is choosing the $n - k$ left out, so when $k$ is more than half of $n$, $\binom{n}{n - k}$ gives the same count with a shorter loop. Python's own version is `math.comb(n, k)`.
+
+<Exercise id="build-choose" />
+
+<Reveal for="build-choose">
+
+Dividing first would go wrong: $\binom{5}{2}$ would reach $5 \mathbin{//} 2 \times 4 = 8$, not 10, since 5 is not a multiple of 2, while $5 \times 4$ is. So would `count *= (n - i) // (i + 1)`, which works out $(n - i) \mathbin{//} (i + 1)$ first: it gets $\binom{5}{2}$ right by luck, but gives $\binom{4}{2}$ as $4 \times (3 \mathbin{//} 2) = 4$. The largest number the loop ever holds is $k$ times the count, just before its last division, where the factorial formula builds $n!$: for $\binom{1{,}000}{3}$, a number with 9 digits against one with 2,568.
+
+## The triangle, row by row
+
+Pascal's rule builds each row of the triangle from the row above it: each entry inside the row is the sum of the two entries above it, and each row starts and ends with 1. Build the new row as a new list, and leave the row it came from as it was. E1.4 showed what goes wrong when a function changes a list that its caller is still using.
+
+<Exercise id="build-pascal" />
+
+</Reveal>
+
+<Reveal for="build-pascal">
+
+The triangle takes about $\frac{n^2}{2}$ additions to reach row $n$, and every number in it is made by adding, so it is exact. Row 100 holds $\binom{100}{50}$ in its middle.
+
+## Every choice, listed
+
+Pascal's rule can list the sets, not only count them. A set of $k$ of the items either holds the first item, with $k - 1$ more chosen from the rest, or leaves it out, with all $k$ chosen from the rest. That is the split of the Explore phase, by the first item instead of the last, and it makes `choices` a recursive function, as in E1.5: it calls itself on the rest of the list, which is shorter. The base cases answer the smallest questions: how many ways are there to choose nothing, and how many to choose more items than there are? Each answer is a list of sets, as every answer of `choices` is. Python's own version is `itertools.combinations`, and the tests compare yours with it.
+
+<Exercise id="build-choices" />
+
+</Reveal>
+
+<Reveal for="build-choices">
+
+The calls of `choices` follow Pascal's rule exactly: the call for $k$ of $n$ items makes one call for $k - 1$ of $n - 1$ and one for $k$ of $n - 1$, so the lists it returns have $\binom{n - 1}{k - 1} + \binom{n - 1}{k} = \binom{n}{k}$ sets between them, and an induction on the length of the list proves that it lists each set exactly once. Listing costs far more than counting: `choose(30, 15)` finds $\binom{30}{15} = 155{,}117{,}520$ in 15 passes of its loop, while a list of that many sets of 15 features would need more than 10 gigabytes of memory.
+
+## A count in floats
+
+Here is $\binom{n}{k}$ from the factorial formula, with Python's `math.factorial`, which gives $n!$ as an `int`. It prints $\binom{100}{50}$, a number with 30 digits.
+
+<Exercise id="breakit-float-choose" />
+
+</Reveal>
+
+<Reveal for="breakit-float-choose">
+
+The float's exact value is 100,891,344,545,564,202,071,714,955,264, against the count's 100,891,344,545,564,193,334,812,497,256: they agree in their first 15 digits only. Counts are whole numbers, and `//` keeps them exact.
+
+## Every podium
+
+`arrangements(items, k)` should list every ordered choice of $k$ of the items, which it calls an arrangement, such as every podium of 3 from 10 models. It fills the first place with each item in turn, and calls itself to fill the other places from the items left, as E1.5's functions called themselves on smaller lists. But it prints only 3 pairs, and 120.
+
+<Exercise id="debug-arrangements" />
+
+</Reveal>
+
+<Reveal for="debug-arrangements">
+
+Going only forward through the items is how `choices` lists each set once, so the bug made `arrangements` give exactly what `choices` gives, in the same order. Python's own version of `arrangements` is `itertools.permutations`.
+
+</Reveal>

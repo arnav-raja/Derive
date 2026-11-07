@@ -1,0 +1,27 @@
+A model that predicts the price of a house is given *features*: measurements such as its floor area, its age and its distance from a station. More features are not always better, since a feature that carries no signal can still be fitted, and it then makes the model worse on houses it has not seen. So a careful analyst with 30 candidate features writes a script that fits one model for every set of features that can be made from them, from no features at all up to all 30, and keeps the set whose model predicts best. Each fit takes one second.
+
+<Exercise id="puzzle-feature-sets" />
+
+<Reveal for="puzzle-feature-sets">
+
+In practice, a script builds the set one feature at a time instead, adding whichever feature helps most. That takes 30 fits to choose the first feature, 29 to choose the second from those left, and so on, $30 + 29 + \dots + 1 = 465$ fits in all, under 8 minutes. This is *forward selection*. It can miss the best set, since two features can help together when neither helps on its own, but it is often good enough. The figure puts its 465 fits on one line with the $2^{30}$ fits of every set and the $30!$ fits of every order of the 30 features, a number with 33 digits.
+
+<ScaleLine
+  title="Fitting every set, in seconds"
+  description="Three counts of fits, at one second a fit, placed beside a day, a year and the age of the universe on a line where each tick mark is ten times the one before it: the 465 fits of forward selection with 30 features, one fit for every set of the 30 features, and one for every order of them."
+  unit="s"
+  min={2}
+  max={33}
+  items={[
+    { label: "Forward selection", value: 465 },
+    { label: "A day", value: 86400 },
+    { label: "A year", value: 31557600 },
+    { label: "Every set of 30 features", value: 1073741824 },
+    { label: "The age of the universe", value: 4.35e17 },
+    { label: "Every order of 30 features", value: 2.652528598121911e32 },
+  ]}
+/>
+
+Counting without listing is this lesson's subject: choices made in steps, orders, choices with no order, and a triangle of numbers that counts them and also multiplies out $(a + b)^n$. People counted such things long before machine learning. Writers on Sanskrit verse counted the patterns of long and short syllables more than two thousand years ago, and the triangle was known in India, Persia and China centuries before Blaise Pascal wrote about it in the 1650s.
+
+</Reveal>

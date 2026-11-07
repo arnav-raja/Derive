@@ -1,0 +1,187 @@
+## Choices in steps
+
+A *grid search* tries every way of picking one value for each of a few settings, training one model for each, and keeps the best. Take 5 values of the learning rate, 4 batch sizes and 3 numbers of layers.
+
+<Exercise id="explore-grid-search" />
+
+<Reveal for="explore-grid-search">
+
+Picture the runs as a tree. It branches 5 ways for the learning rate; each branch splits 4 ways for the batch size, making 20 branches; and each of those splits 3 ways for the layers, making 60 leaves, one for each run. Only the number of branches at each step mattered, not which branches they were. That is the *product rule*: a choice made in steps, where each step has the same number of options whatever was chosen before it, can be made in as many ways as the product of those numbers.
+
+When a choice splits into separate cases instead, the cases add. A search that tries one optimiser at 5 learning rates, and a second optimiser at the same 5 rates both with and without a setting called momentum, trains $5 + 5 \times 2 = 15$ models, since no run uses both optimisers. Cases that can overlap need more care. A code of 4 digits, each from 0 to 9, such as 0712, can be chosen in $10 \times 10 \times 10 \times 10 = 10{,}000$ ways, from 0000 to 9999.
+
+<Exercise id="explore-at-least-one" />
+
+</Reveal>
+
+<Reveal for="explore-at-least-one">
+
+Adding up four sets that overlap counts what they share more than once. For two sets, M1.7's $|A \cup B| = |A| + |B| - |A \cap B|$ takes the overlap away once; for four, counting what is not wanted and taking it away is far quicker.
+
+## Orders and podiums
+
+M1.6 counted the orders of $n$ different things with the product rule: any of the $n$ can go first, any of the $n - 1$ left can go second, and so on, so there are $n!$ orders. Now fill only some of the places. Ten models are tested on a benchmark, and the best three win gold, silver and bronze.
+
+<Exercise id="explore-podium" />
+
+</Reveal>
+
+<Reveal for="explore-podium">
+
+In general, an ordered choice of $k$ things from $n$ different things can be made in
+
+$$
+n(n - 1)(n - 2) \cdots (n - k + 1) = \frac{n!}{(n - k)!}
+$$
+
+ways, a product of $k$ factors, since the factors of $(n - k)!$ cancel: $\frac{10!}{7!} = 10 \times 9 \times 8$. These ordered choices are called *permutations*, and with $k = n$ they are the $n!$ orders of all $n$ things.
+
+With $k = n$ the formula reads $\frac{n!}{0!}$, which is $n!$ only if $0! = 1$. That is how $0!$ is defined, and it fits what it counts: there is exactly one way to put nothing in order, the empty order. It also keeps $(n + 1)! = (n + 1) \times n!$ true at $n = 0$, since $1! = 1 \times 0!$. Going down the factorials shows it too: $3! = \frac{4!}{4} = 6$, $2! = \frac{3!}{3} = 2$, $1! = \frac{2!}{2} = 1$, and one step more, $0! = \frac{1!}{1} = 1$.
+
+## Sets, not orders
+
+Often the order does not matter. A model is to use 3 of the 10 features of a dataset, and using features 2, 5 and 7 is the same choice as using 7, 2 and 5: the choice is a set, $\{2, 5, 7\}$. The figure lists ordered choices of letters, in the order the product rule makes them. Change how many letters there are, and how many are chosen.
+
+<OrderedChoices
+  title="Ordered choices of letters"
+  description="Every ordered choice of 2 letters from the 4 letters A, B, C and D, in the order the product rule makes them: A first, with each of the other three second, then B first, and so on, 12 in all. Controls set how many letters there are, from 2 to 6, and how many are chosen. A switch, once open, groups the ordered choices by the letters they hold."
+  n={4}
+  k={2}
+  groupsAfter="explore-sets-of-three"
+/>
+
+<Exercise id="explore-sets-of-three" />
+
+</Reveal>
+
+<Reveal for="explore-sets-of-three">
+
+Switch the figure above to group the ordered choices by the letters they hold: each group is one set, with all $k!$ of its orders, so the groups number the ordered choices divided by $k!$.
+
+The number of ways to choose $k$ things from $n$ different things, with no order, is written $\binom{n}{k}$, read "$n$ choose $k$", and sometimes $C(n, k)$. Each such choice is a subset of the $n$ things, in M1.7's sense. Dividing the ordered choices by the $k!$ orders of each set gives
+
+$$
+\binom{n}{k} = \frac{n(n - 1) \cdots (n - k + 1)}{k!},
+$$
+
+so $\binom{10}{3} = \frac{10 \times 9 \times 8}{3 \times 2 \times 1} = 120$. E1.4 counted the comparisons that checking each of $n$ different documents against those kept makes, $\frac{n(n - 1)}{2}$, by adding them up document by document. Each comparison is one pair of documents, so the count is also $\binom{n}{2}$: the $n(n - 1)$ ordered pairs, with each pair counted once in each of its $2! = 2$ orders.
+
+Now choose most of the features, not a few.
+
+<Exercise id="explore-leave-out" />
+
+</Reveal>
+
+<Reveal for="explore-leave-out">
+
+Each set of 28 features kept goes with exactly one set of 2 left out, and each set of 2 left out with exactly one set of 28 kept. In M1.3's words, the function that sends a set of 28 to the 2 it leaves out is one-to-one and onto, so the two collections pair off with nothing left over, and they are the same size: $\binom{30}{28} = \binom{30}{2} = \frac{30 \times 29}{2} = 435$. In general, $\binom{n}{k} = \binom{n}{n - k}$.
+
+## The triangle
+
+Set the counts out in rows, with row $n$ holding $\binom{n}{0}, \binom{n}{1}, \dots, \binom{n}{n}$, from row 0 at the top. Each row starts and ends with 1, since there is one way to choose nothing and one way to choose everything. Pick an entry in the figure and compare it with the two entries just above it.
+
+<PascalTriangle
+  title="The counts in rows"
+  description="Rows 0 to 6 of a triangle of numbers: row n holds n choose 0, n choose 1, and so on up to n choose n, so every row starts and ends with 1. The entry in row 6, place 3, which is 20, is picked out, and the two entries just above it are marked. Controls set how many rows are shown, up to 8, and which entry is picked. Once open, a list shows the sets that the picked entry counts, for entries up to row 6."
+  rows={6}
+  maxRows={8}
+  selected={[6, 3]}
+  setsAfter="explore-with-last"
+/>
+
+Now take the $\binom{5}{2} = 10$ ways to choose 2 of 5 features, numbered 1 to 5.
+
+<Exercise id="explore-with-last" />
+
+</Reveal>
+
+<Reveal for="explore-with-last">
+
+Every set of 2 either includes feature 5 or leaves it out, never both, so the two groups add up to all 10, and they are the two entries above $\binom{5}{2}$ in the triangle. The figure above now lists, for each entry up to row 6, the sets it counts, split the same way.
+
+The same split works for every $n$ and $k$. The sets of $k$ things from $n$ that include the last thing choose their other $k - 1$ from the first $n - 1$, and those that leave it out choose all $k$ from the first $n - 1$, so for $1 \le k \le n - 1$,
+
+$$
+\binom{n}{k} = \binom{n - 1}{k - 1} + \binom{n - 1}{k}.
+$$
+
+This is *Pascal's rule*, and the triangle is called *Pascal's triangle*, though it is far older than Pascal. The rule builds the triangle row by row with additions alone, which is how the Build phase computes it.
+
+Sets can be split in other ways too. Split the pairs of 30 features, numbered 1 to 30, by their larger feature: a pair whose larger feature is feature $j$ has any of the $j - 1$ features before it as its other, so there are $0 + 1 + 2 + \dots + 29$ pairs, the sum from the Recall phase, and $\binom{30}{2} = 435$ counts the same pairs. Counting one collection in two ways must give the same number, and the Derive phase turns that into a way of proving things.
+
+## Adding up a row
+
+Add up a row of the triangle: row 4 gives $1 + 4 + 6 + 4 + 1 = 16$.
+
+<Exercise id="explore-row-sum" />
+
+</Reveal>
+
+<Reveal for="explore-row-sum">
+
+Each number in row $n$ counts the subsets of one size, so the whole row counts every subset of $n$ things, whatever its size. Counted another way, each of the $n$ things is in or out, 2 choices for each, so there are $2^n$ subsets, by the product rule, and row 10 adds up to $2^{10} = 1{,}024$. Row 30 adds up to $2^{30}$, the puzzle's count of sets of features, with the empty set and the set of all 30 included. Pascal's rule says the same: each entry of a row goes into two entries of the row below, so each row adds up to twice the row above.
+
+A subset of $n$ things can be written as a string of $n$ digits, 1 for in and 0 for out: of features 1 to 5, the string 10110 is the subset $\{1, 3, 4\}$. So $\binom{n}{k}$ also counts the strings of $n$ digits with $k$ ones and $n - k$ zeros. The figure gives each row's sum.
+
+<PascalTriangle
+  title="The sums of the rows"
+  description="Rows 0 to 10 of Pascal's triangle, with the sum of each row at its right: 1, 2, 4, 8, and so on, doubling at every row, down to 1,024. The entry in row 10, place 3, which is 120, is picked out, and the two entries just above it are marked. Controls set how many rows are shown and which entry is picked."
+  rows={10}
+  maxRows={10}
+  selected={[10, 3]}
+  sums
+/>
+
+## Multiplying out brackets
+
+M1.2 multiplied out $(a + b)^2 = a^2 + 2ab + b^2$. Multiplying out $(a + b)^3 = (a + b)(a + b)(a + b)$ takes one term, $a$ or $b$, from each bracket, in every possible way, and adds the $2 \times 2 \times 2 = 8$ products:
+
+$$
+aaa + aab + aba + abb + baa + bab + bba + bbb.
+$$
+
+The products with exactly one $b$ are $aab$, $aba$ and $baa$, each equal to $a^2 b$, and there is one for each choice of the bracket that gives the $b$: $\binom{3}{1} = 3$ of them. So $(a + b)^3 = a^3 + 3a^2 b + 3ab^2 + b^3$.
+
+<Exercise id="explore-coefficient" />
+
+</Reveal>
+
+<Reveal for="explore-coefficient">
+
+The same count works for every term: a product equal to $a^{n-k} b^k$ takes $b$ from $k$ of the $n$ brackets, in $\binom{n}{k}$ ways, so
+
+$$
+(a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k.
+$$
+
+This is the *binomial theorem*. A *binomial* is a sum of two terms, such as $a + b$, and the numbers $\binom{n}{k}$ are called *binomial coefficients* because of the theorem. The numbers in front of $(a + b)^3$, 1, 3, 3, 1, are row 3 of the triangle, and row 5 gives $(a + b)^5 = a^5 + 5a^4 b + 10a^3 b^2 + 10a^2 b^3 + 5ab^4 + b^5$. With $a = b = 1$, the theorem gives $2^n = \sum_{k=0}^{n} \binom{n}{k}$, the row sums again.
+
+It also says what a small rise does when it repeats. Ten rises of 1% multiply by $1.01^{10} = (1 + 0.01)^{10} = 1 + 10 \times 0.01 + 45 \times 0.0001 + 120 \times 0.000001 + \dots$, and the terms left out are smaller still. That is 1.1046 and a little more: ten rises of 1% make a little more than 10%, because each rise also applies to what the earlier rises added. The Derive phase proves the theorem again, by induction.
+
+## The names
+
+<Definition term="Counting by steps and by cases">
+
+The *product rule*: a choice made in steps, where each step has the same number of options whatever was chosen before it, can be made in as many ways as the product of those numbers. Cases that cannot happen together add. Cases that overlap must not simply be added, since what they share is counted more than once, and it is often quicker to count what is not wanted and take it from the total.
+
+</Definition>
+
+<Definition term="Permutations">
+
+An ordered choice of $k$ things from $n$ different things is a *permutation*, and there are $n(n - 1) \cdots (n - k + 1) = \frac{n!}{(n - k)!}$ of them. With $k = n$ they are the $n!$ orders of all $n$ things, and $0! = 1$: there is one way to put nothing in order.
+
+</Definition>
+
+<Definition term="Combinations">
+
+A choice of $k$ things from $n$ different things with no order is a *combination*, a subset of size $k$, and there are $\binom{n}{k} = \frac{n(n - 1) \cdots (n - k + 1)}{k!}$ of them, read "$n$ choose $k$": the ordered choices, divided by the $k!$ orders of each set. Choosing $k$ is choosing the $n - k$ left out, so $\binom{n}{k} = \binom{n}{n - k}$. *Pascal's rule*, $\binom{n}{k} = \binom{n - 1}{k - 1} + \binom{n - 1}{k}$, splits the sets by whether they hold the last thing, and a set of $n$ things has $2^n$ subsets.
+
+</Definition>
+
+<Definition term="The binomial theorem">
+
+$(a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k$ for every whole number $n \ge 0$: multiplying out takes $a$ or $b$ from each bracket, and $\binom{n}{k}$ of the $2^n$ products take $b$ from exactly $k$ brackets. The numbers $\binom{n}{k}$ are the *binomial coefficients*, and row $n$ of Pascal's triangle lists them.
+
+</Definition>
+
+</Reveal>

@@ -1,0 +1,445 @@
+misconceptions:
+  - id: orders-for-sets
+    belief: The product rule alone counts sets, so there are $10 \times 9 \times 8 = 720$ sets of 3 of 10 features.
+    why: >-
+      The product rule counts choices made in order: a first feature, then a second, then a third.
+      A set has no order, so each set of 3 turns up once for each of its $3! = 6$ orders, and there
+      are $\frac{720}{6} = 120$ sets.
+    cue: >-
+      The learner answers 720 in explore-sets-of-three, agrees with the friend's 720 in the Explain
+      phase, or gives about $1.8 \times 10^{14}$ in derive-experts.
+  - id: divide-by-k
+    belief: To count sets of $k$, divide the ordered choices by $k$, or by 2.
+    why: >-
+      Each set turns up once for each of its orders, and $k$ things have $k!$ orders, not $k$: a set
+      of 3 has 6 orders, not 3 or 2. Dividing by 2 is right only for pairs, where $2! = 2$.
+    cue: >-
+      The learner answers 240 or 360 in explore-sets-of-three, or chooses "Each set appears twice"
+      in its review of why 6.
+  - id: zero-factorial-zero
+    belief: $0! = 0$, since a product of no numbers is nothing.
+    why: >-
+      A product of no factors is 1, as a sum of no terms is 0: multiplying by it changes nothing.
+      There is exactly one way to put nothing in order, and $0! = 1$ keeps
+      $\frac{n!}{(n - k)!}$ right at $k = n$ and $\binom{n}{0} = 1$.
+    cue: The learner chooses "It is really 0" in the review of explore-podium, or says that $\binom{n}{n}$ divides by 0.
+  - id: add-for-steps
+    belief: Choices made in steps add, so 5 learning rates, 4 batch sizes and 3 layer counts give 12 models.
+    why: >-
+      Adding counts is for cases that cannot happen together, one or the other. Steps that all happen
+      multiply: each of the 5 learning rates goes with each of the 4 batch sizes, and each of those
+      20 pairs with each of the 3 layer counts.
+    cue: The learner answers 12 in explore-grid-search, or chooses "12, three options at each of 4 steps" in its review.
+  - id: steps-need-same-options
+    belief: The product rule needs the same options at every step.
+    why: >-
+      It needs only the same number of options at each step, whatever was chosen before. Podiums
+      have 9 choices for silver whichever model took gold, though which 9 depends on gold.
+    cue: The learner chooses "It cannot be known without the list of options at each step" in the review of explore-grid-search.
+  - id: overlap-counted
+    belief: The codes with at least one 0 are 4 times the codes with a 0 in one given place, 4,000.
+    why: >-
+      The four collections overlap: 0705 has a 0 in two places and is counted twice, and 0000 four
+      times. Counting the codes with no 0 at all, $9^4 = 6{,}561$, and taking them from 10,000 counts
+      each code once.
+    cue: >-
+      The learner answers 4,000 in explore-at-least-one, or 1 or 4 for how many times 0705 is
+      counted in its review.
+  - id: complement-unfinished
+    belief: The codes with no 0 are the answer to how many have at least one 0.
+    why: >-
+      $9^4 = 6{,}561$ counts the codes with no 0. The codes with at least one 0 are all the others:
+      $10{,}000 - 6{,}561 = 3{,}439$.
+    cue: The learner answers 6,561 in explore-at-least-one, or 1 or 32 in its review about bits.
+  - id: repeats-allowed
+    belief: Ordered choices of $k$ from $n$ number $n^k$.
+    why: >-
+      $n^k$ lets the same thing be chosen again at every step. A podium cannot give gold and silver
+      to one model, so the choices shrink by one at each step: $10 \times 9 \times 8$, not $10^3$.
+    cue: The learner answers 1,000 in explore-podium, or 4,096 for the playlist in its review.
+  - id: subsets-linear
+    belief: A set of $n$ things has $2n$ or $n^2$ subsets.
+    why: >-
+      Each thing is in or out, two choices for each of $n$ things, and the choices multiply by the
+      product rule, so there are $2^n$ subsets. Adding one more thing doubles the count; it does not
+      add 2.
+    cue: The learner answers 20 or 100 in explore-row-sum, or 16 or 64 in its review of 8 things.
+  - id: symmetry-unexplained
+    belief: $\binom{n}{k} = \binom{n}{n - k}$ needs no reason, or follows only from the formula.
+    why: >-
+      Each set of $k$ chosen goes with exactly one set of $n - k$ left out, and each set left out
+      with exactly one set chosen, so the two collections pair off one to one and are the same size.
+      The formula agrees, but the pairing says why.
+    cue: The learner chooses "Because every row of numbers is the same read backwards" or "Because $n - k$ and $k$ add up to $n$" in the review of explore-leave-out, or works out $\binom{30}{28}$ the long way.
+  - id: pascal-same-k
+    belief: Pascal's rule adds the two entries with the same $k$, or doubles one entry.
+    why: >-
+      The sets of $k$ from $n$ either hold the last thing, with $k - 1$ more from the other $n - 1$,
+      or leave it out, with all $k$ from the other $n - 1$: $\binom{n - 1}{k - 1} + \binom{n - 1}{k}$.
+      The two entries above sit side by side, one place apart.
+    cue: The learner chooses "$\binom{8}{3} + \binom{8}{4}$" or "$2 \times \binom{8}{3}$" in the review of explore-with-last, or answers 30 or 40 for $\binom{7}{3}$ in another review, doubling one entry of row 6.
+  - id: power-of-sum
+    belief: $(a + b)^n = a^n + b^n$.
+    why: >-
+      Multiplying out takes $a$ or $b$ from each of the $n$ brackets, so every mix of $a$s and $b$s
+      appears, not only all $a$ or all $b$. At $a = b = 1$ the left side is $2^n$, and $a^n + b^n$ is
+      only 2.
+    cue: The learner chooses $a^3 + b^3$ in recall-cube, or answers 0 or 1 in explore-coefficient.
+  - id: coefficient-twos
+    belief: The numbers in front of the middle terms are always 2, as in $(a + b)^2 = a^2 + 2ab + b^2$.
+    why: >-
+      The 2 in $(a + b)^2$ is $\binom{2}{1}$: two ways to pick the bracket that gives $b$. With more
+      brackets there are more ways, so $(a + b)^3$ has 3s and $(a + b)^5$ has 5s and 10s.
+    cue: The learner chooses $a^3 + 2a^2 b + 2ab^2 + b^3$ in recall-cube, or answers 2 in explore-coefficient.
+  - id: coefficient-from-powers
+    belief: The number in front of $a^2 b^3$ comes from its powers, such as $2 \times 3 = 6$ or $2 + 3 = 5$.
+    why: >-
+      It counts the products that take $b$ from exactly 3 of the 5 brackets, and $a$ from the other
+      2: $\binom{5}{3} = 10$ of them.
+    cue: The learner answers 5 or 6 in explore-coefficient, or 6 or 8 in its review of $x^4 y^2$.
+  - id: float-counts
+    belief: Dividing with `/` is fine for a count, since the answer is a whole number anyway.
+    why: >-
+      `/` always gives a float, and a float keeps about 16 significant figures, so a count with more
+      digits comes out wrong in its later digits, and even a small count comes out as `120.0`, not
+      the int 120. `//` keeps whole numbers exact at any size.
+    cue: The learner divides with `/` in build-choose, or predicts "same" or "dot-zero" in breakit-float-choose.
+  - id: divide-before-multiply
+    belief: In the running count, the order of multiplying and dividing does not matter.
+    why: >-
+      `count * (n - i)` is always a multiple of `i + 1`, since the result is a count, but `count`
+      alone need not be, so dividing first can leave a remainder that `//` throws away:
+      `5 // 2 * 4` is 8, while `5 * 4 // 2` is 10.
+    cue: The learner writes `count // (i + 1) * (n - i)` in build-choose, and test_five_two reports 8, or `count *= (n - i) // (i + 1)`, and test_triangle reports 4 for `choose(4, 2)`.
+  - id: nothing-to-choose
+    belief: There is no way to choose 0 things, so a function that lists choices should give `[]` for $k = 0$.
+    why: >-
+      There is exactly one way to choose nothing: the empty choice, so the list of choices is
+      `[[]]`, holding one empty list. Every longer choice is built by putting an item in front of a
+      shorter one, so with no empty choice to start from, nothing is ever built.
+    cue: The learner's base case returns `[]` for $k = 0$ in build-choices, or changes debug-arrangements' base case to `[]`.
+  - id: forward-only
+    belief: A function that lists ordered choices can fill the later places from the items after the one just placed.
+    why: >-
+      Going only forward through the list gives each set once, in one order, which is how
+      `choices` lists sets. An ordered choice can put any item not yet used in any later place, so
+      the items left are every item but the one just placed.
+    cue: The learner leaves `left = items[i + 1:]` in debug-arrangements, or says that its 3 pairs and 120 podiums are right.
+  - id: alias-is-copy
+    belief: "`new = row` makes a new list to build the next row in."
+    why: >-
+      It gives the same list a second name, as E1.4 showed, so changing `new` changes `row`, and the
+      caller's row with it. A new list comes from `[1]`, `[]` or a slice.
+    cue: test_unchanged fails in build-pascal, or every row of `triangle(5)` comes out the same.
+  - id: factorial-mixup
+    belief: In $\binom{n}{k} = \frac{n!}{k!\,(n - k)!}$, one of the two factorials underneath can be left out.
+    why: >-
+      $\frac{n!}{(n - k)!}$ counts the ordered choices, and dividing by $k!$, the orders of each set,
+      counts the sets. Each factorial underneath has its own job: $(n - k)!$ stops $n!$ after $k$
+      factors, and $k!$ takes away the order.
+    cue: The learner gives $\frac{n!}{(n - k)!}$ or $\frac{n!}{k!}$ in derive-choose.
+  - id: checking-is-proving
+    belief: Checking an identity at a few values proves it.
+    why: >-
+      Checks are evidence, as M1.8's forty primes were. A double counting proof shows that both
+      sides count one collection, each member once, which holds for every $n$ and $k$ at once.
+    cue: The learner checks $k\binom{n}{k} = n\binom{n - 1}{k - 1}$ at one or two values in derive-captain and stops there.
+
+exercises:
+  derive-orders:
+    rungs:
+      - >-
+        For each line, is it worked out, assumed, or drawn from the lines above it? If it is drawn
+        from them, which lines does it use, and what does it conclude?
+      - >-
+        M1.6 counted orders with the product rule, and the Explore phase showed that two collections
+        whose members pair off one to one have the same number of members. M1.9's proofs began with a
+        base case worked out and ended with induction.
+      - >-
+        Try $k = 2$: take thing 3 out of each of the 6 orders of things 1, 2 and 3. Which order of
+        things 1 and 2 is left, and in which of the 3 places was thing 3? Does each such pair come
+        from exactly one order?
+      - >-
+        If your rules for lines 1 and 6 are right, the trouble is in lines 2 to 5. For each of
+        them, say in your own words what the line concludes before you look at the menu, and then
+        find the rule whose last words say exactly that. A rule fits a line because of what the
+        line concludes, not because the line uses some of its words.
+      - >-
+        To prove by induction that $n$ things have $2^n$ subsets: one thing has 2, the empty set and
+        the thing itself. The subsets of $k + 1$ things pair off one to one with the pairs (a subset
+        of the first $k$, in or out for thing $k + 1$), so by the hypothesis and the product rule
+        there are $2^k \times 2 = 2^{k+1}$.
+    notes: >-
+      Product rule for line 2 mistakes the pairing for the count: line 2 says only that the orders
+      and the pairs are equally many, and line 4 counts the pairs. Pair them off for line 4 misses
+      that it multiplies $k + 1$ places by $k!$ orders. Factorials for line 4 is close, but line 5
+      is where $(k + 1) \times k!$ becomes $(k + 1)!$. Pair them off for line 5 is close, since the
+      line carries line 2's pairing over, but what it adds is $(k + 1) \times k! = (k + 1)!$.
+      Hypothesis for line 1 mistakes the base case, which is worked out, for the assumption. Cases
+      add and Divide by the orders never apply.
+  derive-choose:
+    rungs:
+      - How many times does each set of $k$ things turn up among the ordered choices, and what do you do to a count that counts everything that many times?
+      - >-
+        The Explore phase found $\binom{10}{3} = \frac{10 \times 9 \times 8}{3!}$, and wrote the
+        ordered choices of $k$ things from $n$ as $\frac{n!}{(n - k)!}$.
+      - >-
+        Try $n = 4$ and $k = 2$, as in the figure of ordered choices of letters: count the ordered
+        pairs of the letters A to D, and then the sets of two. What does your expression give at
+        $n = 4$ and $k = 2$?
+      - >-
+        If your expression gives the number of ordered pairs at $n = 4$ and $k = 2$, its top is
+        right, and the trouble is that it still counts each set once for each of its orders: read
+        the prompt's first sentence again. If it gives some other number, check each factorial in
+        it against the prompt: which part counts the ordered choices, and which the orders of one
+        set?
+      - >-
+        Words made from the letters A, A, B and C: label the two As $A_1$ and $A_2$, and the four
+        different letters have $4! = 24$ orders. Each word, such as AABC, turns up once for each
+        order of its two As, $2! = 2$ times, so there are $\frac{24}{2} = 12$ words.
+    notes: >-
+      $\frac{n!}{(n - k)!}$ is the ordered count, not yet divided by $k!$. $\frac{n!}{k!}$ divides
+      by the wrong factorial and leaves out $(n - k)!$. $\frac{n!}{k!\,(n - k)}$ has lost the ! on
+      $n - k$. An answer with `binomial(n, k)` or `binomial(n, n - k)` is the count itself, and is turned away for its form.
+      `k!(n-k)!` is read as a product, so `n!/(k!(n-k)!)` is accepted. The checker compares values at
+      whole numbers with $1 \le k \le n \le 9$.
+  derive-pascal-top:
+    rungs:
+      - What do the two terms of the top have in common, and what is left of each once that is taken out?
+      - >-
+        M1.2's distributive law takes a common factor out: $xa + xb = x(a + b)$. M1.6 defined $n!$
+        as the product of the whole numbers from 1 to $n$. Where does the top need each of them?
+      - >-
+        Try $n = 5$ and $k = 2$: work out $4! \times 2 + 4! \times 3$. Which factorial is that, and
+        does your answer give it?
+      - >-
+        If your answer has the right value but is turned away for its form, your algebra is right,
+        and only the writing is left: the prompt wants one factorial and nothing else. If its value
+        is wrong, check it against the top at $n = 5$ and $k = 2$, and then look again at what is
+        left once $(n - 1)!$ is taken out of both terms.
+      - >-
+        To write $(m + 1)! + m!$ as a multiple of $m!$: $(m + 1)! = (m + 1) \times m!$, so
+        $(m + 1)! + m! = m! \times (m + 1) + m! \times 1 = m! \times (m + 2)$. At $m = 3$:
+        $24 + 6 = 30 = 6 \times 5$.
+    notes: >-
+      $(n - 1)!$ forgets the bracket $k + (n - k) = n$. $(n + 1)!$ multiplies by $n + 1$ instead of
+      $n$. $n \times (n - 1)!$ has the right value and is turned away only for its form, since the
+      prompt asks for a single factorial. $k!\,(n - k)!$ is the bottom, not the top.
+  derive-binomial:
+    rungs:
+      - For each line, what changed from the line above, and which rule allows exactly that change?
+      - >-
+        M1.9's steps used the hypothesis for $P(k)$, and M1.6 shifted the counter of a sum. Pascal's
+        rule, from the Explore phase, adds two neighbours in row $k$ to make an entry of row $k + 1$.
+      - >-
+        Try $k = 1$: $(a + b)^2 = (a + b)(a + b)$. Multiply out, collect the terms, and find where
+        $\binom{2}{1} = \binom{1}{0} + \binom{1}{1}$ comes in.
+      - >-
+        If your rules for lines 1 to 4 are right, the trouble is in lines 5 to 7. Put each of them
+        beside the line above it and say in words what changed, and what stayed the same, before
+        you look at the menu. If any line cites True for every n, look again: that is the theorem
+        being proved.
+      - >-
+        To prove $\sum_{j=0}^{n} \binom{n}{j} = 2^n$ by induction: at $n = 0$ both sides are 1. In the
+        step, Pascal's rule writes each entry of row $k + 1$ as the sum of two entries of row $k$, and
+        every entry of row $k$ is used twice, so row $k + 1$ adds up to $2 \times 2^k = 2^{k+1}$.
+    notes: >-
+      Multiply out for line 2 mistakes writing a power as a product for multiplying a bracket out:
+      line 2 uses Powers. Hypothesis for line 4 misses that the line multiplies the sum by $a + b$.
+      Add term by term for line 5 misses that the line only renames the second sum's counter.
+      Pascal's rule for line 6 is close, but line 6 adds the sums term by term, and Pascal's rule
+      turns each bracket into $\binom{k+1}{j}$ in line 7. True for every n never applies: it
+      assumes the theorem. Choosing what is left out never applies either: no line turns
+      $\binom{k}{j}$ into $\binom{k}{k - j}$.
+  derive-even-sets:
+    rungs:
+      - What do you get if you add the sum of the whole row to the sum with alternating signs?
+      - >-
+        The Derive phase found $\sum_j \binom{n}{j} = 2^n$ from the binomial theorem with $a = b = 1$,
+        and that the sum with alternating signs is 0, from $a = 1$ and $b = -1$.
+      - >-
+        Try $n = 3$: list the 8 subsets of three things, and count those with 0 or 2 elements. Does
+        your expression give that number at $n = 3$?
+      - >-
+        If your expression gives 8 at $n = 3$, it counts subsets, which is right, but all of them,
+        the odd ones too: ask what the sum with alternating signs says about the odd ones and the
+        even ones. If it gives another number, compare it with your list for $n = 3$, and then try
+        $n = 1$ and $n = 2$.
+      - >-
+        For the numbers $c_0, c_1, c_2, c_3 = 6, 2, 3, 1$: $c_0 + c_1 + c_2 + c_3 = 12$ and
+        $c_0 - c_1 + c_2 - c_3 = 6$. Adding the two doubles $c_0$ and $c_2$ and cancels $c_1$ and
+        $c_3$: $12 + 6 = 18 = 2 \times (6 + 3)$, so the terms with an even counter add up to half
+        of 18, which is 9.
+    notes: >-
+      $2^n$ counts every subset. $\frac{n}{2}$ or $n$ counts sizes or elements, not subsets.
+      $2^{n-2}$ halves twice. $2^n - 1$ leaves out only the empty set. $2^{n-1} + 1$ adds the empty
+      set again, though it is already among the even ones.
+  derive-captain:
+    rungs:
+      - What collection are you counting, and in which two orders can its members be chosen?
+      - >-
+        The product rule counts a choice made in steps when the second step has the same number of
+        options whatever the first was. The Explore phase counted the 435 pairs of 30 features
+        twice, as $\binom{30}{2}$ and by their larger feature, and two counts of one collection
+        must agree.
+      - >-
+        Try $n = 4$ and $k = 2$: list the 6 teams of 2 from 4 people, and give each a captain. How
+        many teams with a captain are there? Now count them by choosing the captain first.
+      - >-
+        If you have both counts, that part is right, and the trouble may be in why they agree: say
+        what collection each counts, and whether it counts each member exactly once. If your
+        captain-first count has $\binom{n}{k - 1}$ in it, check how many people are left to choose
+        from once the captain is chosen. For the check with factorials, write each side as one
+        fraction first, and compare them factor by factor.
+      - >-
+        Count the ways to choose a committee of $k$ from $n$ people and a chair from outside it.
+        Committee first: $\binom{n}{k}$ ways, then $n - k$ for the chair. Chair first: $n$ ways, then
+        $\binom{n - 1}{k}$ for the committee. Both count the same choices, so
+        $(n - k)\binom{n}{k} = n\binom{n - 1}{k}$.
+    notes: >-
+      An answer that checks a few values is evidence, not the proof asked for: the rubric wants the
+      two counts and why they agree. Counting captain first as $n\binom{n}{k - 1}$ forgets that the
+      captain is no longer free to be chosen again. An answer that only works with factorials meets
+      the last criterion alone.
+  derive-experts:
+    rungs:
+      - Does the order of the 8 experts matter, and what does that tell you to divide by?
+      - >-
+        The Explore phase counted sets as the ordered choices divided by $k!$, and M1.1's estimates
+        rounded each factor to a convenient number before multiplying.
+      - >-
+        Try a smaller layer: 8 experts, 2 picked. How many sets of 2 are there, and how does
+        $\frac{8 \times 7}{2!}$ give it?
+      - >-
+        If your estimate is near $10^{14}$, its top is right, and the trouble is that it counts each
+        set of 8 once for each of its orders: look again at how the Explore phase turned ordered
+        choices into sets. If it is far below $10^9$, check how many factors are on top and about
+        how large each one is.
+      - >-
+        Sets of 5 from 50: $\frac{50 \times 49 \times 48 \times 47 \times 46}{5!}$. The top is about
+        $48^5 \approx 2.5 \times 10^8$, and $5! = 120$, so about $2 \times 10^6$. The exact value is
+        2,118,760.
+    notes: >-
+      About $1.8 \times 10^{14}$ counts ordered choices. $64^8 \approx 2.8 \times 10^{14}$ also lets
+      an expert be picked twice. $\frac{64^8}{8!} \approx 7 \times 10^9$ is within the tolerance.
+      $2^{64}$ counts every set of experts, of every size.
+  build-choose:
+    rungs:
+      - After the loop has run $i$ times, what should `count` hold, and what does the next pass multiply by and divide by?
+      - >-
+        E1.2's loop invariants said what a loop holds after every pass. E1.1 showed that `//` divides
+        one whole number by another and keeps an int, while `/` always gives a float.
+      - >-
+        Work out `choose(5, 2)` by hand: `count` starts at 1, should be $\binom{5}{1} = 5$ after the
+        first pass, and $\binom{5}{2} = 10$ after the second. What does each pass multiply by, and
+        divide by?
+      - >-
+        If test_five_two passes, the factors your loop uses are right, and the trouble is in how
+        the count is kept or how long the loop runs. If test_whole fails, look at which operator
+        does the dividing and what type it gives. If a count comes out too small, such as 8 for
+        `choose(5, 2)` or 4 for `choose(4, 2)`, a `//` is throwing a remainder away: look at what
+        each `//` divides. If test_short_way says that `choose` was still running, count the passes
+        your loop makes for `choose(1000000, 999998)`.
+      - >-
+        The product of the first $k$ odd numbers, $1 \times 3 \times 5 \times \cdots$, can be built the
+        same way: `count = 1`, and for each `i` in `range(k)`, `count = count * (2 * i + 1)`. After $i$
+        passes, `count` holds the product of the first $i$ odd numbers.
+    notes: >-
+      `/` makes a float, so test_whole fails, and above about $10^{16}$ the count loses digits.
+      Dividing first, `count // (i + 1) * (n - i)`, gives 8 for `choose(5, 2)`. A loop of $k$ passes
+      with no swap is stopped by test_short_way after 1,000 lines, with a message that names the
+      shorter way. `range(1, k + 1)` with `(n - i) // i` starts the top factors at $n - 1$ and gives
+      6 for `choose(5, 2)`. Using `math.comb` or `math.factorial` fails test_own_work.
+      `count *= (n - i) // (i + 1)` divides the new factor alone: it gives 10 for `choose(5, 2)`, so
+      test_five_two passes, but 4 for `choose(4, 2)`, which test_triangle reports with a sentence
+      about the order of `*=` and `//`.
+  build-pascal:
+    rungs:
+      - How many entries does the row below a row of $m$ entries have, and which of them are sums of two entries above?
+      - >-
+        E1.4 found that `new = row` gives the same list a second name, and that a function that changes
+        a list its caller still uses changes the caller's list too. E1.2's loops ran an index over a
+        `range`.
+      - >-
+        Work out `next_row([1, 2, 1])` by hand: it starts with 1, ends with 1, and between them has
+        the sums of the neighbouring pairs, $1 + 2$ and $2 + 1$. Which indexes `i` give those pairs?
+      - >-
+        If test_next passes, the sums in `next_row` are right, and the trouble is elsewhere. If
+        test_unchanged fails, look at which list your loop writes into, and at E1.4's two names for
+        one list. If a row starts with 2, print the index your loop reads at `i = 0`. If every row
+        is `[1]`, compare the length of each new row with the row above it. If `triangle` gives the
+        wrong number of rows, count the passes of its loop for `triangle(0)` and `triangle(1)`.
+      - >-
+        `differences(xs)` gives the difference of each pair of neighbours in `xs`: it starts with
+        `new = []`, runs `i` over one index fewer than `xs` has, and appends `xs[i + 1] - xs[i]`. For
+        `[1, 4, 9, 16]` it gives `[3, 5, 7]`.
+    notes: >-
+      `new = row` changes the caller's row, fails test_unchanged, and leaves `triangle` holding one
+      list several times over. Forgetting the final 1 makes every row `[1]`. `range(n - 1)` in
+      `triangle` builds one row too few, and `range(n + 1)` one row too many. A loop over `range(len(row))` with `row[i - 1]` reads
+      `row[-1]`, the last entry, at `i = 0`, so `[1]` gives `[2, 1]`.
+  build-choices:
+    rungs:
+      - What should `choices(items, 0)` give, no sets or one set with nothing in it? And what should it give when there are fewer items than $k$?
+      - >-
+        E1.5 split a list into its first item and the rest, `xs[1:]`, and trusted the call on the
+        rest. The Explore phase split the sets of $k$ by whether they hold one particular item.
+      - >-
+        Work out `choices(['a', 'b', 'c'], 2)` by hand: the sets that hold 'a' are 'a' put in front of
+        each set of 1 from `['b', 'c']`, and the sets without 'a' are the sets of 2 from
+        `['b', 'c']`. What are they?
+      - >-
+        If test_ends passes, your base cases are right, and the trouble is in the two calls. If the
+        sets have the wrong sizes, write beside each call how many items its sets should hold once
+        the first item is put in front, or left out, and compare. If sets are missing, check that
+        both groups reach the list you return. If every call gives `[]`, look at what your base
+        case for $k = 0$ gives, and count the ways to choose nothing.
+      - >-
+        `subsets(items)` lists every subset of the items, of every size. `subsets([])` is `[[]]`,
+        the one empty subset. For `subsets(['x', 'y'])`, the subsets of the rest, `['y']`, are
+        `[['y'], []]`; with 'x' put in front they are `[['x', 'y'], ['x']]`, and without it
+        `[['y'], []]`, so there are four in all, $2^2$.
+    notes: >-
+      A base case of `[]` for $k = 0$ makes every call give `[]`. Asking for $k - 1$ in both calls
+      mixes in smaller sets. Leaving out the second call keeps only the sets that hold every first
+      item, one set in all. Swapping $k$ and $k - 1$ gives sets of the wrong sizes. `items.pop(0)`
+      changes the caller's list and fails test_unchanged. The right sets in another order fail
+      test_pairs with a message about the order.
+  debug-arrangements:
+    rungs:
+      - Which pairs does it print for `['a', 'b', 'c']`, and which ordered pairs are missing from them? What do the pairs it prints have in common?
+      - >-
+        The Explore phase divided the 720 podiums of 3 from 10 by the $3! = 6$ orders of each set.
+        Earlier in this phase, `choices` listed each set exactly once. How do those compare with
+        what `arrangements` prints?
+      - >-
+        Work out `arrangements(['a', 'b'], 2)` by hand, one pass of the loop at a time: for each `i`,
+        write down `items[i]`, `left`, and the choices the call on `left` gives. Which orders of 'a'
+        and 'b' come out, and which should?
+      - >-
+        If test_too_many passes and the others find too few choices, the trouble is in the line that
+        sets `left`. For `i = 1` in `['a', 'b', 'c']`, which items does it keep, and which items are
+        free to fill the other places once 'b' is placed? If every call gives `[]`, look at the base
+        case for $k = 0$ instead.
+      - >-
+        `ways(amount, coins)` counts the ways to pay an amount with coins of the values in `coins`:
+        it chooses a first coin, `coins[i]`, and pays the rest with a recursive call. If that call
+        gets `coins[i:]`, the coins can only go forward, so each collection of coins is counted once:
+        5 from coins of 1 and 2 is 1+1+1+1+1, 1+1+1+2 or 1+2+2, 3 ways. If the call gets all of
+        `coins`, the same coins in another order count again, so 1+2+2, 2+1+2 and 2+2+1 are three
+        ways, and there are 8 in all.
+    notes: >-
+      `left = items[i + 1:]` keeps only the items after `items[i]`, so each set comes once, in the
+      order of the list: 3 pairs from three letters, and 120 podiums, $\frac{720}{3!}$. It fails
+      every test but test_too_many. `items[:i] + items[i + 1:]` mends it, and so does a list of
+      every item that is not `items[i]`, since the items are different. `items[1:]` lets an item
+      come twice. Changing the base case to `return []` makes every call give `[]`. Appending
+      `[items[i]]` without the tail gives one item per choice. Putting the tail before the item
+      gives the right choices in another order, which test_pairs reports.
+
+novice:
+  - Why is choosing 3 features different from picking a podium of 3?
+  - Why is $0!$ equal to 1 and not 0?
+  - Why do the rows of Pascal's triangle add up to powers of 2?
+  - How can counting brackets give the numbers in front of the terms of $(a + b)^n$?
+  - Why do the numbers in a row go up and then come down again?

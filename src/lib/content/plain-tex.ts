@@ -122,10 +122,12 @@ export function texToText(tex: string): string {
     s = s.replace(/\\(?:text|mathrm|mathbf|mathit|operatorname|textbf|textit)\{([^{}]*)\}/g, "$1");
     s = s.replace(/\\[dt]?frac\{([^{}]*)\}\{([^{}]*)\}/g, (_m, a: string, b: string) => `${group(a)}/${group(b)}`);
     s = s.replace(/\\sqrt\{([^{}]*)\}/g, (_m, a: string) => `√${group(a)}`);
+    // n choose k has no plain sign of its own, so it is written C(n, k).
+    s = s.replace(/\\[dt]?binom\{([^{}]*)\}\{([^{}]*)\}/g, (_m, a: string, b: string) => `C(${a.trim()}, ${b.trim()})`);
     s = s.replace(/\^\{([^{}]*)\}/g, (_m, a: string) => script(a, SUPERSCRIPT, "^"));
     s = s.replace(/_\{([^{}]*)\}/g, (_m, a: string) => script(a, SUBSCRIPT, "_"));
     // Any other command applied to a group, such as \hat{x}, keeps only its argument.
-    s = s.replace(/\\(?!(?:[dt]?frac|sqrt)\{)([a-zA-Z]+)\{([^{}]*)\}/g, (_m, name: string, a: string) => `${SYMBOLS[name] ?? ""}${a}`);
+    s = s.replace(/\\(?!(?:[dt]?frac|sqrt|[dt]?binom)\{)([a-zA-Z]+)\{([^{}]*)\}/g, (_m, name: string, a: string) => `${SYMBOLS[name] ?? ""}${a}`);
     if (s === before) break;
   }
   s = s.replace(/\^\\([a-zA-Z]+)/g, (_m, name: string) => `^${SYMBOLS[name] ?? name}`);

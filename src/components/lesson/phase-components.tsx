@@ -11,7 +11,9 @@ import {
   FloatLine,
   FunctionPlot,
   MappingDiagram,
+  OrderedChoices,
   PartialSums,
+  PascalTriangle,
   ProgramTrace,
   QuantifierGrid,
   ScaleLine,
@@ -211,6 +213,35 @@ export function phaseComponents(ctx: PhaseContext): MDXComponents {
     );
   }
 
+  /** Ordered choices whose grouping by set waits for an exercise it would answer. */
+  function OrderedChoicesSlot({ groupsAfter, ...props }: ComponentProps<typeof OrderedChoices> & { groupsAfter?: string }) {
+    if (groupsAfter && !lesson.byId.has(groupsAfter)) {
+      return <Problem>an ordered-choices figure waits for {groupsAfter}, which does not exist.</Problem>;
+    }
+    return (
+      <OrderedChoices
+        {...props}
+        groupsLocked={groupsAfter ? !states.get(groupsAfter)?.done : false}
+        lockedNote={groupsAfter ? opensNote(groupsAfter, "Grouping them by set") : undefined}
+      />
+    );
+  }
+
+  /** Pascal's triangle whose list of sets, and the sum of the two entries above, wait for an exercise they would answer. */
+  function PascalTriangleSlot({ setsAfter, ...props }: ComponentProps<typeof PascalTriangle> & { setsAfter?: string }) {
+    if (setsAfter && !lesson.byId.has(setsAfter)) {
+      return <Problem>a triangle waits for {setsAfter}, which does not exist.</Problem>;
+    }
+    return (
+      <PascalTriangle
+        {...props}
+        sets={props.sets ?? Boolean(setsAfter)}
+        setsLocked={setsAfter ? !states.get(setsAfter)?.done : false}
+        lockedNote={setsAfter ? opensNote(setsAfter, "The list of sets") : undefined}
+      />
+    );
+  }
+
   function MixedCheck() {
     if (phase !== "explain") return <Problem>the mixed check belongs in the Explain phase.</Problem>;
     const items = ctx.check?.items ?? [];
@@ -286,5 +317,7 @@ export function phaseComponents(ctx: PhaseContext): MDXComponents {
     QuantifierGrid: QuantifierGridSlot,
     TileGrid: TileGridSlot,
     TieLists,
+    OrderedChoices: OrderedChoicesSlot,
+    PascalTriangle: PascalTriangleSlot,
   };
 }

@@ -1,0 +1,19 @@
+The test of understanding is explaining it simply to someone who was not there. Your friend is choosing features for a model, wants to try every set of 3 of its 10 candidate features, and says that there are $10 \times 9 \times 8 = 720$ such sets.
+
+<Exercise id="explain-counting" />
+
+## Where this leads
+
+<Foreshadow lesson="M4.1">
+
+When every outcome is equally likely, a probability is the number of outcomes wanted over the number of all of them. A shuffled list of 10 models puts the best one first in $9!$ of its $10!$ orders, so with chance $\frac{9!}{10!} = \frac{1}{10}$. M4.1 counts outcomes with this lesson's rules, and checks the counts against simulation.
+
+</Foreshadow>
+
+<Foreshadow lesson="M4.5">
+
+A coin that lands heads with chance $p$ is tossed 10 times. Exactly 3 heads can come in $\binom{10}{3} = 120$ orders, each with chance $p^3 (1 - p)^7$. M4.5 builds the binomial distribution from counts like these, and the binomial theorem, with $a = 1 - p$ and $b = p$, shows that its chances add up to $(1 - p + p)^{10} = 1$.
+
+</Foreshadow>
+
+<MixedCheck />
